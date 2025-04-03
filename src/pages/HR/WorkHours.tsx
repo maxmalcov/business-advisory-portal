@@ -37,6 +37,7 @@ const WorkHours: React.FC = () => {
   const {
     emailRecipient,
     setEmailRecipient,
+    isValidEmail,
     submitToHR
   } = useEmailRecipient();
   
@@ -66,6 +67,7 @@ const WorkHours: React.FC = () => {
           <EmailRecipientInput 
             emailRecipient={emailRecipient}
             setEmailRecipient={setEmailRecipient}
+            isValidEmail={isValidEmail}
           />
           
           {/* Add/Edit Form */}
