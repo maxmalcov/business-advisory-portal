@@ -27,10 +27,7 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
         />
       </div>
       <Button 
-        onClick={() => {
-          console.log("Add User button clicked"); // Keep debug log
-          onAddUser(); // This should set isAddingUser to true in the parent component
-        }}
+        onClick={onAddUser}
         variant="default"
       >
         <UserPlus className="mr-2 h-4 w-4" />

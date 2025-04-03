@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog } from '@/components/ui/dialog';
+import { 
+  Dialog,
+  DialogContent,
+  DialogTrigger
+} from '@/components/ui/dialog';
 
 // Import the components
 import UserManagementHeader from './components/UserManagementHeader';
@@ -79,13 +83,14 @@ const AdminUserManagement: React.FC = () => {
 
   // Open add user dialog
   const handleAddUser = () => {
-    console.log("handleAddUser called"); // Debug log
-    setIsAddingUser(true); // This should trigger the Dialog to open
-    console.log("isAddingUser set to true"); // Debug log
+    console.log("handleAddUser called");
+    setIsAddingUser(true);
+    console.log("isAddingUser set to:", true);
   };
 
   // Cancel adding user
   const handleCancelAddUser = () => {
+    console.log("handleCancelAddUser called");
     setIsAddingUser(false);
   };
 
@@ -109,7 +114,7 @@ const AdminUserManagement: React.FC = () => {
     setIsAddingUser(false);
   };
 
-  console.log("isAddingUser state:", isAddingUser); // Debug log
+  console.log("Rendering with isAddingUser:", isAddingUser);
 
   return (
     <div className="space-y-6">
@@ -144,12 +149,12 @@ const AdminUserManagement: React.FC = () => {
         )}
       </Dialog>
 
-      {/* Add User Dialog */}
+      {/* Add User Dialog - Fixed implementation */}
       <Dialog 
         open={isAddingUser} 
         onOpenChange={(open) => {
-          console.log("Dialog onOpenChange:", open); // Debug log
-          if (!open) setIsAddingUser(false);
+          console.log("Dialog onOpenChange:", open);
+          setIsAddingUser(open);
         }}
       >
         <AddUserDialog 
