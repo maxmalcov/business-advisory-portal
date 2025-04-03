@@ -33,6 +33,8 @@ const formSchema = z.object({
   demoVideoUrl: z.string().optional(),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 type SubscriptionFormProps = {
   subscription: Subscription | null;
   onSubmit: (data: Subscription) => void;
@@ -44,29 +46,44 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
   onSubmit, 
   onCancel 
 }) => {
-  const defaultValues = subscription ? {
-    ...subscription
+  const defaultValues: FormValues = subscription ? {
+    name: subscription.name,
+    type: subscription.type,
+    userName: subscription.userName,
+    userId: subscription.userId,
+    status: subscription.status,
+    url: subscription.url,
+    demoVideoUrl: subscription.demoVideoUrl || '',
   } : {
     name: '',
-    type: 'iframe' as const,
+    type: 'iframe',
     userName: '',
     userId: '',
-    status: 'pending' as const,
+    status: 'pending',
     url: '',
     demoVideoUrl: '',
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    onSubmit({
+  const handleSubmit = (data: FormValues) => {
+    // Ensure all required properties are provided to satisfy the Subscription type
+    const subscriptionData: Subscription = {
       id: subscription?.id || '',
-      ...data,
+      name: data.name,
+      type: data.type,
+      userName: data.userName,
+      userId: data.userId,
+      status: data.status,
+      url: data.url,
+      demoVideoUrl: data.demoVideoUrl,
       createdAt: subscription?.createdAt || new Date().toISOString(),
-    });
+    };
+    
+    onSubmit(subscriptionData);
   };
 
   return (
