@@ -41,7 +41,6 @@ const translations: Record<Language, Record<string, string>> = {
     'app.delete': 'Delete',
     'app.language': 'Language',
     'app.success': 'Success',
-    'app.error': 'Error',
     'app.warning': 'Warning',
     'app.info': 'Information',
     
@@ -162,6 +161,19 @@ const translations: Record<Language, Record<string, string>> = {
     'subscriptions.iframe2': 'IFRAME 2',
     'subscriptions.crm': 'CRM',
     'subscriptions.timetracking': 'Time Tracking',
+    
+    // Common pages
+    'page.under_construction': 'This page is under construction',
+    
+    // Contracts & Documents
+    'contracts.title': 'Contracts Management',
+    'contracts.description': 'View and manage your business contracts',
+    'documents.title': 'Document Management',
+    'documents.description': 'Access and manage your important documents',
+    
+    // Reports
+    'reports.title': 'Reports & Analytics',
+    'reports.description': 'View detailed reports about your business activities'
   },
   
   es: {
@@ -185,7 +197,6 @@ const translations: Record<Language, Record<string, string>> = {
     'app.delete': 'Eliminar',
     'app.language': 'Idioma',
     'app.success': 'Éxito',
-    'app.error': 'Error',
     'app.warning': 'Advertencia',
     'app.info': 'Información',
     
@@ -306,6 +317,19 @@ const translations: Record<Language, Record<string, string>> = {
     'subscriptions.iframe2': 'IFRAME 2',
     'subscriptions.crm': 'CRM',
     'subscriptions.timetracking': 'Control de tiempo',
+    
+    // Common pages
+    'page.under_construction': 'Esta página está en construcción',
+    
+    // Contracts & Documents
+    'contracts.title': 'Gestión de contratos',
+    'contracts.description': 'Ver y gestionar sus contratos de negocio',
+    'documents.title': 'Gestión de documentos',
+    'documents.description': 'Acceda y gestione sus documentos importantes',
+    
+    // Reports
+    'reports.title': 'Informes y análisis',
+    'reports.description': 'Ver informes detallados sobre las actividades de su negocio'
   },
   
   ru: {
@@ -329,7 +353,6 @@ const translations: Record<Language, Record<string, string>> = {
     'app.delete': 'Удалить',
     'app.language': 'Язык',
     'app.success': 'Успех',
-    'app.error': 'Ошибка',
     'app.warning': 'Предупреждение',
     'app.info': 'Информация',
     
@@ -450,6 +473,19 @@ const translations: Record<Language, Record<string, string>> = {
     'subscriptions.iframe2': 'IFRAME 2',
     'subscriptions.crm': 'CRM',
     'subscriptions.timetracking': 'Учет времени',
+    
+    // Common pages
+    'page.under_construction': 'Эта страница находится в разработке',
+    
+    // Contracts & Documents
+    'contracts.title': 'Управление контрактами',
+    'contracts.description': 'Просмотр и управление вашими бизнес-контрактами',
+    'documents.title': 'Управление документами',
+    'documents.description': 'Доступ и управление важными документами',
+    
+    // Reports
+    'reports.title': 'Отчеты и аналитика',
+    'reports.description': 'Просмотр подробных отчетов о деятельности вашего бизнеса'
   }
 };
 
