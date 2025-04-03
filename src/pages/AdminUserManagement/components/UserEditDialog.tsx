@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   DialogContent,
@@ -18,17 +17,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Mail, X, Plus, Save, Link as LinkIcon } from 'lucide-react';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  companyName?: string;
-  userType: string;
-  incomingInvoiceEmail?: string;
-  outgoingInvoiceEmail?: string;
-  iframeUrls?: string[];
-}
+import { User } from '../types';
 
 interface UserEditDialogProps {
   user: User | null;

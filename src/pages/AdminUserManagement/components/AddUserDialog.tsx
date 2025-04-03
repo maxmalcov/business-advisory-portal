@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { 
-  DialogContent, 
   DialogDescription, 
   DialogFooter, 
   DialogHeader, 
@@ -13,21 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail, Link as LinkIcon, Plus, Save, X } from 'lucide-react';
-
-// Define the user structure based on existing code
-interface User {
-  id?: string;
-  name: string;
-  email: string;
-  companyName?: string;
-  userType: string;
-  incomingInvoiceEmail?: string;
-  outgoingInvoiceEmail?: string;
-  iframeUrls?: string[];
-}
+import { User } from '../types';
 
 interface AddUserDialogProps {
-  onSave: (user: User) => void;
+  onSave: (user: Omit<User, 'id'>) => void;
   onCancel: () => void;
 }
 
@@ -44,7 +31,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   });
   const [newIframeUrl, setNewIframeUrl] = React.useState('');
 
-  // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {
     if (!newIframeUrl) return;
     
@@ -56,7 +42,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     setNewIframeUrl('');
   };
 
-  // Handle removing an iframe URL
   const handleRemoveIframeUrl = (index: number) => {
     const newUrls = [...(newUser.iframeUrls || [])];
     newUrls.splice(index, 1);
@@ -67,7 +52,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     });
   };
 
-  // Handle changing user type
   const handleChangeUserType = (value: string) => {
     setNewUser({
       ...newUser,
@@ -75,9 +59,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     });
   };
 
-  // Handle saving the new user
   const handleSave = () => {
-    // Basic validation
     if (!newUser.name || !newUser.email) {
       alert('Please fill in required fields: Name and Email');
       return;
