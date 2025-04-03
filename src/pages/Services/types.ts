@@ -19,7 +19,7 @@ export interface ServiceItem {
   id: string;
   title: string;
   description: string;
-  icon: ReactNode;
+  iconName: string; // Changed from icon: ReactNode to iconName: string
   price: string;
   badges?: string[];
   popular?: boolean;

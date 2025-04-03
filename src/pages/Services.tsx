@@ -7,6 +7,14 @@ import ServiceCard from './Services/components/ServiceCard';
 import ServiceSearch from './Services/components/ServiceSearch';
 import { ServiceItem, ServiceStatus } from './Services/types';
 import { initialServices } from './Services/mockData';
+import { 
+  CircleDollarSign, 
+  FileText, 
+  Users, 
+  Package, 
+  PackagePlus, 
+  Boxes 
+} from 'lucide-react';
 
 const Services: React.FC = () => {
   const { t } = useLanguage();
@@ -14,6 +22,25 @@ const Services: React.FC = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
+  
+  const getIconComponent = (iconName: string) => {
+    switch (iconName) {
+      case 'CircleDollarSign':
+        return <CircleDollarSign className="h-5 w-5 text-primary" />;
+      case 'FileText':
+        return <FileText className="h-5 w-5 text-primary" />;
+      case 'Users':
+        return <Users className="h-5 w-5 text-primary" />;
+      case 'Package':
+        return <Package className="h-5 w-5 text-primary" />;
+      case 'PackagePlus':
+        return <PackagePlus className="h-5 w-5 text-primary" />;
+      case 'Boxes':
+        return <Boxes className="h-5 w-5 text-primary" />;
+      default:
+        return <Package className="h-5 w-5 text-primary" />;
+    }
+  };
   
   const handleRequestService = (serviceId: string) => {
     // Update the service status to pending
@@ -57,7 +84,7 @@ const Services: React.FC = () => {
             id={service.id}
             title={service.title}
             description={service.description}
-            icon={service.icon}
+            icon={getIconComponent(service.iconName)}
             price={service.price}
             badges={service.badges}
             popular={service.popular}

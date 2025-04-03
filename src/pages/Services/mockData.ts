@@ -1,21 +1,12 @@
 
-import { 
-  CircleDollarSign, 
-  FileText, 
-  Users, 
-  Package, 
-  PackagePlus, 
-  Boxes 
-} from 'lucide-react';
 import { ServiceItem } from './types';
-import React from 'react';
 
 export const initialServices: ServiceItem[] = [
   {
     id: "service1",
     title: "Payroll Management",
     description: "Complete payroll processing and management services for your business.",
-    icon: <CircleDollarSign className="h-5 w-5 text-primary" />,
+    iconName: "CircleDollarSign",
     price: "From €150/month",
     badges: [
       "Monthly payroll processing",
@@ -30,7 +21,7 @@ export const initialServices: ServiceItem[] = [
     id: "service2",
     title: "Tax Advisory",
     description: "Professional tax planning and advisory services to minimize your tax burden.",
-    icon: <FileText className="h-5 w-5 text-primary" />,
+    iconName: "FileText",
     price: "From €200/month",
     badges: [
       "Tax return preparation",
@@ -44,7 +35,7 @@ export const initialServices: ServiceItem[] = [
     id: "service3",
     title: "HR Management",
     description: "Comprehensive human resources services for employee management.",
-    icon: <Users className="h-5 w-5 text-primary" />,
+    iconName: "Users",
     price: "From €180/month",
     badges: [
       "Employee onboarding",
@@ -58,7 +49,7 @@ export const initialServices: ServiceItem[] = [
     id: "service4",
     title: "Bookkeeping Plus",
     description: "Enhanced bookkeeping services with detailed financial reporting.",
-    icon: <Package className="h-5 w-5 text-primary" />,
+    iconName: "Package",
     price: "From €120/month",
     badges: [
       "Daily transaction recording",
@@ -72,7 +63,7 @@ export const initialServices: ServiceItem[] = [
     id: "service5",
     title: "Financial Analysis",
     description: "In-depth analysis of your financial data to support business decisions.",
-    icon: <PackagePlus className="h-5 w-5 text-primary" />,
+    iconName: "PackagePlus",
     price: "From €250/month",
     badges: [
       "Profitability analysis",
@@ -86,7 +77,7 @@ export const initialServices: ServiceItem[] = [
     id: "service6",
     title: "Accounting Software Setup",
     description: "Setup and training for accounting software tailored to your business needs.",
-    icon: <Boxes className="h-5 w-5 text-primary" />,
+    iconName: "Boxes",
     price: "From €300 one-time",
     badges: [
       "Software selection guidance",
