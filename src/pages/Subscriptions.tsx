@@ -166,7 +166,7 @@ const Subscriptions: React.FC = () => {
 
       {/* Slide-in panel for displaying tool content */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent side="right" className="w-[75%] max-w-none overflow-y-auto">
+        <SheetContent side="right" className="w-full sm:max-w-md md:max-w-lg lg:max-w-2xl overflow-y-auto">
           <SheetHeader className="mb-4">
             <SheetTitle className="flex items-center">
               {selectedTool?.icon && <div className="mr-2">{selectedTool.icon}</div>}
