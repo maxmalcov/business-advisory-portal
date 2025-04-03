@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Invoices from "./pages/Invoices";
+import SupplierInvoices from "./pages/SupplierInvoices";
 import NewEmployee from "./pages/NewEmployee";
 import Contracts from "./pages/Contracts";
 import Documents from "./pages/Documents";
@@ -22,6 +23,7 @@ import Reports from "./pages/Reports";
 import Services from "./pages/Services";
 import Subscriptions from "./pages/Subscriptions";
 import Profile from "./pages/Profile";
+import HR from "./pages/HR";
 import Termination from "./pages/HR/Termination";
 import WorkHours from "./pages/HR/WorkHours";
 
@@ -81,7 +83,7 @@ const App = () => (
                 } />
                 <Route path="supplier-invoices" element={
                   <ProtectedRoute requiredRole="client">
-                    <Invoices />
+                    <SupplierInvoices />
                   </ProtectedRoute>
                 } />
                 <Route path="contracts" element={
@@ -115,6 +117,11 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 
+                <Route path="hr" element={
+                  <ProtectedRoute requiredRole="client">
+                    <HR />
+                  </ProtectedRoute>
+                } />
                 <Route path="hr/new-employee" element={
                   <ProtectedRoute requiredRole="client">
                     <NewEmployee />
