@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { 
@@ -11,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail, Link as LinkIcon, Plus, Save, X } from 'lucide-react';
-import { User } from '../types';
+import { User } from '../hooks/useUserManagement';
 
 interface AddUserDialogProps {
   onSave: (user: Omit<User, 'id'>) => void;
@@ -20,7 +21,7 @@ interface AddUserDialogProps {
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   const { t } = useLanguage();
-  const [newUser, setNewUser] = React.useState<User>({
+  const [newUser, setNewUser] = React.useState<Omit<User, 'id'>>({
     name: '',
     email: '',
     companyName: '',
@@ -69,7 +70,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   };
 
   return (
-    <DialogContent className="max-w-2xl">
+    <>
       <DialogHeader>
         <DialogTitle>Add New User</DialogTitle>
         <DialogDescription>
@@ -200,7 +201,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
           Create User
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </>
   );
 };
 

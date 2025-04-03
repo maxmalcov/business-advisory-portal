@@ -103,5 +103,6 @@ export const useUserManagement = () => {
     handleCancelAddUser,
     handleSaveNewUser,
     setIsAddingUser,
+    setEditingUser,
   };
 };

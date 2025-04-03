@@ -38,12 +38,14 @@ const UserDialogs: React.FC<UserDialogsProps> = ({
         }}
       >
         {editingUser && (
-          <UserEditDialog
-            user={editingUser}
-            onUserChange={onUserChange}
-            onSave={onSaveUser}
-            onCancel={onCancelEdit}
-          />
+          <DialogContent>
+            <UserEditDialog
+              user={editingUser}
+              onUserChange={onUserChange}
+              onSave={onSaveUser}
+              onCancel={onCancelEdit}
+            />
+          </DialogContent>
         )}
       </Dialog>
 
