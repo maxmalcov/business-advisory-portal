@@ -15,15 +15,6 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
   onSearchChange,
   onAddUser 
 }) => {
-  // Create a handler function to ensure the onAddUser gets called
-  const handleAddUserClick = () => {
-    console.log("Add New User button clicked");
-    // Make sure we call the prop function
-    if (typeof onAddUser === 'function') {
-      onAddUser();
-    }
-  };
-
   return (
     <div className="flex justify-between items-center mb-4">
       <div className="relative w-64">
@@ -35,10 +26,9 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
           onChange={onSearchChange}
         />
       </div>
-      {/* Completely new button implementation */}
       <Button 
-        onClick={handleAddUserClick}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
+        onClick={onAddUser}
+        variant="default"
       >
         <UserPlus className="mr-2 h-4 w-4" />
         Add New User

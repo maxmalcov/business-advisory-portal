@@ -10,7 +10,18 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { UserCog } from 'lucide-react';
-import { User } from '../types';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  companyName?: string;
+  userType: string;
+  incomingInvoiceEmail?: string;
+  outgoingInvoiceEmail?: string;
+  iframeUrls?: string[];
+}
 
 interface UserTableProps {
   users: User[];
@@ -39,14 +50,18 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => {
               <span className="capitalize">{user.userType}</span>
             </TableCell>
             <TableCell>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onEditUser(user)}
-              >
-                <UserCog className="h-4 w-4 mr-1" />
-                Edit
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEditUser(user)}
+                  >
+                    <UserCog className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
             </TableCell>
           </TableRow>
         ))}
