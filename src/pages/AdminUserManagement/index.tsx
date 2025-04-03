@@ -5,11 +5,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog } from '@/components/ui/dialog';
 
-// Import the newly created components
+// Import the components
 import UserManagementHeader from './components/UserManagementHeader';
 import UserSearchBar from './components/UserSearchBar';
 import UserTable from './components/UserTable';
 import UserEditDialog from './components/UserEditDialog';
+import AddUserDialog from './components/AddUserDialog';
 import { mockUsers } from './mockData';
 
 // Define the User type
@@ -31,6 +32,7 @@ const AdminUserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [isAddingUser, setIsAddingUser] = useState(false);
 
   // Filter users based on search query
   const filteredUsers = users.filter(user => 
@@ -75,13 +77,44 @@ const AdminUserManagement: React.FC = () => {
     setEditingUser(null);
   };
 
+  // Open add user dialog
+  const handleAddUser = () => {
+    setIsAddingUser(true);
+  };
+
+  // Cancel adding user
+  const handleCancelAddUser = () => {
+    setIsAddingUser(false);
+  };
+
+  // Save new user
+  const handleSaveNewUser = (newUser: Omit<User, 'id'>) => {
+    // Generate a simple ID (in a real app, this would come from the backend)
+    const id = `${users.length + 1}`;
+    
+    const userToAdd: User = {
+      id,
+      ...newUser
+    };
+    
+    setUsers([...users, userToAdd]);
+    
+    toast({
+      title: "User Created",
+      description: `${newUser.name} has been added successfully.`,
+    });
+    
+    setIsAddingUser(false);
+  };
+
   return (
     <div className="space-y-6">
       <UserManagementHeader />
       
       <UserSearchBar 
         searchQuery={searchQuery} 
-        onSearchChange={handleSearch} 
+        onSearchChange={handleSearch}
+        onAddUser={handleAddUser}
       />
 
       <Card>
@@ -93,6 +126,7 @@ const AdminUserManagement: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Edit User Dialog */}
       <Dialog open={!!editingUser} onOpenChange={(open) => {
         if (!open) setEditingUser(null);
       }}>
@@ -101,6 +135,16 @@ const AdminUserManagement: React.FC = () => {
           onUserChange={handleUpdateUser}
           onSave={handleSaveUser}
           onCancel={handleCancelEdit}
+        />
+      </Dialog>
+
+      {/* Add User Dialog */}
+      <Dialog open={isAddingUser} onOpenChange={(open) => {
+        if (!open) setIsAddingUser(false);
+      }}>
+        <AddUserDialog 
+          onSave={handleSaveNewUser}
+          onCancel={handleCancelAddUser}
         />
       </Dialog>
     </div>
