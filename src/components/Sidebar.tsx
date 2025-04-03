@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -16,6 +15,7 @@ import {
   PackageIcon,
   Layers,
   LayoutGrid,
+  Activity,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -142,13 +142,12 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
     {
       name: t('admin.logs'),
       path: '/admin/logs',
-      icon: ScrollText,
+      icon: Activity,
     },
   ];
 
   const menuItems = isAdmin ? adminMenuItems : clientMenuItems;
 
-  // Determine if an item or its child is active
   const isItemActive = (item: SidebarItem): boolean => {
     if (location.pathname === item.path) return true;
     if (item.children) {
@@ -157,7 +156,6 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
     return false;
   };
 
-  // Check if a parent path matches or contains the current path
   const isParentActive = (path: string): boolean => {
     return location.pathname.startsWith(path) && path !== '/';
   };

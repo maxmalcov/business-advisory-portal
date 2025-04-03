@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useToast } from '@/hooks/use-toast';
 
 // User types
-export type UserType = 'admin' | 'client';
+export type UserType = 'admin' | 'client' | 'manager';
 export type AccountType = 'freelancer' | 'sl' | 'sa' | 'individual';
 
 // User interface
@@ -73,6 +73,15 @@ const MOCK_USERS: (User & { password: string })[] = [
     phone: '+34698765432',
     incomingInvoiceEmail: 'invoices-in@example.com',
     outgoingInvoiceEmail: 'invoices-out@example.com',
+    iframeUrls: ['https://app.example.com/dashboard', 'https://reporting.example.com']
+  },
+  {
+    id: '3',
+    email: 'manager@businessadvisory.com',
+    password: 'manager123',
+    name: 'Manager User',
+    userType: 'manager',
+    phone: '+34687654321',
   }
 ];
 

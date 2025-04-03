@@ -14,6 +14,8 @@ import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminUserManagement from "./pages/AdminUserManagement";
+import AdminLogs from "./pages/AdminLogs";
 import Invoices from "./pages/Invoices";
 import CreateInvoice from "./pages/Invoices/Create";
 import SupplierInvoices from "./pages/SupplierInvoices";
@@ -68,6 +70,7 @@ const App = () => (
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 
+                {/* Client routes */}
                 <Route path="dashboard" element={
                   <ProtectedRoute requiredRole="client">
                     <Dashboard />
@@ -140,6 +143,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 
+                {/* Admin routes */}
                 <Route path="admin" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminDashboard />
@@ -157,12 +161,12 @@ const App = () => (
                 } />
                 <Route path="admin/users" element={
                   <ProtectedRoute requiredRole="admin">
-                    <Dashboard />
+                    <AdminUserManagement />
                   </ProtectedRoute>
                 } />
                 <Route path="admin/logs" element={
                   <ProtectedRoute requiredRole="admin">
-                    <Dashboard />
+                    <AdminLogs />
                   </ProtectedRoute>
                 } />
                 

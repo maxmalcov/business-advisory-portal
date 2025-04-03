@@ -17,9 +17,9 @@ import {
   FileText, 
   Bell, 
   BarChart3, 
-  FileIcon, 
   Settings,
-  Activity
+  Activity,
+  UserCog,
 } from 'lucide-react';
 
 const AdminDashboard: React.FC = () => {
@@ -91,20 +91,20 @@ const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Enhanced Admin Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.quick_actions')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <Link to="/admin/users">
             <Card className="h-full card-hover">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
                   <Users className="mr-2 h-5 w-5" />
-                  Manage Users
+                  User Management
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">View and manage client accounts</p>
+                <p className="text-sm text-muted-foreground">View and manage client accounts, assign emails and IFRAMEs</p>
               </CardContent>
             </Card>
           </Link>
@@ -128,11 +128,39 @@ const AdminDashboard: React.FC = () => {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
                   <Activity className="mr-2 h-5 w-5" />
-                  System Logs
+                  Log History
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">View system activity and audit logs</p>
+                <p className="text-sm text-muted-foreground">View detailed logs of system activity and statistics</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link to="/admin/reports">
+            <Card className="h-full card-hover">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center">
+                  <BarChart3 className="mr-2 h-5 w-5" />
+                  Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Access and generate business reports and analytics</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link to="/profile">
+            <Card className="h-full card-hover">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center">
+                  <UserCog className="mr-2 h-5 w-5" />
+                  My Profile
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Manage your account settings and preferences</p>
               </CardContent>
             </Card>
           </Link>
@@ -187,7 +215,7 @@ const AdminDashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Recent Reports Chart (placeholder) */}
+      {/* Activity Chart (placeholder) */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Monthly Activity</h2>
         <Card>
