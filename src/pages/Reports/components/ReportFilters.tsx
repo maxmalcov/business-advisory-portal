@@ -2,13 +2,13 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { ResetIcon, FilterIcon } from 'lucide-react';
-import { ReportFilters } from '../types';
+import { RepeatIcon, FilterIcon } from 'lucide-react';
+import { type ReportFilters as ReportFiltersType } from '../types';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface ReportFiltersProps {
-  filters: ReportFilters;
-  onFilterChange: (key: keyof ReportFilters, value: string | null) => void;
+  filters: ReportFiltersType;
+  onFilterChange: (key: keyof ReportFiltersType, value: string | null) => void;
   onResetFilters: () => void;
 }
 
@@ -78,7 +78,7 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
         </div>
         
         <Button variant="outline" size="sm" onClick={onResetFilters} className="whitespace-nowrap">
-          <ResetIcon className="h-4 w-4 mr-2" />
+          <RepeatIcon className="h-4 w-4 mr-2" />
           {t('reports.reset_filters')}
         </Button>
       </div>

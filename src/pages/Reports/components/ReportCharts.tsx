@@ -33,12 +33,10 @@ const ReportCharts: React.FC<ReportChartsProps> = ({ typesData, monthlyData, sta
   const STATUS_COLORS = ['#10B981', '#F59E0B', '#6B7280'];
   
   const chartConfig = {
-    types: {
-      financial: { theme: { light: '#9b87f5', dark: '#7E69AB' } },
-      tax: { theme: { light: '#1EAEDB', dark: '#1EAEDB' } },
-      payroll: { theme: { light: '#33C3F0', dark: '#33C3F0' } },
-      custom: { theme: { light: '#aaadb0', dark: '#8E9196' } }
-    }
+    financial: { theme: { light: '#9b87f5', dark: '#7E69AB' } },
+    tax: { theme: { light: '#1EAEDB', dark: '#1EAEDB' } },
+    payroll: { theme: { light: '#33C3F0', dark: '#33C3F0' } },
+    custom: { theme: { light: '#aaadb0', dark: '#8E9196' } }
   };
 
   return (
@@ -105,7 +103,7 @@ const ReportCharts: React.FC<ReportChartsProps> = ({ typesData, monthlyData, sta
                 <XAxis type="number" />
                 <YAxis dataKey="name" type="category" width={100} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="value" nameKey="name">
+                <Bar dataKey="value">
                   {statusData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={STATUS_COLORS[index % STATUS_COLORS.length]} />
                   ))}
