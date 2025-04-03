@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Invoices from "./pages/Invoices";
+import CreateInvoice from "./pages/Invoices/Create";
 import SupplierInvoices from "./pages/SupplierInvoices";
 import NewEmployee from "./pages/NewEmployee";
 import Contracts from "./pages/Contracts";
@@ -78,7 +79,7 @@ const App = () => (
                 } />
                 <Route path="invoices/create" element={
                   <ProtectedRoute requiredRole="client">
-                    <Invoices />
+                    <CreateInvoice />
                   </ProtectedRoute>
                 } />
                 <Route path="supplier-invoices" element={
