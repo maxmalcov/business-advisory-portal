@@ -79,7 +79,9 @@ const AdminUserManagement: React.FC = () => {
 
   // Open add user dialog
   const handleAddUser = () => {
-    setIsAddingUser(true);
+    console.log("handleAddUser called"); // Debug log
+    setIsAddingUser(true); // This should trigger the Dialog to open
+    console.log("isAddingUser set to true"); // Debug log
   };
 
   // Cancel adding user
@@ -146,6 +148,7 @@ const AdminUserManagement: React.FC = () => {
       <Dialog 
         open={isAddingUser} 
         onOpenChange={(open) => {
+          console.log("Dialog onOpenChange:", open); // Debug log
           if (!open) setIsAddingUser(false);
         }}
       >

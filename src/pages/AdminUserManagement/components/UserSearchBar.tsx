@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Plus } from 'lucide-react';
+import { Search, UserPlus } from 'lucide-react';
 
 interface UserSearchBarProps {
   searchQuery: string;
@@ -15,8 +15,6 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
   onSearchChange,
   onAddUser 
 }) => {
-  console.log("UserSearchBar rendering, onAddUser:", !!onAddUser); // Debug log
-  
   return (
     <div className="flex justify-between items-center mb-4">
       <div className="relative w-64">
@@ -30,11 +28,12 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
       </div>
       <Button 
         onClick={() => {
-          console.log("Add User button clicked"); // Debug log
-          onAddUser();
+          console.log("Add User button clicked"); // Keep debug log
+          onAddUser(); // This should set isAddingUser to true in the parent component
         }}
+        variant="default"
       >
-        <Plus className="mr-2 h-4 w-4" />
+        <UserPlus className="mr-2 h-4 w-4" />
         Add New User
       </Button>
     </div>
