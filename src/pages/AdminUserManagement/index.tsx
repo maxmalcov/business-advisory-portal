@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -6,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { 
   Dialog,
   DialogContent,
-  DialogTrigger
 } from '@/components/ui/dialog';
 
 // Import the components
@@ -38,29 +36,24 @@ const AdminUserManagement: React.FC = () => {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
 
-  // Filter users based on search query
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.companyName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Handle search input changes
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  // Handle user edit
   const handleEditUser = (user: User) => {
     setEditingUser({...user});
   };
 
-  // Handle user update
   const handleUpdateUser = (updatedUser: User) => {
     setEditingUser(updatedUser);
   };
 
-  // Save edited user
   const handleSaveUser = () => {
     if (!editingUser) return;
     
@@ -76,25 +69,21 @@ const AdminUserManagement: React.FC = () => {
     setEditingUser(null);
   };
 
-  // Cancel editing
   const handleCancelEdit = () => {
     setEditingUser(null);
   };
 
-  // Open add user dialog
+  // Completely recreated add user handlers
   const handleAddUser = () => {
-    console.log("handleAddUser called");
+    console.log("AdminUserManagement: handleAddUser called");
     setIsAddingUser(true);
-    console.log("isAddingUser set to:", true);
   };
 
-  // Cancel adding user
   const handleCancelAddUser = () => {
-    console.log("handleCancelAddUser called");
+    console.log("AdminUserManagement: handleCancelAddUser called");
     setIsAddingUser(false);
   };
 
-  // Save new user
   const handleSaveNewUser = (newUser: Omit<User, 'id'>) => {
     // Generate a simple ID (in a real app, this would come from the backend)
     const id = `${users.length + 1}`;
@@ -114,7 +103,7 @@ const AdminUserManagement: React.FC = () => {
     setIsAddingUser(false);
   };
 
-  console.log("Rendering with isAddingUser:", isAddingUser);
+  console.log("AdminUserManagement: Rendering with isAddingUser:", isAddingUser);
 
   return (
     <div className="space-y-6">
@@ -149,18 +138,22 @@ const AdminUserManagement: React.FC = () => {
         )}
       </Dialog>
 
-      {/* Add User Dialog - Fixed implementation */}
+      {/* Fixed Add User Dialog - completely recreated */}
       <Dialog 
         open={isAddingUser} 
         onOpenChange={(open) => {
-          console.log("Dialog onOpenChange:", open);
+          console.log("Add User Dialog onOpenChange:", open);
           setIsAddingUser(open);
         }}
       >
-        <AddUserDialog 
-          onSave={handleSaveNewUser}
-          onCancel={handleCancelAddUser}
-        />
+        <DialogContent>
+          {isAddingUser && (
+            <AddUserDialog 
+              onSave={handleSaveNewUser}
+              onCancel={handleCancelAddUser}
+            />
+          )}
+        </DialogContent>
       </Dialog>
     </div>
   );
