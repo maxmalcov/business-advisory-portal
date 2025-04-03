@@ -22,6 +22,7 @@ import Contracts from "./pages/Contracts";
 import Documents from "./pages/Documents";
 import Reports from "./pages/Reports";
 import Services from "./pages/Services";
+import AdminServices from "./pages/AdminServices";
 import Subscriptions from "./pages/Subscriptions";
 import Profile from "./pages/Profile";
 import HR from "./pages/HR";
@@ -151,7 +152,7 @@ const App = () => (
                 } />
                 <Route path="admin/services" element={
                   <ProtectedRoute requiredRole="admin">
-                    <Services />
+                    <AdminServices />
                   </ProtectedRoute>
                 } />
                 <Route path="admin/users" element={
