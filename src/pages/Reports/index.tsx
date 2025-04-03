@@ -8,7 +8,7 @@ import ReportsTable from './components/ReportsTable';
 import { useReports } from './hooks/useReports';
 import { reportsTypesData, monthlyReportsData, reportStatusData } from './mockData';
 import { Button } from '@/components/ui/button';
-import { ChartPieIcon, FileTextIcon, DownloadIcon, PlusIcon } from 'lucide-react';
+import { DownloadIcon, PlusIcon, RefreshCw, ChartPieIcon, FileTextIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Reports: React.FC = () => {
@@ -31,18 +31,18 @@ const Reports: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-full">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6 max-w-full bg-gray-50 dark:bg-gray-900/30 p-1 sm:p-3 -mx-2 -mt-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-2">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t('nav.reports')}</h1>
           <p className="text-muted-foreground">{t('reports.subtitle')}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={handleExportAll}>
+          <Button variant="outline" size="sm" onClick={handleExportAll}>
             <DownloadIcon className="mr-2 h-4 w-4" />
             {t('reports.export_all')}
           </Button>
-          <Button onClick={handleGenerateReport}>
+          <Button size="sm" onClick={handleGenerateReport}>
             <PlusIcon className="mr-2 h-4 w-4" />
             {t('reports.generate')}
           </Button>
@@ -50,13 +50,10 @@ const Reports: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <div className="flex flex-col space-y-0.5">
-              <CardTitle className="text-lg">{t('reports.total_reports')}</CardTitle>
-              <CardDescription>{t('reports.accessible_reports')}</CardDescription>
-            </div>
-            <ChartPieIcon className="h-5 w-5 text-muted-foreground" />
+        <Card className="overflow-hidden">
+          <CardHeader className="py-4 pb-0">
+            <CardTitle className="text-sm text-muted-foreground">{t('reports.total_reports')}</CardTitle>
+            <CardDescription>{t('reports.accessible_reports')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">48</div>
@@ -66,13 +63,10 @@ const Reports: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <div className="flex flex-col space-y-0.5">
-              <CardTitle className="text-lg">{t('reports.completed_reports')}</CardTitle>
-              <CardDescription>{t('reports.processed_reports')}</CardDescription>
-            </div>
-            <FileTextIcon className="h-5 w-5 text-muted-foreground" />
+        <Card className="overflow-hidden">
+          <CardHeader className="py-4 pb-0">
+            <CardTitle className="text-sm text-muted-foreground">{t('reports.completed_reports')}</CardTitle>
+            <CardDescription>{t('reports.processed_reports')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">28</div>
@@ -90,7 +84,7 @@ const Reports: React.FC = () => {
       />
 
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">{t('reports.available_reports')}</h2>
+        <h2 className="text-sm font-medium text-muted-foreground px-2">{t('reports.available_reports')}</h2>
         <ReportFilters 
           filters={filters}
           onFilterChange={handleFilterChange}

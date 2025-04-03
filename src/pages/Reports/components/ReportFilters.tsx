@@ -26,19 +26,19 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
 
   return (
     <div className="bg-card rounded-lg p-4 shadow">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h3 className="font-medium text-sm flex items-center">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center">
           <FilterIcon className="h-4 w-4 mr-2" />
-          {t('reports.filter')}
-        </h3>
+          <span className="text-sm font-medium">{t('reports.filter')}</span>
+        </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full md:w-auto">
           <Select 
             value={filters.type || "all"} 
             onValueChange={(value) => handleFilterChange('type', value)}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={t('reports.type')} />
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
@@ -53,8 +53,8 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
             value={filters.status || "all"} 
             onValueChange={(value) => handleFilterChange('status', value)}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={t('reports.status')} />
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
@@ -68,8 +68,8 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
             value={filters.period || "all"} 
             onValueChange={(value) => handleFilterChange('period', value)}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={t('reports.period')} />
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="All Periods" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Periods</SelectItem>
@@ -82,8 +82,13 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
           </Select>
         </div>
         
-        <Button variant="outline" size="sm" onClick={onResetFilters} className="whitespace-nowrap">
-          <RepeatIcon className="h-4 w-4 mr-2" />
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={onResetFilters} 
+          className="flex items-center gap-1 text-xs"
+        >
+          <RepeatIcon className="h-3.5 w-3.5" />
           {t('reports.reset_filters')}
         </Button>
       </div>

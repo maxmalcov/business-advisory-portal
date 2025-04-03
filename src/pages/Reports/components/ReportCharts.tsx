@@ -29,96 +29,97 @@ interface ReportChartsProps {
 
 const ReportCharts: React.FC<ReportChartsProps> = ({ typesData, monthlyData, statusData }) => {
   const { t } = useLanguage();
-  const COLORS = ['#9b87f5', '#7E69AB', '#1EAEDB', '#33C3F0'];
-  const STATUS_COLORS = ['#10B981', '#F59E0B', '#6B7280'];
+  
+  // Colors that match the design in the image
+  const COLORS = ['#9b87f5', '#7E69AB', '#78C6D0', '#33C3F0'];
+  const STATUS_COLORS = ['#42B883', '#F59E0B', '#6B7280'];
   
   const chartConfig = {
-    financial: { theme: { light: '#9b87f5', dark: '#7E69AB' } },
-    tax: { theme: { light: '#1EAEDB', dark: '#1EAEDB' } },
-    payroll: { theme: { light: '#33C3F0', dark: '#33C3F0' } },
-    custom: { theme: { light: '#aaadb0', dark: '#8E9196' } }
+    financial: { color: '#9b87f5' },
+    tax: { color: '#7E69AB' },
+    payroll: { color: '#78C6D0' },
+    custom: { color: '#33C3F0' }
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Monthly Reports Chart */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{t('reports.charts.monthly')}</CardTitle>
+        <CardHeader className="py-4">
+          <CardTitle className="text-sm text-muted-foreground">{t('reports.charts.monthly')}</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px] pt-4">
-          <ChartContainer config={chartConfig}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis width={30} tick={{ fontSize: 12 }} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="value" fill="#9b87f5" name="Reports" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+        <CardContent className="h-[220px] pt-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={monthlyData} margin={{ top: 5, right: 5, left: 0, bottom: 20 }}>
+              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+              <YAxis width={25} tick={{ fontSize: 11 }} />
+              <Tooltip />
+              <Bar dataKey="value" fill="#9b87f5" name="Reports" />
+            </BarChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
       
       {/* Reports by Type Chart */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{t('reports.charts.by_type')}</CardTitle>
+        <CardHeader className="py-4">
+          <CardTitle className="text-sm text-muted-foreground">{t('reports.charts.by_type')}</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px] pt-4">
-          <ChartContainer config={chartConfig}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-                <Pie
-                  data={typesData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {typesData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
-              </PieChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+        <CardContent className="h-[220px] pt-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+              <Pie
+                data={typesData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {typesData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex justify-center gap-4 mt-2">
+            {typesData.map((entry, index) => (
+              <div key={`legend-${index}`} className="flex items-center gap-1 text-xs">
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: COLORS[index % COLORS.length] }} 
+                />
+                <span>{entry.name}</span>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
       
       {/* Reports by Status Chart */}
       <Card className="md:col-span-2">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">{t('reports.charts.by_status')}</CardTitle>
+        <CardHeader className="py-4">
+          <CardTitle className="text-sm text-muted-foreground">{t('reports.charts.by_status')}</CardTitle>
         </CardHeader>
-        <CardContent className="h-[250px] pt-4">
-          <ChartContainer config={chartConfig}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart 
-                data={statusData} 
-                layout="vertical" 
-                margin={{ top: 10, right: 30, left: 70, bottom: 10 }}
-              >
-                <XAxis type="number" />
-                <YAxis 
-                  dataKey="name" 
-                  type="category" 
-                  tick={{ fontSize: 12 }} 
-                  width={70} 
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="value">
-                  {statusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={STATUS_COLORS[index % STATUS_COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+        <CardContent className="h-[180px] pt-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart 
+              data={statusData} 
+              layout="horizontal"
+              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+            >
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="value">
+                {statusData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={STATUS_COLORS[index % STATUS_COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>
