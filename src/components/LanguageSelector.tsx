@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLanguage } from '@/context/language';
+import { Language, useLanguage } from '@/context/LanguageContext';
 import {
   Select,
   SelectContent,
@@ -13,7 +13,7 @@ const LanguageSelector: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   
   const handleLanguageChange = (value: string) => {
-    setLanguage(value as 'en' | 'es' | 'ru');
+    setLanguage(value as Language);
   };
 
   return (

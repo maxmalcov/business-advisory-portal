@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { useLanguage } from '@/context/language';
+import { useLanguage } from '@/context/LanguageContext';
 import { 
   Card, 
   CardContent, 

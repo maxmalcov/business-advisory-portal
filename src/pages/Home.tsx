@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useLanguage } from '@/context/language';
+import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Globe, Users, Shield, FileText, BarChart3 } from 'lucide-react';
 

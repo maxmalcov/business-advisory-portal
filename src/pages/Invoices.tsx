@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLanguage } from '@/context/language';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   Card,
   CardContent,
