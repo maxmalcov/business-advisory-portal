@@ -4,17 +4,21 @@ import { useLanguage } from '@/context/LanguageContext';
 import { CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { ExportButton } from './index';
+import { EmployeeRecord } from './WorkHoursTable';
 
 interface WorkHoursHeaderProps {
   isAddingNew: boolean;
   setIsAddingNew: (value: boolean) => void;
   submitToHR: () => void;
+  employeeData: EmployeeRecord[];
 }
 
 const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
   isAddingNew,
   setIsAddingNew,
-  submitToHR
+  submitToHR,
+  employeeData
 }) => {
   const { t } = useLanguage();
 
@@ -28,6 +32,7 @@ const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
         <Button onClick={() => setIsAddingNew(!isAddingNew)}>
           {isAddingNew ? 'Cancel' : <><Plus size={16} /> Add Record</>}
         </Button>
+        <ExportButton data={employeeData} />
         <Button onClick={submitToHR} variant="outline">
           Send to HR
         </Button>

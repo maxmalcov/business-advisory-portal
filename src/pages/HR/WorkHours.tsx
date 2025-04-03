@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -167,6 +166,7 @@ const WorkHours: React.FC = () => {
             isAddingNew={isAddingNew} 
             setIsAddingNew={setIsAddingNew} 
             submitToHR={submitToHR}
+            employeeData={filteredData}
           />
         </CardHeader>
         <CardContent>
