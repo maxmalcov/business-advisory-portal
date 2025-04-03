@@ -40,7 +40,7 @@ const Header: React.FC = () => {
                 <Button variant="ghost">{t('app.login')}</Button>
               </Link>
               <Link to="/register">
-                <Button variant="default">{t('app.register')}</Button>
+                <Button variant="register">{t('app.register')}</Button>
               </Link>
             </div>
           )}

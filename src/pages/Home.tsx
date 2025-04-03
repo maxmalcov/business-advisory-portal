@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -28,7 +27,7 @@ const Home: React.FC = () => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
+                  <Button size="lg" variant="register" className="border-white hover:bg-white/10">
                     {t('app.register')}
                   </Button>
                 </Link>
@@ -93,7 +92,7 @@ const Home: React.FC = () => {
           <h2 className="text-3xl font-bold mb-4">Ready to get started?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">Join Business Advisory today and streamline your business administration.</p>
           <Link to="/register">
-            <Button size="lg">Create Your Account</Button>
+            <Button size="lg" variant="register">Create Your Account</Button>
           </Link>
         </div>
       </section>
