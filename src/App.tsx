@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,10 +14,14 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Invoices from "./pages/Invoices";
 import NewEmployee from "./pages/NewEmployee";
-
-// Auth guard for protected routes
-import { ReactNode } from "react";
-import { useAuth } from "@/context/AuthContext";
+import Contracts from "./pages/Contracts";
+import Documents from "./pages/Documents";
+import Reports from "./pages/Reports";
+import Services from "./pages/Services";
+import Subscriptions from "./pages/Subscriptions";
+import Profile from "./pages/Profile";
+import Termination from "./pages/HR/Termination";
+import WorkHours from "./pages/HR/WorkHours";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -28,17 +31,14 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { isAuthenticated, user, isLoading } = useAuth();
 
-  // While checking auth state, show nothing
   if (isLoading) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
   }
 
-  // If not authenticated, redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
-  // If role is required and user doesn't have it
   if (requiredRole && user?.userType !== requiredRole) {
     return <Navigate to={user?.userType === 'admin' ? '/admin' : '/dashboard'} />;
   }
@@ -57,13 +57,11 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              {/* Public routes */}
               <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 
-                {/* Client routes */}
                 <Route path="dashboard" element={
                   <ProtectedRoute requiredRole="client">
                     <Dashboard />
@@ -84,20 +82,79 @@ const App = () => (
                     <Invoices />
                   </ProtectedRoute>
                 } />
+                <Route path="contracts" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Contracts />
+                  </ProtectedRoute>
+                } />
+                <Route path="documents" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Documents />
+                  </ProtectedRoute>
+                } />
+                <Route path="reports" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Reports />
+                  </ProtectedRoute>
+                } />
+                <Route path="profile" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+                <Route path="services" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Services />
+                  </ProtectedRoute>
+                } />
+                <Route path="subscriptions" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Subscriptions />
+                  </ProtectedRoute>
+                } />
+                
                 <Route path="hr/new-employee" element={
                   <ProtectedRoute requiredRole="client">
                     <NewEmployee />
                   </ProtectedRoute>
                 } />
+                <Route path="hr/termination" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Termination />
+                  </ProtectedRoute>
+                } />
+                <Route path="hr/work-hours" element={
+                  <ProtectedRoute requiredRole="client">
+                    <WorkHours />
+                  </ProtectedRoute>
+                } />
                 
-                {/* Admin routes */}
                 <Route path="admin" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminDashboard />
                   </ProtectedRoute>
                 } />
+                <Route path="admin/reports" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Reports />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/services" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Services />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/users" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/logs" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
                 
-                {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
