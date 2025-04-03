@@ -19,6 +19,11 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
 }) => {
   const { t } = useLanguage();
 
+  // Handler to convert "all" to null for the filter
+  const handleFilterChange = (key: keyof ReportFiltersType, value: string) => {
+    onFilterChange(key, value === "all" ? null : value);
+  };
+
   return (
     <div className="bg-card rounded-lg p-4 shadow">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -29,14 +34,14 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
         
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
           <Select 
-            value={filters.type || ""} 
-            onValueChange={(value) => onFilterChange('type', value || null)}
+            value={filters.type || "all"} 
+            onValueChange={(value) => handleFilterChange('type', value)}
           >
             <SelectTrigger className="w-full md:w-[140px]">
               <SelectValue placeholder={t('reports.type')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="financial">Financial</SelectItem>
               <SelectItem value="tax">Tax</SelectItem>
               <SelectItem value="payroll">Payroll</SelectItem>
@@ -45,14 +50,14 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
           </Select>
 
           <Select 
-            value={filters.status || ""} 
-            onValueChange={(value) => onFilterChange('status', value || null)}
+            value={filters.status || "all"} 
+            onValueChange={(value) => handleFilterChange('status', value)}
           >
             <SelectTrigger className="w-full md:w-[140px]">
               <SelectValue placeholder={t('reports.status')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Statuses</SelectItem>
+              <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="processing">Processing</SelectItem>
@@ -60,14 +65,14 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
           </Select>
 
           <Select 
-            value={filters.period || ""} 
-            onValueChange={(value) => onFilterChange('period', value || null)}
+            value={filters.period || "all"} 
+            onValueChange={(value) => handleFilterChange('period', value)}
           >
             <SelectTrigger className="w-full md:w-[140px]">
               <SelectValue placeholder={t('reports.period')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Periods</SelectItem>
+              <SelectItem value="all">All Periods</SelectItem>
               <SelectItem value="Q1 2025">Q1 2025</SelectItem>
               <SelectItem value="Q2 2025">Q2 2025</SelectItem>
               <SelectItem value="March 2025">March 2025</SelectItem>
