@@ -29,7 +29,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { 
-  Iframe, 
+  Frame, 
   Calendar, 
   Clock, 
   Users, 
@@ -64,7 +64,7 @@ const Subscriptions: React.FC = () => {
     {
       id: 'iframe1',
       name: 'IFRAME 1',
-      icon: <Iframe className="h-6 w-6" />,
+      icon: <Frame className="h-6 w-6" />,
       description: 'Access your custom dashboard with real-time data',
       status: 'active',
       iframeUrl: iframeUrls[0] || '',
