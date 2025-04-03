@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
@@ -10,6 +10,7 @@ import {
   EmailRecipientInput,
   WorkHoursForm,
   WorkHoursTable,
+  FilterInput,
   EmployeeRecord,
   FormValues
 } from './components';
@@ -52,6 +53,19 @@ const WorkHours: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [emailRecipient, setEmailRecipient] = useState('hr@pba.test');
   const [currentFormValues, setCurrentFormValues] = useState<FormValues | undefined>(undefined);
+  const [filterValue, setFilterValue] = useState('');
+  
+  // Filter the data based on search term
+  const filteredData = useMemo(() => {
+    if (!filterValue.trim()) return employeeData;
+    
+    const searchTerm = filterValue.toLowerCase();
+    return employeeData.filter(
+      employee => 
+        employee.companyName.toLowerCase().includes(searchTerm) || 
+        employee.employeeName.toLowerCase().includes(searchTerm)
+    );
+  }, [employeeData, filterValue]);
   
   // Handle form submission for new records
   const onSubmit = (values: FormValues) => {
@@ -172,9 +186,18 @@ const WorkHours: React.FC = () => {
             />
           )}
           
+          {/* Search and filter */}
+          <div className="my-4">
+            <FilterInput 
+              filterValue={filterValue}
+              setFilterValue={setFilterValue}
+              placeholder="Filter by company or employee name..."
+            />
+          </div>
+          
           {/* Employee Records Table */}
           <WorkHoursTable 
-            employeeData={employeeData} 
+            employeeData={filteredData} 
             onEdit={startEdit} 
             onDelete={deleteRow}
           />

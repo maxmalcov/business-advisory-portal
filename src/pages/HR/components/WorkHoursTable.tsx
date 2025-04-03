@@ -71,7 +71,7 @@ const WorkHoursTable: React.FC<WorkHoursTableProps> = ({
         {employeeData.length === 0 && (
           <TableRow>
             <TableCell colSpan={7} className="text-center py-4 text-muted-foreground">
-              No work hours records found.
+              No records found matching your search criteria.
             </TableCell>
           </TableRow>
         )}
