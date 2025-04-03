@@ -74,10 +74,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         </div>
       </CardContent>
       <CardFooter className="flex flex-col space-y-4 pt-2 border-t">
-        <div className="w-full flex justify-between items-center">
-          <div className="text-lg font-semibold">
-            {price}
-          </div>
+        <div className="w-full flex justify-end items-center">
           <Button 
             variant={popular ? "default" : "outline"}
             disabled={status !== 'available'} 

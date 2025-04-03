@@ -7,7 +7,7 @@ export const initialServices: ServiceItem[] = [
     title: "Payroll Management",
     description: "Complete payroll processing and management services for your business.",
     iconName: "CircleDollarSign",
-    price: "From €150/month",
+    price: "", // Removed price information
     badges: [
       "Monthly payroll processing",
       "Tax calculations & filings",
@@ -22,7 +22,7 @@ export const initialServices: ServiceItem[] = [
     title: "Tax Advisory",
     description: "Professional tax planning and advisory services to minimize your tax burden.",
     iconName: "FileText",
-    price: "From €200/month",
+    price: "", // Removed price information
     badges: [
       "Tax return preparation",
       "Tax planning strategies",
@@ -36,7 +36,7 @@ export const initialServices: ServiceItem[] = [
     title: "HR Management",
     description: "Comprehensive human resources services for employee management.",
     iconName: "Users",
-    price: "From €180/month",
+    price: "", // Removed price information
     badges: [
       "Employee onboarding",
       "Benefits administration",
@@ -50,7 +50,7 @@ export const initialServices: ServiceItem[] = [
     title: "Bookkeeping Plus",
     description: "Enhanced bookkeeping services with detailed financial reporting.",
     iconName: "Package",
-    price: "From €120/month",
+    price: "", // Removed price information
     badges: [
       "Daily transaction recording",
       "Monthly financial reports",
@@ -64,7 +64,7 @@ export const initialServices: ServiceItem[] = [
     title: "Financial Analysis",
     description: "In-depth analysis of your financial data to support business decisions.",
     iconName: "PackagePlus",
-    price: "From €250/month",
+    price: "", // Removed price information
     badges: [
       "Profitability analysis",
       "Investment evaluation",
@@ -78,7 +78,7 @@ export const initialServices: ServiceItem[] = [
     title: "Accounting Software Setup",
     description: "Setup and training for accounting software tailored to your business needs.",
     iconName: "Boxes",
-    price: "From €300 one-time",
+    price: "", // Removed price information
     badges: [
       "Software selection guidance",
       "System configuration",
