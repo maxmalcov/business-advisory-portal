@@ -41,7 +41,6 @@ const translations: Record<Language, Record<string, string>> = {
     'app.delete': 'Delete',
     'app.language': 'Language',
     'app.success': 'Success',
-    'app.error': 'Error',
     'app.warning': 'Warning',
     'app.info': 'Information',
     
@@ -185,7 +184,6 @@ const translations: Record<Language, Record<string, string>> = {
     'app.delete': 'Eliminar',
     'app.language': 'Idioma',
     'app.success': 'Éxito',
-    'app.error': 'Error',
     'app.warning': 'Advertencia',
     'app.info': 'Información',
     
@@ -329,7 +327,6 @@ const translations: Record<Language, Record<string, string>> = {
     'app.delete': 'Удалить',
     'app.language': 'Язык',
     'app.success': 'Успех',
-    'app.error': 'Ошибка',
     'app.warning': 'Предупреждение',
     'app.info': 'Информация',
     
