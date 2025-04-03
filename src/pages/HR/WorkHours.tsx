@@ -4,90 +4,163 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { toast } from '@/hooks/use-toast';
+import { Edit, Save, Plus, Trash2, Calendar as CalendarIcon } from 'lucide-react';
 
 // Sample employee data
-const employees = [
-  { id: '1', name: 'John Doe', position: 'Software Developer' },
-  { id: '2', name: 'Jane Smith', position: 'HR Manager' },
-  { id: '3', name: 'Michael Johnson', position: 'Accountant' },
-  { id: '4', name: 'Sarah Williams', position: 'Marketing Specialist' },
+const initialEmployeeData = [
+  { 
+    id: '1', 
+    companyName: 'Tech Solutions Inc', 
+    employeeName: 'John Doe', 
+    grossSalary: 5000, 
+    notes: 'Regular hours',
+    absenceDays: 0,
+    medicalLeaveDate: null
+  },
+  { 
+    id: '2', 
+    companyName: 'Marketing Pro', 
+    employeeName: 'Jane Smith', 
+    grossSalary: 4500, 
+    notes: 'Half day on Friday',
+    absenceDays: 1,
+    medicalLeaveDate: '2025-04-02'
+  },
+  { 
+    id: '3', 
+    companyName: 'Data Analytics Ltd', 
+    employeeName: 'Michael Johnson', 
+    grossSalary: 6000, 
+    notes: 'Overtime approved',
+    absenceDays: 0,
+    medicalLeaveDate: null
+  },
 ];
 
-// Sample work hours data
-const initialWorkHours = [
-  { id: '1', employeeId: '1', employeeName: 'John Doe', date: '2025-04-01', hoursWorked: 8, overtime: 0, notes: 'Regular day' },
-  { id: '2', employeeId: '2', date: '2025-04-01', employeeName: 'Jane Smith', hoursWorked: 7.5, overtime: 1, notes: 'Project meeting ran late' },
-  { id: '3', employeeId: '1', date: '2025-04-02', employeeName: 'John Doe', hoursWorked: 8, overtime: 2, notes: 'Urgent fix required' },
-];
-
-// Form schema
+// Form schema for adding/editing records
 const formSchema = z.object({
-  employeeId: z.string({
-    required_error: "Please select an employee",
-  }),
-  date: z.date({
-    required_error: "Please select a date",
-  }),
-  hoursWorked: z.coerce.number()
-    .min(0, "Hours must be 0 or more")
-    .max(24, "Hours cannot exceed 24"),
-  overtime: z.coerce.number()
-    .min(0, "Overtime must be 0 or more")
-    .max(12, "Overtime cannot exceed 12"),
+  companyName: z.string().min(1, "Company name is required"),
+  employeeName: z.string().min(1, "Employee name is required"),
+  grossSalary: z.coerce.number().positive("Salary must be positive"),
   notes: z.string().optional(),
+  absenceDays: z.coerce.number().min(0, "Absence days cannot be negative").optional(),
+  medicalLeaveDate: z.date().nullable().optional(),
 });
+
+type FormValues = z.infer<typeof formSchema>;
 
 const WorkHours: React.FC = () => {
   const { t } = useLanguage();
-  const [workHoursData, setWorkHoursData] = useState(initialWorkHours);
+  const [employeeData, setEmployeeData] = useState(initialEmployeeData);
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [emailRecipient, setEmailRecipient] = useState('hr@pba.test');
   
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      employeeId: "",
-      date: new Date(),
-      hoursWorked: 8,
-      overtime: 0,
+      companyName: "",
+      employeeName: "",
+      grossSalary: 0,
       notes: "",
+      absenceDays: 0,
+      medicalLeaveDate: null,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const selectedEmployee = employees.find(emp => emp.id === values.employeeId);
-    
+  // Handle form submission for new records
+  const onSubmit = (values: FormValues) => {
     const newEntry = {
-      id: (workHoursData.length + 1).toString(),
-      employeeId: values.employeeId,
-      employeeName: selectedEmployee?.name || "Unknown",
-      date: format(values.date, 'yyyy-MM-dd'),
-      hoursWorked: values.hoursWorked,
-      overtime: values.overtime,
+      id: (employeeData.length + 1).toString(),
+      companyName: values.companyName,
+      employeeName: values.employeeName,
+      grossSalary: values.grossSalary,
       notes: values.notes || "",
+      absenceDays: values.absenceDays || 0,
+      medicalLeaveDate: values.medicalLeaveDate ? format(values.medicalLeaveDate, 'yyyy-MM-dd') : null,
     };
     
-    setWorkHoursData([...workHoursData, newEntry]);
+    setEmployeeData([...employeeData, newEntry]);
     setIsAddingNew(false);
     form.reset();
     
     toast({
-      title: "Hours recorded",
-      description: `Work hours for ${selectedEmployee?.name} have been recorded successfully.`,
+      title: "Record added",
+      description: `Work hours for ${values.employeeName} have been recorded.`,
     });
   };
-  
+
+  // Start editing a row
+  const startEdit = (employee: any) => {
+    setEditingId(employee.id);
+    form.reset({
+      companyName: employee.companyName,
+      employeeName: employee.employeeName,
+      grossSalary: employee.grossSalary,
+      notes: employee.notes,
+      absenceDays: employee.absenceDays,
+      medicalLeaveDate: employee.medicalLeaveDate ? new Date(employee.medicalLeaveDate) : null,
+    });
+  };
+
+  // Save edited row
+  const saveEdit = () => {
+    if (!editingId) return;
+    
+    const values = form.getValues();
+    const updatedData = employeeData.map(emp => 
+      emp.id === editingId 
+        ? {
+            ...emp,
+            companyName: values.companyName,
+            employeeName: values.employeeName,
+            grossSalary: values.grossSalary,
+            notes: values.notes || "",
+            absenceDays: values.absenceDays || 0,
+            medicalLeaveDate: values.medicalLeaveDate ? format(values.medicalLeaveDate, 'yyyy-MM-dd') : null,
+          }
+        : emp
+    );
+    
+    setEmployeeData(updatedData);
+    setEditingId(null);
+    form.reset();
+    
+    toast({
+      title: "Record updated",
+      description: "Work hours record has been updated successfully.",
+    });
+  };
+
+  // Delete a row
+  const deleteRow = (id: string) => {
+    setEmployeeData(employeeData.filter(emp => emp.id !== id));
+    
+    toast({
+      title: "Record deleted",
+      description: "Work hours record has been deleted.",
+    });
+  };
+
+  // Submit data to HR email
+  const submitToHR = () => {
+    // In a real application, this would send data to a backend service
+    // For now we'll just simulate the email being sent
+    toast({
+      title: "Data submitted",
+      description: `Work hours data sent to ${emailRecipient}`,
+    });
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">{t('nav.hr.work_hours')}</h1>
@@ -99,198 +172,193 @@ const WorkHours: React.FC = () => {
               <CardTitle>{t('hr.work_hours.title')}</CardTitle>
               <CardDescription>{t('hr.work_hours.description')}</CardDescription>
             </div>
-            <Button onClick={() => setIsAddingNew(!isAddingNew)}>
-              {isAddingNew ? 'Cancel' : 'Add Work Hours'}
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => setIsAddingNew(!isAddingNew)}>
+                {isAddingNew ? 'Cancel' : <><Plus size={16} /> Add Record</>}
+              </Button>
+              <Button onClick={submitToHR} variant="outline">
+                Send to HR
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
-          {isAddingNew ? (
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="employeeId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Employee</FormLabel>
-                        <Select 
-                          onValueChange={field.onChange} 
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select employee" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {employees.map((employee) => (
-                              <SelectItem key={employee.id} value={employee.id}>
-                                {employee.name} - {employee.position}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
+          {/* HR Email Recipient Configuration */}
+          <div className="mb-6">
+            <Label htmlFor="hr-email">HR Email Recipient</Label>
+            <div className="flex gap-2 mt-1">
+              <Input 
+                id="hr-email" 
+                value={emailRecipient} 
+                onChange={(e) => setEmailRecipient(e.target.value)}
+                placeholder="Email address for HR submissions"
+                className="max-w-md"
+              />
+            </div>
+          </div>
+          
+          {/* Add/Edit Form */}
+          {(isAddingNew || editingId) && (
+            <div className="mb-6 p-4 border rounded-md shadow-sm">
+              <h3 className="text-lg font-medium mb-4">
+                {editingId ? 'Edit Record' : 'Add New Record'}
+              </h3>
+              <form onSubmit={form.handleSubmit(editingId ? saveEdit : onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="companyName">Company Name</Label>
+                    <Input 
+                      id="companyName"
+                      {...form.register("companyName")}
+                      error={form.formState.errors.companyName?.message}
+                    />
+                    {form.formState.errors.companyName && (
+                      <p className="text-sm text-red-500 mt-1">{form.formState.errors.companyName.message}</p>
                     )}
-                  />
+                  </div>
                   
-                  <FormField
-                    control={form.control}
-                    name="date"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={`w-full pl-3 text-left font-normal ${
-                                  !field.value && "text-muted-foreground"
-                                }`}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={(date) => {
-                                field.onChange(date);
-                                setSelectedDate(date);
-                              }}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
+                  <div>
+                    <Label htmlFor="employeeName">Employee Name</Label>
+                    <Input 
+                      id="employeeName"
+                      {...form.register("employeeName")}
+                      error={form.formState.errors.employeeName?.message}
+                    />
+                    {form.formState.errors.employeeName && (
+                      <p className="text-sm text-red-500 mt-1">{form.formState.errors.employeeName.message}</p>
                     )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="hoursWorked"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Hours Worked</FormLabel>
-                        <FormControl>
-                          <Input type="number" step="0.5" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="grossSalary">Gross Salary/Month</Label>
+                    <Input 
+                      id="grossSalary"
+                      type="number"
+                      {...form.register("grossSalary", {valueAsNumber: true})}
+                      error={form.formState.errors.grossSalary?.message}
+                    />
+                    {form.formState.errors.grossSalary && (
+                      <p className="text-sm text-red-500 mt-1">{form.formState.errors.grossSalary.message}</p>
                     )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="overtime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Overtime Hours</FormLabel>
-                        <FormControl>
-                          <Input type="number" step="0.5" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="absenceDays">Absence Days (Optional)</Label>
+                    <Input 
+                      id="absenceDays"
+                      type="number"
+                      {...form.register("absenceDays", {valueAsNumber: true})}
+                      error={form.formState.errors.absenceDays?.message}
+                    />
+                    {form.formState.errors.absenceDays && (
+                      <p className="text-sm text-red-500 mt-1">{form.formState.errors.absenceDays.message}</p>
                     )}
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="medicalLeaveDate">Medical Leave Date (Optional)</Label>
+                    <div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start text-left font-normal"
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {form.watch("medicalLeaveDate") ? format(form.watch("medicalLeaveDate"), "PPP") : "Pick a date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={form.watch("medicalLeaveDate")}
+                            onSelect={(date) => form.setValue("medicalLeaveDate", date)}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="notes">Notes</Label>
+                  <Input 
+                    id="notes"
+                    {...form.register("notes")}
                   />
                 </div>
-
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Notes</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button type="submit">Submit Work Hours</Button>
-              </form>
-            </Form>
-          ) : (
-            <div>
-              <div className="mb-4">
-                <Label htmlFor="filter-date">Filter by date</Label>
-                <div className="flex gap-2 mt-1">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-[240px] justify-start">
-                        {selectedDate ? format(selectedDate, "PPP") : "Select date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setSelectedDate(undefined)}
-                  >
-                    Clear
+                
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => {
+                    setIsAddingNew(false);
+                    setEditingId(null);
+                    form.reset();
+                  }}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">
+                    {editingId ? 'Save Changes' : 'Add Record'}
                   </Button>
                 </div>
-              </div>
-              
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Hours</TableHead>
-                    <TableHead>Overtime</TableHead>
-                    <TableHead>Total</TableHead>
-                    <TableHead>Notes</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {workHoursData
-                    .filter(entry => 
-                      !selectedDate || entry.date === format(selectedDate, 'yyyy-MM-dd')
-                    )
-                    .map((entry) => (
-                      <TableRow key={entry.id}>
-                        <TableCell>{entry.employeeName}</TableCell>
-                        <TableCell>{entry.date}</TableCell>
-                        <TableCell>{entry.hoursWorked}</TableCell>
-                        <TableCell>{entry.overtime}</TableCell>
-                        <TableCell>{entry.hoursWorked + entry.overtime}</TableCell>
-                        <TableCell>{entry.notes}</TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-              
-              {workHoursData
-                .filter(entry => 
-                  !selectedDate || entry.date === format(selectedDate, 'yyyy-MM-dd')
-                ).length === 0 && (
-                <p className="text-center py-4 text-muted-foreground">
-                  No work hours found for the selected date.
-                </p>
-              )}
+              </form>
             </div>
           )}
+          
+          {/* Employee Records Table */}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Company</TableHead>
+                <TableHead>Employee</TableHead>
+                <TableHead>Gross Salary</TableHead>
+                <TableHead>Absence Days</TableHead>
+                <TableHead>Medical Leave</TableHead>
+                <TableHead>Notes</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {employeeData.map((employee) => (
+                <TableRow key={employee.id}>
+                  <TableCell>{employee.companyName}</TableCell>
+                  <TableCell>{employee.employeeName}</TableCell>
+                  <TableCell>${employee.grossSalary}</TableCell>
+                  <TableCell>{employee.absenceDays}</TableCell>
+                  <TableCell>{employee.medicalLeaveDate || 'N/A'}</TableCell>
+                  <TableCell>{employee.notes}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => startEdit(employee)}
+                      >
+                        <Edit size={16} />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => deleteRow(employee.id)}
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+              
+              {employeeData.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-4 text-muted-foreground">
+                    No work hours records found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
