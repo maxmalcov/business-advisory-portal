@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -56,10 +55,8 @@ const Subscriptions: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
   
-  // Get user's iframe URLs from their profile
   const iframeUrls = user?.iframeUrls || [];
   
-  // Mock subscription tools (would be fetched from backend in production)
   const subscriptionTools: SubscriptionTool[] = [
     {
       id: 'iframe1',
@@ -105,7 +102,6 @@ const Subscriptions: React.FC = () => {
   const handleRequestAccess = () => {
     setIsRequestDialogOpen(false);
     
-    // In production, this would send an API request to notify the admin
     toast({
       title: "Access Requested",
       description: `Your request for ${selectedTool?.name} has been sent to the administrator.`,
@@ -164,9 +160,8 @@ const Subscriptions: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Slide-in panel for displaying tool content */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-md md:max-w-lg lg:max-w-2xl overflow-y-auto">
+        <SheetContent side="right" className="w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl overflow-y-auto">
           <SheetHeader className="mb-4">
             <SheetTitle className="flex items-center">
               {selectedTool?.icon && <div className="mr-2">{selectedTool.icon}</div>}
@@ -224,7 +219,6 @@ const Subscriptions: React.FC = () => {
         </SheetContent>
       </Sheet>
 
-      {/* Request Access Dialog */}
       <AlertDialog open={isRequestDialogOpen} onOpenChange={setIsRequestDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
