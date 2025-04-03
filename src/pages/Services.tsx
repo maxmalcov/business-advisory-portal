@@ -118,12 +118,24 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   );
 };
 
+// Define a service item type for the state
+interface ServiceItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  price: string;
+  badges?: string[];
+  popular?: boolean;
+  status: ServiceStatus;
+}
+
 const Services: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [services, setServices] = useState<Array<ServiceCardProps & { status: ServiceStatus }>>([
+  const [services, setServices] = useState<ServiceItem[]>([
     {
       id: "service1",
       title: "Payroll Management",
@@ -255,9 +267,9 @@ const Services: React.FC = () => {
 
       {/* Services grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredServices.map((service, index) => (
+        {filteredServices.map((service) => (
           <ServiceCard 
-            key={index}
+            key={service.id}
             id={service.id}
             title={service.title}
             description={service.description}
