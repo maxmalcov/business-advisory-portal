@@ -130,12 +130,14 @@ const AdminUserManagement: React.FC = () => {
       <Dialog open={!!editingUser} onOpenChange={(open) => {
         if (!open) setEditingUser(null);
       }}>
-        <UserEditDialog
-          user={editingUser}
-          onUserChange={handleUpdateUser}
-          onSave={handleSaveUser}
-          onCancel={handleCancelEdit}
-        />
+        {editingUser && (
+          <UserEditDialog
+            user={editingUser}
+            onUserChange={handleUpdateUser}
+            onSave={handleSaveUser}
+            onCancel={handleCancelEdit}
+          />
+        )}
       </Dialog>
 
       {/* Add User Dialog */}
