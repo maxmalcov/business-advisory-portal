@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUserManagement from "./pages/AdminUserManagement";
 import AdminLogs from "./pages/AdminLogs";
+import AdminSubscriptions from "./pages/AdminSubscriptions";
 import Invoices from "./pages/Invoices";
 import CreateInvoice from "./pages/Invoices/Create";
 import SupplierInvoices from "./pages/SupplierInvoices";
@@ -167,6 +168,11 @@ const App = () => (
                 <Route path="admin/logs" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminLogs />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/subscriptions" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminSubscriptions />
                   </ProtectedRoute>
                 } />
                 

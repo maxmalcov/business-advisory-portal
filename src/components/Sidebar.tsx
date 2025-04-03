@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -133,6 +134,11 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
       name: t('nav.services'),
       path: '/admin/services',
       icon: PackageIcon,
+    },
+    {
+      name: t('nav.subscriptions'),
+      path: '/admin/subscriptions',
+      icon: Layers,
     },
     {
       name: t('nav.users'),

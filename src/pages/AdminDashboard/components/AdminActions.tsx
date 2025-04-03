@@ -14,6 +14,7 @@ import {
   Activity,
   BarChart3,
   UserCog,
+  PackageIcon,
 } from 'lucide-react';
 
 const AdminActions: React.FC = () => {
@@ -47,6 +48,20 @@ const AdminActions: React.FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">Configure available services and subscriptions</p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link to="/admin/subscriptions">
+          <Card className="h-full card-hover">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center">
+                <PackageIcon className="mr-2 h-5 w-5" />
+                Subscription Management
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">Manage user subscriptions, approve or reject requests</p>
             </CardContent>
           </Card>
         </Link>

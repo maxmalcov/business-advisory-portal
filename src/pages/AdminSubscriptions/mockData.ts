@@ -1,0 +1,49 @@
+
+import { Subscription } from './types';
+
+export const initialSubscriptions: Subscription[] = [
+  {
+    id: 'sub1',
+    name: 'IFRAME 1',
+    type: 'iframe',
+    userName: 'John Doe',
+    userId: 'user1',
+    status: 'active',
+    url: 'https://example.com/iframe1',
+    demoVideoUrl: 'https://pbaholding-my.sharepoint.com/...',
+    createdAt: '2023-04-01T10:30:00Z',
+  },
+  {
+    id: 'sub2',
+    name: 'IFRAME 2',
+    type: 'iframe',
+    userName: 'Jane Smith',
+    userId: 'user2',
+    status: 'pending',
+    url: 'https://example.com/iframe2',
+    demoVideoUrl: 'https://pbaholding-my.sharepoint.com/...',
+    createdAt: '2023-04-02T14:15:00Z',
+  },
+  {
+    id: 'sub3',
+    name: 'CRM',
+    type: 'crm',
+    userName: 'Mike Johnson',
+    userId: 'user3',
+    status: 'rejected',
+    url: 'https://example.com/crm',
+    demoVideoUrl: 'https://start.exactonline.es/...',
+    createdAt: '2023-04-03T09:45:00Z',
+  },
+  {
+    id: 'sub4',
+    name: 'Time Tracking',
+    type: 'timetracking',
+    userName: 'Sarah Williams',
+    userId: 'user4',
+    status: 'inactive',
+    url: 'https://example.com/timetracking',
+    demoVideoUrl: 'https://www.youtube.com/embed/MuNyfqxAO6Y',
+    createdAt: '2023-04-04T16:20:00Z',
+  }
+];
