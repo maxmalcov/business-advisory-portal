@@ -210,7 +210,6 @@ const WorkHours: React.FC = () => {
                     <Input 
                       id="companyName"
                       {...form.register("companyName")}
-                      error={form.formState.errors.companyName?.message}
                     />
                     {form.formState.errors.companyName && (
                       <p className="text-sm text-red-500 mt-1">{form.formState.errors.companyName.message}</p>
@@ -222,7 +221,6 @@ const WorkHours: React.FC = () => {
                     <Input 
                       id="employeeName"
                       {...form.register("employeeName")}
-                      error={form.formState.errors.employeeName?.message}
                     />
                     {form.formState.errors.employeeName && (
                       <p className="text-sm text-red-500 mt-1">{form.formState.errors.employeeName.message}</p>
@@ -235,7 +233,6 @@ const WorkHours: React.FC = () => {
                       id="grossSalary"
                       type="number"
                       {...form.register("grossSalary", {valueAsNumber: true})}
-                      error={form.formState.errors.grossSalary?.message}
                     />
                     {form.formState.errors.grossSalary && (
                       <p className="text-sm text-red-500 mt-1">{form.formState.errors.grossSalary.message}</p>
@@ -250,7 +247,6 @@ const WorkHours: React.FC = () => {
                       id="absenceDays"
                       type="number"
                       {...form.register("absenceDays", {valueAsNumber: true})}
-                      error={form.formState.errors.absenceDays?.message}
                     />
                     {form.formState.errors.absenceDays && (
                       <p className="text-sm text-red-500 mt-1">{form.formState.errors.absenceDays.message}</p>
