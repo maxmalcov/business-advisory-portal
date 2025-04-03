@@ -7,14 +7,16 @@ import { Search, Plus } from 'lucide-react';
 interface UserSearchBarProps {
   searchQuery: string;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onAddUser: () => void;
+  onAddUser: () => void; // Function to handle adding a new user
 }
 
 const UserSearchBar: React.FC<UserSearchBarProps> = ({ 
   searchQuery, 
   onSearchChange,
-  onAddUser
+  onAddUser 
 }) => {
+  console.log("UserSearchBar rendering, onAddUser:", !!onAddUser); // Debug log
+  
   return (
     <div className="flex justify-between items-center mb-4">
       <div className="relative w-64">
@@ -26,7 +28,12 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
           onChange={onSearchChange}
         />
       </div>
-      <Button onClick={onAddUser}>
+      <Button 
+        onClick={() => {
+          console.log("Add User button clicked"); // Debug log
+          onAddUser();
+        }}
+      >
         <Plus className="mr-2 h-4 w-4" />
         Add New User
       </Button>

@@ -107,6 +107,8 @@ const AdminUserManagement: React.FC = () => {
     setIsAddingUser(false);
   };
 
+  console.log("isAddingUser state:", isAddingUser); // Debug log
+
   return (
     <div className="space-y-6">
       <UserManagementHeader />
@@ -141,9 +143,12 @@ const AdminUserManagement: React.FC = () => {
       </Dialog>
 
       {/* Add User Dialog */}
-      <Dialog open={isAddingUser} onOpenChange={(open) => {
-        if (!open) setIsAddingUser(false);
-      }}>
+      <Dialog 
+        open={isAddingUser} 
+        onOpenChange={(open) => {
+          if (!open) setIsAddingUser(false);
+        }}
+      >
         <AddUserDialog 
           onSave={handleSaveNewUser}
           onCancel={handleCancelAddUser}
