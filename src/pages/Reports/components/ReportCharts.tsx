@@ -43,15 +43,15 @@ const ReportCharts: React.FC<ReportChartsProps> = ({ typesData, monthlyData, sta
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       {/* Monthly Reports Chart */}
       <Card>
-        <CardHeader>
-          <CardTitle>{t('reports.charts.monthly')}</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">{t('reports.charts.monthly')}</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px]">
+        <CardContent className="h-[300px] pt-4">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyData}>
-                <XAxis dataKey="name" />
-                <YAxis />
+              <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis width={30} tick={{ fontSize: 12 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar dataKey="value" fill="#9b87f5" name="Reports" />
               </BarChart>
@@ -62,13 +62,13 @@ const ReportCharts: React.FC<ReportChartsProps> = ({ typesData, monthlyData, sta
       
       {/* Reports by Type Chart */}
       <Card>
-        <CardHeader>
-          <CardTitle>{t('reports.charts.by_type')}</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">{t('reports.charts.by_type')}</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px]">
+        <CardContent className="h-[300px] pt-4">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
                 <Pie
                   data={typesData}
                   cx="50%"
@@ -77,14 +77,13 @@ const ReportCharts: React.FC<ReportChartsProps> = ({ typesData, monthlyData, sta
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  nameKey="name"
                 >
                   {typesData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <ChartTooltip content={<ChartTooltipContent labelKey="name" />} />
-                <Legend />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
               </PieChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -93,15 +92,24 @@ const ReportCharts: React.FC<ReportChartsProps> = ({ typesData, monthlyData, sta
       
       {/* Reports by Status Chart */}
       <Card className="md:col-span-2">
-        <CardHeader>
-          <CardTitle>{t('reports.charts.by_status')}</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">{t('reports.charts.by_status')}</CardTitle>
         </CardHeader>
-        <CardContent className="h-[200px]">
+        <CardContent className="h-[250px] pt-4">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={statusData} layout="vertical">
+              <BarChart 
+                data={statusData} 
+                layout="vertical" 
+                margin={{ top: 10, right: 30, left: 70, bottom: 10 }}
+              >
                 <XAxis type="number" />
-                <YAxis dataKey="name" type="category" width={100} />
+                <YAxis 
+                  dataKey="name" 
+                  type="category" 
+                  tick={{ fontSize: 12 }} 
+                  width={70} 
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar dataKey="value">
                   {statusData.map((entry, index) => (

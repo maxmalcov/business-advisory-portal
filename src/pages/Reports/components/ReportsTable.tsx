@@ -71,15 +71,15 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ reports, isFiltered }) => {
   };
 
   return (
-    <>
-      <div className="rounded-md border shadow">
+    <div className="overflow-hidden rounded-md border shadow">
+      <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>{t('reports.table.name')}</TableHead>
-              <TableHead>{t('reports.table.type')}</TableHead>
-              <TableHead>{t('reports.table.period')}</TableHead>
-              <TableHead>{t('reports.table.date')}</TableHead>
+              <TableHead className="hidden sm:table-cell">{t('reports.table.type')}</TableHead>
+              <TableHead className="hidden md:table-cell">{t('reports.table.period')}</TableHead>
+              <TableHead className="hidden md:table-cell">{t('reports.table.date')}</TableHead>
               <TableHead>{t('reports.table.status')}</TableHead>
               <TableHead className="text-right">{t('reports.table.actions')}</TableHead>
             </TableRow>
@@ -88,10 +88,20 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ reports, isFiltered }) => {
             {reports.length > 0 ? (
               reports.map((report) => (
                 <TableRow key={report.id}>
-                  <TableCell className="font-medium">{report.name}</TableCell>
-                  <TableCell>{getReportTypeBadge(report.type)}</TableCell>
-                  <TableCell>{report.period}</TableCell>
-                  <TableCell>{new Date(report.date).toLocaleDateString()}</TableCell>
+                  <TableCell className="font-medium">
+                    <div>
+                      {report.name}
+                      <div className="md:hidden mt-1 flex flex-col gap-1">
+                        <div className="sm:hidden">{getReportTypeBadge(report.type)}</div>
+                        <div className="md:hidden text-xs text-muted-foreground">
+                          {report.period} · {new Date(report.date).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">{getReportTypeBadge(report.type)}</TableCell>
+                  <TableCell className="hidden md:table-cell">{report.period}</TableCell>
+                  <TableCell className="hidden md:table-cell">{new Date(report.date).toLocaleDateString()}</TableCell>
                   <TableCell>{getStatusBadge(report.status)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
@@ -99,16 +109,20 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ reports, isFiltered }) => {
                         variant="ghost" 
                         size="sm" 
                         onClick={() => handleViewReport(report)}
+                        aria-label="View report"
                       >
                         <EyeIcon className="h-4 w-4" />
+                        <span className="sr-only">View</span>
                       </Button>
                       {report.status === 'completed' && (
                         <Button 
                           variant="ghost" 
                           size="sm"
                           onClick={() => handleDownloadReport(report)}
+                          aria-label="Download report"
                         >
                           <DownloadIcon className="h-4 w-4" />
+                          <span className="sr-only">Download</span>
                         </Button>
                       )}
                     </div>
@@ -117,7 +131,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ reports, isFiltered }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
                   {isFiltered ? (
                     <div className="flex flex-col items-center gap-2">
                       <p>{t('reports.no_results')}</p>
@@ -134,7 +148,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ reports, isFiltered }) => {
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -31,13 +31,13 @@ const Reports: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t('nav.reports')}</h1>
           <p className="text-muted-foreground">{t('reports.subtitle')}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={handleExportAll}>
             <DownloadIcon className="mr-2 h-4 w-4" />
             {t('reports.export_all')}
@@ -65,6 +65,7 @@ const Reports: React.FC = () => {
             </p>
           </CardContent>
         </Card>
+        
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div className="flex flex-col space-y-0.5">
