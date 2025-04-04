@@ -8,10 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
 
 const Login: React.FC = () => {
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -22,10 +21,11 @@ const Login: React.FC = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (isAuthenticated) {
+    console.log("Auth state in Login:", isAuthenticated, authLoading);
+    if (isAuthenticated && !authLoading) {
       navigate('/dashboard');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
-      // No need to navigate here as the auth state change will trigger redirection
+      // The redirect will happen in the useEffect when isAuthenticated changes
     } catch (error) {
       console.error('Login error:', error);
       // Toast is already handled in the auth context
@@ -61,7 +61,7 @@ const Login: React.FC = () => {
         : { email: 'client@example.com', password: 'client123' };
         
       await login(credentials.email, credentials.password);
-      // No need to navigate here as the auth state change will trigger redirection
+      // The redirect will happen in the useEffect when isAuthenticated changes
     } catch (error) {
       console.error('Demo login error:', error);
     } finally {
@@ -105,8 +105,8 @@ const Login: React.FC = () => {
           </CardContent>
           
           <CardFooter className="flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? t('app.loading') : t('app.login')}
+            <Button type="submit" className="w-full" disabled={isLoading || authLoading}>
+              {isLoading || authLoading ? t('app.loading') : t('app.login')}
             </Button>
             
             <div className="text-center text-sm">
@@ -123,7 +123,7 @@ const Login: React.FC = () => {
                   type="button" 
                   variant="outline" 
                   className="flex-1" 
-                  disabled={isLoading}
+                  disabled={isLoading || authLoading}
                   onClick={() => loginAsDemo('admin')}
                 >
                   Admin Demo
@@ -132,7 +132,7 @@ const Login: React.FC = () => {
                   type="button" 
                   variant="outline" 
                   className="flex-1" 
-                  disabled={isLoading}
+                  disabled={isLoading || authLoading}
                   onClick={() => loginAsDemo('client')}
                 >
                   Client Demo

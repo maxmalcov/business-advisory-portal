@@ -75,10 +75,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (error) {
         console.error('Error fetching user profile:', error);
-        return null;
+        // Instead of returning null, create a basic profile from the auth data
+        // This helps in case of RLS policy issues with the profiles table
+        return {
+          id: supabaseUser.id,
+          email: supabaseUser.email || '',
+          name: supabaseUser.user_metadata?.name || '',
+          userType: (supabaseUser.user_metadata?.userType as UserType) || 'client',
+          accountType: supabaseUser.user_metadata?.accountType as AccountType,
+          companyName: supabaseUser.user_metadata?.companyName,
+          nif: supabaseUser.user_metadata?.nif,
+          address: supabaseUser.user_metadata?.address,
+          postalCode: supabaseUser.user_metadata?.postalCode,
+          city: supabaseUser.user_metadata?.city,
+          province: supabaseUser.user_metadata?.province,
+          country: supabaseUser.user_metadata?.country,
+          phone: supabaseUser.user_metadata?.phone,
+        };
       }
       
-      if (!profile) return null;
+      if (!profile) {
+        console.warn('No profile found for user:', supabaseUser.id);
+        // Create basic profile from auth data
+        return {
+          id: supabaseUser.id,
+          email: supabaseUser.email || '',
+          name: supabaseUser.user_metadata?.name || '',
+          userType: (supabaseUser.user_metadata?.userType as UserType) || 'client',
+        };
+      }
       
       return {
         id: supabaseUser.id,
@@ -100,7 +125,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       };
     } catch (error) {
       console.error('Error transforming user:', error);
-      return null;
+      // Create basic profile from auth data as fallback
+      return {
+        id: supabaseUser.id,
+        email: supabaseUser.email || '',
+        name: supabaseUser.user_metadata?.name || '',
+        userType: (supabaseUser.user_metadata?.userType as UserType) || 'client',
+      };
     }
   };
 
@@ -110,34 +141,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(true);
       
       try {
-        // Set up auth state listener first
+        // Check for existing session first
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        
+        // Set up auth state listener 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          async (event, newSession) => {
-            setSession(newSession);
+          (event, newSession) => {
+            console.log('Auth state changed:', event, newSession?.user?.id);
             
             if (newSession?.user) {
               // Use setTimeout to prevent deadlocks with Supabase auth
               setTimeout(async () => {
                 const transformedUser = await transformUser(newSession.user);
+                setSession(newSession);
                 setUser(transformedUser);
                 setSupabaseUser(newSession.user);
+                setIsLoading(false);
               }, 0);
             } else {
+              setSession(null);
               setUser(null);
               setSupabaseUser(null);
+              setIsLoading(false);
             }
           }
         );
         
-        // Then check for existing session
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-        setSession(currentSession);
-        
+        // Handle existing session
         if (currentSession?.user) {
           const transformedUser = await transformUser(currentSession.user);
+          setSession(currentSession);
           setUser(transformedUser);
           setSupabaseUser(currentSession.user);
         }
+        
+        setIsLoading(false);
         
         return () => {
           subscription.unsubscribe();
@@ -149,7 +187,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           title: 'Authentication Error',
           description: 'Failed to retrieve session',
         });
-      } finally {
         setIsLoading(false);
       }
     };
@@ -172,6 +209,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Login Successful',
         description: 'You have been successfully logged in.',
       });
+      
+      // No need to set anything here as the auth state change will handle it
     } catch (error: any) {
       console.error('Login error:', error);
       toast({
@@ -179,9 +218,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Login Failed',
         description: error?.message || 'An unknown error occurred',
       });
-      throw error;
-    } finally {
       setIsLoading(false);
+      throw error;
     }
   };
 
