@@ -42,6 +42,8 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
+      // The redirect will happen automatically through the useEffect above
+      // once isAuthenticated is updated
     } catch (error) {
       console.error('Login error:', error);
       // Toast is already handled in the auth context
@@ -59,6 +61,7 @@ const Login: React.FC = () => {
         : { email: 'client@example.com', password: 'client123' };
         
       await login(credentials.email, credentials.password);
+      // The redirect will happen automatically through the useEffect above
     } catch (error) {
       console.error('Demo login error:', error);
     } finally {

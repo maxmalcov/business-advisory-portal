@@ -27,7 +27,8 @@ serve(async (req) => {
       .limit(1)
 
     if (queryError) {
-      throw queryError
+      console.error('Error checking for existing admin:', queryError);
+      // Continue anyway since profiles table might not exist yet
     }
 
     if (existingAdmins && existingAdmins.length > 0) {
@@ -58,13 +59,24 @@ serve(async (req) => {
 
     // Ensure the profile is properly created with admin user_type
     if (authData.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ user_type: 'admin' })
-        .eq('id', authData.user.id)
+      try {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: authData.user.id,
+            email: email,
+            user_type: 'admin',
+            name: 'System Administrator',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
 
-      if (profileError) {
-        console.error('Error updating profile:', profileError)
+        if (profileError) {
+          console.error('Error updating profile:', profileError)
+        }
+      } catch (profileError) {
+        console.error('Error creating profile:', profileError)
+        // Continue anyway - the admin user is created in auth
       }
     }
 

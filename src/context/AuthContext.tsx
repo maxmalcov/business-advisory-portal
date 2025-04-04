@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
@@ -56,12 +55,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   // Fetch user profile data
   const fetchUserProfile = async (userId: string) => {
     try {
-      // Use a typesafe approach to query the profiles table
+      // Using a type-safe approach with any for now to work around type issues
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -154,13 +152,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           title: 'Login Successful',
           description: `Welcome back, ${userProfile?.name || 'User'}!`,
         });
-        
-        // Redirect based on user type
-        if (userProfile?.userType === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/dashboard');
-        }
       }
     } catch (error: any) {
       console.error('Login error:', error);
@@ -183,7 +174,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Logged Out',
         description: 'You have been successfully logged out.',
       });
-      navigate('/login');
     } catch (error: any) {
       console.error('Logout error:', error);
       toast({
@@ -225,11 +215,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Registration Successful',
         description: 'Your account has been created successfully.',
       });
-      
-      // Navigate to dashboard after successful registration
-      if (data.user && data.session) {
-        navigate('/dashboard');
-      }
     } catch (error: any) {
       console.error('Registration error:', error);
       toast({
