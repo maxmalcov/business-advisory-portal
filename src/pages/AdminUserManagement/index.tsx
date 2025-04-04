@@ -43,48 +43,54 @@ const AdminUserManagement: React.FC = () => {
 
   // Fetch users from Supabase
   useEffect(() => {
-    async function fetchUsers() {
-      setIsLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*');
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          // Transform the profiles data to match our User interface
-          const transformedUsers: User[] = data.map(profile => ({
-            id: profile.id,
-            name: profile.name || '',
-            email: profile.email || '',
-            companyName: profile.companyname,
-            userType: profile.usertype || 'client',
-            incomingInvoiceEmail: profile.incominginvoiceemail,
-            outgoingInvoiceEmail: profile.outgoinginvoiceemail,
-            iframeUrls: [] // This may need to be added to the profiles table
-          }));
-          
-          setUsers(transformedUsers);
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to load users'
-        });
-        // Fall back to mock data if Supabase fetch fails
-        setUsers(mockUsers);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
     fetchUsers();
-  }, [toast]);
+  }, []);
+
+  async function fetchUsers() {
+    setIsLoading(true);
+    try {
+      console.log("Fetching users from Supabase...");
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*');
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        console.log("Fetched profiles data:", data);
+        // Transform the profiles data to match our User interface
+        const transformedUsers: User[] = data.map(profile => ({
+          id: profile.id,
+          name: profile.name || '',
+          email: profile.email || '',
+          companyName: profile.companyname,
+          userType: profile.usertype || 'client',
+          incomingInvoiceEmail: profile.incominginvoiceemail,
+          outgoingInvoiceEmail: profile.outgoinginvoiceemail,
+          iframeUrls: [] // This may need to be added to the profiles table
+        }));
+        
+        console.log("Transformed users:", transformedUsers);
+        setUsers(transformedUsers);
+      } else {
+        console.log("No data returned from Supabase");
+        setUsers([]);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка',
+        description: 'Не удалось загрузить пользователей'
+      });
+      // Fall back to mock data if Supabase fetch fails
+      setUsers(mockUsers);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   // Filter users based on search query
   const filteredUsers = users.filter(user => 
@@ -113,6 +119,7 @@ const AdminUserManagement: React.FC = () => {
     if (!editingUser) return;
     
     try {
+      console.log("Updating user in Supabase:", editingUser);
       // Update the user in Supabase
       const { error } = await supabase
         .from('profiles')
@@ -135,15 +142,15 @@ const AdminUserManagement: React.FC = () => {
       ));
       
       toast({
-        title: "User Updated",
-        description: `${editingUser.name}'s details have been updated successfully.`,
+        title: "Пользователь обновлен",
+        description: `Данные пользователя ${editingUser.name} были успешно обновлены.`,
       });
     } catch (error) {
       console.error('Error updating user:', error);
       toast({
         variant: 'destructive',
-        title: 'Update Failed',
-        description: 'There was an error updating the user.',
+        title: 'Ошибка обновления',
+        description: 'Произошла ошибка при обновлении пользователя.',
       });
     } finally {
       setEditingUser(null);
@@ -168,6 +175,7 @@ const AdminUserManagement: React.FC = () => {
   // Save new user
   const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
     try {
+      console.log("Creating new user:", newUser);
       // Register the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: newUser.email,
@@ -184,41 +192,21 @@ const AdminUserManagement: React.FC = () => {
       });
       
       if (authError) throw authError;
+      console.log("User created in Auth:", authData);
 
-      // The profile should be created automatically via the database trigger,
-      // but we'll refresh the user list just to be sure
-      const { data: refreshedData, error: refreshError } = await supabase
-        .from('profiles')
-        .select('*');
-
-      if (refreshError) throw refreshError;
-
-      if (refreshedData) {
-        // Transform the profiles data to match our User interface
-        const transformedUsers: User[] = refreshedData.map(profile => ({
-          id: profile.id,
-          name: profile.name || '',
-          email: profile.email || '',
-          companyName: profile.companyname,
-          userType: profile.usertype || 'client',
-          incomingInvoiceEmail: profile.incominginvoiceemail,
-          outgoingInvoiceEmail: profile.outgoinginvoiceemail,
-          iframeUrls: []
-        }));
-        
-        setUsers(transformedUsers);
-      }
+      // Fetch users again to update the list
+      await fetchUsers();
       
       toast({
-        title: "User Created",
-        description: `${newUser.name} has been added successfully.`,
+        title: "Пользователь создан",
+        description: `${newUser.name} был успешно добавлен.`,
       });
     } catch (error) {
       console.error('Error creating user:', error);
       toast({
         variant: 'destructive',
-        title: 'Creation Failed',
-        description: 'There was an error creating the user.',
+        title: 'Ошибка создания',
+        description: 'Произошла ошибка при создании пользователя.',
       });
     } finally {
       setIsAddingUser(false);
@@ -239,7 +227,7 @@ const AdminUserManagement: React.FC = () => {
         <CardContent className="p-0">
           {isLoading ? (
             <div className="flex justify-center items-center p-8">
-              <p>Loading users...</p>
+              <p>Загрузка пользователей...</p>
             </div>
           ) : (
             <UserTable 

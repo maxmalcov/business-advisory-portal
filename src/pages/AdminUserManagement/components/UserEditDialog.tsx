@@ -76,15 +76,15 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
   return (
     <DialogContent className="max-w-2xl">
       <DialogHeader>
-        <DialogTitle>Edit User Details</DialogTitle>
+        <DialogTitle>Редактирование пользователя</DialogTitle>
         <DialogDescription>
-          Update the user's information and settings
+          Измените информацию и настройки пользователя
         </DialogDescription>
       </DialogHeader>
       
       <div className="grid grid-cols-2 gap-4 py-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">Имя</Label>
           <Input 
             id="name"
             value={user.name}
@@ -102,7 +102,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="company">Company Name</Label>
+          <Label htmlFor="company">Название компании</Label>
           <Input 
             id="company"
             value={user.companyName || ''}
@@ -111,24 +111,24 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="role">Role</Label>
+          <Label htmlFor="role">Роль</Label>
           <Select 
             value={user.userType} 
             onValueChange={handleChangeUserType}
           >
             <SelectTrigger id="role">
-              <SelectValue placeholder="Select a role" />
+              <SelectValue placeholder="Выберите роль" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="client">Client</SelectItem>
-              <SelectItem value="admin">Administrator</SelectItem>
-              <SelectItem value="manager">Manager</SelectItem>
+              <SelectItem value="client">Клиент</SelectItem>
+              <SelectItem value="admin">Администратор</SelectItem>
+              <SelectItem value="manager">Менеджер</SelectItem>
             </SelectContent>
           </Select>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="incoming-email">Email for Incoming Invoices</Label>
+          <Label htmlFor="incoming-email">Email для входящих счетов</Label>
           <div className="flex">
             <Mail className="mr-2 h-4 w-4 mt-2.5" />
             <Input 
@@ -140,7 +140,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="outgoing-email">Email for Outgoing Invoices</Label>
+          <Label htmlFor="outgoing-email">Email для исходящих счетов</Label>
           <div className="flex">
             <Mail className="mr-2 h-4 w-4 mt-2.5" />
             <Input 
@@ -152,7 +152,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </div>
         
         <div className="col-span-2 space-y-2">
-          <Label>IFRAME URLs</Label>
+          <Label>URL-адреса IFRAME</Label>
           <div className="space-y-2">
             {user.iframeUrls?.map((url: string, index: number) => (
               <div key={index} className="flex items-center">
@@ -179,7 +179,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
             <div className="flex items-center mt-2">
               <LinkIcon className="mr-2 h-4 w-4" />
               <Input 
-                placeholder="Add new URL"
+                placeholder="Добавить новый URL"
                 value={newIframeUrl}
                 onChange={(e) => setNewIframeUrl(e.target.value)}
                 className="flex-grow"
@@ -191,7 +191,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
                 className="ml-2"
               >
                 <Plus className="h-4 w-4 mr-1" />
-                Add
+                Добавить
               </Button>
             </div>
           </div>
@@ -199,10 +199,10 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
       </div>
       
       <DialogFooter>
-        <Button variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button variant="outline" onClick={onCancel}>Отмена</Button>
         <Button onClick={onSave}>
           <Save className="mr-2 h-4 w-4" />
-          Save Changes
+          Сохранить изменения
         </Button>
       </DialogFooter>
     </DialogContent>
