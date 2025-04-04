@@ -2,14 +2,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Session, User } from '@supabase/supabase-js';
+import { Session, User as SupabaseUser } from '@supabase/supabase-js';
+import { Database } from '@/integrations/supabase/types';
 
 // User types
 export type UserType = 'admin' | 'client' | 'manager';
 export type AccountType = 'freelancer' | 'sl' | 'sa' | 'individual';
 
-// User interface
-export interface User {
+// User interface for our application
+export interface AppUser {
   id: string;
   email: string;
   name: string;
@@ -30,12 +31,12 @@ export interface User {
 
 // Auth context type
 type AuthContextType = {
-  user: User | null;
+  user: AppUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (userData: Partial<User> & { password: string }) => Promise<void>;
+  register: (userData: Partial<AppUser> & { password: string }) => Promise<void>;
 };
 
 // Create auth context with default values
@@ -50,7 +51,7 @@ const AuthContext = createContext<AuthContextType>({
 
 // Provider component
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -104,18 +105,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           id: data.id,
           email: data.email || '',
           name: data.name || '',
-          userType: (data.userType as UserType) || 'client',
-          accountType: data.accountType as AccountType,
-          companyName: data.companyName,
+          userType: (data.usertype as UserType) || 'client',
+          accountType: data.accounttype as AccountType,
+          companyName: data.companyname,
           nif: data.nif,
           address: data.address,
-          postalCode: data.postalCode,
+          postalCode: data.postalcode,
           city: data.city,
           province: data.province,
           country: data.country,
           phone: data.phone,
-          incomingInvoiceEmail: data.incomingInvoiceEmail,
-          outgoingInvoiceEmail: data.outgoingInvoiceEmail
+          incomingInvoiceEmail: data.incominginvoiceemail,
+          outgoingInvoiceEmail: data.outgoinginvoiceemail,
+          iframeUrls: [] // You might want to add this to your database schema
         });
       }
     } catch (error) {
@@ -177,7 +179,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Register function
-  const register = async (userData: Partial<User> & { password: string }) => {
+  const register = async (userData: Partial<AppUser> & { password: string }) => {
     setIsLoading(true);
     try {
       // Register the user with Supabase Auth
