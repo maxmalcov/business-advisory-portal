@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -15,7 +14,7 @@ import {
   PackagePlus, 
   Boxes 
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, serviceRequestsTable } from '@/integrations/supabase/client';
 
 const Services: React.FC = () => {
   const { t } = useLanguage();
@@ -31,8 +30,7 @@ const Services: React.FC = () => {
       if (!user) return;
       
       try {
-        const { data, error } = await supabase
-          .from('service_requests')
+        const { data, error } = await serviceRequestsTable()
           .select('service_id, status')
           .eq('client_id', user.id);
         
@@ -99,8 +97,7 @@ const Services: React.FC = () => {
     
     try {
       // Insert the service request into the database
-      const { data, error } = await supabase
-        .from('service_requests')
+      const { data, error } = await serviceRequestsTable()
         .insert({
           service_id: serviceId,
           service_name: service.title,

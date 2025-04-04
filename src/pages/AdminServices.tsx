@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -32,7 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Search, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, serviceRequestsTable, ServiceRequest } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { Textarea } from '@/components/ui/textarea';
 import { 
@@ -46,17 +45,7 @@ import {
 
 type ServiceStatus = 'available' | 'pending' | 'completed' | 'rejected';
 
-type ServiceRequestType = {
-  id: string;
-  serviceId: string;
-  serviceName: string;
-  clientId: string;
-  clientName: string;
-  requestDate: string;
-  status: ServiceStatus;
-  adminNotes?: string;
-  updatedAt: string;
-};
+type ServiceRequestType = ServiceRequest;
 
 const AdminServices: React.FC = () => {
   const { t } = useLanguage();
@@ -77,8 +66,7 @@ const AdminServices: React.FC = () => {
       try {
         setLoading(true);
         
-        const { data, error } = await supabase
-          .from('service_requests')
+        const { data, error } = await serviceRequestsTable()
           .select('*')
           .order('request_date', { ascending: false });
           
@@ -86,20 +74,9 @@ const AdminServices: React.FC = () => {
           throw error;
         }
         
-        // Transform the data to match our component's expected format
-        const transformedData: ServiceRequestType[] = data.map(item => ({
-          id: item.id,
-          serviceId: item.service_id,
-          serviceName: item.service_name,
-          clientId: item.client_id,
-          clientName: item.client_name,
-          requestDate: item.request_date,
-          status: item.status as ServiceStatus,
-          adminNotes: item.admin_notes,
-          updatedAt: item.updated_at
-        }));
-        
-        setServiceRequests(transformedData);
+        if (data) {
+          setServiceRequests(data);
+        }
       } catch (error) {
         console.error('Error fetching service requests:', error);
         toast({
@@ -134,8 +111,7 @@ const AdminServices: React.FC = () => {
 
   const handleUpdateStatus = async (requestId: string, newStatus: ServiceStatus) => {
     try {
-      const { error } = await supabase
-        .from('service_requests')
+      const { error } = await serviceRequestsTable()
         .update({ status: newStatus })
         .eq('id', requestId);
         
@@ -165,7 +141,6 @@ const AdminServices: React.FC = () => {
   };
 
   const handleSaveEmail = async () => {
-    // In a real app, this would save to user preferences or a settings table
     toast({
       title: "Email Updated",
       description: "Admin notification email has been updated.",
@@ -174,7 +149,7 @@ const AdminServices: React.FC = () => {
 
   const openDetailsDialog = (request: ServiceRequestType) => {
     setSelectedRequest(request);
-    setAdminNotes(request.adminNotes || '');
+    setAdminNotes(request.admin_notes || '');
     setIsDialogOpen(true);
   };
 
@@ -182,8 +157,7 @@ const AdminServices: React.FC = () => {
     if (!selectedRequest) return;
     
     try {
-      const { error } = await supabase
-        .from('service_requests')
+      const { error } = await serviceRequestsTable()
         .update({ admin_notes: adminNotes })
         .eq('id', selectedRequest.id);
         
@@ -194,7 +168,7 @@ const AdminServices: React.FC = () => {
       // Update local state
       setServiceRequests(prev => 
         prev.map(request => 
-          request.id === selectedRequest.id ? { ...request, adminNotes } : request
+          request.id === selectedRequest.id ? { ...request, admin_notes: adminNotes } : request
         )
       );
       
@@ -215,12 +189,10 @@ const AdminServices: React.FC = () => {
   };
 
   const filteredRequests = serviceRequests.filter(request => {
-    // Apply text search filter
     const matchesSearch = 
-      request.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      request.clientName.toLowerCase().includes(searchQuery.toLowerCase());
+      request.service_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      request.client_name.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // Apply status filter
     const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
     
     return matchesSearch && matchesStatus;
@@ -332,10 +304,10 @@ const AdminServices: React.FC = () => {
               <TableBody>
                 {filteredRequests.map((request) => (
                   <TableRow key={request.id}>
-                    <TableCell>{request.clientName}</TableCell>
-                    <TableCell>{request.serviceName}</TableCell>
-                    <TableCell>{formatDate(request.requestDate)}</TableCell>
-                    <TableCell>{getStatusBadge(request.status)}</TableCell>
+                    <TableCell>{request.client_name}</TableCell>
+                    <TableCell>{request.service_name}</TableCell>
+                    <TableCell>{formatDate(request.request_date)}</TableCell>
+                    <TableCell>{getStatusBadge(request.status as ServiceStatus)}</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-2">
                         <Button 
@@ -400,23 +372,23 @@ const AdminServices: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Client:</Label>
-                  <div className="font-medium">{selectedRequest.clientName}</div>
+                  <div className="font-medium">{selectedRequest.client_name}</div>
                 </div>
                 <div>
                   <Label>Service:</Label>
-                  <div className="font-medium">{selectedRequest.serviceName}</div>
+                  <div className="font-medium">{selectedRequest.service_name}</div>
                 </div>
                 <div>
                   <Label>Request Date:</Label>
-                  <div className="font-medium">{formatDate(selectedRequest.requestDate)}</div>
+                  <div className="font-medium">{formatDate(selectedRequest.request_date)}</div>
                 </div>
                 <div>
                   <Label>Status:</Label>
-                  <div className="font-medium">{getStatusBadge(selectedRequest.status)}</div>
+                  <div className="font-medium">{getStatusBadge(selectedRequest.status as ServiceStatus)}</div>
                 </div>
                 <div>
                   <Label>Last Updated:</Label>
-                  <div className="font-medium">{formatDate(selectedRequest.updatedAt)}</div>
+                  <div className="font-medium">{formatDate(selectedRequest.updated_at)}</div>
                 </div>
                 <div>
                   <Label>Request ID:</Label>
