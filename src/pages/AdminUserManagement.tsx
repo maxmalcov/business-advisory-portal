@@ -255,7 +255,7 @@ const AdminUserManagement: React.FC = () => {
         </CardHeader>
       </Card>
       
-      <Alert variant="warning" className="bg-yellow-50 border-yellow-200">
+      <Alert variant="destructive" className="bg-yellow-50 border-yellow-200">
         <AlertTriangle className="h-4 w-4 text-yellow-600" />
         <AlertTitle className="text-yellow-800">Admin Account Restriction</AlertTitle>
         <AlertDescription className="text-yellow-700">
