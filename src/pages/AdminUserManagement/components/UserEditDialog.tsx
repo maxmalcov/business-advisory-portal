@@ -1,24 +1,20 @@
 
-import React, { useState } from 'react';
-import {
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+import React from 'react';
+import { 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
 } from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Mail, X, Plus, Save, Link as LinkIcon } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Mail, Link as LinkIcon, Plus, Save, X } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
+// Define the User interface
 interface User {
   id: string;
   name: string;
@@ -31,24 +27,24 @@ interface User {
 }
 
 interface UserEditDialogProps {
-  user: User | null;
+  user: User;
   onUserChange: (user: User) => void;
   onSave: () => void;
   onCancel: () => void;
 }
 
-const UserEditDialog: React.FC<UserEditDialogProps> = ({
-  user,
-  onUserChange,
-  onSave,
-  onCancel,
+const UserEditDialog: React.FC<UserEditDialogProps> = ({ 
+  user, 
+  onUserChange, 
+  onSave, 
+  onCancel 
 }) => {
-  const [newIframeUrl, setNewIframeUrl] = useState('');
+  const { t } = useLanguage();
+  const [newIframeUrl, setNewIframeUrl] = React.useState('');
 
-  if (!user) return null;
-
+  // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {
-    if (!newIframeUrl || !user) return;
+    if (!newIframeUrl) return;
     
     onUserChange({
       ...user,
@@ -58,9 +54,8 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
     setNewIframeUrl('');
   };
 
+  // Handle removing an iframe URL
   const handleRemoveIframeUrl = (index: number) => {
-    if (!user) return;
-    
     const newUrls = [...(user.iframeUrls || [])];
     newUrls.splice(index, 1);
     
@@ -70,8 +65,8 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
     });
   };
 
+  // Handle changing user type
   const handleChangeUserType = (value: string) => {
-    if (!user) return;
     onUserChange({
       ...user,
       userType: value

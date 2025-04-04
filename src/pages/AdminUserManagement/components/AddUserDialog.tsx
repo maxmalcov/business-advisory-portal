@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { 
   DialogContent, 
@@ -24,25 +24,27 @@ interface User {
   incomingInvoiceEmail?: string;
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
+  password?: string; // Add password field for new users
 }
 
 interface AddUserDialogProps {
-  onSave: (user: User) => void;
+  onSave: (user: Omit<User, 'id'>) => void;
   onCancel: () => void;
 }
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   const { t } = useLanguage();
-  const [newUser, setNewUser] = React.useState<User>({
+  const [newUser, setNewUser] = useState<User>({
     name: '',
     email: '',
     companyName: '',
     userType: 'client',
     incomingInvoiceEmail: '',
     outgoingInvoiceEmail: '',
-    iframeUrls: []
+    iframeUrls: [],
+    password: ''
   });
-  const [newIframeUrl, setNewIframeUrl] = React.useState('');
+  const [newIframeUrl, setNewIframeUrl] = useState('');
 
   // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {
@@ -83,6 +85,11 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
       return;
     }
     
+    // Generate a random password if not provided
+    if (!newUser.password) {
+      newUser.password = Math.random().toString(36).slice(-8);
+    }
+    
     onSave(newUser);
   };
 
@@ -111,6 +118,17 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
             id="email"
             value={newUser.email}
             onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input 
+            id="password"
+            type="password"
+            value={newUser.password || ''}
+            onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+            placeholder="Leave blank for auto-generated password"
           />
         </div>
         
