@@ -60,6 +60,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Fetch user profile data
   const fetchUserProfile = async (userId: string) => {
     try {
+      // Use a more direct approach to query the database
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -69,6 +70,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (error) throw error;
 
       if (data) {
+        // Map the database fields to our AppUser interface
         return {
           id: data.id,
           email: data.email,
