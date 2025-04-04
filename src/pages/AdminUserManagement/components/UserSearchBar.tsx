@@ -2,8 +2,13 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Plus } from 'lucide-react';
-import { UserSearchBarProps } from '../types';
+import { Search, UserPlus } from 'lucide-react';
+
+interface UserSearchBarProps {
+  searchQuery: string;
+  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onAddUser: () => void; // Function to handle adding a new user
+}
 
 const UserSearchBar: React.FC<UserSearchBarProps> = ({ 
   searchQuery, 
@@ -24,9 +29,8 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
       <Button 
         onClick={onAddUser}
         variant="default"
-        className="bg-blue-600 hover:bg-blue-700"
       >
-        <Plus className="mr-2 h-4 w-4" />
+        <UserPlus className="mr-2 h-4 w-4" />
         Add New User
       </Button>
     </div>

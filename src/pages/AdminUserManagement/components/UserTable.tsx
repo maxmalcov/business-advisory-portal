@@ -1,16 +1,32 @@
 
 import React from 'react';
-import { 
-  Table, 
-  TableHeader, 
-  TableRow, 
-  TableHead, 
-  TableBody, 
-  TableCell 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit } from 'lucide-react';
-import { UserTableProps } from '../types';
+import { UserCog } from 'lucide-react';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  companyName?: string;
+  userType: string;
+  incomingInvoiceEmail?: string;
+  outgoingInvoiceEmail?: string;
+  iframeUrls?: string[];
+}
+
+interface UserTableProps {
+  users: User[];
+  onEditUser: (user: User) => void;
+}
 
 const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => {
   return (
@@ -21,40 +37,34 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => {
           <TableHead>Email</TableHead>
           <TableHead>Company</TableHead>
           <TableHead>Role</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+          <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.length === 0 ? (
-          <TableRow>
-            <TableCell colSpan={5} className="text-center py-6">
-              No users found
+        {users.map((user) => (
+          <TableRow key={user.id}>
+            <TableCell className="font-medium">{user.name}</TableCell>
+            <TableCell>{user.email}</TableCell>
+            <TableCell>{user.companyName}</TableCell>
+            <TableCell>
+              <span className="capitalize">{user.userType}</span>
+            </TableCell>
+            <TableCell>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEditUser(user)}
+                  >
+                    <UserCog className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
             </TableCell>
           </TableRow>
-        ) : (
-          users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell className="font-medium">{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.companyName || '-'}</TableCell>
-              <TableCell>
-                <span className={`capitalize ${user.userType === 'admin' ? 'text-blue-600 font-semibold' : ''}`}>
-                  {user.userType}
-                </span>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onEditUser(user)}
-                >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))
-        )}
+        ))}
       </TableBody>
     </Table>
   );

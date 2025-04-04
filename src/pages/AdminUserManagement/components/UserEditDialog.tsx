@@ -18,10 +18,20 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Mail, X, Plus, Save, Link as LinkIcon } from 'lucide-react';
-import { User } from '../types';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  companyName?: string;
+  userType: string;
+  incomingInvoiceEmail?: string;
+  outgoingInvoiceEmail?: string;
+  iframeUrls?: string[];
+}
 
 interface UserEditDialogProps {
-  user: User;
+  user: User | null;
   onUserChange: (user: User) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -35,8 +45,10 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 }) => {
   const [newIframeUrl, setNewIframeUrl] = useState('');
 
+  if (!user) return null;
+
   const handleAddIframeUrl = () => {
-    if (!newIframeUrl) return;
+    if (!newIframeUrl || !user) return;
     
     onUserChange({
       ...user,
@@ -47,12 +59,22 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
   };
 
   const handleRemoveIframeUrl = (index: number) => {
+    if (!user) return;
+    
     const newUrls = [...(user.iframeUrls || [])];
     newUrls.splice(index, 1);
     
     onUserChange({
       ...user,
       iframeUrls: newUrls
+    });
+  };
+
+  const handleChangeUserType = (value: string) => {
+    if (!user) return;
+    onUserChange({
+      ...user,
+      userType: value
     });
   };
 
@@ -97,7 +119,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
           <Label htmlFor="role">Role</Label>
           <Select 
             value={user.userType} 
-            onValueChange={(value) => onUserChange({...user, userType: value})}
+            onValueChange={handleChangeUserType}
           >
             <SelectTrigger id="role">
               <SelectValue placeholder="Select a role" />

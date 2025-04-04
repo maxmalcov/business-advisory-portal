@@ -77,12 +77,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_admin: {
-        Args: {
-          user_id: string
-        }
-        Returns: boolean
-      }
       update_invoice_emails: {
         Args: {
           user_id: string
