@@ -1,6 +1,6 @@
 
 import { User } from '@supabase/supabase-js';
-import { Profile } from './types';
+import { Profile, AccountType } from './types';
 import { supabase } from '@/integrations/supabase/client';
 
 export const transformUser = async (supabaseUser: User): Promise<Profile> => {
@@ -23,13 +23,23 @@ export const transformUser = async (supabaseUser: User): Promise<Profile> => {
       };
     }
 
+    // Validate account_type is a valid AccountType
+    const validateAccountType = (type: string | null): AccountType | undefined => {
+      if (!type) return undefined;
+      
+      const validTypes: AccountType[] = ['freelancer', 'sl', 'sa', 'individual'];
+      return validTypes.includes(type as AccountType) 
+        ? (type as AccountType) 
+        : undefined;
+    };
+
     // Transform the database profile to match our application's Profile type
     return {
       id: profile.id,
       email: profile.email || supabaseUser.email || '',
       name: profile.full_name || supabaseUser.user_metadata?.name || '',
       userType: profile.user_type || supabaseUser.user_metadata?.userType || 'client',
-      accountType: profile.account_type,
+      accountType: validateAccountType(profile.account_type),
       companyName: profile.company_name,
       nif: profile.nif,
       address: profile.address,
