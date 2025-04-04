@@ -1,8 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import {
   Card,
   CardContent,
@@ -46,113 +45,76 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/context/AuthContext';
 
-// Define user interface for admin management
-interface UserProfile {
-  id: string;
-  full_name: string;
-  email: string;
-  company_name: string | null;
-  user_type: string;
-  incoming_invoice_email: string | null;
-  outgoing_invoice_email: string | null;
-  iframe_urls: string[] | null;
-}
+// Mock users for demonstration
+const mockUsers = [
+  {
+    id: '1',
+    name: 'Example Client',
+    email: 'client@example.com',
+    companyName: 'Example SL',
+    userType: 'client',
+    incomingInvoiceEmail: 'invoices-in@example.com',
+    outgoingInvoiceEmail: 'invoices-out@example.com',
+    iframeUrls: ['https://example.com/iframe1', 'https://example.com/iframe2']
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    email: 'jane@company.com',
+    companyName: 'Smith LLC',
+    userType: 'client',
+    incomingInvoiceEmail: 'invoices@smith.com',
+    outgoingInvoiceEmail: 'sales@smith.com',
+    iframeUrls: ['https://smith.com/dashboard']
+  },
+  {
+    id: '3',
+    name: 'Mark Johnson',
+    email: 'mark@enterprise.com',
+    companyName: 'Johnson Enterprise',
+    userType: 'client',
+    incomingInvoiceEmail: 'accounts@johnson.com',
+    outgoingInvoiceEmail: 'billing@johnson.com',
+    iframeUrls: []
+  }
+];
 
 const AdminUserManagement: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
-  const { user: currentUser } = useAuth();
-  
-  const [users, setUsers] = useState<UserProfile[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [users, setUsers] = useState(mockUsers);
   const [searchQuery, setSearchQuery] = useState('');
-  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
+  const [editingUser, setEditingUser] = useState<any>(null);
   const [newIframeUrl, setNewIframeUrl] = useState('');
-
-  // Fetch users from database
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*');
-        
-        if (error) throw error;
-        
-        if (data) {
-          setUsers(data as UserProfile[]);
-        }
-      } catch (error: any) {
-        console.error('Error fetching users:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: error.message || 'Failed to load users',
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    if (currentUser?.userType === 'admin') {
-      fetchUsers();
-    }
-  }, [currentUser, toast]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
   const filteredUsers = users.filter(user => 
-    user.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.company_name?.toLowerCase().includes(searchQuery.toLowerCase())
+    user.companyName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleEditUser = (user: UserProfile) => {
+  const handleEditUser = (user: any) => {
     setEditingUser({...user});
   };
 
-  const handleSaveUser = async () => {
+  const handleSaveUser = () => {
     if (!editingUser) return;
     
-    try {
-      // Update user profile in database
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          full_name: editingUser.full_name,
-          company_name: editingUser.company_name,
-          user_type: editingUser.user_type,
-          incoming_invoice_email: editingUser.incoming_invoice_email,
-          outgoing_invoice_email: editingUser.outgoing_invoice_email,
-          iframe_urls: editingUser.iframe_urls
-        })
-        .eq('id', editingUser.id);
-      
-      if (error) throw error;
-      
-      // Update local state
-      setUsers(users.map(user => 
-        user.id === editingUser.id ? editingUser : user
-      ));
-      
-      toast({
-        title: "User Updated",
-        description: `${editingUser.full_name}'s details have been updated successfully.`,
-      });
-      
-      setEditingUser(null);
-    } catch (error: any) {
-      console.error('Error updating user:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Update Failed',
-        description: error.message || 'Failed to update user details',
-      });
-    }
+    setUsers(users.map(user => 
+      user.id === editingUser.id ? editingUser : user
+    ));
+    
+    toast({
+      title: "User Updated",
+      description: `${editingUser.name}'s details have been updated successfully.`,
+    });
+    
+    setEditingUser(null);
   };
 
   const handleAddIframeUrl = () => {
@@ -160,7 +122,7 @@ const AdminUserManagement: React.FC = () => {
     
     setEditingUser({
       ...editingUser,
-      iframe_urls: [...(editingUser.iframe_urls || []), newIframeUrl]
+      iframeUrls: [...(editingUser.iframeUrls || []), newIframeUrl]
     });
     
     setNewIframeUrl('');
@@ -169,12 +131,12 @@ const AdminUserManagement: React.FC = () => {
   const handleRemoveIframeUrl = (index: number) => {
     if (!editingUser) return;
     
-    const newUrls = [...(editingUser.iframe_urls || [])];
+    const newUrls = [...editingUser.iframeUrls];
     newUrls.splice(index, 1);
     
     setEditingUser({
       ...editingUser,
-      iframe_urls: newUrls
+      iframeUrls: newUrls
     });
   };
 
@@ -182,21 +144,13 @@ const AdminUserManagement: React.FC = () => {
     if (!editingUser) return;
     setEditingUser({
       ...editingUser,
-      user_type: value
+      userType: value
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p>Loading users...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      <Card className="border-l-4 border-l-primary">
+      <Card className="border-l-4 border-l-ba-blue">
         <CardHeader>
           <CardTitle className="text-2xl">User Management</CardTitle>
           <CardDescription>
@@ -236,11 +190,11 @@ const AdminUserManagement: React.FC = () => {
             <TableBody>
               {filteredUsers.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.full_name}</TableCell>
+                  <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.company_name}</TableCell>
+                  <TableCell>{user.companyName}</TableCell>
                   <TableCell>
-                    <span className="capitalize">{user.user_type}</span>
+                    <span className="capitalize">{user.userType}</span>
                   </TableCell>
                   <TableCell>
                     <Dialog>
@@ -268,8 +222,8 @@ const AdminUserManagement: React.FC = () => {
                               <Label htmlFor="name">Name</Label>
                               <Input 
                                 id="name"
-                                value={editingUser.full_name || ''}
-                                onChange={(e) => setEditingUser({...editingUser, full_name: e.target.value})}
+                                value={editingUser.name}
+                                onChange={(e) => setEditingUser({...editingUser, name: e.target.value})}
                               />
                             </div>
                             
@@ -278,7 +232,7 @@ const AdminUserManagement: React.FC = () => {
                               <Input 
                                 id="email"
                                 value={editingUser.email}
-                                disabled
+                                onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
                               />
                             </div>
                             
@@ -286,15 +240,15 @@ const AdminUserManagement: React.FC = () => {
                               <Label htmlFor="company">Company Name</Label>
                               <Input 
                                 id="company"
-                                value={editingUser.company_name || ''}
-                                onChange={(e) => setEditingUser({...editingUser, company_name: e.target.value})}
+                                value={editingUser.companyName || ''}
+                                onChange={(e) => setEditingUser({...editingUser, companyName: e.target.value})}
                               />
                             </div>
                             
                             <div className="space-y-2">
                               <Label htmlFor="role">Role</Label>
                               <Select 
-                                value={editingUser.user_type} 
+                                value={editingUser.userType} 
                                 onValueChange={handleChangeUserType}
                               >
                                 <SelectTrigger id="role">
@@ -314,8 +268,8 @@ const AdminUserManagement: React.FC = () => {
                                 <Mail className="mr-2 h-4 w-4 mt-2.5" />
                                 <Input 
                                   id="incoming-email"
-                                  value={editingUser.incoming_invoice_email || ''}
-                                  onChange={(e) => setEditingUser({...editingUser, incoming_invoice_email: e.target.value})}
+                                  value={editingUser.incomingInvoiceEmail || ''}
+                                  onChange={(e) => setEditingUser({...editingUser, incomingInvoiceEmail: e.target.value})}
                                 />
                               </div>
                             </div>
@@ -326,8 +280,8 @@ const AdminUserManagement: React.FC = () => {
                                 <Mail className="mr-2 h-4 w-4 mt-2.5" />
                                 <Input 
                                   id="outgoing-email"
-                                  value={editingUser.outgoing_invoice_email || ''}
-                                  onChange={(e) => setEditingUser({...editingUser, outgoing_invoice_email: e.target.value})}
+                                  value={editingUser.outgoingInvoiceEmail || ''}
+                                  onChange={(e) => setEditingUser({...editingUser, outgoingInvoiceEmail: e.target.value})}
                                 />
                               </div>
                             </div>
@@ -335,15 +289,15 @@ const AdminUserManagement: React.FC = () => {
                             <div className="col-span-2 space-y-2">
                               <Label>IFRAME URLs</Label>
                               <div className="space-y-2">
-                                {editingUser.iframe_urls?.map((url, index) => (
+                                {editingUser.iframeUrls?.map((url: string, index: number) => (
                                   <div key={index} className="flex items-center">
                                     <LinkIcon className="mr-2 h-4 w-4" />
                                     <Input 
                                       value={url}
                                       onChange={(e) => {
-                                        const newUrls = [...(editingUser.iframe_urls || [])];
+                                        const newUrls = [...editingUser.iframeUrls];
                                         newUrls[index] = e.target.value;
-                                        setEditingUser({...editingUser, iframe_urls: newUrls});
+                                        setEditingUser({...editingUser, iframeUrls: newUrls});
                                       }}
                                       className="flex-grow"
                                     />

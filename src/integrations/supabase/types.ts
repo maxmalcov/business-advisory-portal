@@ -9,82 +9,13 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          account_type: string | null
-          address: string | null
-          city: string | null
-          company_name: string | null
-          country: string | null
-          created_at: string
-          email: string
-          full_name: string | null
-          id: string
-          iframe_urls: string[] | null
-          incoming_invoice_email: string | null
-          nif: string | null
-          outgoing_invoice_email: string | null
-          phone: string | null
-          postal_code: string | null
-          province: string | null
-          updated_at: string
-          user_type: string
-        }
-        Insert: {
-          account_type?: string | null
-          address?: string | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string
-          email: string
-          full_name?: string | null
-          id: string
-          iframe_urls?: string[] | null
-          incoming_invoice_email?: string | null
-          nif?: string | null
-          outgoing_invoice_email?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          province?: string | null
-          updated_at?: string
-          user_type?: string
-        }
-        Update: {
-          account_type?: string | null
-          address?: string | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string
-          email?: string
-          full_name?: string | null
-          id?: string
-          iframe_urls?: string[] | null
-          incoming_invoice_email?: string | null
-          nif?: string | null
-          outgoing_invoice_email?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          province?: string | null
-          updated_at?: string
-          user_type?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      update_invoice_emails: {
-        Args: {
-          user_id: string
-          new_incoming_email: string
-          new_outgoing_email: string
-        }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

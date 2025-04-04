@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 
 const Login: React.FC = () => {
-  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { login } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -18,14 +18,6 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // Redirect if already logged in
-  useEffect(() => {
-    console.log("Auth state in Login:", isAuthenticated, authLoading);
-    if (isAuthenticated && !authLoading) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +35,7 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
-      // The redirect will happen in the useEffect when isAuthenticated changes
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       // Toast is already handled in the auth context
@@ -52,7 +44,7 @@ const Login: React.FC = () => {
     }
   };
 
-  // Demo login helper - for development purposes
+  // Demo login helper
   const loginAsDemo = async (type: 'admin' | 'client') => {
     setIsLoading(true);
     try {
@@ -61,7 +53,7 @@ const Login: React.FC = () => {
         : { email: 'client@example.com', password: 'client123' };
         
       await login(credentials.email, credentials.password);
-      // The redirect will happen in the useEffect when isAuthenticated changes
+      navigate(type === 'admin' ? '/admin' : '/dashboard');
     } catch (error) {
       console.error('Demo login error:', error);
     } finally {
@@ -105,8 +97,8 @@ const Login: React.FC = () => {
           </CardContent>
           
           <CardFooter className="flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading || authLoading}>
-              {isLoading || authLoading ? t('app.loading') : t('app.login')}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? t('app.loading') : t('app.login')}
             </Button>
             
             <div className="text-center text-sm">
@@ -123,7 +115,7 @@ const Login: React.FC = () => {
                   type="button" 
                   variant="outline" 
                   className="flex-1" 
-                  disabled={isLoading || authLoading}
+                  disabled={isLoading}
                   onClick={() => loginAsDemo('admin')}
                 >
                   Admin Demo
@@ -132,7 +124,7 @@ const Login: React.FC = () => {
                   type="button" 
                   variant="outline" 
                   className="flex-1" 
-                  disabled={isLoading || authLoading}
+                  disabled={isLoading}
                   onClick={() => loginAsDemo('client')}
                 >
                   Client Demo

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth, AccountType } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -18,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import LanguageSelector from '@/components/LanguageSelector';
 
 const Register: React.FC = () => {
-  const { register, isAuthenticated } = useAuth();
+  const { register } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -41,13 +41,6 @@ const Register: React.FC = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate]);
 
   // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +83,7 @@ const Register: React.FC = () => {
         ...formData,
         userType: 'client',
       });
-      // No need to navigate here as the auth state change will trigger redirection
+      navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
       // Toast is already handled in the auth context
