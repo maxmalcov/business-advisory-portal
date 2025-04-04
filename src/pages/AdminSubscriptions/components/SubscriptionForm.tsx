@@ -57,6 +57,8 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
     onSubmit(subscriptionData);
   };
 
+  const isSubmitting = form.formState.isSubmitting;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -65,7 +67,11 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
         <UserInfoFields form={form} />
         <StatusField form={form} />
         <UrlFields form={form} />
-        <FormActions subscription={subscription} onCancel={onCancel} />
+        <FormActions 
+          subscription={subscription} 
+          onCancel={onCancel} 
+          isSubmitting={isSubmitting}
+        />
       </form>
     </Form>
   );
