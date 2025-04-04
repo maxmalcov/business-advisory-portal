@@ -1,9 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent } from '@/components/ui/card';
+import { supabase } from '@/integrations/supabase/client';
 import { 
+  Card, 
+  CardContent 
+} from '@/components/ui/card';
+import {
   Dialog,
   DialogContent,
   DialogTrigger
@@ -15,7 +19,6 @@ import UserSearchBar from './components/UserSearchBar';
 import UserTable from './components/UserTable';
 import UserEditDialog from './components/UserEditDialog';
 import AddUserDialog from './components/AddUserDialog';
-import { mockUsers } from './mockData';
 
 // Define the User type
 interface User {
@@ -33,10 +36,54 @@ const AdminUserManagement: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
   
-  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
+
+  // Fetch users from database
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*');
+        
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          // Map database fields to our User interface
+          const mappedUsers: User[] = data.map(profile => ({
+            id: profile.id,
+            name: profile.full_name || '',
+            email: profile.email,
+            companyName: profile.company_name || '',
+            userType: profile.user_type,
+            incomingInvoiceEmail: profile.incoming_invoice_email || '',
+            outgoingInvoiceEmail: profile.outgoing_invoice_email || '',
+            iframeUrls: profile.iframe_urls || []
+          }));
+          
+          setUsers(mappedUsers);
+        }
+      } catch (error: any) {
+        console.error('Error fetching users:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: error.message || 'Failed to load users',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchUsers();
+  }, [toast]);
 
   // Filter users based on search query
   const filteredUsers = users.filter(user => 
@@ -61,19 +108,47 @@ const AdminUserManagement: React.FC = () => {
   };
 
   // Save edited user
-  const handleSaveUser = () => {
+  const handleSaveUser = async () => {
     if (!editingUser) return;
     
-    setUsers(users.map(user => 
-      user.id === editingUser.id ? editingUser : user
-    ));
-    
-    toast({
-      title: "User Updated",
-      description: `${editingUser.name}'s details have been updated successfully.`,
-    });
-    
-    setEditingUser(null);
+    try {
+      // Map our User interface back to database fields
+      const profileData = {
+        full_name: editingUser.name,
+        company_name: editingUser.companyName,
+        user_type: editingUser.userType,
+        incoming_invoice_email: editingUser.incomingInvoiceEmail,
+        outgoing_invoice_email: editingUser.outgoingInvoiceEmail,
+        iframe_urls: editingUser.iframeUrls
+      };
+      
+      // Update user profile in database
+      const { error } = await supabase
+        .from('profiles')
+        .update(profileData)
+        .eq('id', editingUser.id);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setUsers(users.map(user => 
+        user.id === editingUser.id ? editingUser : user
+      ));
+      
+      toast({
+        title: "User Updated",
+        description: `${editingUser.name}'s details have been updated successfully.`,
+      });
+      
+      setEditingUser(null);
+    } catch (error: any) {
+      console.error('Error updating user:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Update Failed',
+        description: error.message || 'Failed to update user details',
+      });
+    }
   };
 
   // Cancel editing
@@ -83,38 +158,42 @@ const AdminUserManagement: React.FC = () => {
 
   // Open add user dialog
   const handleAddUser = () => {
-    console.log("handleAddUser called");
     setIsAddingUser(true);
-    console.log("isAddingUser set to:", true);
   };
 
   // Cancel adding user
   const handleCancelAddUser = () => {
-    console.log("handleCancelAddUser called");
     setIsAddingUser(false);
   };
 
   // Save new user
-  const handleSaveNewUser = (newUser: Omit<User, 'id'>) => {
-    // Generate a simple ID (in a real app, this would come from the backend)
-    const id = `${users.length + 1}`;
-    
-    const userToAdd: User = {
-      id,
-      ...newUser
-    };
-    
-    setUsers([...users, userToAdd]);
-    
-    toast({
-      title: "User Created",
-      description: `${newUser.name} has been added successfully.`,
-    });
-    
-    setIsAddingUser(false);
+  const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
+    try {
+      // In a real implementation, this would trigger a backend API call
+      // to create a new user in the auth system
+      // For now, we'll just add to the local state
+      const userToAdd: User = {
+        id: `temp-${Date.now()}`, // In real app, this would come from the backend
+        ...newUser
+      };
+      
+      setUsers([...users, userToAdd]);
+      
+      toast({
+        title: "User Created",
+        description: `${newUser.name} has been added successfully.`,
+      });
+      
+      setIsAddingUser(false);
+    } catch (error: any) {
+      console.error('Error creating user:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Creation Failed',
+        description: error.message || 'Failed to create new user',
+      });
+    }
   };
-
-  console.log("Rendering with isAddingUser:", isAddingUser);
 
   return (
     <div className="space-y-6">
@@ -126,14 +205,22 @@ const AdminUserManagement: React.FC = () => {
         onAddUser={handleAddUser}
       />
 
-      <Card>
-        <CardContent className="p-0">
-          <UserTable 
-            users={filteredUsers} 
-            onEditUser={handleEditUser}
-          />
-        </CardContent>
-      </Card>
+      {isLoading ? (
+        <Card>
+          <CardContent className="flex justify-center items-center h-40">
+            <p>Loading users...</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardContent className="p-0">
+            <UserTable 
+              users={filteredUsers} 
+              onEditUser={handleEditUser}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Edit User Dialog */}
       <Dialog open={!!editingUser} onOpenChange={(open) => {
@@ -149,18 +236,19 @@ const AdminUserManagement: React.FC = () => {
         )}
       </Dialog>
 
-      {/* Add User Dialog - Fixed implementation */}
+      {/* Add User Dialog */}
       <Dialog 
         open={isAddingUser} 
         onOpenChange={(open) => {
-          console.log("Dialog onOpenChange:", open);
           setIsAddingUser(open);
         }}
       >
-        <AddUserDialog 
-          onSave={handleSaveNewUser}
-          onCancel={handleCancelAddUser}
-        />
+        <DialogContent className="max-w-2xl">
+          <AddUserDialog 
+            onSave={handleSaveNewUser}
+            onCancel={handleCancelAddUser}
+          />
+        </DialogContent>
       </Dialog>
     </div>
   );
