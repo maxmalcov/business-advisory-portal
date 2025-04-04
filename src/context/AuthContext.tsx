@@ -1,6 +1,9 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Session, User } from '@supabase/supabase-js';
+import { Database } from '@/integrations/supabase/types';
 
 // User types
 export type UserType = 'admin' | 'client' | 'manager';
@@ -29,110 +32,150 @@ export interface User {
 // Auth context type
 type AuthContextType = {
   user: User | null;
+  supabaseUser: User | null;
+  session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   register: (userData: Partial<User> & { password: string }) => Promise<void>;
 };
 
 // Create auth context with default values
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  supabaseUser: null,
+  session: null,
   isLoading: true,
   isAuthenticated: false,
   login: async () => {},
-  logout: () => {},
+  logout: async () => {},
   register: async () => {},
 });
-
-// Mock users for demo (would be replaced by actual API calls in production)
-const MOCK_USERS: (User & { password: string })[] = [
-  {
-    id: '1',
-    email: 'admin@businessadvisory.com',
-    password: 'admin123',
-    name: 'Admin User',
-    userType: 'admin',
-    phone: '+34612345678',
-  },
-  {
-    id: '2',
-    email: 'client@example.com',
-    password: 'client123',
-    name: 'Example Client',
-    userType: 'client',
-    accountType: 'sl',
-    companyName: 'Example SL',
-    nif: 'B12345678',
-    address: 'Calle Example 123',
-    postalCode: '28001',
-    city: 'Madrid',
-    province: 'Madrid',
-    country: 'Spain',
-    phone: '+34698765432',
-    incomingInvoiceEmail: 'invoices-in@example.com',
-    outgoingInvoiceEmail: 'invoices-out@example.com',
-    iframeUrls: ['https://app.example.com/dashboard', 'https://reporting.example.com']
-  },
-  {
-    id: '3',
-    email: 'manager@businessadvisory.com',
-    password: 'manager123',
-    name: 'Manager User',
-    userType: 'manager',
-    phone: '+34687654321',
-  }
-];
 
 // Provider component
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Check for existing auth on mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Error parsing stored user:', error);
-        localStorage.removeItem('user');
+  // Function to transform Supabase user to our User type
+  const transformUser = async (supabaseUser: User): Promise<User | null> => {
+    if (!supabaseUser) return null;
+    
+    try {
+      // Get user profile data
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', supabaseUser.id)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        return null;
       }
+      
+      return {
+        id: supabaseUser.id,
+        email: profile.email,
+        name: profile.full_name || '',
+        userType: profile.user_type as UserType,
+        accountType: profile.account_type as AccountType | undefined,
+        companyName: profile.company_name,
+        nif: profile.nif,
+        address: profile.address,
+        postalCode: profile.postal_code,
+        city: profile.city,
+        province: profile.province,
+        country: profile.country,
+        phone: profile.phone,
+        incomingInvoiceEmail: profile.incoming_invoice_email,
+        outgoingInvoiceEmail: profile.outgoing_invoice_email,
+        iframeUrls: profile.iframe_urls,
+      };
+    } catch (error) {
+      console.error('Error transforming user:', error);
+      return null;
     }
-    setIsLoading(false);
-  }, []);
+  };
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const fetchSession = async () => {
+      setIsLoading(true);
+      
+      try {
+        // Set up auth state listener first
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (event, newSession) => {
+            setSession(newSession);
+            
+            if (newSession?.user) {
+              // Use setTimeout to prevent deadlocks with Supabase auth
+              setTimeout(async () => {
+                const transformedUser = await transformUser(newSession.user as unknown as User);
+                setUser(transformedUser);
+                setSupabaseUser(newSession.user as unknown as User);
+              }, 0);
+            } else {
+              setUser(null);
+              setSupabaseUser(null);
+            }
+          }
+        );
+        
+        // Then check for existing session
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        setSession(currentSession);
+        
+        if (currentSession?.user) {
+          const transformedUser = await transformUser(currentSession.user as unknown as User);
+          setUser(transformedUser);
+          setSupabaseUser(currentSession.user as unknown as User);
+        }
+        
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (error) {
+        console.error('Error fetching session:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Error',
+          description: 'Failed to retrieve session',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchSession();
+  }, [toast]);
 
   // Login function
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       
-      const foundUser = MOCK_USERS.find(
-        u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-      );
+      if (error) throw error;
       
-      if (foundUser) {
-        const { password: _, ...userWithoutPassword } = foundUser;
-        setUser(userWithoutPassword);
-        localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-        toast({
-          title: 'Login Successful',
-          description: `Welcome back, ${userWithoutPassword.name}!`,
-        });
-      } else {
-        throw new Error('Invalid credentials');
-      }
-    } catch (error) {
+      toast({
+        title: 'Login Successful',
+        description: 'You have been successfully logged in.',
+      });
+    } catch (error: any) {
       console.error('Login error:', error);
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: error instanceof Error ? error.message : 'An unknown error occurred',
+        description: error?.message || 'An unknown error occurred',
       });
       throw error;
     } finally {
@@ -141,62 +184,62 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Logout function
-  const logout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    toast({
-      title: 'Logged Out',
-      description: 'You have been successfully logged out.',
-    });
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: 'Logged Out',
+        description: 'You have been successfully logged out.',
+      });
+    } catch (error: any) {
+      console.error('Logout error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Logout Failed',
+        description: error?.message || 'Failed to log out',
+      });
+    }
   };
 
   // Register function
   const register = async (userData: Partial<User> & { password: string }) => {
     setIsLoading(true);
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Check if email already exists
-      const emailExists = MOCK_USERS.some(u => u.email.toLowerCase() === userData.email?.toLowerCase());
-      if (emailExists) {
-        throw new Error('Email already in use');
-      }
-      
-      // Create new user (in a real app, this would be an API call)
-      const newUser: User = {
-        id: `${MOCK_USERS.length + 1}`,
+      // Register user with Supabase
+      const { data, error } = await supabase.auth.signUp({
         email: userData.email || '',
-        name: userData.name || '',
-        userType: 'client', // Default to client for new registrations
-        accountType: userData.accountType as AccountType,
-        companyName: userData.companyName,
-        nif: userData.nif,
-        address: userData.address,
-        postalCode: userData.postalCode,
-        city: userData.city,
-        province: userData.province,
-        country: userData.country,
-        phone: userData.phone,
-      };
+        password: userData.password,
+        options: {
+          data: {
+            name: userData.name,
+            userType: userData.userType || 'client',
+            accountType: userData.accountType,
+            companyName: userData.companyName,
+            nif: userData.nif,
+            address: userData.address,
+            postalCode: userData.postalCode,
+            city: userData.city,
+            province: userData.province,
+            country: userData.country,
+            phone: userData.phone,
+          },
+        },
+      });
       
-      // In a real app, we would save this user to the database
-      // For now, we'll just update our local state
-      MOCK_USERS.push({ ...newUser, password: userData.password });
-      
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
+      if (error) throw error;
       
       toast({
         title: 'Registration Successful',
         description: 'Your account has been created successfully.',
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
       toast({
         variant: 'destructive',
         title: 'Registration Failed',
-        description: error instanceof Error ? error.message : 'An unknown error occurred',
+        description: error?.message || 'An unknown error occurred',
       });
       throw error;
     } finally {
@@ -207,6 +250,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   return (
     <AuthContext.Provider value={{ 
       user, 
+      supabaseUser, 
+      session,
       isLoading, 
       isAuthenticated: !!user,
       login,

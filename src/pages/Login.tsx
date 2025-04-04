@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/integrations/supabase/client';
 
 const Login: React.FC = () => {
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -18,6 +19,13 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +43,7 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
-      navigate('/dashboard');
+      // No need to navigate here as the auth state change will trigger redirection
     } catch (error) {
       console.error('Login error:', error);
       // Toast is already handled in the auth context
@@ -44,7 +52,7 @@ const Login: React.FC = () => {
     }
   };
 
-  // Demo login helper
+  // Demo login helper - for development purposes
   const loginAsDemo = async (type: 'admin' | 'client') => {
     setIsLoading(true);
     try {
@@ -53,7 +61,7 @@ const Login: React.FC = () => {
         : { email: 'client@example.com', password: 'client123' };
         
       await login(credentials.email, credentials.password);
-      navigate(type === 'admin' ? '/admin' : '/dashboard');
+      // No need to navigate here as the auth state change will trigger redirection
     } catch (error) {
       console.error('Demo login error:', error);
     } finally {
