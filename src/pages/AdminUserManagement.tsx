@@ -27,8 +27,7 @@ import {
   Plus,
   Save,
   Mail,
-  Link as LinkIcon,
-  AlertTriangle
+  Link as LinkIcon
 } from 'lucide-react';
 import {
   Dialog,
@@ -48,7 +47,6 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // Define user interface for admin management
 interface UserProfile {
@@ -72,7 +70,6 @@ const AdminUserManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
   const [newIframeUrl, setNewIframeUrl] = useState('');
-  const [hasAdmin, setHasAdmin] = useState(false);
 
   // Fetch users from database
   useEffect(() => {
@@ -86,10 +83,6 @@ const AdminUserManagement: React.FC = () => {
         
         if (data) {
           setUsers(data as UserProfile[]);
-          
-          // Check if there's already an admin user
-          const adminExists = data.some(user => user.user_type === 'admin');
-          setHasAdmin(adminExists);
         }
       } catch (error: any) {
         console.error('Error fetching users:', error);
@@ -126,20 +119,6 @@ const AdminUserManagement: React.FC = () => {
     if (!editingUser) return;
     
     try {
-      // If trying to change to admin but there's already an admin (and it's not this user)
-      if (editingUser.user_type === 'admin' && hasAdmin) {
-        const currentUserIsAdmin = users.find(u => u.id === editingUser.id)?.user_type === 'admin';
-        
-        if (!currentUserIsAdmin) {
-          toast({
-            variant: 'destructive',
-            title: 'Operation Not Allowed',
-            description: 'Only one admin account is allowed in the system.',
-          });
-          return;
-        }
-      }
-      
       // Update user profile in database
       const { error } = await supabase
         .from('profiles')
@@ -159,20 +138,6 @@ const AdminUserManagement: React.FC = () => {
       setUsers(users.map(user => 
         user.id === editingUser.id ? editingUser : user
       ));
-      
-      // Update hasAdmin state if user type changed
-      const prevUserType = users.find(u => u.id === editingUser.id)?.user_type;
-      if (prevUserType !== editingUser.user_type) {
-        if (editingUser.user_type === 'admin') {
-          setHasAdmin(true);
-        } else if (prevUserType === 'admin') {
-          // Check if there are any other admins
-          const otherAdminExists = users.some(u => 
-            u.id !== editingUser.id && u.user_type === 'admin'
-          );
-          setHasAdmin(otherAdminExists);
-        }
-      }
       
       toast({
         title: "User Updated",
@@ -215,21 +180,6 @@ const AdminUserManagement: React.FC = () => {
 
   const handleChangeUserType = (value: string) => {
     if (!editingUser) return;
-    
-    // Check if trying to set as admin but there's already an admin user
-    if (value === 'admin' && hasAdmin) {
-      const currentUserIsAdmin = users.find(u => u.id === editingUser.id)?.user_type === 'admin';
-      
-      if (!currentUserIsAdmin) {
-        toast({
-          variant: 'destructive',
-          title: 'Operation Not Allowed',
-          description: 'Only one admin account is allowed in the system.',
-        });
-        return;
-      }
-    }
-    
     setEditingUser({
       ...editingUser,
       user_type: value
@@ -254,14 +204,6 @@ const AdminUserManagement: React.FC = () => {
           </CardDescription>
         </CardHeader>
       </Card>
-      
-      <Alert variant="destructive" className="bg-yellow-50 border-yellow-200">
-        <AlertTriangle className="h-4 w-4 text-yellow-600" />
-        <AlertTitle className="text-yellow-800">Admin Account Restriction</AlertTitle>
-        <AlertDescription className="text-yellow-700">
-          The system is configured to allow only one admin account. You cannot create additional admin accounts or elevate regular users to admin status.
-        </AlertDescription>
-      </Alert>
 
       <div className="flex justify-between items-center mb-4">
         <div className="relative w-64">
@@ -360,9 +302,7 @@ const AdminUserManagement: React.FC = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="client">Client</SelectItem>
-                                  <SelectItem value="admin" disabled={hasAdmin && users.find(u => u.id === editingUser.id)?.user_type !== 'admin'}>
-                                    Administrator {hasAdmin && users.find(u => u.id === editingUser.id)?.user_type !== 'admin' ? '(Only one admin allowed)' : ''}
-                                  </SelectItem>
+                                  <SelectItem value="admin">Administrator</SelectItem>
                                   <SelectItem value="manager">Manager</SelectItem>
                                 </SelectContent>
                               </Select>

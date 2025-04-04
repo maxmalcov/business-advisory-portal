@@ -56,14 +56,10 @@ const Login: React.FC = () => {
   const loginAsDemo = async (type: 'admin' | 'client') => {
     setIsLoading(true);
     try {
-      // Updated demo credentials that match the Supabase authentication system
       const credentials = type === 'admin' 
-        ? { email: 'admin@example.com', password: 'password123' }
-        : { email: 'client@example.com', password: 'password123' };
+        ? { email: 'admin@businessadvisory.com', password: 'admin123' }
+        : { email: 'client@example.com', password: 'client123' };
         
-      setEmail(credentials.email);
-      setPassword(credentials.password);
-      
       await login(credentials.email, credentials.password);
       // The redirect will happen in the useEffect when isAuthenticated changes
     } catch (error) {
