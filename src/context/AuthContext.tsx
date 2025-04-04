@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Session, User } from '@supabase/supabase-js';
+import { Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { Database } from '@/integrations/supabase/types';
 
 // User types
@@ -10,7 +10,7 @@ export type UserType = 'admin' | 'client' | 'manager';
 export type AccountType = 'freelancer' | 'sl' | 'sa' | 'individual';
 
 // User interface
-export interface User {
+export interface Profile {
   id: string;
   email: string;
   name: string;
@@ -31,14 +31,14 @@ export interface User {
 
 // Auth context type
 type AuthContextType = {
-  user: User | null;
-  supabaseUser: User | null;
+  user: Profile | null;
+  supabaseUser: SupabaseUser | null;
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  register: (userData: Partial<User> & { password: string }) => Promise<void>;
+  register: (userData: Partial<Profile> & { password: string }) => Promise<void>;
 };
 
 // Create auth context with default values
@@ -55,14 +55,14 @@ const AuthContext = createContext<AuthContextType>({
 
 // Provider component
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Profile | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   // Function to transform Supabase user to our User type
-  const transformUser = async (supabaseUser: User): Promise<User | null> => {
+  const transformUser = async (supabaseUser: SupabaseUser): Promise<Profile | null> => {
     if (!supabaseUser) return null;
     
     try {
@@ -77,6 +77,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.error('Error fetching user profile:', error);
         return null;
       }
+      
+      if (!profile) return null;
       
       return {
         id: supabaseUser.id,
@@ -116,9 +118,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             if (newSession?.user) {
               // Use setTimeout to prevent deadlocks with Supabase auth
               setTimeout(async () => {
-                const transformedUser = await transformUser(newSession.user as unknown as User);
+                const transformedUser = await transformUser(newSession.user);
                 setUser(transformedUser);
-                setSupabaseUser(newSession.user as unknown as User);
+                setSupabaseUser(newSession.user);
               }, 0);
             } else {
               setUser(null);
@@ -132,9 +134,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setSession(currentSession);
         
         if (currentSession?.user) {
-          const transformedUser = await transformUser(currentSession.user as unknown as User);
+          const transformedUser = await transformUser(currentSession.user);
           setUser(transformedUser);
-          setSupabaseUser(currentSession.user as unknown as User);
+          setSupabaseUser(currentSession.user);
         }
         
         return () => {
@@ -204,7 +206,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Register function
-  const register = async (userData: Partial<User> & { password: string }) => {
+  const register = async (userData: Partial<Profile> & { password: string }) => {
     setIsLoading(true);
     try {
       // Register user with Supabase
