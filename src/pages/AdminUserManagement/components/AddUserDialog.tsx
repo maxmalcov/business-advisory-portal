@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { 
@@ -13,27 +12,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail, Link as LinkIcon, Plus, Save, X } from 'lucide-react';
+import { User } from '../types';
 
-// Define the user structure based on existing code
-interface User {
-  id?: string;
-  name: string;
-  email: string;
-  companyName?: string;
-  userType: string;
-  incomingInvoiceEmail?: string;
-  outgoingInvoiceEmail?: string;
-  iframeUrls?: string[];
-}
+type NewUser = Omit<User, 'id'>;
 
 interface AddUserDialogProps {
-  onSave: (user: User) => void;
+  onSave: (user: NewUser) => void;
   onCancel: () => void;
 }
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   const { t } = useLanguage();
-  const [newUser, setNewUser] = React.useState<User>({
+  const [newUser, setNewUser] = React.useState<NewUser>({
     name: '',
     email: '',
     companyName: '',
@@ -44,7 +34,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   });
   const [newIframeUrl, setNewIframeUrl] = React.useState('');
 
-  // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {
     if (!newIframeUrl) return;
     
@@ -56,7 +45,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     setNewIframeUrl('');
   };
 
-  // Handle removing an iframe URL
   const handleRemoveIframeUrl = (index: number) => {
     const newUrls = [...(newUser.iframeUrls || [])];
     newUrls.splice(index, 1);
@@ -67,7 +55,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     });
   };
 
-  // Handle changing user type
   const handleChangeUserType = (value: string) => {
     setNewUser({
       ...newUser,
@@ -75,9 +62,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     });
   };
 
-  // Handle saving the new user
   const handleSave = () => {
-    // Basic validation
     if (!newUser.name || !newUser.email) {
       alert('Please fill in required fields: Name and Email');
       return;
@@ -127,7 +112,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
           <Label htmlFor="role">Role</Label>
           <Select 
             value={newUser.userType} 
-            onValueChange={handleChangeUserType}
+            onValueChange={(value) => setNewUser({...newUser, userType: value})}
           >
             <SelectTrigger id="role">
               <SelectValue placeholder="Select a role" />
@@ -182,7 +167,11 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
                 <Button 
                   variant="ghost" 
                   size="icon"
-                  onClick={() => handleRemoveIframeUrl(index)}
+                  onClick={() => {
+                    const newUrls = [...(newUser.iframeUrls || [])];
+                    newUrls.splice(index, 1);
+                    setNewUser({...newUser, iframeUrls: newUrls});
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -200,7 +189,14 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={handleAddIframeUrl}
+                onClick={() => {
+                  if (!newIframeUrl) return;
+                  setNewUser({
+                    ...newUser,
+                    iframeUrls: [...(newUser.iframeUrls || []), newIframeUrl]
+                  });
+                  setNewIframeUrl('');
+                }}
                 className="ml-2"
               >
                 <Plus className="h-4 w-4 mr-1" />
@@ -213,7 +209,14 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
       
       <DialogFooter>
         <Button variant="outline" onClick={onCancel}>Cancel</Button>
-        <Button onClick={handleSave}>
+        <Button onClick={() => {
+          if (!newUser.name || !newUser.email) {
+            alert('Please fill in required fields: Name and Email');
+            return;
+          }
+          
+          onSave(newUser);
+        }}>
           <Save className="mr-2 h-4 w-4" />
           Create User
         </Button>

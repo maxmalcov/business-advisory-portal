@@ -7,7 +7,7 @@ import { Search, UserPlus } from 'lucide-react';
 interface UserSearchBarProps {
   searchQuery: string;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onAddUser: () => void; // Function to handle adding a new user
+  onAddUser: () => void;
 }
 
 const UserSearchBar: React.FC<UserSearchBarProps> = ({ 
