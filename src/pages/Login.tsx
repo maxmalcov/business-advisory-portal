@@ -44,23 +44,6 @@ const Login: React.FC = () => {
     }
   };
 
-  // Demo login helper
-  const loginAsDemo = async (type: 'admin' | 'client') => {
-    setIsLoading(true);
-    try {
-      const credentials = type === 'admin' 
-        ? { email: 'admin@businessadvisory.com', password: 'admin123' }
-        : { email: 'client@example.com', password: 'client123' };
-        
-      await login(credentials.email, credentials.password);
-      navigate(type === 'admin' ? '/admin' : '/dashboard');
-    } catch (error) {
-      console.error('Demo login error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-5rem)]">
       <Card className="w-full max-w-md">
@@ -106,30 +89,6 @@ const Login: React.FC = () => {
               <Link to="/register" className="text-primary hover:underline">
                 {t('app.register')}
               </Link>
-            </div>
-            
-            <div className="border-t pt-4">
-              <p className="text-center text-sm text-muted-foreground mb-2">Demo Accounts</p>
-              <div className="flex gap-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="flex-1" 
-                  disabled={isLoading}
-                  onClick={() => loginAsDemo('admin')}
-                >
-                  Admin Demo
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="flex-1" 
-                  disabled={isLoading}
-                  onClick={() => loginAsDemo('client')}
-                >
-                  Client Demo
-                </Button>
-              </div>
             </div>
           </CardFooter>
         </form>
