@@ -1,16 +1,13 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import type { User, Session } from '@supabase/supabase-js';
-import type { Database } from '@/integrations/supabase/types';
 
 // User types
 export type UserType = 'admin' | 'client' | 'manager';
 export type AccountType = 'freelancer' | 'sl' | 'sa' | 'individual';
 
 // User interface
-export interface AppUser {
+export interface User {
   id: string;
   email: string;
   name: string;
@@ -31,12 +28,12 @@ export interface AppUser {
 
 // Auth context type
 type AuthContextType = {
-  user: AppUser | null;
+  user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  register: (userData: Partial<AppUser> & { password: string }) => Promise<void>;
+  logout: () => void;
+  register: (userData: Partial<User> & { password: string }) => Promise<void>;
 };
 
 // Create auth context with default values
@@ -45,120 +42,97 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   isAuthenticated: false,
   login: async () => {},
-  logout: async () => {},
+  logout: () => {},
   register: async () => {},
 });
 
+// Mock users for demo (would be replaced by actual API calls in production)
+const MOCK_USERS: (User & { password: string })[] = [
+  {
+    id: '1',
+    email: 'admin@businessadvisory.com',
+    password: 'admin123',
+    name: 'Admin User',
+    userType: 'admin',
+    phone: '+34612345678',
+  },
+  {
+    id: '2',
+    email: 'client@example.com',
+    password: 'client123',
+    name: 'Example Client',
+    userType: 'client',
+    accountType: 'sl',
+    companyName: 'Example SL',
+    nif: 'B12345678',
+    address: 'Calle Example 123',
+    postalCode: '28001',
+    city: 'Madrid',
+    province: 'Madrid',
+    country: 'Spain',
+    phone: '+34698765432',
+    incomingInvoiceEmail: 'invoices-in@example.com',
+    outgoingInvoiceEmail: 'invoices-out@example.com',
+    iframeUrls: ['https://app.example.com/dashboard', 'https://reporting.example.com']
+  },
+  {
+    id: '3',
+    email: 'manager@businessadvisory.com',
+    password: 'manager123',
+    name: 'Manager User',
+    userType: 'manager',
+    phone: '+34687654321',
+  }
+];
+
 // Provider component
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<AppUser | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Fetch user profile data
-  const fetchUserProfile = async (userId: string) => {
-    try {
-      // Using a type-safe approach with any for now to work around type issues
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) throw error;
-
-      if (data) {
-        // Map the database fields to our AppUser interface
-        return {
-          id: data.id,
-          email: data.email,
-          name: data.name || '',
-          userType: data.user_type as UserType,
-          accountType: data.account_type as AccountType,
-          companyName: data.company_name,
-          nif: data.nif,
-          address: data.address,
-          postalCode: data.postal_code,
-          city: data.city,
-          province: data.province,
-          country: data.country,
-          phone: data.phone,
-          incomingInvoiceEmail: data.incoming_invoice_email,
-          outgoingInvoiceEmail: data.outgoing_invoice_email,
-          iframeUrls: [] // To be filled in later if needed
-        };
-      }
-      return null;
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-      return null;
-    }
-  };
-
-  // Set up auth state listener
+  // Check for existing auth on mount
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setIsLoading(true);
-        
-        if (session?.user) {
-          const userProfile = await fetchUserProfile(session.user.id);
-          setUser(userProfile);
-        } else {
-          setUser(null);
-        }
-        
-        setIsLoading(false);
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('user');
       }
-    );
-
-    // Initial session check
-    const initAuth = async () => {
-      setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        const userProfile = await fetchUserProfile(session.user.id);
-        setUser(userProfile);
-      }
-      
-      setIsLoading(false);
-    };
-
-    initAuth();
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    }
+    setIsLoading(false);
   }, []);
 
   // Login function
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) throw error;
-
-      if (data.user) {
-        const userProfile = await fetchUserProfile(data.user.id);
-        
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const foundUser = MOCK_USERS.find(
+        u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+      );
+      
+      if (foundUser) {
+        const { password: _, ...userWithoutPassword } = foundUser;
+        setUser(userWithoutPassword);
+        localStorage.setItem('user', JSON.stringify(userWithoutPassword));
         toast({
           title: 'Login Successful',
-          description: `Welcome back, ${userProfile?.name || 'User'}!`,
+          description: `Welcome back, ${userWithoutPassword.name}!`,
         });
+      } else {
+        throw new Error('Invalid credentials');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Login error:', error);
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: error.message || 'Invalid credentials',
+        description: error instanceof Error ? error.message : 'An unknown error occurred',
       });
       throw error;
     } finally {
@@ -167,60 +141,62 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Logout function
-  const logout = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast({
-        title: 'Logged Out',
-        description: 'You have been successfully logged out.',
-      });
-    } catch (error: any) {
-      console.error('Logout error:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Logout Failed',
-        description: error.message || 'An unknown error occurred',
-      });
-    }
+  const logout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    toast({
+      title: 'Logged Out',
+      description: 'You have been successfully logged out.',
+    });
   };
 
   // Register function
-  const register = async (userData: Partial<AppUser> & { password: string }) => {
+  const register = async (userData: Partial<User> & { password: string }) => {
     setIsLoading(true);
     try {
-      // Register user with Supabase Auth
-      const { data, error } = await supabase.auth.signUp({
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Check if email already exists
+      const emailExists = MOCK_USERS.some(u => u.email.toLowerCase() === userData.email?.toLowerCase());
+      if (emailExists) {
+        throw new Error('Email already in use');
+      }
+      
+      // Create new user (in a real app, this would be an API call)
+      const newUser: User = {
+        id: `${MOCK_USERS.length + 1}`,
         email: userData.email || '',
-        password: userData.password,
-        options: {
-          data: {
-            name: userData.name,
-            userType: userData.userType || 'client',
-            accountType: userData.accountType,
-            companyName: userData.companyName,
-            nif: userData.nif,
-            address: userData.address,
-            postalCode: userData.postalCode,
-            city: userData.city,
-            province: userData.province,
-            country: userData.country,
-            phone: userData.phone
-          }
-        }
-      });
-
-      if (error) throw error;
-
+        name: userData.name || '',
+        userType: 'client', // Default to client for new registrations
+        accountType: userData.accountType as AccountType,
+        companyName: userData.companyName,
+        nif: userData.nif,
+        address: userData.address,
+        postalCode: userData.postalCode,
+        city: userData.city,
+        province: userData.province,
+        country: userData.country,
+        phone: userData.phone,
+      };
+      
+      // In a real app, we would save this user to the database
+      // For now, we'll just update our local state
+      MOCK_USERS.push({ ...newUser, password: userData.password });
+      
+      setUser(newUser);
+      localStorage.setItem('user', JSON.stringify(newUser));
+      
       toast({
         title: 'Registration Successful',
         description: 'Your account has been created successfully.',
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Registration error:', error);
       toast({
         variant: 'destructive',
         title: 'Registration Failed',
-        description: error.message || 'An unknown error occurred',
+        description: error instanceof Error ? error.message : 'An unknown error occurred',
       });
       throw error;
     } finally {

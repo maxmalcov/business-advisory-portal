@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth, AccountType } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -17,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import LanguageSelector from '@/components/LanguageSelector';
 
 const Register: React.FC = () => {
-  const { register, isAuthenticated, user } = useAuth();
+  const { register } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -41,24 +42,22 @@ const Register: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate(user?.userType === 'admin' ? '/admin' : '/dashboard');
-    }
-  }, [isAuthenticated, navigate, user]);
-
+  // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Handle select changes
   const handleSelectChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Basic validation
     if (!formData.email || !formData.password) {
       toast({
         variant: 'destructive',
@@ -84,13 +83,16 @@ const Register: React.FC = () => {
         ...formData,
         userType: 'client',
       });
+      navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
+      // Toast is already handled in the auth context
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Check if we're dealing with a business account type
   const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(formData.accountType);
 
   return (
@@ -102,6 +104,7 @@ const Register: React.FC = () => {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
+            {/* Language and Account Type */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>{t('registration.language')}</Label>
@@ -126,6 +129,7 @@ const Register: React.FC = () => {
               </div>
             </div>
 
+            {/* Individual or Business Information */}
             {isBusinessAccount ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -161,6 +165,7 @@ const Register: React.FC = () => {
               </div>
             )}
 
+            {/* Tax ID */}
             <div className="space-y-2">
               <Label htmlFor="nif">{t('registration.nif')} *</Label>
               <Input
@@ -172,6 +177,7 @@ const Register: React.FC = () => {
               />
             </div>
 
+            {/* Address */}
             <div className="space-y-2">
               <Label htmlFor="address">{t('registration.address')} *</Label>
               <Input
@@ -183,6 +189,7 @@ const Register: React.FC = () => {
               />
             </div>
 
+            {/* City, Postal Code, Province and Country */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="postal">{t('registration.postal')} *</Label>
@@ -226,6 +233,7 @@ const Register: React.FC = () => {
               </div>
             </div>
 
+            {/* Contact Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="email">{t('registration.email')} *</Label>
@@ -250,6 +258,7 @@ const Register: React.FC = () => {
               </div>
             </div>
 
+            {/* Password */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="password">{t('auth.password')} *</Label>

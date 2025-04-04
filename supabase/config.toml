@@ -1,7 +1,1 @@
-
-# This file controls the behavior of Supabase Functions.
-
 project_id = "uvispmmrfcjtjefimbfi"
-
-[functions.create-admin]
-verify_jwt = true

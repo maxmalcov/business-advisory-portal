@@ -9,89 +9,16 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          account_type: Database["public"]["Enums"]["account_type"] | null
-          address: string | null
-          city: string | null
-          company_name: string | null
-          country: string | null
-          created_at: string
-          email: string
-          id: string
-          incoming_invoice_email: string | null
-          name: string | null
-          nif: string | null
-          outgoing_invoice_email: string | null
-          phone: string | null
-          postal_code: string | null
-          province: string | null
-          updated_at: string
-          user_type: Database["public"]["Enums"]["user_type"]
-        }
-        Insert: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
-          address?: string | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string
-          email: string
-          id: string
-          incoming_invoice_email?: string | null
-          name?: string | null
-          nif?: string | null
-          outgoing_invoice_email?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          province?: string | null
-          updated_at?: string
-          user_type?: Database["public"]["Enums"]["user_type"]
-        }
-        Update: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
-          address?: string | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          incoming_invoice_email?: string | null
-          name?: string | null
-          nif?: string | null
-          outgoing_invoice_email?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          province?: string | null
-          updated_at?: string
-          user_type?: Database["public"]["Enums"]["user_type"]
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      is_admin: {
-        Args: {
-          user_id: string
-        }
-        Returns: boolean
-      }
-      update_invoice_emails: {
-        Args: {
-          user_id: string
-          new_incoming_email: string
-          new_outgoing_email: string
-        }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
-      account_type: "freelancer" | "sl" | "sa" | "individual"
-      user_type: "admin" | "client" | "manager"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
