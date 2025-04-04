@@ -45,8 +45,6 @@ import {
 
 type ServiceStatus = 'available' | 'pending' | 'completed' | 'rejected';
 
-type ServiceRequestType = ServiceRequest;
-
 const AdminServices: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
@@ -54,9 +52,9 @@ const AdminServices: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [adminEmail, setAdminEmail] = useState('admin@example.com');
-  const [serviceRequests, setServiceRequests] = useState<ServiceRequestType[]>([]);
+  const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRequest, setSelectedRequest] = useState<ServiceRequestType | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<ServiceRequest | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [adminNotes, setAdminNotes] = useState('');
 
@@ -147,7 +145,7 @@ const AdminServices: React.FC = () => {
     });
   };
 
-  const openDetailsDialog = (request: ServiceRequestType) => {
+  const openDetailsDialog = (request: ServiceRequest) => {
     setSelectedRequest(request);
     setAdminNotes(request.admin_notes || '');
     setIsDialogOpen(true);

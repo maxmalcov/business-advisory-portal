@@ -27,5 +27,6 @@ export type ServiceRequest = {
 
 // Helper function to safely access the service_requests table
 export const serviceRequestsTable = () => {
-  return supabase.from('service_requests') as unknown as ReturnType<typeof supabase.from<ServiceRequest>>;
+  return supabase.from('service_requests');
 };
+
