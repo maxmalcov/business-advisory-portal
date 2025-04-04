@@ -44,6 +44,27 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleAdminLogin = async () => {
+    setEmail('admin@example.com');
+    setPassword('adminpassword');
+    
+    setIsLoading(true);
+    
+    try {
+      await login('admin@example.com', 'adminpassword');
+      navigate('/admin');
+    } catch (error) {
+      console.error('Admin login error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Admin Login Failed',
+        description: 'Please make sure the admin account exists in Supabase. You may need to create it first.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-5rem)]">
       <Card className="w-full max-w-md">
@@ -82,6 +103,16 @@ const Login: React.FC = () => {
           <CardFooter className="flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? t('app.loading') : t('app.login')}
+            </Button>
+            
+            <Button 
+              type="button" 
+              variant="outline"
+              className="w-full" 
+              onClick={handleAdminLogin}
+              disabled={isLoading}
+            >
+              Login as Admin (Test)
             </Button>
             
             <div className="text-center text-sm">
