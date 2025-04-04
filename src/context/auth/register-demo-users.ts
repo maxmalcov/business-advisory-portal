@@ -4,19 +4,21 @@ import { supabase } from '@/integrations/supabase/client';
 // This function will register demo users if they don't exist
 export const registerDemoUsers = async () => {
   try {
-    // First check if admin exists
+    // Check if any admin exists in the system
     const { data: adminExists, error: adminCheckError } = await supabase
       .from('profiles')
       .select('id')
-      .eq('email', 'admin@example.com')
+      .eq('user_type', 'admin')
       .maybeSingle();
       
     if (adminCheckError) {
       console.error('Error checking for admin user:', adminCheckError);
     }
     
-    // If admin doesn't exist, create it
+    // Only create an admin if none exists in the system
     if (!adminExists) {
+      console.log('No admin found in the system, creating the default admin account');
+      
       // Using signUp to create the admin user
       const { error: adminCreateError } = await supabase.auth.signUp({
         email: 'admin@example.com',
@@ -32,11 +34,13 @@ export const registerDemoUsers = async () => {
       if (adminCreateError) {
         console.error('Error creating admin user:', adminCreateError);
       } else {
-        console.log('Admin demo user created successfully');
+        console.log('Admin user created successfully');
       }
+    } else {
+      console.log('Admin user already exists in the system');
     }
     
-    // Check if client exists
+    // Check if client demo exists
     const { data: clientExists, error: clientCheckError } = await supabase
       .from('profiles')
       .select('id')
