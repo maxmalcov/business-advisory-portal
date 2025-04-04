@@ -52,16 +52,13 @@ const Login: React.FC = () => {
     }
   };
 
-  // Demo login helper
-  const loginAsDemo = async (type: 'admin' | 'client' | 'manager') => {
+  // Demo login helper - for development purposes
+  const loginAsDemo = async (type: 'admin' | 'client') => {
     setIsLoading(true);
     try {
-      const credentials = 
-        type === 'admin' 
-          ? { email: 'admin@businessadvisory.com', password: 'admin123' }
-        : type === 'manager'
-          ? { email: 'manager@businessadvisory.com', password: 'manager123' }
-          : { email: 'client@example.com', password: 'client123' };
+      const credentials = type === 'admin' 
+        ? { email: 'admin@businessadvisory.com', password: 'admin123' }
+        : { email: 'client@example.com', password: 'client123' };
         
       await login(credentials.email, credentials.password);
       // The redirect will happen in the useEffect when isAuthenticated changes
@@ -121,39 +118,25 @@ const Login: React.FC = () => {
             
             <div className="border-t pt-4">
               <p className="text-center text-sm text-muted-foreground mb-2">Demo Accounts</p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="flex gap-3">
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="w-full" 
+                  className="flex-1" 
                   disabled={isLoading || authLoading}
                   onClick={() => loginAsDemo('admin')}
                 >
-                  Admin
+                  Admin Demo
                 </Button>
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="w-full" 
-                  disabled={isLoading || authLoading}
-                  onClick={() => loginAsDemo('manager')}
-                >
-                  Manager
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="w-full" 
+                  className="flex-1" 
                   disabled={isLoading || authLoading}
                   onClick={() => loginAsDemo('client')}
                 >
-                  Client
+                  Client Demo
                 </Button>
-              </div>
-              <div className="mt-2 text-center text-xs text-muted-foreground">
-                <p>Admin: admin@businessadvisory.com / admin123</p>
-                <p>Manager: manager@businessadvisory.com / manager123</p>
-                <p>Client: client@example.com / client123</p>
               </div>
             </div>
           </CardFooter>
