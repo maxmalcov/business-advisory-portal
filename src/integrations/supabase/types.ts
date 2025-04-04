@@ -15,7 +15,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: {
+          user_id: string
+        }
+        Returns: boolean
+      }
+      update_invoice_emails: {
+        Args: {
+          user_id: string
+          new_incoming_email: string
+          new_outgoing_email: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
