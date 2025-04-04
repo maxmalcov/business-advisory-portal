@@ -9,7 +9,66 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"] | null
+          address: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string
+          email: string
+          id: string
+          incoming_invoice_email: string | null
+          name: string | null
+          nif: string | null
+          outgoing_invoice_email: string | null
+          phone: string | null
+          postal_code: string | null
+          province: string | null
+          updated_at: string
+          user_type: Database["public"]["Enums"]["user_type"]
+        }
+        Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          address?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          id: string
+          incoming_invoice_email?: string | null
+          name?: string | null
+          nif?: string | null
+          outgoing_invoice_email?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          province?: string | null
+          updated_at?: string
+          user_type?: Database["public"]["Enums"]["user_type"]
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          address?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          incoming_invoice_email?: string | null
+          name?: string | null
+          nif?: string | null
+          outgoing_invoice_email?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          province?: string | null
+          updated_at?: string
+          user_type?: Database["public"]["Enums"]["user_type"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -31,7 +90,8 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      account_type: "freelancer" | "sl" | "sa" | "individual"
+      user_type: "admin" | "client" | "manager"
     }
     CompositeTypes: {
       [_ in never]: never

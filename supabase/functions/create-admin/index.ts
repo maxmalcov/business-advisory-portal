@@ -1,96 +1,93 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.43.1";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 serve(async (req) => {
-  // Handle CORS
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    // Create a Supabase client with the admin key
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") || "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || ""
-    );
+    // Create a Supabase client with the Admin key
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Check if an admin already exists
-    const { data: existingAdmins, error: checkError } = await supabaseAdmin
+    // Check if admin already exists
+    const { data: existingAdmins, error: queryError } = await supabase
       .from('profiles')
       .select('id')
       .eq('user_type', 'admin')
-      .limit(1);
+      .limit(1)
 
-    if (checkError) {
-      throw new Error(`Error checking for existing admins: ${checkError.message}`);
+    if (queryError) {
+      throw queryError
     }
 
-    // If admin already exists, return info
     if (existingAdmins && existingAdmins.length > 0) {
       return new Response(
-        JSON.stringify({ 
-          success: false, 
-          message: "Admin user already exists",
-          adminExists: true 
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+        JSON.stringify({ success: false, adminExists: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
-    // Create admin user
-    const adminEmail = "admin@businessadvisory.com";
-    const adminPassword = "admin123";
-    
-    // Create user in auth
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: adminEmail,
-      password: adminPassword,
+    // If no admin exists, create one
+    const email = 'admin@businessadvisory.com'
+    const password = 'admin123'
+
+    // Create user with admin role
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email,
+      password,
       email_confirm: true,
       user_metadata: {
-        name: "Admin User",
-        userType: "admin"
+        name: 'System Administrator',
+        userType: 'admin'
       }
-    });
+    })
 
-    if (authError || !authData.user) {
-      throw new Error(`Error creating admin user: ${authError?.message || "Unknown error"}`);
+    if (authError) {
+      throw authError
     }
 
-    // Update the profile to ensure user_type is set to admin
-    const { error: updateError } = await supabaseAdmin
-      .from('profiles')
-      .update({ user_type: 'admin' })
-      .eq('id', authData.user.id);
+    // Ensure the profile is properly created with admin user_type
+    if (authData.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ user_type: 'admin' })
+        .eq('id', authData.user.id)
 
-    if (updateError) {
-      throw new Error(`Error updating admin profile: ${updateError.message}`);
+      if (profileError) {
+        console.error('Error updating profile:', profileError)
+      }
     }
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Admin user created successfully",
-        email: adminEmail,
-        password: adminPassword
+        email,
+        password
       }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
   } catch (error) {
+    console.error('Error creating admin:', error)
+    
     return new Response(
       JSON.stringify({ 
-        success: false, 
-        message: error.message 
+        success: false,
+        message: error.message
       }),
       { 
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400
       }
-    );
+    )
   }
-});
+})

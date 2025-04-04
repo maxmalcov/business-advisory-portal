@@ -3,6 +3,14 @@ import { useState } from 'react';
 import { useToast } from './use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+interface AdminCreationResponse {
+  success: boolean;
+  adminExists?: boolean;
+  email?: string;
+  password?: string;
+  message?: string;
+}
+
 export function useCreateAdmin() {
   const [isLoading, setIsLoading] = useState(false);
   const [adminCreated, setAdminCreated] = useState(false);
@@ -13,7 +21,7 @@ export function useCreateAdmin() {
     
     try {
       // Call the create-admin edge function
-      const { data, error } = await supabase.functions.invoke('create-admin');
+      const { data, error } = await supabase.functions.invoke<AdminCreationResponse>('create-admin');
       
       if (error) throw error;
       
@@ -34,7 +42,7 @@ export function useCreateAdmin() {
           throw new Error(data.message || "Failed to create admin user");
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating admin:", error);
       toast({
         variant: "destructive",

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
+import type { Database } from '@/integrations/supabase/types';
 
 // User types
 export type UserType = 'admin' | 'client' | 'manager';
@@ -60,7 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Fetch user profile data
   const fetchUserProfile = async (userId: string) => {
     try {
-      // Use a more direct approach to query the database
+      // Use a typesafe approach to query the profiles table
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
