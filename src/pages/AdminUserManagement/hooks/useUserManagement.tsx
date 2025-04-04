@@ -1,23 +1,22 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '../types';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/auth';
 
 export const useUserManagement = () => {
+  const { toast } = useToast();
+  const { user: currentUser } = useAuth();
+  
   const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
-  const [newIframeUrl, setNewIframeUrl] = useState('');
-  const { toast } = useToast();
-  const { user: currentUser } = useAuth();
 
-  // Transform Supabase profile data to our User interface
-  const transformProfileData = (profile: any): User => ({
+  // Helper function to map DB profiles to our User interface
+  const mapProfileToUser = (profile: any): User => ({
     id: profile.id,
     name: profile.full_name || '',
     email: profile.email,
@@ -28,79 +27,59 @@ export const useUserManagement = () => {
     iframeUrls: profile.iframe_urls || [],
   });
 
-  // Fetch users from database
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (!currentUser || currentUser.userType !== 'admin') {
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        console.log('Fetching users...');
-        
-        // Use RPC call to is_admin function to avoid RLS recursion
-        const { data: isAdminCheck, error: adminCheckError } = await supabase
-          .rpc('is_admin', { user_id: currentUser.id });
+  // Fetch users using a direct RPC call to is_admin to bypass potential recursion issues
+  const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // First check if current user is admin using RPC 
+      if (currentUser) {
+        const { data: isAdmin, error: adminCheckError } = await supabase.rpc('is_admin', {
+          user_id: currentUser.id
+        });
         
         if (adminCheckError) {
-          console.error('Admin check error:', adminCheckError);
           throw adminCheckError;
         }
         
-        if (!isAdminCheck) {
+        if (!isAdmin) {
           toast({
             variant: 'destructive',
             title: 'Access Denied',
-            description: 'You do not have administrator privileges',
+            description: 'You do not have permission to view this page.',
           });
           setIsLoading(false);
           return;
         }
         
-        const { data, error } = await supabase
+        // If admin, fetch all profiles
+        const { data: profiles, error } = await supabase
           .from('profiles')
           .select('*');
         
-        if (error) {
-          console.error('Error fetching users:', error);
-          throw error;
-        }
+        if (error) throw error;
         
-        if (data) {
-          const transformedUsers = data.map(transformProfileData);
-          setUsers(transformedUsers);
-          setFilteredUsers(transformedUsers);
+        if (profiles) {
+          const mappedUsers = profiles.map(mapProfileToUser);
+          setUsers(mappedUsers);
         }
-      } catch (error: any) {
-        console.error('Error in user management:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: error.message || 'Failed to load users',
-        });
-      } finally {
-        setIsLoading(false);
       }
-    };
-    
-    fetchUsers();
+    } catch (error: any) {
+      console.error('Error fetching users:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message || 'Failed to load users',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }, [currentUser, toast]);
 
-  // Filter users based on search query
   useEffect(() => {
-    if (searchQuery) {
-      const filtered = users.filter(user => 
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (user.companyName && user.companyName.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-      setFilteredUsers(filtered);
-    } else {
-      setFilteredUsers(users);
+    if (currentUser) {
+      fetchUsers();
     }
-  }, [searchQuery, users]);
+  }, [currentUser, fetchUsers]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -110,29 +89,18 @@ export const useUserManagement = () => {
     setEditingUser({...user});
   };
 
-  const handleUpdateUser = (updatedUser: User) => {
-    setEditingUser(updatedUser);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingUser(null);
-  };
-
-  const handleAddUser = () => {
-    setIsAddingUser(true);
-  };
-
-  const handleCancelAddUser = () => {
-    setIsAddingUser(false);
+  const handleUpdateUser = (user: User) => {
+    setEditingUser(user);
   };
 
   const handleSaveUser = async () => {
     if (!editingUser) return;
     
     try {
-      // Map our User interface back to Supabase profile data structure
+      // Map our User interface back to the DB profile format
       const profileData = {
         full_name: editingUser.name,
+        email: editingUser.email,
         company_name: editingUser.companyName,
         user_type: editingUser.userType,
         incoming_invoice_email: editingUser.incomingInvoiceEmail,
@@ -169,26 +137,86 @@ export const useUserManagement = () => {
     }
   };
 
-  const handleSaveNewUser = async (newUser: Partial<User>) => {
+  const handleCancelEdit = () => {
+    setEditingUser(null);
+  };
+
+  const handleAddUser = () => {
+    setIsAddingUser(true);
+  };
+
+  const handleCancelAddUser = () => {
+    setIsAddingUser(false);
+  };
+
+  const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
     try {
-      // In a real app, you would call an API to create a new user with authentication
-      // For now, we'll just display a toast
-      toast({
-        title: "User Creation",
-        description: "In a production environment, this would create a new user account.",
+      // We can't directly insert into auth.users, so we'll register a new user
+      // This is a placeholder - in a real app, you would use Supabase's admin API or server-side functions
+      
+      // Generate a random password for the new user (in real app, send email with password reset link)
+      const tempPassword = Math.random().toString(36).slice(-8);
+      
+      // Register user with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email: newUser.email,
+        password: tempPassword,
+        options: {
+          data: {
+            full_name: newUser.name,
+            user_type: newUser.userType,
+          },
+        },
       });
       
-      // Close the add user dialog
-      setIsAddingUser(false);
+      if (error) throw error;
+      
+      // The user is now created, but we'll need to update their profile with additional details
+      if (data.user) {
+        const profileData = {
+          id: data.user.id,
+          full_name: newUser.name,
+          email: newUser.email,
+          company_name: newUser.companyName,
+          user_type: newUser.userType,
+          incoming_invoice_email: newUser.incomingInvoiceEmail,
+          outgoing_invoice_email: newUser.outgoingInvoiceEmail,
+          iframe_urls: newUser.iframeUrls
+        };
+        
+        // Update the profile
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert(profileData);
+        
+        if (profileError) throw profileError;
+        
+        // Refresh the users list
+        fetchUsers();
+        
+        toast({
+          title: "User Created",
+          description: `${newUser.name} has been added successfully.`,
+        });
+        
+        setIsAddingUser(false);
+      }
     } catch (error: any) {
       console.error('Error creating user:', error);
       toast({
         variant: 'destructive',
         title: 'Creation Failed',
-        description: error.message || 'Failed to create new user',
+        description: error.message || 'Failed to create user',
       });
     }
   };
+
+  // Filter users based on search query
+  const filteredUsers = users.filter(user => 
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (user.companyName && user.companyName.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return {
     users: filteredUsers,
@@ -196,7 +224,6 @@ export const useUserManagement = () => {
     searchQuery,
     editingUser,
     isAddingUser,
-    newIframeUrl,
     handleSearch,
     handleEditUser,
     handleUpdateUser,
@@ -205,6 +232,5 @@ export const useUserManagement = () => {
     handleAddUser,
     handleCancelAddUser,
     handleSaveNewUser,
-    setNewIframeUrl,
   };
 };
