@@ -9,3 +9,14 @@ export interface User {
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
 }
+
+export interface UserTableProps {
+  users: User[];
+  onEditUser: (user: User) => void;
+}
+
+export interface UserSearchBarProps {
+  searchQuery: string;
+  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onAddUser: () => void;
+}

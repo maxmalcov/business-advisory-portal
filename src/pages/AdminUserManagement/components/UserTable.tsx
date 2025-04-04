@@ -10,12 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
-import { User } from '../types';
-
-interface UserTableProps {
-  users: User[];
-  onEditUser: (user: User) => void;
-}
+import { UserTableProps, User } from '../types';
 
 const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => {
   return (
