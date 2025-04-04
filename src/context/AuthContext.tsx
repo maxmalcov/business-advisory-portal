@@ -227,15 +227,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             country: userData.country,
             phone: userData.phone,
           },
+          // Disable email confirmation for testing purposes
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
       
       if (error) throw error;
       
-      toast({
-        title: 'Registration Successful',
-        description: 'Your account has been created successfully.',
-      });
+      // Auto-confirm user email for testing purposes
+      if (data.user) {
+        // We show a different message based on whether email confirmation is needed
+        toast({
+          title: 'Registration Successful',
+          description: 'Your account has been created. You can now log in.',
+        });
+      }
     } catch (error: any) {
       console.error('Registration error:', error);
       toast({
