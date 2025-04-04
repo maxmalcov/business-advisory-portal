@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { registerDemoUsers } from "@/context/auth/register-demo-users";
 import Layout from "@/components/Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -55,6 +56,15 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   return <>{children}</>;
 };
 
+const AppInit = () => {
+  useEffect(() => {
+    // Register demo users on app initialization
+    registerDemoUsers();
+  }, []);
+  
+  return null;
+};
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -65,6 +75,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <AppInit />
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
