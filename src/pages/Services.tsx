@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +15,7 @@ import {
   PackagePlus, 
   Boxes 
 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Services: React.FC = () => {
   const { t } = useLanguage();
@@ -22,6 +23,46 @@ const Services: React.FC = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
+  const [userRequests, setUserRequests] = useState<{[key: string]: ServiceStatus}>({});
+  
+  // Load service request status from database on component mount
+  useEffect(() => {
+    const loadUserServiceRequests = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('service_requests')
+          .select('service_id, status')
+          .eq('client_id', user.id);
+        
+        if (error) {
+          console.error('Error loading service requests:', error);
+          return;
+        }
+        
+        // Create a map of service_id to status
+        const requestsMap: {[key: string]: ServiceStatus} = {};
+        data.forEach(request => {
+          requestsMap[request.service_id] = request.status as ServiceStatus;
+        });
+        
+        setUserRequests(requestsMap);
+        
+        // Update local services state with the request status
+        setServices(prevServices => 
+          prevServices.map(service => ({
+            ...service,
+            status: requestsMap[service.id] || 'available'
+          }))
+        );
+      } catch (error) {
+        console.error('Error fetching service requests:', error);
+      }
+    };
+    
+    loadUserServiceRequests();
+  }, [user]);
   
   const getIconComponent = (iconName: string) => {
     switch (iconName) {
@@ -42,23 +83,60 @@ const Services: React.FC = () => {
     }
   };
   
-  const handleRequestService = (serviceId: string) => {
-    // Update the service status to pending
-    setServices(prevServices => 
-      prevServices.map(service => 
-        service.id === serviceId 
-          ? { ...service, status: 'pending' as ServiceStatus } 
-          : service
-      )
-    );
+  const handleRequestService = async (serviceId: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please login to request services.",
+        variant: "destructive"
+      });
+      return;
+    }
     
-    // Send email notification to admin (in a real app, this would be an API call)
-    toast({
-      title: "Service Requested",
-      description: `Your request for service has been submitted. The admin has been notified.`,
-    });
+    // Find the service by ID
+    const service = services.find(s => s.id === serviceId);
+    if (!service) return;
     
-    console.log(`Service ${serviceId} requested. Email notification sent to admin.`);
+    try {
+      // Insert the service request into the database
+      const { data, error } = await supabase
+        .from('service_requests')
+        .insert({
+          service_id: serviceId,
+          service_name: service.title,
+          client_id: user.id,
+          client_name: user.name || user.email,
+          status: 'pending'
+        })
+        .select();
+        
+      if (error) {
+        throw error;
+      }
+      
+      // Update local state
+      setServices(prevServices => 
+        prevServices.map(service => 
+          service.id === serviceId 
+            ? { ...service, status: 'pending' as ServiceStatus } 
+            : service
+        )
+      );
+      
+      toast({
+        title: "Service Requested",
+        description: `Your request for ${service.title} has been submitted. The admin has been notified.`,
+      });
+      
+      console.log(`Service ${serviceId} requested. Data saved to Supabase.`);
+    } catch (error) {
+      console.error('Error requesting service:', error);
+      toast({
+        title: "Request Failed",
+        description: "There was a problem submitting your service request. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const filteredServices = services.filter(service => 

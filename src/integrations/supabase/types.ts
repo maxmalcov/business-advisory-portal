@@ -69,6 +69,42 @@ export type Database = {
         }
         Relationships: []
       }
+      service_requests: {
+        Row: {
+          admin_notes: string | null
+          client_id: string
+          client_name: string
+          id: string
+          request_date: string
+          service_id: string
+          service_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          client_id: string
+          client_name: string
+          id?: string
+          request_date?: string
+          service_id: string
+          service_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          client_id?: string
+          client_name?: string
+          id?: string
+          request_date?: string
+          service_id?: string
+          service_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

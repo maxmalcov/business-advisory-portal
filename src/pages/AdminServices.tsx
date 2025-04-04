@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -23,8 +23,26 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Search } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { format } from 'date-fns';
+import { Textarea } from '@/components/ui/textarea';
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type ServiceStatus = 'available' | 'pending' | 'completed' | 'rejected';
 
@@ -36,69 +54,177 @@ type ServiceRequestType = {
   clientName: string;
   requestDate: string;
   status: ServiceStatus;
+  adminNotes?: string;
+  updatedAt: string;
 };
 
 const AdminServices: React.FC = () => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [adminEmail, setAdminEmail] = useState('admin@example.com');
-  
-  // Mock data for service requests
-  const [serviceRequests, setServiceRequests] = useState<ServiceRequestType[]>([
-    {
-      id: 'req1',
-      serviceId: 'service3',
-      serviceName: 'HR Management',
-      clientId: 'client1',
-      clientName: 'Acme Corp',
-      requestDate: '2025-04-01',
-      status: 'pending'
-    },
-    {
-      id: 'req2',
-      serviceId: 'service5',
-      serviceName: 'Financial Analysis',
-      clientId: 'client2',
-      clientName: 'Widget LLC',
-      requestDate: '2025-03-28',
-      status: 'completed'
-    },
-    {
-      id: 'req3',
-      serviceId: 'service6',
-      serviceName: 'Accounting Software Setup',
-      clientId: 'client1',
-      clientName: 'Acme Corp',
-      requestDate: '2025-03-25',
-      status: 'rejected'
-    }
-  ]);
+  const [serviceRequests, setServiceRequests] = useState<ServiceRequestType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedRequest, setSelectedRequest] = useState<ServiceRequestType | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [adminNotes, setAdminNotes] = useState('');
 
-  const handleUpdateStatus = (requestId: string, newStatus: ServiceStatus) => {
-    setServiceRequests(prev => 
-      prev.map(request => 
-        request.id === requestId ? { ...request, status: newStatus } : request
-      )
-    );
+  // Fetch service requests from Supabase
+  useEffect(() => {
+    const fetchServiceRequests = async () => {
+      try {
+        setLoading(true);
+        
+        const { data, error } = await supabase
+          .from('service_requests')
+          .select('*')
+          .order('request_date', { ascending: false });
+          
+        if (error) {
+          throw error;
+        }
+        
+        // Transform the data to match our component's expected format
+        const transformedData: ServiceRequestType[] = data.map(item => ({
+          id: item.id,
+          serviceId: item.service_id,
+          serviceName: item.service_name,
+          clientId: item.client_id,
+          clientName: item.client_name,
+          requestDate: item.request_date,
+          status: item.status as ServiceStatus,
+          adminNotes: item.admin_notes,
+          updatedAt: item.updated_at
+        }));
+        
+        setServiceRequests(transformedData);
+      } catch (error) {
+        console.error('Error fetching service requests:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load service requests",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    toast({
-      title: "Status Updated",
-      description: `Request status has been updated to ${newStatus}.`,
-    });
+    fetchServiceRequests();
+    
+    // Set up a realtime subscription for updates to the service_requests table
+    const subscription = supabase
+      .channel('service_request_changes')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'service_requests' 
+      }, (payload) => {
+        console.log('Change received!', payload);
+        fetchServiceRequests();
+      })
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [toast]);
+
+  const handleUpdateStatus = async (requestId: string, newStatus: ServiceStatus) => {
+    try {
+      const { error } = await supabase
+        .from('service_requests')
+        .update({ status: newStatus })
+        .eq('id', requestId);
+        
+      if (error) {
+        throw error;
+      }
+      
+      // Update local state
+      setServiceRequests(prev => 
+        prev.map(request => 
+          request.id === requestId ? { ...request, status: newStatus } : request
+        )
+      );
+      
+      toast({
+        title: "Status Updated",
+        description: `Request status has been updated to ${newStatus}.`,
+      });
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast({
+        title: "Update Failed",
+        description: "Failed to update status. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleSaveEmail = () => {
+  const handleSaveEmail = async () => {
+    // In a real app, this would save to user preferences or a settings table
     toast({
       title: "Email Updated",
       description: "Admin notification email has been updated.",
     });
   };
 
-  const filteredRequests = serviceRequests.filter(request => 
-    request.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    request.clientName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const openDetailsDialog = (request: ServiceRequestType) => {
+    setSelectedRequest(request);
+    setAdminNotes(request.adminNotes || '');
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveNotes = async () => {
+    if (!selectedRequest) return;
+    
+    try {
+      const { error } = await supabase
+        .from('service_requests')
+        .update({ admin_notes: adminNotes })
+        .eq('id', selectedRequest.id);
+        
+      if (error) {
+        throw error;
+      }
+      
+      // Update local state
+      setServiceRequests(prev => 
+        prev.map(request => 
+          request.id === selectedRequest.id ? { ...request, adminNotes } : request
+        )
+      );
+      
+      setIsDialogOpen(false);
+      
+      toast({
+        title: "Notes Saved",
+        description: "Admin notes have been updated for this request.",
+      });
+    } catch (error) {
+      console.error('Error saving notes:', error);
+      toast({
+        title: "Save Failed",
+        description: "Failed to save notes. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const filteredRequests = serviceRequests.filter(request => {
+    // Apply text search filter
+    const matchesSearch = 
+      request.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      request.clientName.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // Apply status filter
+    const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   const getStatusBadge = (status: ServiceStatus) => {
     switch(status) {
@@ -110,6 +236,15 @@ const AdminServices: React.FC = () => {
         return <Badge className="bg-red-500">Rejected</Badge>;
       default:
         return <Badge>Available</Badge>;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), 'yyyy-MM-dd HH:mm');
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString;
     }
   };
 
@@ -143,15 +278,33 @@ const AdminServices: React.FC = () => {
         </CardContent>
       </Card>
       
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search requests by service or client..."
-          className="pl-10"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      {/* Filters */}
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* Search Bar */}
+        <div className="relative flex-grow">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search requests by service or client..."
+            className="pl-10"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        
+        {/* Status Filter */}
+        <div className="w-full md:w-48">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       
       {/* Service Requests Table */}
@@ -160,63 +313,136 @@ const AdminServices: React.FC = () => {
           <CardTitle>Service Requests</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableCaption>List of all service requests from clients</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Client</TableHead>
-                <TableHead>Service</TableHead>
-                <TableHead>Request Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredRequests.map((request) => (
-                <TableRow key={request.id}>
-                  <TableCell>{request.clientName}</TableCell>
-                  <TableCell>{request.serviceName}</TableCell>
-                  <TableCell>{request.requestDate}</TableCell>
-                  <TableCell>{getStatusBadge(request.status)}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      {request.status === 'pending' && (
-                        <>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            className="bg-green-50 hover:bg-green-100 text-green-700"
-                            onClick={() => handleUpdateStatus(request.id, 'completed')}
-                          >
-                            Complete
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            className="bg-red-50 hover:bg-red-100 text-red-700"
-                            onClick={() => handleUpdateStatus(request.id, 'rejected')}
-                          >
-                            Reject
-                          </Button>
-                        </>
-                      )}
-                      {request.status !== 'pending' && (
+          {loading ? (
+            <div className="text-center py-4">Loading service requests...</div>
+          ) : filteredRequests.length === 0 ? (
+            <div className="text-center py-4">No service requests found.</div>
+          ) : (
+            <Table>
+              <TableCaption>List of all service requests from clients</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Client</TableHead>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Request Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredRequests.map((request) => (
+                  <TableRow key={request.id}>
+                    <TableCell>{request.clientName}</TableCell>
+                    <TableCell>{request.serviceName}</TableCell>
+                    <TableCell>{formatDate(request.requestDate)}</TableCell>
+                    <TableCell>{getStatusBadge(request.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-2">
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => handleUpdateStatus(request.id, 'pending')}
+                          onClick={() => openDetailsDialog(request)}
                         >
-                          Reset to Pending
+                          Details
                         </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                        
+                        {request.status === 'pending' && (
+                          <>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="bg-green-50 hover:bg-green-100 text-green-700"
+                              onClick={() => handleUpdateStatus(request.id, 'completed')}
+                            >
+                              Complete
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="bg-red-50 hover:bg-red-100 text-red-700"
+                              onClick={() => handleUpdateStatus(request.id, 'rejected')}
+                            >
+                              Reject
+                            </Button>
+                          </>
+                        )}
+                        {request.status !== 'pending' && (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleUpdateStatus(request.id, 'pending')}
+                          >
+                            Reset to Pending
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
+      
+      {/* Details Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Service Request Details</DialogTitle>
+            <DialogDescription>
+              View and manage the details of this service request
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedRequest && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Client:</Label>
+                  <div className="font-medium">{selectedRequest.clientName}</div>
+                </div>
+                <div>
+                  <Label>Service:</Label>
+                  <div className="font-medium">{selectedRequest.serviceName}</div>
+                </div>
+                <div>
+                  <Label>Request Date:</Label>
+                  <div className="font-medium">{formatDate(selectedRequest.requestDate)}</div>
+                </div>
+                <div>
+                  <Label>Status:</Label>
+                  <div className="font-medium">{getStatusBadge(selectedRequest.status)}</div>
+                </div>
+                <div>
+                  <Label>Last Updated:</Label>
+                  <div className="font-medium">{formatDate(selectedRequest.updatedAt)}</div>
+                </div>
+                <div>
+                  <Label>Request ID:</Label>
+                  <div className="font-medium text-xs">{selectedRequest.id}</div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="admin-notes">Admin Notes:</Label>
+                <Textarea
+                  id="admin-notes"
+                  placeholder="Add internal notes about this request..."
+                  rows={4}
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveNotes}>Save Notes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
