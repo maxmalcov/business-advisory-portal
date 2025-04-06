@@ -63,7 +63,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       (event, currentSession) => {
         setSession(currentSession);
         if (currentSession?.user) {
-          fetchUserProfile(currentSession.user.id);
+          // Use setTimeout to avoid potential Supabase authentication deadlock
+          setTimeout(() => {
+            fetchUserProfile(currentSession.user.id);
+          }, 0);
         } else {
           setUser(null);
         }
@@ -97,6 +100,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         .single();
 
       if (error) {
+        // Handle case when profile doesn't exist yet
+        if (error.code === 'PGRST116') {
+          console.log('Profile not found, creating a default profile');
+          // Get the user's email from auth
+          const { data: userData } = await supabase.auth.getUser();
+          
+          if (userData && userData.user) {
+            // Create a basic profile
+            const newProfile = {
+              id: userId,
+              email: userData.user.email || '',
+              name: userData.user.email?.split('@')[0] || 'New User',
+              userType: 'client' as UserType
+            };
+            
+            // Insert the profile
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert([newProfile]);
+              
+            if (insertError) {
+              throw insertError;
+            }
+            
+            // Set the user state with the new profile
+            setUser(newProfile);
+            toast({
+              title: 'Profile Created',
+              description: 'Your user profile has been created successfully.',
+            });
+            return;
+          }
+        }
         throw error;
       }
 
