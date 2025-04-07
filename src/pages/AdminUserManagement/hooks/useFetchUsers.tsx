@@ -14,8 +14,9 @@ export const useFetchUsers = () => {
     try {
       console.log("Fetching users from Supabase...");
       
-      // First, fetch all auth users to ensure we have the complete list
-      const { data: authData, error: authError } = await supabase.auth.getUsers();
+      // Instead of using getUsers() which no longer exists, we'll use getUser() without params
+      // or rely primarily on the profiles table which is more reliable
+      const { data: authData, error: authError } = await supabase.auth.getUser();
       
       if (authError) {
         console.error('Error fetching auth users:', authError);
@@ -47,59 +48,6 @@ export const useFetchUsers = () => {
           iframeUrls: [],
           isActive: true
         }));
-      }
-      
-      // Create a set of profile IDs for quick lookup
-      const profileIds = new Set(transformedUsers.map(user => user.id));
-      
-      // Check if there are auth users without profiles
-      if (authData && authData.users) {
-        console.log("Checking for auth users without profiles...");
-        
-        const usersWithoutProfiles = authData.users.filter(
-          authUser => !profileIds.has(authUser.id)
-        );
-        
-        if (usersWithoutProfiles.length > 0) {
-          console.log(`Found ${usersWithoutProfiles.length} auth users without profiles`);
-          
-          // Create profile entries for these users
-          for (const authUser of usersWithoutProfiles) {
-            try {
-              const email = authUser.email || '';
-              const name = authUser.user_metadata?.name || email.split('@')[0] || 'Unknown User';
-              
-              // Create a new profile for this user
-              const { error: insertError } = await supabase
-                .from('profiles')
-                .insert([{
-                  id: authUser.id,
-                  email: email,
-                  name: name,
-                  usertype: 'client'
-                }]);
-              
-              if (insertError) {
-                console.error(`Error creating profile for user ${authUser.id}:`, insertError);
-                continue;
-              }
-              
-              // Add this user to our transformed users list
-              transformedUsers.push({
-                id: authUser.id,
-                name: name,
-                email: email,
-                userType: 'client',
-                iframeUrls: [],
-                isActive: true
-              });
-              
-              console.log(`Created profile for user ${authUser.id}`);
-            } catch (error) {
-              console.error(`Error processing auth user ${authUser.id}:`, error);
-            }
-          }
-        }
       }
       
       console.log("Final transformed users:", transformedUsers);
