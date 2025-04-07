@@ -2,7 +2,7 @@
 import React from 'react';
 import ServicesManagement from './components/ServicesManagement';
 
-const AdminServicesPage: React.FC = () => {
+const AdminServices: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-2">
@@ -15,4 +15,4 @@ const AdminServicesPage: React.FC = () => {
   );
 };
 
-export default AdminServicesPage;
+export default AdminServices;
