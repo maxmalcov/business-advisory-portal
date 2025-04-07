@@ -44,6 +44,12 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
     status, setStatus
   } = serviceForm;
 
+  // Add debugging for input changes
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Title input change triggered with value:', e.target.value);
+    setTitle(e.target.value);
+  };
+
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="space-y-4">
@@ -52,7 +58,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           <Input 
             id="title" 
             value={title} 
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={handleTitleChange}
             placeholder="Service title"
             required
           />
@@ -83,7 +89,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
-            <Select value={category} onValueChange={(value) => setCategory(value)}>
+            <Select value={category} onValueChange={setCategory}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
@@ -118,7 +124,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           <Switch
             id="popular"
             checked={popular}
-            onCheckedChange={(checked) => setPopular(checked)}
+            onCheckedChange={setPopular}
           />
         </div>
         

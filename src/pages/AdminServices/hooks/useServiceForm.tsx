@@ -27,15 +27,56 @@ export interface ServiceFormState {
 
 export const useServiceForm = (): ServiceFormState => {
   // Form state
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [iconName, setIconName] = useState('Package');
-  const [badges, setBadges] = useState('');
-  const [popular, setPopular] = useState(false);
-  const [category, setCategory] = useState('');
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [price, setPrice] = useState<string>('');
+  const [iconName, setIconName] = useState<string>('Package');
+  const [badges, setBadges] = useState<string>('');
+  const [popular, setPopular] = useState<boolean>(false);
+  const [category, setCategory] = useState<string>('');
   const [status, setStatus] = useState<'active' | 'inactive'>('active');
   const [currentService, setCurrentService] = useState<Service | null>(null);
+
+  // Make sure state setters are properly typed and working
+  const handleSetTitle = (value: string) => {
+    console.log('Setting title to:', value);
+    setTitle(value);
+  };
+
+  const handleSetDescription = (value: string) => {
+    console.log('Setting description to:', value);
+    setDescription(value);
+  };
+
+  const handleSetPrice = (value: string) => {
+    console.log('Setting price to:', value);
+    setPrice(value);
+  };
+
+  const handleSetIconName = (value: string) => {
+    console.log('Setting iconName to:', value);
+    setIconName(value);
+  };
+
+  const handleSetBadges = (value: string) => {
+    console.log('Setting badges to:', value);
+    setBadges(value);
+  };
+
+  const handleSetPopular = (value: boolean) => {
+    console.log('Setting popular to:', value);
+    setPopular(value);
+  };
+
+  const handleSetCategory = (value: string) => {
+    console.log('Setting category to:', value);
+    setCategory(value);
+  };
+
+  const handleSetStatus = (value: 'active' | 'inactive') => {
+    console.log('Setting status to:', value);
+    setStatus(value);
+  };
 
   const resetForm = () => {
     setTitle('');
@@ -50,6 +91,7 @@ export const useServiceForm = (): ServiceFormState => {
   };
 
   const populateFormWithService = (service: Service) => {
+    console.log('Populating form with service:', service);
     setCurrentService(service);
     setTitle(service.title);
     setDescription(service.description);
@@ -74,21 +116,21 @@ export const useServiceForm = (): ServiceFormState => {
 
   return {
     title,
-    setTitle,
+    setTitle: handleSetTitle,
     description,
-    setDescription,
+    setDescription: handleSetDescription,
     price,
-    setPrice,
+    setPrice: handleSetPrice,
     iconName,
-    setIconName,
+    setIconName: handleSetIconName,
     badges,
-    setBadges,
+    setBadges: handleSetBadges,
     popular,
-    setPopular,
+    setPopular: handleSetPopular,
     category,
-    setCategory,
+    setCategory: handleSetCategory,
     status,
-    setStatus,
+    setStatus: handleSetStatus,
     currentService,
     resetForm,
     populateFormWithService,

@@ -60,6 +60,15 @@ const ServiceEditor: React.FC = () => {
     navigate('/admin/services');
   };
 
+  // Add debugging for form state
+  useEffect(() => {
+    console.log('ServiceEditor form state:', {
+      title: serviceForm.title,
+      description: serviceForm.description,
+      price: serviceForm.price
+    });
+  }, [serviceForm.title, serviceForm.description, serviceForm.price]);
+
   if (loading && isEditMode) {
     return (
       <div className="space-y-6">
