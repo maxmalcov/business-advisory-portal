@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Employee as EmployeeType, EmployeeStatus } from '../types/employee';
-import { employeesTable } from '@/integrations/supabase/client';
+import { employeesTable, Employee } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 export function useEmployeeList() {
@@ -22,9 +22,9 @@ export function useEmployeeList() {
           throw error;
         }
         
-        if (data) {
+        if (data && Array.isArray(data)) {
           // Transform the data to match our Employee interface
-          const transformedData: EmployeeType[] = data.map(emp => ({
+          const transformedData: EmployeeType[] = data.map((emp: Employee) => ({
             id: emp.id,
             fullName: emp.full_name,
             position: emp.position,
@@ -34,6 +34,10 @@ export function useEmployeeList() {
           }));
           
           setEmployees(transformedData);
+        } else {
+          // Handle the case where data is not an array
+          setEmployees([]);
+          console.warn('Unexpected data format received:', data);
         }
       } catch (error) {
         console.error('Error fetching employees:', error);

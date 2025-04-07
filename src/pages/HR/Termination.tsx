@@ -12,7 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { employeesTable } from '@/integrations/supabase/client';
+import { employeesTable, Employee } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
 const reasonOptions = [
@@ -23,7 +23,7 @@ const reasonOptions = [
   { id: 'other', name: 'Other' }
 ];
 
-interface Employee {
+interface EmployeeData {
   id: string;
   name: string;
   position: string;
@@ -43,7 +43,7 @@ const Termination: React.FC = () => {
   const [terminationReason, setTerminationReason] = useState<string>('');
   const [comments, setComments] = useState<string>('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<EmployeeData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
@@ -55,8 +55,8 @@ const Termination: React.FC = () => {
           
         if (error) throw error;
         
-        if (data) {
-          const transformedData: Employee[] = data.map(emp => ({
+        if (data && Array.isArray(data)) {
+          const transformedData: EmployeeData[] = data.map((emp: Employee) => ({
             id: emp.id,
             name: emp.full_name,
             position: emp.position,
@@ -66,6 +66,9 @@ const Termination: React.FC = () => {
           }));
           
           setEmployees(transformedData);
+        } else {
+          setEmployees([]);
+          console.warn('Unexpected data format received:', data);
         }
       } catch (error) {
         console.error('Error fetching employees:', error);
