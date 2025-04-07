@@ -105,6 +105,48 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          badges: string[] | null
+          category: string | null
+          created_at: string
+          description: string
+          iconname: string | null
+          id: string
+          popular: boolean | null
+          price: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badges?: string[] | null
+          category?: string | null
+          created_at?: string
+          description: string
+          iconname?: string | null
+          id?: string
+          popular?: boolean | null
+          price: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badges?: string[] | null
+          category?: string | null
+          created_at?: string
+          description?: string
+          iconname?: string | null
+          id?: string
+          popular?: boolean | null
+          price?: number
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
