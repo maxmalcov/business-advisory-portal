@@ -72,7 +72,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 </Badge>
               </TableCell>
               <TableCell>
-                <Badge variant={user.isActive === false ? 'destructive' : 'success'}>
+                <Badge variant={user.isActive === false ? 'destructive' : 'secondary'}>
                   {user.isActive === false ? 'Неактивен' : 'Активен'}
                 </Badge>
               </TableCell>
