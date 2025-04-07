@@ -11,25 +11,29 @@ import { Button } from '@/components/ui/button';
 import { Employee } from '../types/employee';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Save, X, Eye, FileText, User, Briefcase, Calendar, Clock } from 'lucide-react';
+import { Pencil, Save, X, Eye, Download, User, Briefcase, Calendar, Clock, Building, FileText, CreditCard } from 'lucide-react';
 import EmployeeDetailForm from './EmployeeDetailForm';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface EmployeeDetailDialogProps {
   employee: Employee | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onEmployeeUpdated?: () => void;
 }
 
 const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
   employee,
   open,
-  onOpenChange
+  onOpenChange,
+  onEmployeeUpdated
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const formatDate = (dateStr: string | undefined) => {
     if (!dateStr) return '-';
@@ -67,6 +71,9 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
       });
       
       setIsEditing(false);
+      if (onEmployeeUpdated) {
+        onEmployeeUpdated();
+      }
     } catch (error) {
       console.error('Error updating employee:', error);
       toast({
@@ -113,12 +120,16 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-gray-500 flex items-center">
                 <User className="h-4 w-4 mr-2" />
-                Basic Information
+                Required Information
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium">Full Name</p>
                   <p className="text-sm">{employee.fullName}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Company Name</p>
+                  <p className="text-sm">{employee.companyName || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium">Position/Role</p>
@@ -130,17 +141,13 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
                     {employee.status === 'active' ? 'Active' : 'Terminated'}
                   </Badge>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">Company Name</p>
-                  <p className="text-sm">{employee.companyName || '-'}</p>
-                </div>
               </div>
             </div>
 
             {/* Identification */}
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-gray-500 flex items-center">
-                <Briefcase className="h-4 w-4 mr-2" />
+                <CreditCard className="h-4 w-4 mr-2" />
                 Identification
               </h3>
               <div className="grid grid-cols-2 gap-4">
@@ -153,10 +160,16 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
                   {employee.idDocument ? (
                     <div className="flex items-center">
                       <span className="text-sm truncate max-w-[200px]">{employee.idDocument}</span>
-                      <Button variant="ghost" size="sm" className="ml-2">
-                        <Eye className="h-4 w-4" />
-                        <span className="sr-only">View document</span>
-                      </Button>
+                      <div className="flex space-x-1 ml-2">
+                        <Button variant="ghost" size="sm">
+                          <Eye className="h-4 w-4" />
+                          <span className="sr-only">View document</span>
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Download className="h-4 w-4" />
+                          <span className="sr-only">Download document</span>
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <p className="text-sm">-</p>

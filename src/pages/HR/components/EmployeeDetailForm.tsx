@@ -7,10 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
-import { CalendarIcon, Save, X } from 'lucide-react';
+import { CalendarIcon, Save, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface EmployeeDetailFormProps {
   employee: Employee;
@@ -30,6 +32,7 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
   });
   
   const [errors, setErrors] = useState<Partial<Record<keyof Employee, string>>>({});
+  const { t } = useLanguage();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -76,6 +79,14 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
       ...prev, 
       status: value 
     }));
+    
+    // Clear end date if switching to active status
+    if (value === 'active') {
+      setFormData((prev) => ({ 
+        ...prev, 
+        endDate: undefined
+      }));
+    }
   };
 
   const validate = (): boolean => {
@@ -104,10 +115,22 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Basic Information */}
+      {/* Required Information Section */}
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gray-500">Basic Information</h3>
+        <h3 className="text-sm font-medium text-gray-500">Required Information</h3>
         <div className="grid grid-cols-2 gap-4">
+          {/* Company Name */}
+          <div className="space-y-2">
+            <Label htmlFor="companyName">Company Name</Label>
+            <Input
+              id="companyName"
+              name="companyName"
+              value={formData.companyName || ''}
+              onChange={handleInputChange}
+            />
+          </div>
+          
+          {/* Full Name */}
           <div className="space-y-2">
             <Label htmlFor="fullName">Full Name</Label>
             <Input
@@ -122,6 +145,18 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
             )}
           </div>
           
+          {/* Employee DNI/TIE */}
+          <div className="space-y-2">
+            <Label htmlFor="dniTie">Employee DNI/TIE</Label>
+            <Input
+              id="dniTie"
+              name="dniTie"
+              value={formData.dniTie || ''}
+              onChange={handleInputChange}
+            />
+          </div>
+          
+          {/* Position/Role */}
           <div className="space-y-2">
             <Label htmlFor="position">Position/Role</Label>
             <Input
@@ -135,71 +170,9 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
               <p className="text-xs text-red-500">{errors.position}</p>
             )}
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="companyName">Company Name</Label>
-            <Input
-              id="companyName"
-              name="companyName"
-              value={formData.companyName || ''}
-              onChange={handleInputChange}
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label>Status</Label>
-            <RadioGroup 
-              value={formData.status} 
-              onValueChange={(value) => handleStatusChange(value as EmployeeStatus)}
-              className="flex space-x-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="active" id="active" />
-                <Label htmlFor="active" className="cursor-pointer">Active</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="terminated" id="terminated" />
-                <Label htmlFor="terminated" className="cursor-pointer">Terminated</Label>
-              </div>
-            </RadioGroup>
-          </div>
         </div>
       </div>
 
-      {/* Identification */}
-      <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gray-500">Identification</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="dniTie">DNI/TIE</Label>
-            <Input
-              id="dniTie"
-              name="dniTie"
-              value={formData.dniTie || ''}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="idDocument">ID Document</Label>
-            <div className="flex">
-              <Input
-                id="idDocument"
-                name="idDocument"
-                value={formData.idDocument || ''}
-                onChange={handleInputChange}
-                disabled
-                className="flex-1"
-              />
-              <Button type="button" variant="outline" className="ml-2">
-                Upload
-              </Button>
-            </div>
-            <p className="text-xs text-gray-500">Document upload is not available in edit mode</p>
-          </div>
-        </div>
-      </div>
-      
       {/* Date Fields */}
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-gray-500">Employment Dates</h3>
@@ -235,38 +208,81 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="endDate">End Date</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !formData.endDate && "text-muted-foreground",
-                    errors.endDate && "border-red-500"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {formData.endDate ? format(new Date(formData.endDate), 'PPP') : "Select date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={formData.endDate ? new Date(formData.endDate) : undefined}
-                  onSelect={handleEndDateChange}
-                  initialFocus
-                  disabled={(date) => {
-                    if (!formData.startDate) return false;
-                    return date < new Date(formData.startDate);
-                  }}
-                />
-              </PopoverContent>
-            </Popover>
-            {errors.endDate && (
-              <p className="text-xs text-red-500">{errors.endDate}</p>
-            )}
+            <Label htmlFor="status">Status</Label>
+            <RadioGroup 
+              value={formData.status} 
+              onValueChange={(value) => handleStatusChange(value as EmployeeStatus)}
+              className="flex space-x-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="active" id="active" />
+                <Label htmlFor="active" className="cursor-pointer">Active</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="terminated" id="terminated" />
+                <Label htmlFor="terminated" className="cursor-pointer">Terminated</Label>
+              </div>
+            </RadioGroup>
           </div>
+          
+          {formData.status === 'terminated' && (
+            <div className="space-y-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !formData.endDate && "text-muted-foreground",
+                      errors.endDate && "border-red-500"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {formData.endDate ? format(new Date(formData.endDate), 'PPP') : "Select date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={formData.endDate ? new Date(formData.endDate) : undefined}
+                    onSelect={handleEndDateChange}
+                    initialFocus
+                    disabled={(date) => {
+                      if (!formData.startDate) return false;
+                      return date < new Date(formData.startDate);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+              {errors.endDate && (
+                <p className="text-xs text-red-500">{errors.endDate}</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* ID Document */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-gray-500">ID Document</h3>
+        <div className="space-y-2">
+          <Label htmlFor="idDocument">ID Document</Label>
+          <div className="flex">
+            <Input
+              id="idDocument"
+              name="idDocument"
+              value={formData.idDocument || ''}
+              onChange={handleInputChange}
+              disabled
+              className="flex-1"
+            />
+            <Button type="button" variant="outline" className="ml-2">
+              <FileText className="h-4 w-4 mr-2" />
+              Upload
+            </Button>
+          </div>
+          <p className="text-xs text-gray-500">Document upload is not available in edit mode</p>
         </div>
       </div>
 
