@@ -68,34 +68,10 @@ export const servicesTable = () => {
 
 // Helper function to safely access the employees table
 export const employeesTable = () => {
-  // Create a type-safe wrapper around the query builder
-  const query = supabase.from('employees' as any);
-  
-  // Add type assertions to ensure TypeScript knows the structure of returned data
-  const typedQuery = {
-    ...query,
-    select: (columns: string) => {
-      const result = query.select(columns);
-      // Add a type assertion for the data property
-      return {
-        ...result,
-        then: (onfulfilled: any, onrejected: any) => 
-          result.then((res) => {
-            if (res.error) return onfulfilled(res);
-            // Assert that data is an array of Employee objects
-            return onfulfilled({ 
-              ...res, 
-              data: res.data as Employee[] 
-            });
-          }, onrejected)
-      };
-    },
-    update: query.update,
-    eq: query.eq,
-    insert: query.insert
-  };
-  
-  return typedQuery;
+  // Use a simple approach that works with the type system
+  // We'll cast the result to any to bypass TypeScript's type checking
+  // and handle the type conversion in the component code
+  return supabase.from('employees' as any);
 };
 
 // Setup realtime subscription for the service_requests table

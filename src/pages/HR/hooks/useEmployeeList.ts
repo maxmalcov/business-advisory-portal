@@ -14,6 +14,7 @@ export function useEmployeeList() {
       setIsLoading(true);
       
       try {
+        // Query the database using the employeesTable helper
         const { data, error } = await employeesTable()
           .select('id, full_name, position, status, start_date, end_date')
           .eq('status', statusFilter);
@@ -24,7 +25,7 @@ export function useEmployeeList() {
         
         if (data && Array.isArray(data)) {
           // Transform the data to match our Employee interface
-          const transformedData: EmployeeType[] = data.map((emp: Employee) => ({
+          const transformedData: EmployeeType[] = data.map((emp: any) => ({
             id: emp.id,
             fullName: emp.full_name,
             position: emp.position,
