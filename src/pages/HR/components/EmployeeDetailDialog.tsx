@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Employee } from '../types/employee';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Save, X, Eye } from 'lucide-react';
+import { Pencil, Save, X, Eye, FileText, User, Briefcase, Calendar, Clock } from 'lucide-react';
 import EmployeeDetailForm from './EmployeeDetailForm';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
@@ -52,7 +52,10 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
           position: updatedEmployee.position,
           status: updatedEmployee.status,
           start_date: updatedEmployee.startDate,
-          end_date: updatedEmployee.endDate || null
+          end_date: updatedEmployee.endDate || null,
+          company_name: updatedEmployee.companyName || null,
+          dni_tie: updatedEmployee.dniTie || null,
+          weekly_schedule: updatedEmployee.weeklySchedule || null
         })
         .eq('id', employee.id);
         
@@ -80,7 +83,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>{isEditing ? 'Edit Employee' : 'Employee Details'}</span>
@@ -105,10 +108,13 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
             isSubmitting={isSubmitting}
           />
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Basic Information */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-gray-500">Basic Information</h3>
+              <h3 className="text-sm font-medium text-gray-500 flex items-center">
+                <User className="h-4 w-4 mr-2" />
+                Basic Information
+              </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium">Full Name</p>
@@ -124,25 +130,72 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
                     {employee.status === 'active' ? 'Active' : 'Terminated'}
                   </Badge>
                 </div>
+                <div>
+                  <p className="text-sm font-medium">Company Name</p>
+                  <p className="text-sm">{employee.companyName || '-'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Identification */}
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-500 flex items-center">
+                <Briefcase className="h-4 w-4 mr-2" />
+                Identification
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium">DNI/TIE</p>
+                  <p className="text-sm">{employee.dniTie || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">ID Document</p>
+                  {employee.idDocument ? (
+                    <div className="flex items-center">
+                      <span className="text-sm truncate max-w-[200px]">{employee.idDocument}</span>
+                      <Button variant="ghost" size="sm" className="ml-2">
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View document</span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-sm">-</p>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Employment Dates */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-gray-500">Employment Dates</h3>
+              <h3 className="text-sm font-medium text-gray-500 flex items-center">
+                <Calendar className="h-4 w-4 mr-2" />
+                Employment Dates
+              </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium">Start Date</p>
                   <p className="text-sm">{formatDate(employee.startDate)}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">End Date</p>
-                  <p className="text-sm">{employee.endDate ? formatDate(employee.endDate) : '-'}</p>
-                </div>
+                {(employee.status === 'terminated' || employee.endDate) && (
+                  <div>
+                    <p className="text-sm font-medium">End Date</p>
+                    <p className="text-sm">{employee.endDate ? formatDate(employee.endDate) : '-'}</p>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Additional fields can be displayed here in the future */}
+            {/* Schedule */}
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-500 flex items-center">
+                <Clock className="h-4 w-4 mr-2" />
+                Schedule
+              </h3>
+              <div>
+                <p className="text-sm font-medium">Weekly Working Schedule</p>
+                <p className="text-sm whitespace-pre-line">{employee.weeklySchedule || '-'}</p>
+              </div>
+            </div>
           </div>
         )}
       </DialogContent>

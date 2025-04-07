@@ -8,4 +8,8 @@ export interface Employee {
   status: EmployeeStatus;
   startDate: string;
   endDate?: string;
+  companyName?: string;
+  dniTie?: string;
+  idDocument?: string;
+  weeklySchedule?: string;
 }

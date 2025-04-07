@@ -21,7 +21,7 @@ export function useEmployeeList() {
       try {
         // Query the database using the employeesTable helper
         const { data, error } = await employeesTable()
-          .select('id, full_name, position, status, start_date, end_date')
+          .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule')
           .eq('status', statusFilter);
           
         if (error) {
@@ -36,7 +36,11 @@ export function useEmployeeList() {
             position: emp.position,
             status: emp.status as EmployeeStatus,
             startDate: emp.start_date,
-            endDate: emp.end_date || undefined
+            endDate: emp.end_date || undefined,
+            companyName: emp.company_name || '',
+            dniTie: emp.dni_tie || '',
+            idDocument: emp.id_document || '',
+            weeklySchedule: emp.weekly_schedule || ''
           }));
           
           setEmployees(transformedData);
