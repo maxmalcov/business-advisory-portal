@@ -65,16 +65,23 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="space-y-2">
-          {badges.map((badge, index) => (
-            <div key={index} className="flex items-center space-x-2">
-              <FileCheck className="h-4 w-4 text-primary" />
-              <span className="text-sm">{badge}</span>
-            </div>
-          ))}
+          {badges && badges.length > 0 ? (
+            badges.map((badge, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <FileCheck className="h-4 w-4 text-primary" />
+                <span className="text-sm">{badge}</span>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">Service price: ${parseFloat(price).toFixed(2)}</p>
+          )}
         </div>
       </CardContent>
       <CardFooter className="flex flex-col space-y-4 pt-2 border-t">
-        <div className="w-full flex justify-end items-center">
+        <div className="w-full flex justify-between items-center">
+          <div>
+            <span className="font-semibold">${parseFloat(price).toFixed(2)}</span>
+          </div>
           <Button 
             variant={popular ? "default" : "outline"}
             disabled={status !== 'available'} 

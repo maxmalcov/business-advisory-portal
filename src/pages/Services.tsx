@@ -6,7 +6,6 @@ import { useToast } from '@/hooks/use-toast';
 import ServiceCard from './Services/components/ServiceCard';
 import ServiceSearch from './Services/components/ServiceSearch';
 import { ServiceItem, ServiceStatus } from './Services/types';
-import { initialServices } from './Services/mockData';
 import { 
   CircleDollarSign, 
   FileText, 
@@ -15,16 +14,69 @@ import {
   PackagePlus, 
   Boxes 
 } from 'lucide-react';
-import { supabase, serviceRequestsTable } from '@/integrations/supabase/client';
+import { supabase, serviceRequestsTable, servicesTable, Service } from '@/integrations/supabase/client';
 
 const Services: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [services, setServices] = useState<ServiceItem[]>(initialServices);
+  const [services, setServices] = useState<ServiceItem[]>([]);
   const [userRequests, setUserRequests] = useState<{[key: string]: ServiceStatus}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  // Load services from database
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        console.log('Fetching services from database');
+        
+        const { data, error } = await servicesTable()
+          .select('*')
+          .eq('status', 'active')
+          .order('title');
+          
+        if (error) {
+          console.error('Error fetching services:', error);
+          toast({
+            title: "Error",
+            description: "Could not load services. Please try again later.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        console.log('Services fetched from DB:', data);
+        
+        if (data && data.length > 0) {
+          // Convert database services to ServiceItem format for the UI
+          const serviceItems: ServiceItem[] = data.map((service: any) => ({
+            id: service.id,
+            title: service.title,
+            description: service.description,
+            iconName: service.iconname || 'Package', // Use lowercase iconname from DB
+            price: service.price.toString(),
+            badges: service.badges || [],
+            popular: service.popular || false,
+            status: 'available' as ServiceStatus
+          }));
+          
+          setServices(serviceItems);
+        } else {
+          console.log('No services found in the database');
+          setServices([]);
+        }
+      } catch (err) {
+        console.error('Error in fetchServices:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchServices();
+  }, [toast]);
   
   // Load service request status from database on component mount
   useEffect(() => {
@@ -167,29 +219,52 @@ const Services: React.FC = () => {
       <ServiceSearch value={searchQuery} onChange={setSearchQuery} />
 
       {/* Services grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredServices.map((service) => (
-          <ServiceCard 
-            key={service.id}
-            id={service.id}
-            title={service.title}
-            description={service.description}
-            icon={getIconComponent(service.iconName)}
-            price={service.price}
-            badges={service.badges}
-            popular={service.popular}
-            status={service.status}
-            onRequestService={handleRequestService}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="border rounded-lg p-6 animate-pulse">
+              <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-4/6 mb-6"></div>
+              <div className="h-10 bg-gray-200 rounded w-full"></div>
+            </div>
+          ))}
+        </div>
+      ) : filteredServices.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground text-lg">No services available at the moment.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredServices.map((service) => (
+            <ServiceCard 
+              key={service.id}
+              id={service.id}
+              title={service.title}
+              description={service.description}
+              icon={getIconComponent(service.iconName)}
+              price={service.price}
+              badges={service.badges}
+              popular={service.popular}
+              status={service.status}
+              onRequestService={handleRequestService}
+            />
+          ))}
+        </div>
+      )}
       
       {/* Debug information during development */}
       {process.env.NODE_ENV !== 'production' && (
         <div className="p-4 mt-8 text-sm bg-gray-100 rounded">
           <h3 className="font-bold">Debug Info</h3>
           <p>User ID: {user?.id || 'Not logged in'}</p>
+          <p>Services Count: {services.length}</p>
           <p>User Requests: {Object.keys(userRequests).length}</p>
+          <details>
+            <summary className="cursor-pointer text-blue-600">Services Data</summary>
+            <pre>{JSON.stringify(services, null, 2)}</pre>
+          </details>
           <details>
             <summary className="cursor-pointer text-blue-600">User Requests Data</summary>
             <pre>{JSON.stringify(userRequests, null, 2)}</pre>
