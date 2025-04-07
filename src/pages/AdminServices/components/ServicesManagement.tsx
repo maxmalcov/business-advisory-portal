@@ -40,10 +40,10 @@ const ServicesManagement: React.FC = () => {
         
         console.log('Fetching services...');
         
-        // Since TypeScript doesn't know about the services table yet,
-        // we'll use a direct call with type assertions
-        const { data, error } = await supabase
-          .from('services')
+        // Using type assertion to bypass TypeScript limitation
+        // We know services table exists, but TypeScript doesn't recognize it
+        const { data, error } = await (supabase
+          .from('services') as any)
           .select('*')
           .order('title', { ascending: true });
           
@@ -57,7 +57,7 @@ const ServicesManagement: React.FC = () => {
         
         if (data) {
           // Use type assertion to tell TypeScript that this is an array of Service objects
-          setServices(data as unknown as Service[]);
+          setServices(data as Service[]);
         }
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -106,9 +106,9 @@ const ServicesManagement: React.FC = () => {
     try {
       if (serviceToEdit) {
         // Update existing service
-        const { error } = await supabase
-          .from('services')
-          .update(serviceData as any) // Type assertion to bypass TypeScript check
+        const { error } = await (supabase
+          .from('services') as any)
+          .update(serviceData)
           .eq('id', serviceToEdit.id);
           
         if (error) throw error;
@@ -119,9 +119,9 @@ const ServicesManagement: React.FC = () => {
         });
       } else {
         // Create new service
-        const { error } = await supabase
-          .from('services')
-          .insert(serviceData as any); // Type assertion to bypass TypeScript check
+        const { error } = await (supabase
+          .from('services') as any)
+          .insert(serviceData);
           
         if (error) throw error;
         
@@ -152,8 +152,8 @@ const ServicesManagement: React.FC = () => {
     try {
       setIsDeleting(true);
       
-      const { error } = await supabase
-        .from('services')
+      const { error } = await (supabase
+        .from('services') as any)
         .delete()
         .eq('id', serviceToDelete.id);
         
@@ -181,9 +181,9 @@ const ServicesManagement: React.FC = () => {
     try {
       const newStatus = service.status === 'active' ? 'inactive' : 'active';
       
-      const { error } = await supabase
-        .from('services')
-        .update({ status: newStatus } as any) // Type assertion to bypass TypeScript check
+      const { error } = await (supabase
+        .from('services') as any)
+        .update({ status: newStatus })
         .eq('id', service.id);
         
       if (error) throw error;
