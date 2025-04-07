@@ -39,6 +39,7 @@ const ServiceEditor: React.FC = () => {
     status,
     setStatus,
     resetForm,
+    populateFormWithService,
     getFormData
   } = useServiceForm();
   
@@ -52,14 +53,7 @@ const ServiceEditor: React.FC = () => {
   // Set form data when service is loaded (for edit mode)
   useEffect(() => {
     if (service && isEditMode) {
-      setTitle(service.title);
-      setDescription(service.description);
-      setPrice(service.price.toString());
-      setIconName(service.iconName);
-      setBadges(service.badges ? service.badges.join(', ') : '');
-      setPopular(service.popular);
-      setCategory(service.category || '');
-      setStatus(service.status || 'active');
+      populateFormWithService(service);
     }
   }, [service, isEditMode]);
 
@@ -90,6 +84,20 @@ const ServiceEditor: React.FC = () => {
   const handleCancel = () => {
     navigate('/admin/services');
   };
+
+  // Add debugging logs
+  useEffect(() => {
+    console.log('Current form values:', {
+      title,
+      description,
+      price,
+      iconName,
+      badges,
+      popular,
+      category,
+      status
+    });
+  }, [title, description, price, iconName, badges, popular, category, status]);
 
   const categories = [
     'Accounting',
@@ -150,7 +158,10 @@ const ServiceEditor: React.FC = () => {
                 <Input 
                   id="title" 
                   value={title} 
-                  onChange={(e) => setTitle(e.target.value)} 
+                  onChange={(e) => {
+                    console.log('Title changed:', e.target.value);
+                    setTitle(e.target.value);
+                  }}
                   placeholder="Service title"
                   required
                 />
@@ -161,7 +172,10 @@ const ServiceEditor: React.FC = () => {
                 <Textarea 
                   id="description" 
                   value={description} 
-                  onChange={(e) => setDescription(e.target.value)} 
+                  onChange={(e) => {
+                    console.log('Description changed:', e.target.value);
+                    setDescription(e.target.value);
+                  }}
                   placeholder="Describe the service"
                   rows={5}
                   required
@@ -175,7 +189,10 @@ const ServiceEditor: React.FC = () => {
                     id="price" 
                     type="number"
                     value={price} 
-                    onChange={(e) => setPrice(e.target.value)} 
+                    onChange={(e) => {
+                      console.log('Price changed:', e.target.value);
+                      setPrice(e.target.value);
+                    }}
                     placeholder="0.00"
                     required
                   />
@@ -183,7 +200,10 @@ const ServiceEditor: React.FC = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="category">Category</Label>
-                  <Select value={category} onValueChange={setCategory}>
+                  <Select value={category} onValueChange={(value) => {
+                    console.log('Category changed:', value);
+                    setCategory(value);
+                  }}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
@@ -201,7 +221,10 @@ const ServiceEditor: React.FC = () => {
                 <Input 
                   id="iconName" 
                   value={iconName} 
-                  onChange={(e) => setIconName(e.target.value)} 
+                  onChange={(e) => {
+                    console.log('Icon name changed:', e.target.value);
+                    setIconName(e.target.value);
+                  }}
                   placeholder="Package"
                 />
                 <p className="text-xs text-gray-500">
@@ -214,7 +237,10 @@ const ServiceEditor: React.FC = () => {
                 <Input 
                   id="badges" 
                   value={badges} 
-                  onChange={(e) => setBadges(e.target.value)} 
+                  onChange={(e) => {
+                    console.log('Badges changed:', e.target.value);
+                    setBadges(e.target.value);
+                  }}
                   placeholder="New, Premium, Limited"
                 />
               </div>
@@ -224,7 +250,10 @@ const ServiceEditor: React.FC = () => {
                 <Switch
                   id="popular"
                   checked={popular}
-                  onCheckedChange={setPopular}
+                  onCheckedChange={(checked) => {
+                    console.log('Popular changed:', checked);
+                    setPopular(checked);
+                  }}
                 />
               </div>
               
@@ -237,7 +266,11 @@ const ServiceEditor: React.FC = () => {
                   <Switch
                     id="status"
                     checked={status === 'active'}
-                    onCheckedChange={(checked) => setStatus(checked ? 'active' : 'inactive')}
+                    onCheckedChange={(checked) => {
+                      const newStatus = checked ? 'active' : 'inactive';
+                      console.log('Status changed:', newStatus);
+                      setStatus(newStatus);
+                    }}
                   />
                   <Label htmlFor="status-inactive" className={status === 'inactive' ? 'text-red-600' : 'text-gray-500'}>
                     Inactive
