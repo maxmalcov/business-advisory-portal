@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { FileUp, FileX } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 import {
   Card,
   CardContent,
@@ -10,11 +11,14 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 
 const InvoiceUpload: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -112,7 +116,50 @@ const InvoiceUpload: React.FC = () => {
     }
   };
 
-  const handleUpload = () => {
+  const sendInvoiceByEmail = async (files: File[]) => {
+    if (!user?.outgoingInvoiceEmail) {
+      toast({
+        variant: 'destructive',
+        title: 'Email Not Configured',
+        description: 'You don\'t have an outgoing invoice email configured in your profile.',
+      });
+      return false;
+    }
+
+    try {
+      // Call the Supabase Edge Function to send email
+      const { error } = await supabase.functions.invoke('send-invoice-email', {
+        body: {
+          recipientEmail: user.outgoingInvoiceEmail,
+          fileNames: files.map(file => file.name),
+          userName: user.name || 'User',
+          invoiceType: 'outgoing'
+        }
+      });
+
+      if (error) {
+        console.error('Error sending email:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Email Sending Failed',
+          description: 'Could not send the invoice notification email.',
+        });
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error invoking send-invoice-email function:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Email Sending Failed',
+        description: 'Could not send the invoice notification email.',
+      });
+      return false;
+    }
+  };
+
+  const handleUpload = async () => {
     if (selectedFiles.length === 0) {
       toast({
         variant: 'destructive',
@@ -122,15 +169,33 @@ const InvoiceUpload: React.FC = () => {
       return;
     }
 
-    // Here we would normally upload the files to the server
-    // For now, we'll just show a success message
-    toast({
-      title: 'Upload Successful',
-      description: `${selectedFiles.length} invoice(s) uploaded successfully.`,
-    });
+    setIsLoading(true);
 
-    // Reset the file input
-    setSelectedFiles([]);
+    try {
+      // Here we would normally upload the files to the server
+      // For now, we'll just simulate uploading and send the email notification
+      
+      // Send email notification
+      const emailSent = await sendInvoiceByEmail(selectedFiles);
+      
+      // Show success message
+      toast({
+        title: 'Upload Successful',
+        description: `${selectedFiles.length} invoice(s) uploaded successfully${emailSent ? ' and email notification sent' : ''}.`,
+      });
+
+      // Reset the file input
+      setSelectedFiles([]);
+    } catch (error) {
+      console.error('Error during upload process:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Upload Failed',
+        description: 'An error occurred during the upload process.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRemoveFile = (index: number) => {
@@ -151,6 +216,11 @@ const InvoiceUpload: React.FC = () => {
           <p>Maximum file size: 25MB per file</p>
           <p>Maximum 15 files at once</p>
           <p>Accepted formats: PDF, JPG</p>
+          {user?.outgoingInvoiceEmail ? (
+            <p className="text-green-600">Email notifications will be sent to: {user.outgoingInvoiceEmail}</p>
+          ) : (
+            <p className="text-amber-600">Warning: No outgoing invoice email configured in your profile</p>
+          )}
         </div>
         
         {/* File upload area */}
@@ -205,6 +275,7 @@ const InvoiceUpload: React.FC = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleRemoveFile(index)}
+                    disabled={isLoading}
                   >
                     <FileX className="h-5 w-5 text-muted-foreground" />
                   </Button>
@@ -214,8 +285,9 @@ const InvoiceUpload: React.FC = () => {
             <Button 
               className="w-full" 
               onClick={handleUpload}
+              disabled={isLoading}
             >
-              Upload {selectedFiles.length} {selectedFiles.length === 1 ? 'File' : 'Files'}
+              {isLoading ? 'Processing...' : `Upload ${selectedFiles.length} ${selectedFiles.length === 1 ? 'File' : 'Files'}`}
             </Button>
           </div>
         )}
