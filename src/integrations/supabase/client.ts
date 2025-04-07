@@ -25,13 +25,14 @@ export type ServiceRequest = {
   updated_at: string;
 }
 
-// Type definition for services
+// Type definition for services - updated to match the database schema
 export type Service = {
   id: string;
   title: string;
   description: string;
   price: number;
-  iconName: string;
+  iconName: string; // We keep this as camelCase for the frontend
+  iconname?: string; // Database column is lowercase
   badges: string[];
   popular: boolean;
   category?: string | null;

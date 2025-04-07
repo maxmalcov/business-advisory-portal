@@ -66,6 +66,7 @@ export const useServiceForm = (): ServiceFormState => {
     setTitle(service.title || '');
     setDescription(service.description || '');
     setPrice(service.price?.toString() || '');
+    // Map the database iconname to our form's iconName
     setIconName(service.iconName || 'Package');
     setBadges(service.badges ? service.badges.join(', ') : '');
     setPopular(!!service.popular);
@@ -77,7 +78,7 @@ export const useServiceForm = (): ServiceFormState => {
     title,
     description,
     price: parseFloat(price) || 0,
-    iconName,
+    iconName, // This will be mapped to iconname in the saveService function
     badges: badges.split(',').map(b => b.trim()).filter(b => b),
     popular,
     category: category || null,
