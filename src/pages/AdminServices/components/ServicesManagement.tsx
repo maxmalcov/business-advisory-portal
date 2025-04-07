@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import ServiceTable from './ServiceTable';
 import ServiceForm from './ServiceForm';
 import { useServiceManagement } from '../hooks/useServiceManagement';
@@ -43,9 +44,18 @@ const ServicesManagement: React.FC<ServicesManagementProps> = () => {
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="text-center py-4">Loading services...</div>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+            </div>
+          </div>
         ) : services.length === 0 ? (
-          <div className="text-center py-4">No services found. Add your first service!</div>
+          <div className="text-center py-6">
+            <p className="text-muted-foreground">No services found. Add your first service!</p>
+          </div>
         ) : (
           <ServiceTable 
             services={services} 

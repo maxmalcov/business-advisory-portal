@@ -24,6 +24,7 @@ export const useServiceManagement = () => {
     const fetchServices = async () => {
       try {
         setLoading(true);
+        
         const { data, error } = await servicesTable()
           .select('*')
           .order('created_at', { ascending: false });
