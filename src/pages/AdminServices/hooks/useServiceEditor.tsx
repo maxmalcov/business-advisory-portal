@@ -17,6 +17,7 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
 
       try {
         setLoading(true);
+        console.log('Fetching service with ID:', serviceId);
         const { data, error } = await servicesTable()
           .select('*')
           .eq('id', serviceId)
@@ -29,6 +30,7 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
         // Properly handle typing by first checking that data is not null
         if (data) {
           // Convert data to unknown first and then to Service to satisfy TypeScript
+          console.log('Service data fetched:', data);
           setService(data as unknown as Service);
         } else {
           setService(null);
@@ -45,6 +47,7 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
 
   // Save or update a service
   const saveService = async (formData: Omit<Service, 'id' | 'created_at' | 'updated_at'>) => {
+    console.log('Saving service:', formData, 'serviceId:', serviceId);
     if (serviceId) {
       // Update existing service
       const { error } = await servicesTable()

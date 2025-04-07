@@ -68,6 +68,7 @@ const ServiceEditor: React.FC = () => {
     
     try {
       const formData = getFormData();
+      console.log('Submitting form data:', formData);
       await saveService(formData);
       
       toast({

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Service } from '@/integrations/supabase/client';
 
 export const useServiceForm = () => {
