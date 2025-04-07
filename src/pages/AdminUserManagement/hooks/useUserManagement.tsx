@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -224,41 +225,70 @@ export const useUserManagement = () => {
     setIsAddingUser(false);
   };
 
-  // Save new user
+  // Save new user - IMPROVED IMPLEMENTATION
   const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
     try {
-      console.log("Creating new user:", newUser);
+      if (!newUser.email || !newUser.password) {
+        throw new Error("Email and password are required");
+      }
+      
+      console.log("Creating new user:", {...newUser, password: '[REDACTED]'});
+      
       // Register the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: newUser.email,
-        password: newUser.password || 'tempPassword123', // This should be provided by the user in a real app
+        password: newUser.password,
         options: {
           data: {
-            name: newUser.name,
-            userType: newUser.userType,
-            companyName: newUser.companyName,
-            incomingInvoiceEmail: newUser.incomingInvoiceEmail,
-            outgoingInvoiceEmail: newUser.outgoingInvoiceEmail
+            name: newUser.name || '',
+            userType: newUser.userType || 'client',
+            companyName: newUser.companyName || '',
           }
         }
       });
       
-      if (authError) throw authError;
+      if (authError) {
+        console.error('Error creating user in Auth:', authError);
+        throw authError;
+      }
+      
+      if (!authData.user) {
+        throw new Error("User creation failed: No user data returned");
+      }
+      
       console.log("User created in Auth:", authData);
+      
+      // Create a profile for the user if not automatically created by the trigger
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: authData.user.id,
+          name: newUser.name || '',
+          email: newUser.email,
+          usertype: newUser.userType || 'client',
+          companyname: newUser.companyName || '',
+          incominginvoiceemail: newUser.incomingInvoiceEmail || '',
+          outgoinginvoiceemail: newUser.outgoingInvoiceEmail || '',
+        }, { onConflict: 'id' });
+      
+      if (profileError) {
+        console.error('Error creating user profile:', profileError);
+        throw profileError;
+      }
 
       // Fetch users again to update the list
       await fetchUsers();
       
       toast({
         title: "User Created",
-        description: `${newUser.name} was successfully added.`,
+        description: `${newUser.name || 'New user'} was successfully added.`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating user:', error);
       toast({
         variant: 'destructive',
         title: 'Creation Error',
-        description: 'An error occurred while creating the user.',
+        description: error.message || 'An error occurred while creating the user.',
       });
     } finally {
       setIsAddingUser(false);
