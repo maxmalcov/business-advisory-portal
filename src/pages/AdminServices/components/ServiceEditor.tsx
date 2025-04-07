@@ -1,18 +1,13 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, Save } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useServiceForm } from '../hooks/useServiceForm';
 import { useServiceEditor } from '../hooks/useServiceEditor';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ServiceEditorHeader } from './ServiceEditorHeader';
+import { ServiceEditorForm } from './ServiceEditorForm';
 
 const ServiceEditor: React.FC = () => {
   const navigate = useNavigate();
@@ -21,39 +16,19 @@ const ServiceEditor: React.FC = () => {
   const { toast } = useToast();
   
   // Service form state
-  const {
-    title,
-    setTitle,
-    description,
-    setDescription,
-    price,
-    setPrice,
-    iconName,
-    setIconName,
-    badges,
-    setBadges,
-    popular,
-    setPopular,
-    category,
-    setCategory,
-    status,
-    setStatus,
-    resetForm,
-    populateFormWithService,
-    getFormData
-  } = useServiceForm();
+  const serviceForm = useServiceForm();
   
   // Get service data and submit handler
   const { 
     loading, 
     service, 
     saveService 
-  } = useServiceEditor(serviceId, resetForm);
+  } = useServiceEditor(serviceId, serviceForm.resetForm);
 
   // Set form data when service is loaded (for edit mode)
   useEffect(() => {
     if (service && isEditMode) {
-      populateFormWithService(service);
+      serviceForm.populateFormWithService(service);
     }
   }, [service, isEditMode]);
 
@@ -61,13 +36,13 @@ const ServiceEditor: React.FC = () => {
     e.preventDefault();
     
     try {
-      const formData = getFormData();
+      const formData = serviceForm.getFormData();
       console.log('Submitting form data:', formData);
       await saveService(formData);
       
       toast({
         title: `Service ${isEditMode ? 'updated' : 'created'} successfully`,
-        description: `The service "${title}" has been ${isEditMode ? 'updated' : 'created'}.`,
+        description: `The service "${serviceForm.title}" has been ${isEditMode ? 'updated' : 'created'}.`,
       });
       
       navigate('/admin/services');
@@ -88,35 +63,31 @@ const ServiceEditor: React.FC = () => {
   // Add debugging logs
   useEffect(() => {
     console.log('Current form values:', {
-      title,
-      description,
-      price,
-      iconName,
-      badges,
-      popular,
-      category,
-      status
+      title: serviceForm.title,
+      description: serviceForm.description,
+      price: serviceForm.price,
+      iconName: serviceForm.iconName,
+      badges: serviceForm.badges,
+      popular: serviceForm.popular,
+      category: serviceForm.category,
+      status: serviceForm.status
     });
-  }, [title, description, price, iconName, badges, popular, category, status]);
-
-  const categories = [
-    'Accounting',
-    'Tax Planning',
-    'Business Formation',
-    'Financial Analysis',
-    'Bookkeeping',
-    'Payroll',
-    'Consulting',
-    'Other'
-  ];
+  }, [
+    serviceForm.title, 
+    serviceForm.description, 
+    serviceForm.price, 
+    serviceForm.iconName, 
+    serviceForm.badges, 
+    serviceForm.popular, 
+    serviceForm.category, 
+    serviceForm.status
+  ]);
 
   if (loading && isEditMode) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" disabled>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
+          <Skeleton className="h-10 w-10 rounded-md" />
           <Skeleton className="h-8 w-64" />
         </div>
         <Card>
@@ -139,156 +110,22 @@ const ServiceEditor: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={handleCancel}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <h1 className="text-2xl font-bold tracking-tight">{isEditMode ? 'Edit Service' : 'Create New Service'}</h1>
-      </div>
+      <ServiceEditorHeader 
+        isEditMode={isEditMode} 
+        onCancel={handleCancel} 
+      />
       
       <Card>
         <CardHeader>
           <CardTitle>Service Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Title*</Label>
-                <Input 
-                  id="title" 
-                  value={title} 
-                  onChange={(e) => {
-                    console.log('Title changed:', e.target.value);
-                    setTitle(e.target.value);
-                  }}
-                  placeholder="Service title"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="description">Description*</Label>
-                <Textarea 
-                  id="description" 
-                  value={description} 
-                  onChange={(e) => {
-                    console.log('Description changed:', e.target.value);
-                    setDescription(e.target.value);
-                  }}
-                  placeholder="Describe the service"
-                  rows={5}
-                  required
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="price">Price*</Label>
-                  <Input 
-                    id="price" 
-                    type="number"
-                    value={price} 
-                    onChange={(e) => {
-                      console.log('Price changed:', e.target.value);
-                      setPrice(e.target.value);
-                    }}
-                    placeholder="0.00"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
-                  <Select value={category} onValueChange={(value) => {
-                    console.log('Category changed:', value);
-                    setCategory(value);
-                  }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="iconName">Icon Name</Label>
-                <Input 
-                  id="iconName" 
-                  value={iconName} 
-                  onChange={(e) => {
-                    console.log('Icon name changed:', e.target.value);
-                    setIconName(e.target.value);
-                  }}
-                  placeholder="Package"
-                />
-                <p className="text-xs text-gray-500">
-                  Use icon names from Lucide React like: Package, CircleDollarSign, FileText, Users, etc.
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="badges">Badges (comma separated)</Label>
-                <Input 
-                  id="badges" 
-                  value={badges} 
-                  onChange={(e) => {
-                    console.log('Badges changed:', e.target.value);
-                    setBadges(e.target.value);
-                  }}
-                  placeholder="New, Premium, Limited"
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <Label htmlFor="popular">Mark as Popular</Label>
-                <Switch
-                  id="popular"
-                  checked={popular}
-                  onCheckedChange={(checked) => {
-                    console.log('Popular changed:', checked);
-                    setPopular(checked);
-                  }}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <Label htmlFor="status">Status</Label>
-                <div className="flex items-center space-x-2">
-                  <Label htmlFor="status-active" className={status === 'active' ? 'text-green-600' : 'text-gray-500'}>
-                    Active
-                  </Label>
-                  <Switch
-                    id="status"
-                    checked={status === 'active'}
-                    onCheckedChange={(checked) => {
-                      const newStatus = checked ? 'active' : 'inactive';
-                      console.log('Status changed:', newStatus);
-                      setStatus(newStatus);
-                    }}
-                  />
-                  <Label htmlFor="status-inactive" className={status === 'inactive' ? 'text-red-600' : 'text-gray-500'}>
-                    Inactive
-                  </Label>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button type="submit">
-                <Save className="h-4 w-4 mr-2" />
-                {isEditMode ? 'Update' : 'Create'} Service
-              </Button>
-            </div>
-          </form>
+          <ServiceEditorForm
+            serviceForm={serviceForm}
+            isEditMode={isEditMode}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+          />
         </CardContent>
       </Card>
     </div>

@@ -1,8 +1,31 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Service } from '@/integrations/supabase/client';
 
-export const useServiceForm = () => {
+export interface ServiceFormState {
+  title: string;
+  setTitle: (title: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  price: string;
+  setPrice: (price: string) => void;
+  iconName: string;
+  setIconName: (iconName: string) => void;
+  badges: string;
+  setBadges: (badges: string) => void;
+  popular: boolean;
+  setPopular: (popular: boolean) => void;
+  category: string;
+  setCategory: (category: string) => void;
+  status: 'active' | 'inactive';
+  setStatus: (status: 'active' | 'inactive') => void;
+  currentService: Service | null;
+  resetForm: () => void;
+  populateFormWithService: (service: Service) => void;
+  getFormData: () => Omit<Service, 'id' | 'created_at' | 'updated_at'>;
+}
+
+export const useServiceForm = (): ServiceFormState => {
   // Form state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
