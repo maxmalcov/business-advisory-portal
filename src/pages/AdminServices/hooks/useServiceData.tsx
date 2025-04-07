@@ -23,6 +23,7 @@ export const useServiceData = () => {
           throw error;
         }
         
+        // Add proper type assertion to resolve TypeScript error
         setServices(data as Service[]);
       } catch (error) {
         console.error('Error fetching services:', error);
