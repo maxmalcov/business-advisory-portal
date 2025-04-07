@@ -11,34 +11,46 @@ export type Database = {
     Tables: {
       employees: {
         Row: {
+          company_name: string | null
           created_at: string | null
+          dni_tie: string | null
           end_date: string | null
           full_name: string
           id: string
+          id_document: string | null
           position: string
           start_date: string
           status: string
           updated_at: string | null
+          weekly_schedule: string | null
         }
         Insert: {
+          company_name?: string | null
           created_at?: string | null
+          dni_tie?: string | null
           end_date?: string | null
           full_name: string
           id?: string
+          id_document?: string | null
           position: string
           start_date: string
           status: string
           updated_at?: string | null
+          weekly_schedule?: string | null
         }
         Update: {
+          company_name?: string | null
           created_at?: string | null
+          dni_tie?: string | null
           end_date?: string | null
           full_name?: string
           id?: string
+          id_document?: string | null
           position?: string
           start_date?: string
           status?: string
           updated_at?: string | null
+          weekly_schedule?: string | null
         }
         Relationships: []
       }
