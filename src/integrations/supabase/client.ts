@@ -25,9 +25,28 @@ export type ServiceRequest = {
   updated_at: string;
 }
 
+// Type definition for services
+export type Service = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  iconName: string;
+  badges: string[];
+  popular: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // Helper function to safely access the service_requests table
 export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
+};
+
+// Helper function to safely access the services table with type assertion
+export const servicesTable = () => {
+  // Use type assertion to work around TypeScript limitations
+  return supabase.from('services') as unknown as ReturnType<typeof supabase.from<Service>>;
 };
 
 // Setup realtime subscription for the service_requests table
