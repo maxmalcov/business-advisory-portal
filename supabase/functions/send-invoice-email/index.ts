@@ -17,6 +17,7 @@ interface InvoiceEmailRequest {
   fileNames: string[];
   userName: string;
   invoiceType: 'incoming' | 'outgoing';
+  message?: string;
 }
 
 serve(async (req) => {
@@ -27,7 +28,7 @@ serve(async (req) => {
 
   try {
     // Parse the request body
-    const { recipientEmail, fileNames, userName, invoiceType }: InvoiceEmailRequest = await req.json();
+    const { recipientEmail, fileNames, userName, invoiceType, message }: InvoiceEmailRequest = await req.json();
 
     if (!recipientEmail || !fileNames || !fileNames.length) {
       throw new Error("Missing required email parameters");
@@ -52,6 +53,7 @@ serve(async (req) => {
           <ul style="margin-bottom: 20px;">
             ${fileListHtml}
           </ul>
+          ${message ? `<p>${message}</p>` : ''}
           <p>These invoices have been processed and are now available in your account dashboard.</p>
           <p>Best regards,<br>Invoice Management System</p>
         </div>
