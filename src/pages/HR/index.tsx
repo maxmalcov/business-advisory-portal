@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -10,7 +11,7 @@ import { useEmployeeList } from './hooks/useEmployeeList';
 
 const HR: React.FC = () => {
   const { t } = useLanguage();
-  const { employees, statusFilter, setStatusFilter, isLoading, refreshEmployees } = useEmployeeList();
+  const { statusFilter, setStatusFilter } = useEmployeeList();
 
   return (
     <div className="space-y-6">
@@ -77,13 +78,10 @@ const HR: React.FC = () => {
       
       <div className="mt-8">
         <EmployeeStatusToggle 
-          value={statusFilter} 
-          onChange={setStatusFilter} 
+          activeStatus={statusFilter} 
+          onStatusChange={setStatusFilter} 
         />
-        <EmployeeList 
-          employees={employees} 
-          isLoading={isLoading} 
-        />
+        <EmployeeList />
       </div>
     </div>
   );
