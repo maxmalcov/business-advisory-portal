@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Service, supabase } from '@/integrations/supabase/client';
+import { Service, servicesTable, supabase } from '@/integrations/supabase/client';
 import ServicesTable from './ServicesTable';
 import ServicesFilters from './ServicesFilters';
 import ServiceFormDialog from './ServiceFormDialog';
@@ -40,10 +40,7 @@ const ServicesManagement: React.FC = () => {
         
         console.log('Fetching services...');
         
-        // Using type assertion to bypass TypeScript limitation
-        // We know services table exists, but TypeScript doesn't recognize it
-        const { data, error } = await (supabase
-          .from('services') as any)
+        const { data, error } = await servicesTable()
           .select('*')
           .order('title', { ascending: true });
           
@@ -56,8 +53,7 @@ const ServicesManagement: React.FC = () => {
         console.log('Services fetched:', data);
         
         if (data) {
-          // Use type assertion to tell TypeScript that this is an array of Service objects
-          setServices(data as Service[]);
+          setServices(data);
         }
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -106,8 +102,7 @@ const ServicesManagement: React.FC = () => {
     try {
       if (serviceToEdit) {
         // Update existing service
-        const { error } = await (supabase
-          .from('services') as any)
+        const { error } = await servicesTable()
           .update(serviceData)
           .eq('id', serviceToEdit.id);
           
@@ -119,8 +114,7 @@ const ServicesManagement: React.FC = () => {
         });
       } else {
         // Create new service
-        const { error } = await (supabase
-          .from('services') as any)
+        const { error } = await servicesTable()
           .insert(serviceData);
           
         if (error) throw error;
@@ -152,8 +146,7 @@ const ServicesManagement: React.FC = () => {
     try {
       setIsDeleting(true);
       
-      const { error } = await (supabase
-        .from('services') as any)
+      const { error } = await servicesTable()
         .delete()
         .eq('id', serviceToDelete.id);
         
@@ -181,8 +174,7 @@ const ServicesManagement: React.FC = () => {
     try {
       const newStatus = service.status === 'active' ? 'inactive' : 'active';
       
-      const { error } = await (supabase
-        .from('services') as any)
+      const { error } = await servicesTable()
         .update({ status: newStatus })
         .eq('id', service.id);
         
