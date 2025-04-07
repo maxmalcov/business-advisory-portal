@@ -4,14 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 
 interface FilterInputProps {
-  value: string;
-  onChange: (value: string) => void;
+  filterValue: string;
+  setFilterValue: (value: string) => void;
   placeholder?: string;
 }
 
 const FilterInput: React.FC<FilterInputProps> = ({
-  value,
-  onChange,
+  filterValue,
+  setFilterValue,
   placeholder = 'Search records...'
 }) => {
   return (
@@ -20,8 +20,8 @@ const FilterInput: React.FC<FilterInputProps> = ({
       <Input
         type="text"
         placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        value={filterValue}
+        onChange={(e) => setFilterValue(e.target.value)}
         className="pl-8 max-w-xs"
       />
     </div>

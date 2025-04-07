@@ -83,8 +83,8 @@ const WorkHours: React.FC = () => {
           {/* Search and filter */}
           <div className="my-4">
             <FilterInput 
-              value={filterValue}
-              onChange={setFilterValue}
+              filterValue={filterValue}
+              setFilterValue={setFilterValue}
               placeholder="Filter by company or employee name..."
             />
           </div>

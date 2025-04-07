@@ -1,110 +1,112 @@
-
 import React, { useState } from 'react';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+import { 
+  Table, 
+  TableHeader, 
+  TableBody, 
+  TableRow, 
+  TableHead, 
+  TableCell 
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { MoreHorizontal, Eye } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Employee } from '../types/employee';
+import { Skeleton } from '@/components/ui/skeleton';
 import EmployeeDetailDialog from './EmployeeDetailDialog';
-import { useEmployeeList } from '../hooks/useEmployeeList';
-import EmployeeStatusToggle from './EmployeeStatusToggle';
-import FilterInput from './FilterInput';
 
-const EmployeeList: React.FC = () => {
-  const { employees, statusFilter, setStatusFilter, isLoading, refreshEmployees } = useEmployeeList();
+interface EmployeeListProps {
+  employees: Employee[];
+  isLoading?: boolean;
+  onEmployeeSelect?: (employee: Employee) => void;
+}
+
+const EmployeeList: React.FC<EmployeeListProps> = ({ 
+  employees, 
+  isLoading = false,
+  onEmployeeSelect
+}) => {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [filter, setFilter] = useState('');
-  
-  const filteredEmployees = employees.filter(emp => 
-    emp.fullName.toLowerCase().includes(filter.toLowerCase()) || 
-    emp.position.toLowerCase().includes(filter.toLowerCase()) ||
-    (emp.companyName && emp.companyName.toLowerCase().includes(filter.toLowerCase()))
-  );
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
-  const handleViewDetails = (employee: Employee) => {
-    setSelectedEmployee(employee);
-    setDialogOpen(true);
-  };
-  
-  const formatDate = (date: string | undefined) => {
-    if (!date) return '-';
+  const formatDate = (dateStr: string) => {
     try {
-      return format(new Date(date), 'MMM d, yyyy');
-    } catch (e) {
-      return date;
+      return format(new Date(dateStr), 'MMM d, yyyy');
+    } catch {
+      return dateStr;
     }
   };
 
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <FilterInput value={filter} onChange={setFilter} />
-        <EmployeeStatusToggle 
-          activeStatus={statusFilter}
-          onStatusChange={setStatusFilter}
-        />
-      </div>
-      
+  const handleEmployeeClick = (employee: Employee) => {
+    if (onEmployeeSelect) {
+      onEmployeeSelect(employee);
+    } else {
+      setSelectedEmployee(employee);
+      setDetailDialogOpen(true);
+    }
+  };
+
+  if (isLoading) {
+    return (
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Full Name</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Start Date</TableHead>
-              {statusFilter === 'terminated' && <TableHead>End Date</TableHead>}
+              <TableHead>Position/Role</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={statusFilter === 'terminated' ? 7 : 6} className="text-center">
-                  Loading...
-                </TableCell>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell><Skeleton className="h-5 w-[150px]" /></TableCell>
+                <TableCell><Skeleton className="h-5 w-[120px]" /></TableCell>
+                <TableCell><Skeleton className="h-5 w-[80px]" /></TableCell>
+                <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
+                <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
               </TableRow>
-            ) : filteredEmployees.length === 0 ? (
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Full Name</TableHead>
+              <TableHead>Position/Role</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {employees.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={statusFilter === 'terminated' ? 7 : 6} className="text-center">
-                  No employees found
-                </TableCell>
+                <TableCell colSpan={5} className="text-center h-24">No employees found</TableCell>
               </TableRow>
             ) : (
-              filteredEmployees.map((employee) => (
-                <TableRow key={employee.id}>
-                  <TableCell>{employee.fullName}</TableCell>
+              employees.map((employee) => (
+                <TableRow 
+                  key={employee.id}
+                  className="cursor-pointer hover:bg-gray-50"
+                  onClick={() => handleEmployeeClick(employee)}
+                >
+                  <TableCell className="font-medium">{employee.fullName}</TableCell>
                   <TableCell>{employee.position}</TableCell>
-                  <TableCell>{employee.companyName || '-'}</TableCell>
-                  <TableCell>{formatDate(employee.startDate)}</TableCell>
-                  {statusFilter === 'terminated' && (
-                    <TableCell>{formatDate(employee.endDate)}</TableCell>
-                  )}
                   <TableCell>
                     <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
                       {employee.status === 'active' ? 'Active' : 'Terminated'}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Actions</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleViewDetails(employee)}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                  <TableCell>{formatDate(employee.startDate)}</TableCell>
+                  <TableCell>{employee.endDate ? formatDate(employee.endDate) : '-'}</TableCell>
                 </TableRow>
               ))
             )}
@@ -113,12 +115,11 @@ const EmployeeList: React.FC = () => {
       </div>
       
       <EmployeeDetailDialog 
-        employee={selectedEmployee} 
-        open={dialogOpen} 
-        onOpenChange={setDialogOpen}
-        onEmployeeUpdated={refreshEmployees}
+        employee={selectedEmployee}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
       />
-    </div>
+    </>
   );
 };
 
