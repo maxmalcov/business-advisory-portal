@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,6 +14,7 @@ interface ServicesManagementProps {
 }
 
 const ServicesManagement: React.FC<ServicesManagementProps> = () => {
+  const location = useLocation();
   const {
     services,
     loading,
@@ -40,6 +42,17 @@ const ServicesManagement: React.FC<ServicesManagementProps> = () => {
     handleSubmit,
     handleDelete
   } = useServiceManagement();
+
+  // Check URL for add action
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('action') === 'add') {
+      openAddDialog();
+      // Clean up the URL (optional)
+      const newUrl = location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [location.search, openAddDialog]);
 
   return (
     <Card className="h-full">

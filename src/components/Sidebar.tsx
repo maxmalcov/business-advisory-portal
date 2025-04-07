@@ -17,6 +17,7 @@ import {
   Layers,
   LayoutGrid,
   Activity,
+  Plus,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -134,6 +135,13 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
       name: t('nav.services'),
       path: '/admin/services',
       icon: PackageIcon,
+      children: [
+        {
+          name: t('nav.services.add'),
+          path: '/admin/services?action=add',
+          icon: Plus,
+        },
+      ],
     },
     {
       name: t('nav.subscriptions'),
