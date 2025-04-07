@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Service } from '@/integrations/supabase/client';
+import { format } from 'date-fns';
 
 interface ServiceTableProps {
   services: Service[];
@@ -12,6 +13,14 @@ interface ServiceTableProps {
 }
 
 const ServiceTable: React.FC<ServiceTableProps> = ({ services, onEdit, onDelete }) => {
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), 'MMM dd, yyyy');
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -19,7 +28,9 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onEdit, onDelete 
           <TableHead>Title</TableHead>
           <TableHead>Description</TableHead>
           <TableHead>Price</TableHead>
-          <TableHead>Popular</TableHead>
+          <TableHead>Category</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Created</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -29,12 +40,14 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onEdit, onDelete 
             <TableCell className="font-medium">{service.title}</TableCell>
             <TableCell className="max-w-md truncate">{service.description}</TableCell>
             <TableCell>${service.price}</TableCell>
+            <TableCell>{service.category || '-'}</TableCell>
             <TableCell>
-              {service.popular ? 
-                <Badge className="bg-green-500">Popular</Badge> : 
-                <Badge variant="outline">Regular</Badge>
+              {service.status === 'active' ? 
+                <Badge className="bg-green-500">Active</Badge> : 
+                <Badge variant="outline" className="text-red-500">Inactive</Badge>
               }
             </TableCell>
+            <TableCell>{formatDate(service.created_at)}</TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button 

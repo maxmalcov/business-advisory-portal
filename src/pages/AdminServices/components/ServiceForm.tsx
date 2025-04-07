@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Service } from '@/integrations/supabase/client';
 
 interface ServiceFormProps {
@@ -24,6 +26,10 @@ interface ServiceFormProps {
   setBadges: (badges: string) => void;
   popular: boolean;
   setPopular: (popular: boolean) => void;
+  category: string;
+  setCategory: (category: string) => void;
+  status: 'active' | 'inactive';
+  setStatus: (status: 'active' | 'inactive') => void;
   handleSubmit: () => Promise<void>;
 }
 
@@ -43,8 +49,23 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
   setBadges,
   popular,
   setPopular,
+  category,
+  setCategory,
+  status,
+  setStatus,
   handleSubmit
 }) => {
+  const categories = [
+    'Accounting',
+    'Tax Planning',
+    'Business Formation',
+    'Financial Analysis',
+    'Bookkeeping',
+    'Payroll',
+    'Consulting',
+    'Other'
+  ];
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent className="sm:max-w-md">
@@ -86,6 +107,20 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
           </div>
           
           <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
             <Label htmlFor="iconName">Icon Name</Label>
             <Input 
               id="iconName" 
@@ -108,15 +143,30 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
             />
           </div>
           
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
+          <div className="flex items-center justify-between">
+            <Label htmlFor="popular">Mark as Popular</Label>
+            <Switch
               id="popular"
               checked={popular}
-              onChange={(e) => setPopular(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
+              onCheckedChange={setPopular}
             />
-            <Label htmlFor="popular">Mark as Popular</Label>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <Label htmlFor="status">Status</Label>
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="status-active" className={status === 'active' ? 'text-green-600' : 'text-gray-500'}>
+                Active
+              </Label>
+              <Switch
+                id="status"
+                checked={status === 'active'}
+                onCheckedChange={(checked) => setStatus(checked ? 'active' : 'inactive')}
+              />
+              <Label htmlFor="status-inactive" className={status === 'inactive' ? 'text-red-600' : 'text-gray-500'}>
+                Inactive
+              </Label>
+            </div>
           </div>
         </div>
         

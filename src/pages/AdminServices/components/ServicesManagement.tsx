@@ -30,6 +30,10 @@ const ServicesManagement: React.FC<ServicesManagementProps> = () => {
     setBadges,
     popular,
     setPopular,
+    category,
+    setCategory,
+    status,
+    setStatus,
     openAddDialog,
     openEditDialog,
     handleSubmit,
@@ -88,6 +92,10 @@ const ServicesManagement: React.FC<ServicesManagementProps> = () => {
         setBadges={setBadges}
         popular={popular}
         setPopular={setPopular}
+        category={category}
+        setCategory={setCategory}
+        status={status}
+        setStatus={setStatus}
         handleSubmit={handleSubmit}
       />
     </Card>

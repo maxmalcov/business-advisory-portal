@@ -18,6 +18,8 @@ export const useServiceManagement = () => {
   const [iconName, setIconName] = useState('Package');
   const [badges, setBadges] = useState('');
   const [popular, setPopular] = useState(false);
+  const [category, setCategory] = useState('');
+  const [status, setStatus] = useState<'active' | 'inactive'>('active');
 
   // Fetch services from Supabase - optimized to prevent flickering
   useEffect(() => {
@@ -72,6 +74,8 @@ export const useServiceManagement = () => {
     setIconName('Package');
     setBadges('');
     setPopular(false);
+    setCategory('');
+    setStatus('active');
     setCurrentService(null);
   };
 
@@ -89,6 +93,8 @@ export const useServiceManagement = () => {
     setIconName(service.iconName);
     setBadges(service.badges ? service.badges.join(', ') : '');
     setPopular(service.popular);
+    setCategory(service.category || '');
+    setStatus(service.status || 'active');
     setIsEditMode(true);
     setIsDialogOpen(true);
   };
@@ -103,7 +109,9 @@ export const useServiceManagement = () => {
         price: parseFloat(price),
         iconName,
         badges: badges.split(',').map(b => b.trim()).filter(b => b),
-        popular
+        popular,
+        category: category || null,
+        status
       };
 
       if (isEditMode && currentService) {
@@ -212,6 +220,10 @@ export const useServiceManagement = () => {
     setBadges,
     popular,
     setPopular,
+    category,
+    setCategory,
+    status,
+    setStatus,
     openAddDialog,
     openEditDialog,
     handleSubmit,
