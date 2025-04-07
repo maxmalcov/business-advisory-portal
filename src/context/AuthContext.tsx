@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               id: userId,
               email: userData.user.email || '',
               name: userData.user.email?.split('@')[0] || 'New User',
-              userType: 'client' as UserType
+              usertype: 'client' as UserType
             };
             
             // Insert the profile
@@ -92,16 +92,54 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               .insert([newProfile]);
               
             if (insertError) {
+              console.error('Error creating default profile:', insertError);
+              toast({
+                variant: 'destructive',
+                title: 'Profile Creation Error',
+                description: 'Failed to create your user profile. Please try logging out and back in.',
+              });
               throw insertError;
             }
             
-            // Set the user state with the new profile
-            setUser(newProfile);
-            toast({
-              title: 'Profile Created',
-              description: 'Your user profile has been created successfully.',
-            });
-            return;
+            // After successfully creating the profile, fetch it again
+            const { data: newProfileData, error: fetchError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', userId)
+              .single();
+              
+            if (fetchError) {
+              throw fetchError;
+            }
+            
+            if (newProfileData) {
+              // Convert to AppUser and set state
+              const appUser: AppUser = {
+                id: newProfileData.id,
+                email: newProfileData.email || '',
+                name: newProfileData.name || '',
+                userType: (newProfileData.usertype as UserType) || 'client',
+                accountType: newProfileData.accounttype as AccountType,
+                companyName: newProfileData.companyname,
+                nif: newProfileData.nif,
+                address: newProfileData.address,
+                postalCode: newProfileData.postalcode,
+                city: newProfileData.city,
+                province: newProfileData.province,
+                country: newProfileData.country,
+                phone: newProfileData.phone,
+                incomingInvoiceEmail: newProfileData.incominginvoiceemail,
+                outgoingInvoiceEmail: newProfileData.outgoinginvoiceemail,
+                iframeUrls: []
+              };
+              
+              setUser(appUser);
+              toast({
+                title: 'Profile Created',
+                description: 'Your user profile has been created successfully.',
+              });
+              return;
+            }
           }
         }
         
@@ -283,10 +321,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw error;
       }
       
-      // Wait a moment to ensure the profile is created via trigger
-      setTimeout(() => {
-        refreshUserProfile();
-      }, 1000);
+      if (data.user) {
+        // Create a profile immediately after registration instead of waiting for trigger
+        const newProfile = {
+          id: data.user.id,
+          email: data.user.email || '',
+          name: userData.name || data.user.email?.split('@')[0] || 'New User',
+          usertype: (userData.userType || 'client') as UserType,
+          accounttype: userData.accountType,
+          companyname: userData.companyName,
+          nif: userData.nif,
+          address: userData.address,
+          postalcode: userData.postalCode,
+          city: userData.city,
+          province: userData.province,
+          country: userData.country,
+          phone: userData.phone,
+        };
+        
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([newProfile]);
+          
+        if (profileError) {
+          console.warn('Failed to create profile on registration:', profileError);
+          // Continue with registration even if profile creation fails
+          // The profile will be created on first login
+        }
+      }
       
       toast({
         title: 'Registration Successful',

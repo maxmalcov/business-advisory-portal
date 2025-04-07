@@ -317,7 +317,26 @@ export const useUserManagement = () => {
       if (authError) throw authError;
       console.log("User created in Auth:", authData);
 
-      // Wait a moment for triggers to create the profile
+      // Create a profile explicitly
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([{
+            id: authData.user.id,
+            email: newUser.email,
+            name: newUser.name,
+            usertype: newUser.userType,
+            companyname: newUser.companyName,
+            incominginvoiceemail: newUser.incomingInvoiceEmail,
+            outgoinginvoiceemail: newUser.outgoingInvoiceEmail
+          }]);
+          
+        if (profileError) {
+          console.error('Error creating profile for new user:', profileError);
+        }
+      }
+
+      // Wait a moment and then fetch users
       setTimeout(() => {
         fetchUsers();
       }, 1000);
