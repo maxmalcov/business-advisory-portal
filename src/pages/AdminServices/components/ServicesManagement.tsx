@@ -16,11 +16,18 @@ interface ServicesManagementProps {
 const ServicesManagement: React.FC<ServicesManagementProps> = () => {
   const location = useLocation();
   const {
+    // Service data
     services,
     loading,
+    
+    // Dialog state
     isDialogOpen,
     setIsDialogOpen,
     isEditMode,
+    openAddDialog,
+    openEditDialog,
+    
+    // Form state
     title,
     setTitle,
     description,
@@ -37,8 +44,8 @@ const ServicesManagement: React.FC<ServicesManagementProps> = () => {
     setCategory,
     status,
     setStatus,
-    openAddDialog,
-    openEditDialog,
+    
+    // Actions
     handleSubmit,
     handleDelete
   } = useServiceManagement();
