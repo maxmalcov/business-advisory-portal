@@ -26,6 +26,7 @@ import Documents from "./pages/Documents";
 import Reports from "./pages/Reports";
 import Services from "./pages/Services";
 import AdminServices from "./pages/AdminServices";
+import ServiceEditor from "./pages/AdminServices/components/ServiceEditor";
 import Subscriptions from "./pages/Subscriptions";
 import Profile from "./pages/Profile";
 import HR from "./pages/HR";
@@ -158,6 +159,17 @@ const App = () => (
                 <Route path="admin/services" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminServices />
+                  </ProtectedRoute>
+                } />
+                {/* New routes for service editor */}
+                <Route path="admin/services/create" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <ServiceEditor />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/services/edit/:serviceId" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <ServiceEditor />
                   </ProtectedRoute>
                 } />
                 <Route path="admin/users" element={

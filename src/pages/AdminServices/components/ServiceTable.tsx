@@ -1,18 +1,19 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Service } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
+import { Edit, Trash } from 'lucide-react';
 
 interface ServiceTableProps {
   services: Service[];
-  onEdit: (service: Service) => void;
   onDelete: (serviceId: string) => void;
 }
 
-const ServiceTable: React.FC<ServiceTableProps> = ({ services, onEdit, onDelete }) => {
+const ServiceTable: React.FC<ServiceTableProps> = ({ services, onDelete }) => {
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), 'MMM dd, yyyy');
@@ -53,9 +54,11 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onEdit, onDelete 
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => onEdit(service)}
+                  asChild
                 >
-                  Edit
+                  <Link to={`/admin/services/edit/${service.id}`}>
+                    <Edit className="h-4 w-4 mr-1" /> Edit
+                  </Link>
                 </Button>
                 <Button 
                   variant="outline" 
@@ -63,7 +66,7 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onEdit, onDelete 
                   className="text-red-500 hover:text-red-700"
                   onClick={() => onDelete(service.id)}
                 >
-                  Delete
+                  <Trash className="h-4 w-4 mr-1" /> Delete
                 </Button>
               </div>
             </TableCell>

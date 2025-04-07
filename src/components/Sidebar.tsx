@@ -138,7 +138,7 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
       children: [
         {
           name: t('nav.services.add'),
-          path: '/admin/services?action=add',
+          path: '/admin/services/create',
           icon: Plus,
         },
       ],

@@ -6,6 +6,8 @@ import ServiceFilters from './components/ServiceFilters';
 import ServiceRequestsList from './components/ServiceRequestsList';
 import RequestDetailsDialog from './components/RequestDetailsDialog';
 import { useServiceRequests } from './hooks/useServiceRequests';
+import ServicesManagement from './components/ServicesManagement';
+import { useServiceData } from './hooks/useServiceData';
 
 const AdminServices: React.FC = () => {
   const {
@@ -13,7 +15,7 @@ const AdminServices: React.FC = () => {
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-    loading,
+    loading: requestsLoading,
     filteredRequests,
     selectedRequest,
     isDialogOpen,
@@ -24,6 +26,8 @@ const AdminServices: React.FC = () => {
     openDetailsDialog,
     handleSaveNotes
   } = useServiceRequests();
+
+  const { DeleteConfirmationDialog } = useServiceData();
 
   return (
     <div className="space-y-6">
@@ -50,13 +54,16 @@ const AdminServices: React.FC = () => {
         </CardHeader>
         <CardContent>
           <ServiceRequestsList
-            loading={loading}
+            loading={requestsLoading}
             filteredRequests={filteredRequests}
             openDetailsDialog={openDetailsDialog}
             handleUpdateStatus={handleUpdateStatus}
           />
         </CardContent>
       </Card>
+      
+      {/* Services Management */}
+      <ServicesManagement />
       
       {/* Details Dialog */}
       <RequestDetailsDialog
@@ -67,6 +74,9 @@ const AdminServices: React.FC = () => {
         setAdminNotes={setAdminNotes}
         handleSaveNotes={handleSaveNotes}
       />
+      
+      {/* Service Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog />
     </div>
   );
 };
