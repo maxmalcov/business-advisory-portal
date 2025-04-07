@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Employee as EmployeeType, EmployeeStatus } from '../types/employee';
 import { employeesTable, Employee } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -8,6 +8,11 @@ export function useEmployeeList() {
   const [statusFilter, setStatusFilter] = useState<EmployeeStatus>('active');
   const [employees, setEmployees] = useState<EmployeeType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
+  const refreshEmployees = useCallback(() => {
+    setRefreshTrigger(prev => prev + 1);
+  }, []);
   
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -53,12 +58,13 @@ export function useEmployeeList() {
     };
     
     fetchEmployees();
-  }, [statusFilter]);
+  }, [statusFilter, refreshTrigger]);
 
   return {
     employees,
     statusFilter,
     setStatusFilter,
-    isLoading
+    isLoading,
+    refreshEmployees
   };
 }
