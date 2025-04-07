@@ -26,45 +26,61 @@ export const useUserManagement = () => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
-  // Fetch users from Supabase profiles table instead of using admin api
+  // Fetch users from Supabase
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      console.log("Fetching users from profiles table...");
+      console.log("Fetching users from Supabase...");
       
-      // Instead of using auth.admin.listUsers() which requires service_role,
-      // let's query the profiles table which is accessible with normal permissions
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*');
+      // Use the service role client to bypass RLS and fetch all users
+      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
       
-      if (profilesError) {
-        console.error('Error fetching profiles:', profilesError);
-        throw profilesError;
+      if (authError) {
+        console.error('Error fetching auth users:', authError);
+        throw authError;
       }
-      
-      if (profilesData) {
-        console.log("Fetched profiles:", profilesData.length);
+
+      if (authUsers && authUsers.users) {
+        console.log("Fetched auth users:", authUsers.users.length);
         
-        // Transform the profiles data to match our User interface
-        const transformedUsers: User[] = profilesData.map(profile => {
+        // Get all profiles for additional user data
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('*');
+        
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+        }
+        
+        // Create a map of profiles for efficient lookup
+        const profilesMap = new Map();
+        if (profilesData) {
+          profilesData.forEach(profile => {
+            profilesMap.set(profile.id, profile);
+          });
+        }
+        
+        // Transform the auth users data to match our User interface
+        const transformedUsers: User[] = authUsers.users.map(user => {
+          const profile = profilesMap.get(user.id);
+          
           return {
-            id: profile.id,
-            name: profile.name || '',
-            email: profile.email || '',
-            companyName: profile.companyname || '',
-            userType: profile.usertype || 'client',
-            incomingInvoiceEmail: profile.incominginvoiceemail || '',
-            outgoingInvoiceEmail: profile.outgoinginvoiceemail || '',
+            id: user.id,
+            name: profile?.name || user.user_metadata?.name || '',
+            email: user.email || profile?.email || '',
+            companyName: profile?.companyname || user.user_metadata?.companyName || '',
+            userType: profile?.usertype || user.user_metadata?.userType || 'client',
+            incomingInvoiceEmail: profile?.incominginvoiceemail || '',
+            outgoingInvoiceEmail: profile?.outgoinginvoiceemail || '',
             iframeUrls: [], // This may need to be added to the profiles table
-            isActive: true // We don't have banned status in profiles, assume all are active
+            isActive: !user.banned_until // Consider a user active if they are not banned
           };
         });
         
         console.log("Transformed users:", transformedUsers);
         setUsers(transformedUsers);
       } else {
-        console.log("No profiles data returned from Supabase");
+        console.log("No users data returned from Supabase");
         setUsers([]);
       }
     } catch (error) {
@@ -149,21 +165,18 @@ export const useUserManagement = () => {
     setShowConfirmDelete(true);
   };
 
-  // Confirm user deletion - now using regular API to delete a profile
+  // Confirm user deletion
   const confirmDeleteUser = async () => {
     if (!userToDelete) return;
     
     try {
-      console.log("Attempting to delete user profile:", userToDelete.id);
+      console.log("Attempting to delete user:", userToDelete.id);
       
-      // Delete the profile from profiles table instead of using admin API
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userToDelete.id);
+      // Delete the user using Supabase Auth Admin API
+      const { error } = await supabase.auth.admin.deleteUser(userToDelete.id);
       
       if (error) {
-        console.error('Error deleting profile:', error);
+        console.error('Error deleting user:', error);
         throw error;
       }
       
@@ -187,14 +200,19 @@ export const useUserManagement = () => {
     }
   };
 
-  // Toggle user active status - this is simplified since we don't have direct access to ban users
+  // Toggle user active status
   const toggleUserStatus = async (user: User) => {
     try {
       const newStatus = !user.isActive;
       console.log(`Setting user ${user.id} active status to: ${newStatus}`);
       
-      // Since we can't directly ban users without admin API, we'll just update the local state
-      // In a real application, you would need to implement this differently
+      // Use the admin API to update user status
+      const { error } = await supabase.auth.admin.updateUserById(
+        user.id,
+        { ban_duration: newStatus ? '0 seconds' : '365 days' }
+      );
+      
+      if (error) throw error;
       
       // Update local state
       setUsers(users.map(u => 
@@ -230,7 +248,7 @@ export const useUserManagement = () => {
     setIsAddingUser(false);
   };
 
-  // Save new user - using Supabase auth signup instead of admin API
+  // Save new user - IMPROVED IMPLEMENTATION
   const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
     try {
       if (!newUser.email || !newUser.password) {
@@ -240,15 +258,14 @@ export const useUserManagement = () => {
       console.log("Creating new user:", {...newUser, password: '[REDACTED]'});
       
       // Register the user with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: newUser.email,
         password: newUser.password,
-        options: {
-          data: {
-            name: newUser.name || '',
-            userType: newUser.userType || 'client',
-            companyName: newUser.companyName || '',
-          }
+        email_confirm: true,
+        user_metadata: {
+          name: newUser.name || '',
+          userType: newUser.userType || 'client',
+          companyName: newUser.companyName || '',
         }
       });
       
