@@ -1,6 +1,7 @@
 
 export interface FormData {
   companyName: string;
+  fullName: string; // Added new field for employee's full name
   employeeDni: string;
   startDate: Date | undefined;
   schedule: string;

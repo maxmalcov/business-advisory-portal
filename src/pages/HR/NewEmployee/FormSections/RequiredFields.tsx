@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Label } from '@/components/ui/label';
@@ -52,6 +51,24 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
           />
           {errors.companyName && (
             <p className="text-sm text-red-500">{errors.companyName}</p>
+          )}
+        </div>
+        
+        {/* Full Name - New Field */}
+        <div className="space-y-2">
+          <Label htmlFor="fullName" className="flex items-center">
+            Full Name <span className="text-red-500 ml-1">*</span>
+          </Label>
+          <Input
+            id="fullName"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleInputChange}
+            placeholder="e.g., John Doe"
+            className={errors.fullName ? "border-red-500" : ""}
+          />
+          {errors.fullName && (
+            <p className="text-sm text-red-500">{errors.fullName}</p>
           )}
         </div>
         

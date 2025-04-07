@@ -23,6 +23,7 @@ const NewEmployeeForm: React.FC = () => {
 
   const [formData, setFormData] = useState<FormData>({
     companyName: '',
+    fullName: '', // Added new field for employee's full name
     employeeDni: '',
     startDate: undefined,
     schedule: '',
@@ -94,6 +95,7 @@ const NewEmployeeForm: React.FC = () => {
     const newErrors: FormErrors = {};
     
     if (!formData.companyName) newErrors.companyName = 'Company name is required';
+    if (!formData.fullName) newErrors.fullName = 'Full name is required'; // Added validation for fullName
     if (!formData.employeeDni) newErrors.employeeDni = 'Employee DNI/TIE is required';
     if (!formData.startDate) newErrors.startDate = 'Start date is required';
     if (!formData.schedule) newErrors.schedule = 'Schedule is required';
@@ -114,7 +116,7 @@ const NewEmployeeForm: React.FC = () => {
     
     try {
       const employeeData = {
-        full_name: formData.companyName,
+        full_name: formData.fullName, // Use the new fullName field instead of companyName
         position: formData.position,
         status: 'active',
         start_date: formData.startDate?.toISOString().split('T')[0],

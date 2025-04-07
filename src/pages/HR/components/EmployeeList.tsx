@@ -16,9 +16,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface EmployeeListProps {
   employees: Employee[];
   isLoading?: boolean;
+  onEmployeeSelect?: (employee: Employee) => void;
 }
 
-const EmployeeList: React.FC<EmployeeListProps> = ({ employees, isLoading = false }) => {
+const EmployeeList: React.FC<EmployeeListProps> = ({ 
+  employees, 
+  isLoading = false,
+  onEmployeeSelect
+}) => {
   const formatDate = (dateStr: string) => {
     try {
       return format(new Date(dateStr), 'MMM d, yyyy');
@@ -75,7 +80,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, isLoading = fals
             </TableRow>
           ) : (
             employees.map((employee) => (
-              <TableRow key={employee.id}>
+              <TableRow 
+                key={employee.id}
+                className={onEmployeeSelect ? "cursor-pointer hover:bg-gray-50" : ""}
+                onClick={() => onEmployeeSelect && onEmployeeSelect(employee)}
+              >
                 <TableCell className="font-medium">{employee.fullName}</TableCell>
                 <TableCell>{employee.position}</TableCell>
                 <TableCell>
