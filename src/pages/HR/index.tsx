@@ -5,9 +5,13 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, UserMinus, Clock } from 'lucide-react';
+import EmployeeStatusToggle from './components/EmployeeStatusToggle';
+import EmployeeList from './components/EmployeeList';
+import { useEmployeeList } from './hooks/useEmployeeList';
 
 const HR: React.FC = () => {
   const { t } = useLanguage();
+  const { employees, statusFilter, setStatusFilter } = useEmployeeList();
 
   return (
     <div className="space-y-6">
@@ -70,6 +74,15 @@ const HR: React.FC = () => {
             </Link>
           </CardContent>
         </Card>
+      </div>
+      
+      {/* Employee List Section */}
+      <div className="mt-8">
+        <EmployeeStatusToggle 
+          value={statusFilter} 
+          onChange={setStatusFilter} 
+        />
+        <EmployeeList employees={employees} />
       </div>
     </div>
   );
