@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
 export interface User {
   id: string;
@@ -38,29 +37,6 @@ export const useUserManagement = () => {
       if (profileError) {
         throw profileError;
       }
-
-      // Also fetch the auth users to check their status
-      // Note: This requires admin privileges and might fail for regular users
-      let authStatusMap = new Map<string, boolean>();
-      try {
-        const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-        
-        if (authError) {
-          console.error('Error fetching auth users:', authError);
-          // Continue with profile data even if auth fetch fails
-        } else if (authData && authData.users) {
-          // Explicitly type the users as an array of SupabaseAuthUser
-          const supabaseUsers = authData.users as SupabaseAuthUser[];
-          supabaseUsers.forEach(authUser => {
-            // Check if the banned property exists before accessing it
-            const isBanned = 'banned' in authUser ? authUser.banned : false;
-            authStatusMap.set(authUser.id, !isBanned);
-          });
-        }
-      } catch (error) {
-        console.error('Error processing auth users:', error);
-        // Continue with profile data even if auth processing fails
-      }
       
       if (profileData) {
         console.log("Fetched profiles data:", profileData);
@@ -74,8 +50,8 @@ export const useUserManagement = () => {
           incomingInvoiceEmail: profile.incominginvoiceemail,
           outgoingInvoiceEmail: profile.outgoinginvoiceemail,
           iframeUrls: [],
-          // Use auth status if available, otherwise default to true
-          isActive: authStatusMap.has(profile.id) ? authStatusMap.get(profile.id) : true
+          // Default to active since we can't check auth status from client
+          isActive: true
         }));
         
         console.log("Transformed users:", transformedUsers);
@@ -162,21 +138,11 @@ export const useUserManagement = () => {
     if (!userToDelete) return;
     
     try {
-      // This operation requires admin privileges
-      try {
-        const { error: authError } = await supabase.auth.admin.deleteUser(
-          userToDelete.id
-        );
-        
-        if (authError) {
-          console.error('Error deleting user from Auth:', authError);
-          // Continue with profile deletion even if auth deletion fails
-        }
-      } catch (error) {
-        console.error('Error during admin delete:', error);
-      }
+      // Note: Deleting users from auth requires admin privileges and 
+      // cannot be done from client-side code. Instead, we'll just delete
+      // the profile and indicate this limitation to the user.
       
-      // Delete the profile
+      // Delete the profile from the profiles table
       const { error: profileError } = await supabase
         .from('profiles')
         .delete()
@@ -187,15 +153,15 @@ export const useUserManagement = () => {
       setUsers(users.filter(user => user.id !== userToDelete.id));
       
       toast({
-        title: "User Deleted",
-        description: `User ${userToDelete.name} was successfully deleted.`,
+        title: "User Profile Deleted",
+        description: `User ${userToDelete.name}'s profile was successfully deleted. Note: The auth record may still exist and requires admin action in the Supabase dashboard.`,
       });
     } catch (error) {
       console.error('Error deleting user:', error);
       toast({
         variant: 'destructive',
         title: 'Delete Error',
-        description: 'An error occurred while deleting the user.',
+        description: 'An error occurred while deleting the user profile.',
       });
     } finally {
       setUserToDelete(null);
@@ -257,11 +223,14 @@ export const useUserManagement = () => {
       if (authError) throw authError;
       console.log("User created in Auth:", authData);
 
-      await fetchUsers();
+      // Wait a moment for triggers to create the profile
+      setTimeout(() => {
+        fetchUsers();
+      }, 1000);
       
       toast({
         title: "User Created",
-        description: `${newUser.name} was successfully added.`,
+        description: `${newUser.name} was successfully added. Note: The user will need to verify their email before they can log in.`,
       });
     } catch (error) {
       console.error('Error creating user:', error);
