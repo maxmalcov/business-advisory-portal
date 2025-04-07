@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     // First set up auth state listener to catch all events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
+      async (event, currentSession) => {
         console.log("Auth state changed:", event, currentSession?.user?.id);
         
         if (currentSession) {
@@ -122,15 +122,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle(); // Changed from .single() to .maybeSingle() to handle missing profiles more gracefully
 
       if (error) {
+        console.error('Error fetching profile:', error);
         // Handle case when profile doesn't exist yet
-        if (error.code === 'PGRST116') {
+        if (error.code === 'PGRST116' || !data) {
           console.log('Profile not found, creating a default profile');
           await createNewProfile(userId);
         } else {
-          console.error('Error fetching profile:', error);
           toast({
             variant: 'destructive',
             title: 'Error',
@@ -160,6 +160,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           iframeUrls: [] // You might want to add this to your database schema
         });
         setIsLoading(false);
+      } else {
+        // No error but also no data - profile doesn't exist
+        console.log('No profile found, creating a default profile');
+        await createNewProfile(userId);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -226,7 +230,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       
       if (fetchError) {
         console.error('Error fetching newly created profile:', fetchError);
@@ -261,6 +265,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else {
         throw new Error("Profile created but data is null");
       }
+      setIsLoading(false);
     } catch (error: any) {
       console.error('Error in profile creation process:', error);
       
@@ -279,8 +284,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Set isLoading to false to ensure UI is responsive even if profile creation fails
         setIsLoading(false);
       }
-    } finally {
-      // We'll set isLoading to false in the fetchUserProfile function when it completes
     }
   };
 

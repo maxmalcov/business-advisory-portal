@@ -42,9 +42,13 @@ const Login: React.FC = () => {
     try {
       await login(email, password);
       // No need to navigate here as the component will redirect automatically when isAuthenticated changes
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login submission error:', error);
-      // Toast is already handled in the auth context
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: error?.message || 'An unknown error occurred',
+      });
     } finally {
       setIsLoading(false);
     }

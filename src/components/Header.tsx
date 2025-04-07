@@ -7,6 +7,7 @@ import LanguageSelector from '@/components/LanguageSelector';
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Header: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -41,12 +42,21 @@ const Header: React.FC = () => {
           ) : isAuthenticated ? (
             <div className="flex items-center space-x-3">
               <Link to="/profile" className="text-sm text-gray-600 hover:text-gray-900 flex items-center">
-                <Avatar className="h-8 w-8 mr-2 bg-primary text-white">
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {getUserInitials()}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="font-medium">{user?.name || 'User'}</span>
+                {user ? (
+                  <>
+                    <Avatar className="h-8 w-8 mr-2 bg-primary text-white">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium">{user?.name || 'User'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Skeleton className="h-8 w-8 rounded-full mr-2" />
+                    <Skeleton className="h-4 w-20" />
+                  </>
+                )}
               </Link>
               <Button variant="ghost" size="sm" onClick={logout} className="text-gray-600 hover:text-gray-900">
                 <LogOut size={18} className="mr-1" />
