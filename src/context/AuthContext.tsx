@@ -93,6 +93,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Fetch user profile from the database
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log("Fetching user profile with ID:", userId);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -112,7 +114,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               id: userId,
               email: userData.user.email || '',
               name: userData.user.email?.split('@')[0] || 'New User',
-              userType: 'client' as UserType
+              usertype: 'client' // Match the column name in the database (lowercase)
             };
             
             // Insert the profile
@@ -124,8 +126,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               throw insertError;
             }
             
-            // Set the user state with the new profile
-            setUser(newProfile);
+            // Set the user state with the new profile (using our app's camelCase convention)
+            setUser({
+              id: newProfile.id,
+              email: newProfile.email,
+              name: newProfile.name,
+              userType: newProfile.usertype as UserType,
+              iframeUrls: []
+            });
+            
             toast({
               title: 'Profile Created',
               description: 'Your user profile has been created successfully.',
@@ -137,6 +146,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       if (data) {
+        // Map database column names (lowercase) to our app's interface (camelCase)
         setUser({
           id: data.id,
           email: data.email || '',

@@ -99,16 +99,16 @@ export const useUserManagement = () => {
     
     try {
       console.log("Updating user in Supabase:", editingUser);
-      // Update the user in Supabase
+      // Update the user in Supabase - ensure column names match the database
       const { error } = await supabase
         .from('profiles')
         .update({
           name: editingUser.name,
           email: editingUser.email,
-          usertype: editingUser.userType,
-          companyname: editingUser.companyName,
-          incominginvoiceemail: editingUser.incomingInvoiceEmail,
-          outgoinginvoiceemail: editingUser.outgoingInvoiceEmail
+          usertype: editingUser.userType, // Match database column name (lowercase)
+          companyname: editingUser.companyName, // Match database column name (lowercase)
+          incominginvoiceemail: editingUser.incomingInvoiceEmail, // Match database column name (lowercase)
+          outgoinginvoiceemail: editingUser.outgoingInvoiceEmail // Match database column name (lowercase)
           // Note: iframeUrls may need to be added to the profiles table
         })
         .eq('id', editingUser.id);
@@ -265,10 +265,10 @@ export const useUserManagement = () => {
           id: authData.user.id,
           name: newUser.name || '',
           email: newUser.email,
-          usertype: newUser.userType || 'client',
-          companyname: newUser.companyName || '',
-          incominginvoiceemail: newUser.incomingInvoiceEmail || '',
-          outgoinginvoiceemail: newUser.outgoingInvoiceEmail || '',
+          usertype: newUser.userType || 'client', // Match database column name (lowercase)
+          companyname: newUser.companyName || '', // Match database column name (lowercase)
+          incominginvoiceemail: newUser.incomingInvoiceEmail || '', // Match database column name (lowercase)
+          outgoinginvoiceemail: newUser.outgoingInvoiceEmail || '', // Match database column name (lowercase)
         }, { onConflict: 'id' });
       
       if (profileError) {
