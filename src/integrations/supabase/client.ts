@@ -44,11 +44,11 @@ export const serviceRequestsTable = () => {
 };
 
 // Helper function to safely access the services table
-// We're using a generic approach with `.from()` since the services table
+// We're using a simple approach since the services table
 // isn't in the generated types yet
 export const servicesTable = () => {
-  // Using a properly typed function that returns the correct PostgrestQueryBuilder type
-  return supabase.from('services') as ReturnType<typeof supabase.from<Service>>;
+  // Using a simpler, type-compatible approach
+  return supabase.from('services');
 };
 
 // Setup realtime subscription for the service_requests table
