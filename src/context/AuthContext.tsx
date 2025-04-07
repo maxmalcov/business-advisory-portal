@@ -32,21 +32,25 @@ export interface AppUser {
 // Auth context type
 type AuthContextType = {
   user: AppUser | null;
+  session: Session | null; // Added session to the context
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: Partial<AppUser> & { password: string }) => Promise<void>;
+  refreshUserProfile: () => Promise<void>; // Added function to manually refresh profile
 };
 
 // Create auth context with default values
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  session: null, // Added session to default values
   isLoading: true,
   isAuthenticated: false,
   login: async () => {},
   logout: () => {},
   register: async () => {},
+  refreshUserProfile: async () => {}, // Added to default values
 });
 
 // Provider component
@@ -56,43 +60,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Check for existing auth on mount and set up auth state listener
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        setSession(currentSession);
-        if (currentSession?.user) {
-          // Use setTimeout to avoid potential Supabase authentication deadlock
-          setTimeout(() => {
-            fetchUserProfile(currentSession.user.id);
-          }, 0);
-        } else {
-          setUser(null);
-        }
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      if (currentSession?.user) {
-        fetchUserProfile(currentSession.user.id);
-      }
-      setIsLoading(false);
-    }).catch((error) => {
-      console.error('Error retrieving session:', error);
-      setIsLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  // Fetch user profile from the database
-  const fetchUserProfile = async (userId: string) => {
+  // Fetch user profile from the database with retry mechanism
+  const fetchUserProfile = async (userId: string, retryCount = 3) => {
     try {
+      console.log("Fetching user profile for ID:", userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -133,11 +104,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             return;
           }
         }
+        
+        // Network errors might require retries
+        if (retryCount > 0 && (error.message.includes('Failed to fetch') || error.code === 'NETWORK_ERROR')) {
+          console.log(`Retrying profile fetch. Attempts remaining: ${retryCount-1}`);
+          // Wait briefly before retrying
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return fetchUserProfile(userId, retryCount - 1);
+        }
+        
         throw error;
       }
 
       if (data) {
-        setUser({
+        const appUser: AppUser = {
           id: data.id,
           email: data.email || '',
           name: data.name || '',
@@ -153,18 +133,78 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           phone: data.phone,
           incomingInvoiceEmail: data.incominginvoiceemail,
           outgoingInvoiceEmail: data.outgoinginvoiceemail,
-          iframeUrls: [] // You might want to add this to your database schema
-        });
+          iframeUrls: []
+        };
+        
+        setUser(appUser);
+        console.log("User profile loaded successfully:", appUser);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to load user profile',
+        description: 'Failed to load user profile. Please try refreshing the page.',
       });
     }
   };
+  
+  // Function to refresh user profile manually
+  const refreshUserProfile = async () => {
+    if (session?.user?.id) {
+      await fetchUserProfile(session.user.id);
+    }
+  };
+
+  // Check for existing auth on mount and set up auth state listener
+  useEffect(() => {
+    let mounted = true;
+    console.log("Setting up auth state listeners");
+    
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        console.log("Auth state changed:", event);
+        if (!mounted) return;
+        
+        setSession(currentSession);
+        
+        if (currentSession?.user) {
+          // Use setTimeout to avoid potential Supabase authentication deadlock
+          setTimeout(() => {
+            if (mounted) {
+              fetchUserProfile(currentSession.user.id);
+            }
+          }, 0);
+        } else {
+          setUser(null);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      if (!mounted) return;
+      
+      console.log("Got initial session:", currentSession ? "Session exists" : "No session");
+      setSession(currentSession);
+      
+      if (currentSession?.user) {
+        fetchUserProfile(currentSession.user.id);
+      }
+      setIsLoading(false);
+    }).catch((error) => {
+      console.error('Error retrieving session:', error);
+      if (mounted) {
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // Login function
   const login = async (email: string, password: string) => {
@@ -243,6 +283,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw error;
       }
       
+      // Wait a moment to ensure the profile is created via trigger
+      setTimeout(() => {
+        refreshUserProfile();
+      }, 1000);
+      
       toast({
         title: 'Registration Successful',
         description: 'Your account has been created successfully.',
@@ -263,11 +308,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   return (
     <AuthContext.Provider value={{ 
       user, 
+      session, // Added session to the context
       isLoading, 
       isAuthenticated: !!session,
       login,
       logout,
-      register
+      register,
+      refreshUserProfile // Added to the context
     }}>
       {children}
     </AuthContext.Provider>

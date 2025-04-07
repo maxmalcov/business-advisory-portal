@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -41,28 +40,30 @@ export const useUserManagement = () => {
       }
 
       // Also fetch the auth users to check their status
-      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) {
-        console.error('Error fetching auth users:', authError);
-        // Continue with profile data even if auth fetch fails
-      }
-
-      if (profileData) {
-        console.log("Fetched profiles data:", profileData);
+      // Note: This requires admin privileges and might fail for regular users
+      let authStatusMap = new Map<string, boolean>();
+      try {
+        const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
         
-        // Create a map of user IDs to their auth status
-        const authStatusMap = new Map();
-        if (authData && authData.users) {
+        if (authError) {
+          console.error('Error fetching auth users:', authError);
+          // Continue with profile data even if auth fetch fails
+        } else if (authData && authData.users) {
           // Explicitly type the users as an array of SupabaseAuthUser
           const supabaseUsers = authData.users as SupabaseAuthUser[];
           supabaseUsers.forEach(authUser => {
-            // Access the banned property on the SupabaseAuthUser type, not our User interface
             // Check if the banned property exists before accessing it
             const isBanned = 'banned' in authUser ? authUser.banned : false;
             authStatusMap.set(authUser.id, !isBanned);
           });
         }
+      } catch (error) {
+        console.error('Error processing auth users:', error);
+        // Continue with profile data even if auth processing fails
+      }
+      
+      if (profileData) {
+        console.log("Fetched profiles data:", profileData);
         
         const transformedUsers: User[] = profileData.map(profile => ({
           id: profile.id,
@@ -161,14 +162,21 @@ export const useUserManagement = () => {
     if (!userToDelete) return;
     
     try {
-      const { error: authError } = await supabase.auth.admin.deleteUser(
-        userToDelete.id
-      );
-      
-      if (authError) {
-        console.error('Error deleting user from Auth:', authError);
+      // This operation requires admin privileges
+      try {
+        const { error: authError } = await supabase.auth.admin.deleteUser(
+          userToDelete.id
+        );
+        
+        if (authError) {
+          console.error('Error deleting user from Auth:', authError);
+          // Continue with profile deletion even if auth deletion fails
+        }
+      } catch (error) {
+        console.error('Error during admin delete:', error);
       }
       
+      // Delete the profile
       const { error: profileError } = await supabase
         .from('profiles')
         .delete()
