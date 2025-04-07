@@ -32,25 +32,21 @@ export interface AppUser {
 // Auth context type
 type AuthContextType = {
   user: AppUser | null;
-  session: Session | null; // Added session to the context
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: Partial<AppUser> & { password: string }) => Promise<void>;
-  refreshUserProfile: () => Promise<void>; // Added function to manually refresh profile
 };
 
 // Create auth context with default values
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  session: null, // Added session to default values
   isLoading: true,
   isAuthenticated: false,
   login: async () => {},
   logout: () => {},
   register: async () => {},
-  refreshUserProfile: async () => {}, // Added to default values
 });
 
 // Provider component
@@ -60,10 +56,43 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Fetch user profile from the database with retry mechanism
-  const fetchUserProfile = async (userId: string, retryCount = 3) => {
+  // Check for existing auth on mount and set up auth state listener
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        setSession(currentSession);
+        if (currentSession?.user) {
+          // Use setTimeout to avoid potential Supabase authentication deadlock
+          setTimeout(() => {
+            fetchUserProfile(currentSession.user.id);
+          }, 0);
+        } else {
+          setUser(null);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      if (currentSession?.user) {
+        fetchUserProfile(currentSession.user.id);
+      }
+      setIsLoading(false);
+    }).catch((error) => {
+      console.error('Error retrieving session:', error);
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Fetch user profile from the database
+  const fetchUserProfile = async (userId: string) => {
     try {
-      console.log("Fetching user profile for ID:", userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -83,7 +112,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               id: userId,
               email: userData.user.email || '',
               name: userData.user.email?.split('@')[0] || 'New User',
-              usertype: 'client' as UserType
+              userType: 'client' as UserType
             };
             
             // Insert the profile
@@ -92,70 +121,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               .insert([newProfile]);
               
             if (insertError) {
-              console.error('Error creating default profile:', insertError);
-              toast({
-                variant: 'destructive',
-                title: 'Profile Creation Error',
-                description: 'Failed to create your user profile. Please try logging out and back in.',
-              });
               throw insertError;
             }
             
-            // After successfully creating the profile, fetch it again
-            const { data: newProfileData, error: fetchError } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', userId)
-              .single();
-              
-            if (fetchError) {
-              throw fetchError;
-            }
-            
-            if (newProfileData) {
-              // Convert to AppUser and set state
-              const appUser: AppUser = {
-                id: newProfileData.id,
-                email: newProfileData.email || '',
-                name: newProfileData.name || '',
-                userType: (newProfileData.usertype as UserType) || 'client',
-                accountType: newProfileData.accounttype as AccountType,
-                companyName: newProfileData.companyname,
-                nif: newProfileData.nif,
-                address: newProfileData.address,
-                postalCode: newProfileData.postalcode,
-                city: newProfileData.city,
-                province: newProfileData.province,
-                country: newProfileData.country,
-                phone: newProfileData.phone,
-                incomingInvoiceEmail: newProfileData.incominginvoiceemail,
-                outgoingInvoiceEmail: newProfileData.outgoinginvoiceemail,
-                iframeUrls: []
-              };
-              
-              setUser(appUser);
-              toast({
-                title: 'Profile Created',
-                description: 'Your user profile has been created successfully.',
-              });
-              return;
-            }
+            // Set the user state with the new profile
+            setUser(newProfile);
+            toast({
+              title: 'Profile Created',
+              description: 'Your user profile has been created successfully.',
+            });
+            return;
           }
         }
-        
-        // Network errors might require retries
-        if (retryCount > 0 && (error.message.includes('Failed to fetch') || error.code === 'NETWORK_ERROR')) {
-          console.log(`Retrying profile fetch. Attempts remaining: ${retryCount-1}`);
-          // Wait briefly before retrying
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          return fetchUserProfile(userId, retryCount - 1);
-        }
-        
         throw error;
       }
 
       if (data) {
-        const appUser: AppUser = {
+        setUser({
           id: data.id,
           email: data.email || '',
           name: data.name || '',
@@ -171,78 +153,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           phone: data.phone,
           incomingInvoiceEmail: data.incominginvoiceemail,
           outgoingInvoiceEmail: data.outgoinginvoiceemail,
-          iframeUrls: []
-        };
-        
-        setUser(appUser);
-        console.log("User profile loaded successfully:", appUser);
+          iframeUrls: [] // You might want to add this to your database schema
+        });
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to load user profile. Please try refreshing the page.',
+        description: 'Failed to load user profile',
       });
     }
   };
-  
-  // Function to refresh user profile manually
-  const refreshUserProfile = async () => {
-    if (session?.user?.id) {
-      await fetchUserProfile(session.user.id);
-    }
-  };
-
-  // Check for existing auth on mount and set up auth state listener
-  useEffect(() => {
-    let mounted = true;
-    console.log("Setting up auth state listeners");
-    
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        console.log("Auth state changed:", event);
-        if (!mounted) return;
-        
-        setSession(currentSession);
-        
-        if (currentSession?.user) {
-          // Use setTimeout to avoid potential Supabase authentication deadlock
-          setTimeout(() => {
-            if (mounted) {
-              fetchUserProfile(currentSession.user.id);
-            }
-          }, 0);
-        } else {
-          setUser(null);
-        }
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      if (!mounted) return;
-      
-      console.log("Got initial session:", currentSession ? "Session exists" : "No session");
-      setSession(currentSession);
-      
-      if (currentSession?.user) {
-        fetchUserProfile(currentSession.user.id);
-      }
-      setIsLoading(false);
-    }).catch((error) => {
-      console.error('Error retrieving session:', error);
-      if (mounted) {
-        setIsLoading(false);
-      }
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
 
   // Login function
   const login = async (email: string, password: string) => {
@@ -321,35 +243,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw error;
       }
       
-      if (data.user) {
-        // Create a profile immediately after registration instead of waiting for trigger
-        const newProfile = {
-          id: data.user.id,
-          email: data.user.email || '',
-          name: userData.name || data.user.email?.split('@')[0] || 'New User',
-          usertype: (userData.userType || 'client') as UserType,
-          accounttype: userData.accountType,
-          companyname: userData.companyName,
-          nif: userData.nif,
-          address: userData.address,
-          postalcode: userData.postalCode,
-          city: userData.city,
-          province: userData.province,
-          country: userData.country,
-          phone: userData.phone,
-        };
-        
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([newProfile]);
-          
-        if (profileError) {
-          console.warn('Failed to create profile on registration:', profileError);
-          // Continue with registration even if profile creation fails
-          // The profile will be created on first login
-        }
-      }
-      
       toast({
         title: 'Registration Successful',
         description: 'Your account has been created successfully.',
@@ -370,13 +263,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   return (
     <AuthContext.Provider value={{ 
       user, 
-      session, // Added session to the context
       isLoading, 
       isAuthenticated: !!session,
       login,
       logout,
-      register,
-      refreshUserProfile // Added to the context
+      register
     }}>
       {children}
     </AuthContext.Provider>

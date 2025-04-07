@@ -39,7 +39,6 @@ const AdminUserManagement: React.FC = () => {
     handleCancelAddUser,
     handleSaveNewUser,
     setShowConfirmDelete,
-    fetchUsers,
   } = useUserManagement();
 
   return (
@@ -54,14 +53,18 @@ const AdminUserManagement: React.FC = () => {
 
       <Card>
         <CardContent className="p-0">
-          <UserTable 
-            users={users} 
-            isLoading={isLoading}
-            onEditUser={handleEditUser}
-            onDeleteUser={handleDeleteUser}
-            onToggleStatus={toggleUserStatus}
-            onRefresh={fetchUsers}
-          />
+          {isLoading ? (
+            <div className="flex justify-center items-center p-8">
+              <p>Loading users...</p>
+            </div>
+          ) : (
+            <UserTable 
+              users={users} 
+              onEditUser={handleEditUser}
+              onDeleteUser={handleDeleteUser}
+              onToggleStatus={toggleUserStatus}
+            />
+          )}
         </CardContent>
       </Card>
 
