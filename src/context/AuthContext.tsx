@@ -123,6 +123,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               .insert([newProfile]);
               
             if (insertError) {
+              console.error('Error creating profile:', insertError);
               throw insertError;
             }
             
@@ -142,10 +143,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             return;
           }
         }
+        console.error('Error fetching profile:', error);
         throw error;
       }
 
       if (data) {
+        console.log("Profile data fetched:", data);
         // Map database column names (lowercase) to our app's interface (camelCase)
         setUser({
           id: data.id,
