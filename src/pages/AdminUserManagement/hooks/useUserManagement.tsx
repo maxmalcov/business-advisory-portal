@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -29,17 +30,35 @@ export const useUserManagement = () => {
     setIsLoading(true);
     try {
       console.log("Fetching users from Supabase...");
-      const { data, error } = await supabase
+      // Fetch all user profiles from the profiles table
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*');
 
-      if (error) {
-        throw error;
+      if (profileError) {
+        throw profileError;
       }
 
-      if (data) {
-        console.log("Fetched profiles data:", data);
-        const transformedUsers: User[] = data.map(profile => ({
+      // Also fetch the auth users to check their status
+      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (authError) {
+        console.error('Error fetching auth users:', authError);
+        // Continue with profile data even if auth fetch fails
+      }
+
+      if (profileData) {
+        console.log("Fetched profiles data:", profileData);
+        
+        // Create a map of user IDs to their auth status
+        const authStatusMap = new Map();
+        if (authData?.users) {
+          authData.users.forEach(user => {
+            authStatusMap.set(user.id, !user.banned);
+          });
+        }
+        
+        const transformedUsers: User[] = profileData.map(profile => ({
           id: profile.id,
           name: profile.name || '',
           email: profile.email || '',
@@ -48,7 +67,8 @@ export const useUserManagement = () => {
           incomingInvoiceEmail: profile.incominginvoiceemail,
           outgoingInvoiceEmail: profile.outgoinginvoiceemail,
           iframeUrls: [],
-          isActive: true
+          // Use auth status if available, otherwise default to true
+          isActive: authStatusMap.has(profile.id) ? authStatusMap.get(profile.id) : true
         }));
         
         console.log("Transformed users:", transformedUsers);
@@ -173,6 +193,8 @@ export const useUserManagement = () => {
     const updatedUser = { ...user, isActive: !user.isActive };
     
     try {
+      // For now, we're just updating the local state
+      // In a real app, you might want to update user status in auth system
       setUsers(users.map(u => u.id === user.id ? updatedUser : u));
       
       toast({
@@ -259,5 +281,6 @@ export const useUserManagement = () => {
     handleCancelAddUser,
     handleSaveNewUser,
     setShowConfirmDelete,
+    fetchUsers, // Export the fetchUsers function for manual refreshing
   };
 };
