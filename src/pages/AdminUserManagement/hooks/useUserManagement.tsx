@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,7 +31,7 @@ export const useUserManagement = () => {
       console.log("Fetching users from Supabase...");
       
       // First, fetch all auth users to ensure we have the complete list
-      const { data: authData, error: authError } = await supabase.auth.getUsers();
+      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
       
       if (authError) {
         console.error('Error fetching auth users:', authError);
@@ -126,8 +125,37 @@ export const useUserManagement = () => {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to load users'
+        description: 'Failed to load users. Check browser console for details.'
       });
+      
+      // If admin access failed, fall back to just fetching profiles
+      try {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*');
+  
+        if (profileError) throw profileError;
+        
+        if (profileData) {
+          console.log("Fallback: Fetched profiles data:", profileData);
+          
+          const transformedUsers = profileData.map(profile => ({
+            id: profile.id,
+            name: profile.name || '',
+            email: profile.email || '',
+            companyName: profile.companyname,
+            userType: profile.usertype || 'client',
+            incomingInvoiceEmail: profile.incominginvoiceemail,
+            outgoingInvoiceEmail: profile.outgoinginvoiceemail,
+            iframeUrls: [],
+            isActive: true
+          }));
+          
+          setUsers(transformedUsers);
+        }
+      } catch (fallbackError) {
+        console.error('Error in fallback profile fetch:', fallbackError);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -304,13 +332,6 @@ export const useUserManagement = () => {
       setIsAddingUser(false);
     }
   };
-
-  // Add missing filteredUsers calculation from the old code
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.companyName?.toLowerCase().includes(searchQuery.toLowerCase() || '')
-  );
 
   return {
     users: filteredUsers,
