@@ -59,16 +59,47 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Check for existing auth on mount and set up auth state listener
   useEffect(() => {
-    // First check for existing session to avoid unnecessary loading state
+    console.log("Setting up authentication state handling");
+    
+    // First set up auth state listener to catch all events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        console.log("Auth state changed:", event, currentSession?.user?.id);
+        
+        if (currentSession) {
+          setSession(currentSession);
+          
+          if (currentSession.user) {
+            console.log("User authenticated in state change, fetching profile");
+            // Use setTimeout to avoid potential Supabase authentication deadlock
+            setTimeout(() => {
+              fetchUserProfile(currentSession.user.id);
+            }, 100);
+          }
+        } else {
+          setUser(null);
+          setSession(null);
+          setIsLoading(false);
+        }
+      }
+    );
+
+    // Then check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       console.log("Initial session check:", currentSession?.user?.id);
-      setSession(currentSession);
       
-      if (currentSession?.user) {
-        // Use a brief timeout to avoid deadlocks
-        setTimeout(() => {
-          fetchUserProfile(currentSession.user.id);
-        }, 100);
+      if (currentSession) {
+        setSession(currentSession);
+        
+        if (currentSession.user) {
+          console.log("User authenticated in initial check, fetching profile");
+          // Use setTimeout to avoid potential deadlocks
+          setTimeout(() => {
+            fetchUserProfile(currentSession.user.id);
+          }, 100);
+        } else {
+          setIsLoading(false);
+        }
       } else {
         setIsLoading(false);
       }
@@ -76,28 +107,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.error('Error retrieving session:', error);
       setIsLoading(false);
     });
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        console.log("Auth state changed:", event, currentSession?.user?.id);
-        
-        // Only update session if it has changed
-        if (JSON.stringify(session) !== JSON.stringify(currentSession)) {
-          setSession(currentSession);
-          
-          if (currentSession?.user) {
-            // Use setTimeout to avoid potential Supabase authentication deadlock
-            setTimeout(() => {
-              fetchUserProfile(currentSession.user.id);
-            }, 100);
-          } else {
-            setUser(null);
-            setIsLoading(false);
-          }
-        }
-      }
-    );
 
     return () => {
       subscription.unsubscribe();
@@ -125,12 +134,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           toast({
             variant: 'destructive',
             title: 'Error',
-            description: 'Failed to load user profile',
+            description: 'Failed to load user profile: ' + error.message,
           });
           setIsLoading(false);
         }
       } else if (data) {
-        console.log("Profile data fetched:", data);
+        console.log("Profile data fetched successfully:", data);
         // Map database column names (lowercase) to our app's interface (camelCase)
         setUser({
           id: data.id,
@@ -169,39 +178,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log("Creating new profile for user:", userId);
       setProfileCreationAttempts(prev => prev + 1);
       
-      // Get the user's email from auth
-      const { data: userData } = await supabase.auth.getUser();
+      // Get the user's email directly from the session to ensure we have it
+      const { data: { user } } = await supabase.auth.getUser();
       
-      if (!userData || !userData.user) {
+      if (!user) {
         throw new Error("User data not available");
       }
+      
+      console.log("Retrieved user data for profile creation:", user.email);
       
       // Create a basic profile
       const newProfile = {
         id: userId,
-        email: userData.user.email || '',
-        name: userData.user.email?.split('@')[0] || 'New User',
+        email: user.email || '',
+        name: user.email?.split('@')[0] || 'New User',
         usertype: 'client' // Match the column name in the database (lowercase)
       };
       
       console.log("Attempting to create profile with data:", newProfile);
       
-      // Try a direct upsert
+      // First try direct insert
       const { error: insertError } = await supabase
         .from('profiles')
-        .upsert([newProfile]);
+        .insert([newProfile]);
       
       if (insertError) {
-        console.error('Error creating profile via upsert:', insertError);
+        console.log('Insert attempt failed, trying upsert:', insertError);
         
-        // If upsert fails, try direct insert
-        const { error: insertDirectError } = await supabase
+        // If insert fails, try upsert
+        const { error: upsertError } = await supabase
           .from('profiles')
-          .insert([newProfile]);
+          .upsert([newProfile]);
         
-        if (insertDirectError) {
-          console.error('Error creating profile via direct insert:', insertDirectError);
-          throw insertDirectError;
+        if (upsertError) {
+          console.error('Profile creation failed with upsert:', upsertError);
+          throw upsertError;
         }
       }
       
@@ -250,7 +261,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else {
         throw new Error("Profile created but data is null");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in profile creation process:', error);
       
       // Retry logic with backoff
@@ -263,11 +274,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'Failed to create user profile after multiple attempts',
+          description: 'Failed to create user profile: ' + (error.message || 'Unknown error'),
         });
+        // Set isLoading to false to ensure UI is responsive even if profile creation fails
+        setIsLoading(false);
       }
     } finally {
-      setIsLoading(false);
+      // We'll set isLoading to false in the fetchUserProfile function when it completes
     }
   };
 
@@ -285,6 +298,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw error;
       }
 
+      console.log("Login successful, session:", data.session?.user.id);
+      
+      // We don't need to manually fetch profile here as the auth state listener will do it
+      
       toast({
         title: 'Login Successful',
         description: 'Welcome back!',
@@ -296,9 +313,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Login Failed',
         description: error?.message || 'An unknown error occurred',
       });
-      throw error;
-    } finally {
       setIsLoading(false);
+      throw error;
     }
   };
 
@@ -306,6 +322,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = async () => {
     try {
       await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
       toast({
         title: 'Logged Out',
         description: 'You have been successfully logged out.',
@@ -363,11 +381,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Registration Failed',
         description: error?.message || 'An unknown error occurred',
       });
-      throw error;
-    } finally {
       setIsLoading(false);
+      throw error;
     }
   };
+
+  // Debug output
+  useEffect(() => {
+    console.log("Auth state updated:", {
+      isAuthenticated: !!session,
+      isLoading,
+      user: user?.name
+    });
+  }, [session, isLoading, user]);
 
   return (
     <AuthContext.Provider value={{ 
