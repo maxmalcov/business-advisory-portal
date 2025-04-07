@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Save } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ServiceEditorActions } from './ServiceEditorActions';
 import { ServiceFormState } from '../hooks/useServiceForm';
@@ -53,10 +52,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           <Input 
             id="title" 
             value={title} 
-            onChange={(e) => {
-              console.log('Title changed:', e.target.value);
-              setTitle(e.target.value);
-            }}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Service title"
             required
           />
@@ -67,10 +63,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           <Textarea 
             id="description" 
             value={description} 
-            onChange={(e) => {
-              console.log('Description changed:', e.target.value);
-              setDescription(e.target.value);
-            }}
+            onChange={(e) => setDescription(e.target.value)}
             placeholder="Describe the service"
             rows={5}
             required
@@ -83,20 +76,14 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
             id="price"
             type="number"
             value={price}
-            onChange={(e) => {
-              console.log('Price changed:', e.target.value);
-              setPrice(e.target.value);
-            }}
+            onChange={(e) => setPrice(e.target.value)}
             placeholder="0.00"
             required
           />
           
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
-            <Select value={category} onValueChange={(value) => {
-              console.log('Category changed:', value);
-              setCategory(value);
-            }}>
+            <Select value={category} onValueChange={(value) => setCategory(value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
@@ -113,10 +100,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           label="Icon Name"
           id="iconName"
           value={iconName}
-          onChange={(e) => {
-            console.log('Icon name changed:', e.target.value);
-            setIconName(e.target.value);
-          }}
+          onChange={(e) => setIconName(e.target.value)}
           placeholder="Package"
           description="Use icon names from Lucide React like: Package, CircleDollarSign, FileText, Users, etc."
         />
@@ -125,10 +109,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           label="Badges (comma separated)"
           id="badges"
           value={badges}
-          onChange={(e) => {
-            console.log('Badges changed:', e.target.value);
-            setBadges(e.target.value);
-          }}
+          onChange={(e) => setBadges(e.target.value)}
           placeholder="New, Premium, Limited"
         />
         
@@ -137,10 +118,7 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           <Switch
             id="popular"
             checked={popular}
-            onCheckedChange={(checked) => {
-              console.log('Popular changed:', checked);
-              setPopular(checked);
-            }}
+            onCheckedChange={(checked) => setPopular(checked)}
           />
         </div>
         
@@ -150,7 +128,6 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
           checked={status === 'active'}
           onCheckedChange={(checked) => {
             const newStatus = checked ? 'active' : 'inactive';
-            console.log('Status changed:', newStatus);
             setStatus(newStatus);
           }}
           activeLabel="Active"
