@@ -13,6 +13,7 @@ export interface User {
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
   isActive?: boolean;
+  password?: string; // Added password property
 }
 
 export const useUserManagement = () => {
