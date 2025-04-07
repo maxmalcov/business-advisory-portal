@@ -31,33 +31,56 @@ export const useUserManagement = () => {
     setIsLoading(true);
     try {
       console.log("Fetching users from Supabase...");
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*');
-
-      if (error) {
-        throw error;
+      
+      // Use the service role client to bypass RLS and fetch all users
+      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (authError) {
+        console.error('Error fetching auth users:', authError);
+        throw authError;
       }
 
-      if (data) {
-        console.log("Fetched profiles data:", data);
-        // Transform the profiles data to match our User interface
-        const transformedUsers: User[] = data.map(profile => ({
-          id: profile.id,
-          name: profile.name || '',
-          email: profile.email || '',
-          companyName: profile.companyname,
-          userType: profile.usertype || 'client',
-          incomingInvoiceEmail: profile.incominginvoiceemail,
-          outgoingInvoiceEmail: profile.outgoinginvoiceemail,
-          iframeUrls: [], // This may need to be added to the profiles table
-          isActive: true // Assuming all users are active by default
-        }));
+      if (authUsers && authUsers.users) {
+        console.log("Fetched auth users:", authUsers.users.length);
+        
+        // Get all profiles for additional user data
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('*');
+        
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+        }
+        
+        // Create a map of profiles for efficient lookup
+        const profilesMap = new Map();
+        if (profilesData) {
+          profilesData.forEach(profile => {
+            profilesMap.set(profile.id, profile);
+          });
+        }
+        
+        // Transform the auth users data to match our User interface
+        const transformedUsers: User[] = authUsers.users.map(user => {
+          const profile = profilesMap.get(user.id);
+          
+          return {
+            id: user.id,
+            name: profile?.name || user.user_metadata?.name || '',
+            email: user.email || profile?.email || '',
+            companyName: profile?.companyname || user.user_metadata?.companyName || '',
+            userType: profile?.usertype || user.user_metadata?.userType || 'client',
+            incomingInvoiceEmail: profile?.incominginvoiceemail || '',
+            outgoingInvoiceEmail: profile?.outgoinginvoiceemail || '',
+            iframeUrls: [], // This may need to be added to the profiles table
+            isActive: !user.banned_until // Consider a user active if they are not banned
+          };
+        });
         
         console.log("Transformed users:", transformedUsers);
         setUsers(transformedUsers);
       } else {
-        console.log("No data returned from Supabase");
+        console.log("No users data returned from Supabase");
         setUsers([]);
       }
     } catch (error) {
@@ -149,33 +172,14 @@ export const useUserManagement = () => {
     try {
       console.log("Attempting to delete user:", userToDelete.id);
       
-      // Delete from profiles table first
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userToDelete.id);
-
-      if (profileError) {
-        console.error('Error deleting user from profiles:', profileError);
-        throw profileError;
+      // Delete the user using Supabase Auth Admin API
+      const { error } = await supabase.auth.admin.deleteUser(userToDelete.id);
+      
+      if (error) {
+        console.error('Error deleting user:', error);
+        throw error;
       }
       
-      // Then try to delete from auth
-      try {
-        // This may require admin privileges
-        const { error: authError } = await supabase.auth.admin.deleteUser(
-          userToDelete.id
-        );
-        
-        if (authError) {
-          console.error('Error deleting user from Auth:', authError);
-          // Continue anyway since we've deleted the profile
-        }
-      } catch (authDeleteError) {
-        console.error('Exception during auth deletion:', authDeleteError);
-        // Continue anyway since we've deleted the profile
-      }
-
       // Update local state
       setUsers(users.filter(user => user.id !== userToDelete.id));
       
@@ -198,17 +202,25 @@ export const useUserManagement = () => {
 
   // Toggle user active status
   const toggleUserStatus = async (user: User) => {
-    const updatedUser = { ...user, isActive: !user.isActive };
-    
     try {
-      // In a real implementation, you would update user status in Supabase
-      // For this example, we're just updating the local state
+      const newStatus = !user.isActive;
+      console.log(`Setting user ${user.id} active status to: ${newStatus}`);
+      
+      // Use the admin API to update user status
+      const { error } = await supabase.auth.admin.updateUserById(
+        user.id,
+        { ban_duration: newStatus ? '0 seconds' : '365 days' }
+      );
+      
+      if (error) throw error;
       
       // Update local state
-      setUsers(users.map(u => u.id === user.id ? updatedUser : u));
+      setUsers(users.map(u => 
+        u.id === user.id ? { ...u, isActive: newStatus } : u
+      ));
       
       toast({
-        title: updatedUser.isActive ? "User Activated" : "User Deactivated",
+        title: newStatus ? "User Activated" : "User Deactivated",
         description: `${user.name}'s status was successfully changed.`,
       });
     } catch (error) {
@@ -246,15 +258,14 @@ export const useUserManagement = () => {
       console.log("Creating new user:", {...newUser, password: '[REDACTED]'});
       
       // Register the user with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: newUser.email,
         password: newUser.password,
-        options: {
-          data: {
-            name: newUser.name || '',
-            userType: newUser.userType || 'client',
-            companyName: newUser.companyName || '',
-          }
+        email_confirm: true,
+        user_metadata: {
+          name: newUser.name || '',
+          userType: newUser.userType || 'client',
+          companyName: newUser.companyName || '',
         }
       });
       
@@ -269,24 +280,6 @@ export const useUserManagement = () => {
       
       console.log("User created in Auth:", authData);
       
-      // Create a profile for the user if not automatically created by the trigger
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: authData.user.id,
-          name: newUser.name || '',
-          email: newUser.email,
-          usertype: newUser.userType || 'client', // Match database column name (lowercase)
-          companyname: newUser.companyName || '', // Match database column name (lowercase)
-          incominginvoiceemail: newUser.incomingInvoiceEmail || '', // Match database column name (lowercase)
-          outgoinginvoiceemail: newUser.outgoingInvoiceEmail || '', // Match database column name (lowercase)
-        }, { onConflict: 'id' });
-      
-      if (profileError) {
-        console.error('Error creating user profile:', profileError);
-        throw profileError;
-      }
-
       // Fetch users again to update the list
       await fetchUsers();
       
