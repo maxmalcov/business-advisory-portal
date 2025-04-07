@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 
 const Login: React.FC = () => {
-  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { login } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -18,13 +18,6 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated && !authLoading) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +35,7 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
-      // Navigation will be handled by the useEffect above
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       // Toast is already handled in the auth context
@@ -68,7 +61,6 @@ const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                disabled={isLoading || authLoading}
               />
             </div>
             <div className="space-y-2">
@@ -83,18 +75,13 @@ const Login: React.FC = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading || authLoading}
               />
             </div>
           </CardContent>
           
           <CardFooter className="flex-col space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading || authLoading}
-            >
-              {isLoading || authLoading ? t('app.loading') : t('app.login')}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? t('app.loading') : t('app.login')}
             </Button>
             
             <div className="text-center text-sm">
