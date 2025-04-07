@@ -11,7 +11,7 @@ import { useEmployeeList } from './hooks/useEmployeeList';
 
 const HR: React.FC = () => {
   const { t } = useLanguage();
-  const { employees, statusFilter, setStatusFilter } = useEmployeeList();
+  const { employees, statusFilter, setStatusFilter, isLoading } = useEmployeeList();
 
   return (
     <div className="space-y-6">
@@ -82,7 +82,7 @@ const HR: React.FC = () => {
           value={statusFilter} 
           onChange={setStatusFilter} 
         />
-        <EmployeeList employees={employees} />
+        <EmployeeList employees={employees} isLoading={isLoading} />
       </div>
     </div>
   );

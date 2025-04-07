@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -13,10 +12,13 @@ import { Button } from '@/components/ui/button';
 import { FormData, FormErrors } from './types';
 import RequiredFields from './FormSections/RequiredFields';
 import OptionalFields from './FormSections/OptionalFields';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 const NewEmployeeForm: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>({
     companyName: '',
@@ -41,7 +43,6 @@ const NewEmployeeForm: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     
-    // Clear error when field is edited
     if (errors[name as keyof FormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -51,7 +52,6 @@ const NewEmployeeForm: React.FC = () => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       
-      // Check file type
       const isValidType = ['application/pdf', 'image/jpeg', 'image/jpg'].includes(file.type);
       if (!isValidType) {
         setErrors((prev) => ({ 
@@ -61,7 +61,6 @@ const NewEmployeeForm: React.FC = () => {
         return;
       }
       
-      // Check file size (max 25MB)
       if (file.size > 25 * 1024 * 1024) {
         setErrors((prev) => ({ 
           ...prev, 
@@ -72,7 +71,6 @@ const NewEmployeeForm: React.FC = () => {
       
       setFormData((prev) => ({ ...prev, idDocument: file }));
       
-      // Clear error
       if (errors.idDocument) {
         setErrors((prev) => ({ ...prev, idDocument: undefined }));
       }
@@ -82,7 +80,6 @@ const NewEmployeeForm: React.FC = () => {
   const handleDateChange = (date: Date | undefined) => {
     setFormData((prev) => ({ ...prev, startDate: date }));
     
-    // Clear error
     if (errors.startDate) {
       setErrors((prev) => ({ ...prev, startDate: undefined }));
     }
@@ -95,7 +92,6 @@ const NewEmployeeForm: React.FC = () => {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     
-    // Required fields
     if (!formData.companyName) newErrors.companyName = 'Company name is required';
     if (!formData.employeeDni) newErrors.employeeDni = 'Employee DNI/TIE is required';
     if (!formData.startDate) newErrors.startDate = 'Start date is required';
@@ -108,39 +104,43 @@ const NewEmployeeForm: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validate()) return;
     
     setIsSubmitting(true);
     
-    // Simulate form submission - normally this would be an API call
-    setTimeout(() => {
+    try {
+      const employeeData = {
+        full_name: formData.companyName,
+        position: formData.position,
+        status: 'active',
+        start_date: formData.startDate?.toISOString().split('T')[0],
+      };
+      
+      const { error } = await supabase
+        .from('employees')
+        .insert(employeeData);
+        
+      if (error) throw error;
+      
       toast({
-        title: 'Form Submitted',
-        description: 'New employee information has been sent successfully.',
+        title: 'Employee Added',
+        description: 'New employee has been successfully added.',
       });
       
-      // Reset form
-      setFormData({
-        companyName: '',
-        employeeDni: '',
-        startDate: undefined,
-        schedule: '',
-        position: '',
-        socialSecurityNumber: '',
-        salary: '',
-        salaryType: 'gross',
-        iban: '',
-        address: '',
-        employeeEmail: '',
-        comments: '',
-        idDocument: null,
+      navigate('/hr');
+    } catch (error) {
+      console.error('Error adding employee:', error);
+      toast({
+        title: 'Error',
+        description: 'There was a problem adding the employee.',
+        variant: 'destructive'
       });
-      
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (

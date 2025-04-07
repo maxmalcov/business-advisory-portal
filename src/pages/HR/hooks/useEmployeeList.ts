@@ -1,58 +1,58 @@
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Employee, EmployeeStatus } from '../types/employee';
-
-// Mock data - in a real app, this would come from an API or database
-const mockEmployees: Employee[] = [
-  {
-    id: '1',
-    fullName: 'John Doe',
-    position: 'Software Engineer',
-    status: 'active',
-    startDate: '2023-01-15',
-  },
-  {
-    id: '2',
-    fullName: 'Jane Smith',
-    position: 'Product Manager',
-    status: 'active',
-    startDate: '2022-05-10',
-  },
-  {
-    id: '3',
-    fullName: 'Robert Johnson',
-    position: 'UX Designer',
-    status: 'terminated',
-    startDate: '2021-03-22',
-    endDate: '2023-08-15',
-  },
-  {
-    id: '4',
-    fullName: 'Emily Wilson',
-    position: 'Marketing Specialist',
-    status: 'active',
-    startDate: '2023-02-01',
-  },
-  {
-    id: '5',
-    fullName: 'Michael Brown',
-    position: 'Data Analyst',
-    status: 'terminated',
-    startDate: '2022-01-05',
-    endDate: '2023-07-30',
-  }
-];
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 
 export function useEmployeeList() {
   const [statusFilter, setStatusFilter] = useState<EmployeeStatus>('active');
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const filteredEmployees = useMemo(() => {
-    return mockEmployees.filter(employee => employee.status === statusFilter);
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      setIsLoading(true);
+      
+      try {
+        const { data, error } = await supabase
+          .from('employees')
+          .select('id, full_name, position, status, start_date, end_date')
+          .eq('status', statusFilter);
+          
+        if (error) {
+          throw error;
+        }
+        
+        // Transform the data to match our Employee interface
+        const transformedData: Employee[] = data.map(emp => ({
+          id: emp.id,
+          fullName: emp.full_name,
+          position: emp.position,
+          status: emp.status as EmployeeStatus,
+          startDate: emp.start_date,
+          endDate: emp.end_date || undefined
+        }));
+        
+        setEmployees(transformedData);
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+        toast({
+          title: 'Error fetching employees',
+          description: 'There was a problem loading the employee list.',
+          variant: 'destructive'
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchEmployees();
   }, [statusFilter]);
 
   return {
-    employees: filteredEmployees,
+    employees,
     statusFilter,
-    setStatusFilter
+    setStatusFilter,
+    isLoading
   };
 }

@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -13,6 +12,8 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 const reasonOptions = [
   { id: 'voluntary', name: 'Voluntary Resignation' },
@@ -31,37 +32,10 @@ interface Employee {
   vacationDaysUsed: number;
 }
 
-// Mock employee data
-const mockEmployees: Employee[] = [
-  { 
-    id: '1',
-    name: 'John Doe',
-    position: 'Software Developer',
-    startDate: new Date('2022-01-15'),
-    vacationDaysTotal: 23,
-    vacationDaysUsed: 10
-  },
-  { 
-    id: '2',
-    name: 'Jane Smith',
-    position: 'Marketing Specialist',
-    startDate: new Date('2021-05-20'),
-    vacationDaysTotal: 23,
-    vacationDaysUsed: 18
-  },
-  { 
-    id: '3',
-    name: 'Michael Johnson',
-    position: 'Sales Representative',
-    startDate: new Date('2023-02-10'),
-    vacationDaysTotal: 23,
-    vacationDaysUsed: 5
-  }
-];
-
 const Termination: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const [selectedEmployee, setSelectedEmployee] = useState<string>('');
   const [terminationDate, setTerminationDate] = useState<Date | undefined>(undefined);
@@ -69,11 +43,47 @@ const Termination: React.FC = () => {
   const [terminationReason, setTerminationReason] = useState<string>('');
   const [comments, setComments] = useState<string>('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('employees')
+          .select('id, full_name, position, start_date')
+          .eq('status', 'active');
+          
+        if (error) throw error;
+        
+        const transformedData: Employee[] = data.map(emp => ({
+          id: emp.id,
+          name: emp.full_name,
+          position: emp.position,
+          startDate: new Date(emp.start_date),
+          vacationDaysTotal: 23,
+          vacationDaysUsed: Math.floor(Math.random() * 20)
+        }));
+        
+        setEmployees(transformedData);
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load employee data',
+          variant: 'destructive'
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchEmployees();
+  }, [toast]);
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form
     if (!selectedEmployee) {
       toast({
         title: t('app.warning'),
@@ -101,21 +111,34 @@ const Termination: React.FC = () => {
       return;
     }
     
-    // Submit form (mocked for now)
-    toast({
-      title: t('app.success'),
-      description: 'Termination request submitted successfully',
-    });
-    
-    // Reset form
-    setSelectedEmployee('');
-    setTerminationDate(undefined);
-    setAdditionalVacationDays('0');
-    setTerminationReason('');
-    setComments('');
+    try {
+      const { error } = await supabase
+        .from('employees')
+        .update({
+          status: 'terminated',
+          end_date: terminationDate.toISOString().split('T')[0]
+        })
+        .eq('id', selectedEmployee);
+        
+      if (error) throw error;
+      
+      toast({
+        title: t('app.success'),
+        description: 'Termination process completed successfully',
+      });
+      
+      navigate('/hr');
+    } catch (error) {
+      console.error('Error terminating employee:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to complete termination process',
+        variant: 'destructive'
+      });
+    }
   };
   
-  const selectedEmployeeData = mockEmployees.find(emp => emp.id === selectedEmployee);
+  const selectedEmployeeData = employees.find(emp => emp.id === selectedEmployee);
   
   return (
     <div className="space-y-6">
@@ -140,7 +163,7 @@ const Termination: React.FC = () => {
                       <SelectValue placeholder="Select an employee" />
                     </SelectTrigger>
                     <SelectContent>
-                      {mockEmployees.map(employee => (
+                      {employees.map(employee => (
                         <SelectItem key={employee.id} value={employee.id}>
                           {employee.name} - {employee.position}
                         </SelectItem>
