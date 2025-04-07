@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Service, servicesTable, supabase } from '@/integrations/supabase/client';
+import { Service, supabase } from '@/integrations/supabase/client';
 import ServicesTable from './ServicesTable';
 import ServicesFilters from './ServicesFilters';
 import ServiceFormDialog from './ServiceFormDialog';
@@ -40,7 +39,8 @@ const ServicesManagement: React.FC = () => {
         
         console.log('Fetching services...');
         
-        const { data, error } = await servicesTable()
+        const { data, error } = await (supabase
+          .from('services') as any)
           .select('*')
           .order('title', { ascending: true });
           
@@ -53,7 +53,7 @@ const ServicesManagement: React.FC = () => {
         console.log('Services fetched:', data);
         
         if (data) {
-          setServices(data);
+          setServices(data as Service[]);
         }
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -101,8 +101,8 @@ const ServicesManagement: React.FC = () => {
   const handleSaveService = async (serviceData: Partial<Service>) => {
     try {
       if (serviceToEdit) {
-        // Update existing service
-        const { error } = await servicesTable()
+        const { error } = await (supabase
+          .from('services') as any)
           .update(serviceData)
           .eq('id', serviceToEdit.id);
           
@@ -113,8 +113,8 @@ const ServicesManagement: React.FC = () => {
           description: `Service "${serviceData.title}" has been updated.`,
         });
       } else {
-        // Create new service
-        const { error } = await servicesTable()
+        const { error } = await (supabase
+          .from('services') as any)
           .insert(serviceData);
           
         if (error) throw error;
@@ -146,7 +146,8 @@ const ServicesManagement: React.FC = () => {
     try {
       setIsDeleting(true);
       
-      const { error } = await servicesTable()
+      const { error } = await (supabase
+        .from('services') as any)
         .delete()
         .eq('id', serviceToDelete.id);
         
@@ -174,7 +175,8 @@ const ServicesManagement: React.FC = () => {
     try {
       const newStatus = service.status === 'active' ? 'inactive' : 'active';
       
-      const { error } = await servicesTable()
+      const { error } = await (supabase
+        .from('services') as any)
         .update({ status: newStatus })
         .eq('id', service.id);
         
@@ -205,7 +207,6 @@ const ServicesManagement: React.FC = () => {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  // Extract unique categories for the filter
   const categories = Array.from(new Set(services.filter(s => s.category).map(s => s.category)));
 
   return (
