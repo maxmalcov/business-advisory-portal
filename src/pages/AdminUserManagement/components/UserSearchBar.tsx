@@ -20,7 +20,7 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
       <div className="relative w-64">
         <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Поиск пользователей..."
+          placeholder="Search users..."
           className="pl-8"
           value={searchQuery}
           onChange={onSearchChange}
@@ -31,7 +31,7 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
         variant="default"
       >
         <UserPlus className="mr-2 h-4 w-4" />
-        Добавить нового пользователя
+        Add New User
       </Button>
     </div>
   );

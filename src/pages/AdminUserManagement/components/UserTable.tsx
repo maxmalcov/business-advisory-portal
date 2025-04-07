@@ -42,19 +42,19 @@ const UserTable: React.FC<UserTableProps> = ({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Имя</TableHead>
+          <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead>Компания</TableHead>
-          <TableHead>Роль</TableHead>
-          <TableHead>Статус</TableHead>
-          <TableHead>Действия</TableHead>
+          <TableHead>Company</TableHead>
+          <TableHead>Role</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {users.length === 0 ? (
           <TableRow>
             <TableCell colSpan={6} className="text-center py-8">
-              Нет данных для отображения
+              No data to display
             </TableCell>
           </TableRow>
         ) : (
@@ -68,7 +68,7 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell>
                 <Badge variant={user.isActive ? "secondary" : "destructive"}>
-                  {user.isActive ? "Активен" : "Неактивен"}
+                  {user.isActive ? "Active" : "Inactive"}
                 </Badge>
               </TableCell>
               <TableCell>
@@ -81,7 +81,7 @@ const UserTable: React.FC<UserTableProps> = ({
                         onClick={() => onEditUser(user)}
                       >
                         <UserCog className="h-4 w-4 mr-1" />
-                        Изменить
+                        Edit
                       </Button>
                     </DialogTrigger>
                   </Dialog>
@@ -92,7 +92,7 @@ const UserTable: React.FC<UserTableProps> = ({
                     onClick={() => onToggleStatus(user)}
                   >
                     <Power className="h-4 w-4 mr-1" />
-                    {user.isActive ? "Деактивировать" : "Активировать"}
+                    {user.isActive ? "Deactivate" : "Activate"}
                   </Button>
                   
                   <Button
@@ -101,7 +101,7 @@ const UserTable: React.FC<UserTableProps> = ({
                     onClick={() => onDeleteUser(user)}
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
-                    Удалить
+                    Delete
                   </Button>
                 </div>
               </TableCell>

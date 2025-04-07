@@ -6,9 +6,9 @@ const UserManagementHeader: React.FC = () => {
   return (
     <Card className="border-l-4 border-l-blue-600">
       <CardHeader>
-        <CardTitle className="text-2xl">Управление пользователями</CardTitle>
+        <CardTitle className="text-2xl">User Management</CardTitle>
         <CardDescription>
-          Просмотр и управление учетными записями пользователей
+          View and manage user accounts
         </CardDescription>
       </CardHeader>
     </Card>

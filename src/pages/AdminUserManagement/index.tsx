@@ -85,8 +85,8 @@ const AdminUserManagement: React.FC = () => {
       console.error('Error fetching users:', error);
       toast({
         variant: 'destructive',
-        title: 'Ошибка',
-        description: 'Не удалось загрузить пользователей'
+        title: 'Error',
+        description: 'Failed to load users'
       });
     } finally {
       setIsLoading(false);
@@ -143,15 +143,15 @@ const AdminUserManagement: React.FC = () => {
       ));
       
       toast({
-        title: "Пользователь обновлен",
-        description: `Данные пользователя ${editingUser.name} были успешно обновлены.`,
+        title: "User Updated",
+        description: `User ${editingUser.name} was successfully updated.`,
       });
     } catch (error) {
       console.error('Error updating user:', error);
       toast({
         variant: 'destructive',
-        title: 'Ошибка обновления',
-        description: 'Произошла ошибка при обновлении пользователя.',
+        title: 'Update Error',
+        description: 'An error occurred while updating the user.',
       });
     } finally {
       setEditingUser(null);
@@ -191,15 +191,15 @@ const AdminUserManagement: React.FC = () => {
       setUsers(users.filter(user => user.id !== userToDelete.id));
       
       toast({
-        title: "Пользователь удален",
-        description: `Пользователь ${userToDelete.name} был успешно удален.`,
+        title: "User Deleted",
+        description: `User ${userToDelete.name} was successfully deleted.`,
       });
     } catch (error) {
       console.error('Error deleting user:', error);
       toast({
         variant: 'destructive',
-        title: 'Ошибка удаления',
-        description: 'Произошла ошибка при удалении пользователя.',
+        title: 'Delete Error',
+        description: 'An error occurred while deleting the user.',
       });
     } finally {
       setUserToDelete(null);
@@ -219,15 +219,15 @@ const AdminUserManagement: React.FC = () => {
       setUsers(users.map(u => u.id === user.id ? updatedUser : u));
       
       toast({
-        title: updatedUser.isActive ? "Пользователь активирован" : "Пользователь деактивирован",
-        description: `Статус пользователя ${user.name} был успешно изменен.`,
+        title: updatedUser.isActive ? "User Activated" : "User Deactivated",
+        description: `${user.name}'s status was successfully changed.`,
       });
     } catch (error) {
       console.error('Error updating user status:', error);
       toast({
         variant: 'destructive',
-        title: 'Ошибка обновления статуса',
-        description: 'Произошла ошибка при изменении статуса пользователя.',
+        title: 'Status Update Error',
+        description: 'An error occurred while changing the user status.',
       });
     }
   };
@@ -273,15 +273,15 @@ const AdminUserManagement: React.FC = () => {
       await fetchUsers();
       
       toast({
-        title: "Пользователь создан",
-        description: `${newUser.name} был успешно добавлен.`,
+        title: "User Created",
+        description: `${newUser.name} was successfully added.`,
       });
     } catch (error) {
       console.error('Error creating user:', error);
       toast({
         variant: 'destructive',
-        title: 'Ошибка создания',
-        description: 'Произошла ошибка при создании пользователя.',
+        title: 'Creation Error',
+        description: 'An error occurred while creating the user.',
       });
     } finally {
       setIsAddingUser(false);
@@ -302,7 +302,7 @@ const AdminUserManagement: React.FC = () => {
         <CardContent className="p-0">
           {isLoading ? (
             <div className="flex justify-center items-center p-8">
-              <p>Загрузка пользователей...</p>
+              <p>Loading users...</p>
             </div>
           ) : (
             <UserTable 
@@ -352,21 +352,21 @@ const AdminUserManagement: React.FC = () => {
       >
         <DialogContent className="sm:max-w-md">
           <div className="space-y-4">
-            <h2 className="text-xl font-bold">Подтверждение удаления</h2>
-            <p>Вы действительно хотите удалить пользователя {userToDelete?.name}?</p>
-            <p className="text-destructive">Это действие нельзя отменить.</p>
+            <h2 className="text-xl font-bold">Confirm Deletion</h2>
+            <p>Are you sure you want to delete user {userToDelete?.name}?</p>
+            <p className="text-destructive">This action cannot be undone.</p>
             <div className="flex justify-end gap-3">
               <button 
                 className="px-4 py-2 border rounded hover:bg-gray-100"
                 onClick={() => setShowConfirmDelete(false)}
               >
-                Отмена
+                Cancel
               </button>
               <button 
                 className="px-4 py-2 bg-destructive text-white rounded hover:bg-destructive/90"
                 onClick={confirmDeleteUser}
               >
-                Удалить
+                Delete
               </button>
             </div>
           </div>
