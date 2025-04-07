@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -119,47 +120,54 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             };
             
             try {
-              // Insert the profile with service role if available
-              // Otherwise use normal insert which should work with the RLS policies now
+              // Use the service role client if available, or use authenticated client
+              // Insert using upsert to handle edge cases
+              console.log("Attempting to create profile for user:", userId);
+              
               const { error: insertError } = await supabase
                 .from('profiles')
-                .insert([newProfile]);
+                .upsert([newProfile], { onConflict: 'id' });
               
               if (insertError) {
                 console.error('Error creating profile:', insertError);
                 
-                // If insertion failed, try again after a brief delay
+                // If the first attempt fails, try a different approach
+                // Wait a moment and try to get the profile once more
+                // (it might have been created by the trigger)
                 setTimeout(async () => {
-                  try {
-                    const { error: retryError } = await supabase
-                      .from('profiles')
-                      .insert([newProfile]);
-                      
-                    if (retryError) {
-                      console.error('Error in retry creating profile:', retryError);
-                      throw retryError;
-                    } else {
-                      console.log('Profile created on retry');
-                      // Set the user state with the new profile (using our app's camelCase convention)
-                      setUser({
-                        id: newProfile.id,
-                        email: newProfile.email,
-                        name: newProfile.name,
-                        userType: newProfile.usertype as UserType,
-                        iframeUrls: []
-                      });
-                      
-                      toast({
-                        title: 'Profile Created',
-                        description: 'Your user profile has been created successfully.',
-                      });
-                    }
-                  } catch (finalError) {
-                    console.error('Final error creating profile:', finalError);
+                  const { data: retryData, error: retryFetchError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+                  
+                  if (retryFetchError) {
+                    console.error('Error fetching profile on retry:', retryFetchError);
                     toast({
                       variant: 'destructive',
                       title: 'Error',
                       description: 'Failed to create user profile',
+                    });
+                  } else if (retryData) {
+                    console.log('Profile found on retry fetch:', retryData);
+                    // Map database column names (lowercase) to our app's interface (camelCase)
+                    setUser({
+                      id: retryData.id,
+                      email: retryData.email || '',
+                      name: retryData.name || '',
+                      userType: (retryData.usertype as UserType) || 'client',
+                      accountType: retryData.accounttype as AccountType,
+                      companyName: retryData.companyname,
+                      nif: retryData.nif,
+                      address: retryData.address,
+                      postalCode: retryData.postalcode,
+                      city: retryData.city,
+                      province: retryData.province,
+                      country: retryData.country,
+                      phone: retryData.phone,
+                      incomingInvoiceEmail: retryData.incominginvoiceemail,
+                      outgoingInvoiceEmail: retryData.outgoinginvoiceemail,
+                      iframeUrls: [] // You might want to add this to your database schema
                     });
                   }
                 }, 1000);
@@ -279,24 +287,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const register = async (userData: Partial<AppUser> & { password: string }) => {
     setIsLoading(true);
     try {
+      // Map our application property names (camelCase) to database column names (lowercase)
+      const userMetadata = {
+        name: userData.name,
+        userType: userData.userType || 'client',
+        accountType: userData.accountType,
+        companyName: userData.companyName,
+        nif: userData.nif,
+        address: userData.address,
+        postalCode: userData.postalCode,
+        city: userData.city,
+        province: userData.province,
+        country: userData.country,
+        phone: userData.phone,
+      };
+      
       // Register the user with Supabase Auth
       const { data, error } = await supabase.auth.signUp({
         email: userData.email || '',
         password: userData.password,
         options: {
-          data: {
-            name: userData.name,
-            userType: userData.userType || 'client',
-            accountType: userData.accountType,
-            companyName: userData.companyName,
-            nif: userData.nif,
-            address: userData.address,
-            postalCode: userData.postalCode,
-            city: userData.city,
-            province: userData.province,
-            country: userData.country,
-            phone: userData.phone,
-          }
+          data: userMetadata
         }
       });
       
