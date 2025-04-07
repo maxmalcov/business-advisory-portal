@@ -93,8 +93,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Fetch user profile from the database
   const fetchUserProfile = async (userId: string) => {
     try {
-      console.log("Fetching user profile with ID:", userId);
-      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -114,7 +112,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               id: userId,
               email: userData.user.email || '',
               name: userData.user.email?.split('@')[0] || 'New User',
-              usertype: 'client' // Match the column name in the database (lowercase)
+              userType: 'client' as UserType
             };
             
             // Insert the profile
@@ -123,19 +121,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               .insert([newProfile]);
               
             if (insertError) {
-              console.error('Error creating profile:', insertError);
               throw insertError;
             }
             
-            // Set the user state with the new profile (using our app's camelCase convention)
-            setUser({
-              id: newProfile.id,
-              email: newProfile.email,
-              name: newProfile.name,
-              userType: newProfile.usertype as UserType,
-              iframeUrls: []
-            });
-            
+            // Set the user state with the new profile
+            setUser(newProfile);
             toast({
               title: 'Profile Created',
               description: 'Your user profile has been created successfully.',
@@ -143,13 +133,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             return;
           }
         }
-        console.error('Error fetching profile:', error);
         throw error;
       }
 
       if (data) {
-        console.log("Profile data fetched:", data);
-        // Map database column names (lowercase) to our app's interface (camelCase)
         setUser({
           id: data.id,
           email: data.email || '',
