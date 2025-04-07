@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Plus } from 'lucide-react';
 import ServiceTable from './ServiceTable';
 import ServiceForm from './ServiceForm';
 import { useServiceManagement } from '../hooks/useServiceManagement';
@@ -48,7 +49,7 @@ const ServicesManagement: React.FC<ServicesManagementProps> = () => {
           onClick={openAddDialog} 
           disabled={loading}
         >
-          Add New Service
+          <Plus className="mr-2 h-4 w-4" /> Add New Service
         </Button>
       </CardHeader>
       <CardContent>
