@@ -16,7 +16,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 const ServicesManagement: React.FC = () => {
@@ -41,7 +40,8 @@ const ServicesManagement: React.FC = () => {
         
         console.log('Fetching services...');
         
-        const { data, error } = await servicesTable()
+        const { data, error } = await supabase
+          .from('services')
           .select('*')
           .order('title', { ascending: true });
           
@@ -103,7 +103,8 @@ const ServicesManagement: React.FC = () => {
     try {
       if (serviceToEdit) {
         // Update existing service
-        const { error } = await servicesTable()
+        const { error } = await supabase
+          .from('services')
           .update(serviceData)
           .eq('id', serviceToEdit.id);
           
@@ -115,7 +116,8 @@ const ServicesManagement: React.FC = () => {
         });
       } else {
         // Create new service
-        const { error } = await servicesTable()
+        const { error } = await supabase
+          .from('services')
           .insert(serviceData);
           
         if (error) throw error;
@@ -147,7 +149,8 @@ const ServicesManagement: React.FC = () => {
     try {
       setIsDeleting(true);
       
-      const { error } = await servicesTable()
+      const { error } = await supabase
+        .from('services')
         .delete()
         .eq('id', serviceToDelete.id);
         
@@ -175,7 +178,8 @@ const ServicesManagement: React.FC = () => {
     try {
       const newStatus = service.status === 'active' ? 'inactive' : 'active';
       
-      const { error } = await servicesTable()
+      const { error } = await supabase
+        .from('services')
         .update({ status: newStatus })
         .eq('id', service.id);
         
