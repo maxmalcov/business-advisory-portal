@@ -42,10 +42,8 @@ export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
 };
 
-// Helper function to safely access the services table
-export const servicesTable = () => {
-  return supabase.from('services');
-};
+// We won't use servicesTable for now since TypeScript doesn't know about it yet
+// We'll use direct supabase.from('services') calls with type assertions
 
 // Setup realtime subscription for the service_requests table
 // We're removing the problematic RPC call and using direct channel subscription instead

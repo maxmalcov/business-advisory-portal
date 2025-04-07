@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Service, servicesTable, supabase } from '@/integrations/supabase/client';
+import { Service, supabase } from '@/integrations/supabase/client';
 import ServicesTable from './ServicesTable';
 import ServicesFilters from './ServicesFilters';
 import ServiceFormDialog from './ServiceFormDialog';
@@ -40,6 +40,8 @@ const ServicesManagement: React.FC = () => {
         
         console.log('Fetching services...');
         
+        // Since TypeScript doesn't know about the services table yet,
+        // we'll use a direct call with type assertions
         const { data, error } = await supabase
           .from('services')
           .select('*')
@@ -54,7 +56,8 @@ const ServicesManagement: React.FC = () => {
         console.log('Services fetched:', data);
         
         if (data) {
-          setServices(data as Service[]);
+          // Use type assertion to tell TypeScript that this is an array of Service objects
+          setServices(data as unknown as Service[]);
         }
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -105,7 +108,7 @@ const ServicesManagement: React.FC = () => {
         // Update existing service
         const { error } = await supabase
           .from('services')
-          .update(serviceData)
+          .update(serviceData as any) // Type assertion to bypass TypeScript check
           .eq('id', serviceToEdit.id);
           
         if (error) throw error;
@@ -118,7 +121,7 @@ const ServicesManagement: React.FC = () => {
         // Create new service
         const { error } = await supabase
           .from('services')
-          .insert(serviceData);
+          .insert(serviceData as any); // Type assertion to bypass TypeScript check
           
         if (error) throw error;
         
@@ -180,7 +183,7 @@ const ServicesManagement: React.FC = () => {
       
       const { error } = await supabase
         .from('services')
-        .update({ status: newStatus })
+        .update({ status: newStatus } as any) // Type assertion to bypass TypeScript check
         .eq('id', service.id);
         
       if (error) throw error;
