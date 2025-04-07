@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Service } from '@/integrations/supabase/client';
 
 export interface ServiceFormState {
@@ -37,48 +37,18 @@ export const useServiceForm = (): ServiceFormState => {
   const [status, setStatus] = useState<'active' | 'inactive'>('active');
   const [currentService, setCurrentService] = useState<Service | null>(null);
 
-  // Make sure state setters are properly typed and working
-  const handleSetTitle = (value: string) => {
-    console.log('Setting title to:', value);
-    setTitle(value);
-  };
+  // Direct state setters without any wrapping logic
+  const handleSetTitle = useCallback((value: string) => setTitle(value), []);
+  const handleSetDescription = useCallback((value: string) => setDescription(value), []);
+  const handleSetPrice = useCallback((value: string) => setPrice(value), []);
+  const handleSetIconName = useCallback((value: string) => setIconName(value), []);
+  const handleSetBadges = useCallback((value: string) => setBadges(value), []);
+  const handleSetPopular = useCallback((value: boolean) => setPopular(value), []);
+  const handleSetCategory = useCallback((value: string) => setCategory(value), []);
+  const handleSetStatus = useCallback((value: 'active' | 'inactive') => setStatus(value), []);
 
-  const handleSetDescription = (value: string) => {
-    console.log('Setting description to:', value);
-    setDescription(value);
-  };
-
-  const handleSetPrice = (value: string) => {
-    console.log('Setting price to:', value);
-    setPrice(value);
-  };
-
-  const handleSetIconName = (value: string) => {
-    console.log('Setting iconName to:', value);
-    setIconName(value);
-  };
-
-  const handleSetBadges = (value: string) => {
-    console.log('Setting badges to:', value);
-    setBadges(value);
-  };
-
-  const handleSetPopular = (value: boolean) => {
-    console.log('Setting popular to:', value);
-    setPopular(value);
-  };
-
-  const handleSetCategory = (value: string) => {
-    console.log('Setting category to:', value);
-    setCategory(value);
-  };
-
-  const handleSetStatus = (value: 'active' | 'inactive') => {
-    console.log('Setting status to:', value);
-    setStatus(value);
-  };
-
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
+    console.log('Resetting form');
     setTitle('');
     setDescription('');
     setPrice('');
@@ -88,31 +58,31 @@ export const useServiceForm = (): ServiceFormState => {
     setCategory('');
     setStatus('active');
     setCurrentService(null);
-  };
+  }, []);
 
-  const populateFormWithService = (service: Service) => {
+  const populateFormWithService = useCallback((service: Service) => {
     console.log('Populating form with service:', service);
     setCurrentService(service);
-    setTitle(service.title);
-    setDescription(service.description);
-    setPrice(service.price.toString());
-    setIconName(service.iconName);
+    setTitle(service.title || '');
+    setDescription(service.description || '');
+    setPrice(service.price?.toString() || '');
+    setIconName(service.iconName || 'Package');
     setBadges(service.badges ? service.badges.join(', ') : '');
-    setPopular(service.popular);
+    setPopular(!!service.popular);
     setCategory(service.category || '');
     setStatus(service.status || 'active');
-  };
+  }, []);
 
-  const getFormData = () => ({
+  const getFormData = useCallback(() => ({
     title,
     description,
-    price: parseFloat(price),
+    price: parseFloat(price) || 0,
     iconName,
     badges: badges.split(',').map(b => b.trim()).filter(b => b),
     popular,
     category: category || null,
     status
-  });
+  }), [title, description, price, iconName, badges, popular, category, status]);
 
   return {
     title,

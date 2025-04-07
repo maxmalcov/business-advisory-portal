@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';  // Import useAuth to check user role
 import { useServiceForm } from '../hooks/useServiceForm';
 import { useServiceEditor } from '../hooks/useServiceEditor';
 import { ServiceEditorHeader } from './ServiceEditorHeader';
@@ -14,6 +15,29 @@ const ServiceEditor: React.FC = () => {
   const { serviceId } = useParams();
   const isEditMode = !!serviceId;
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth(); // Get auth state and user role
+  
+  // Debug auth state
+  useEffect(() => {
+    console.log('Auth state in ServiceEditor:', { 
+      isAuthenticated, 
+      userType: user?.userType, 
+      user 
+    });
+  }, [isAuthenticated, user]);
+  
+  // Redirect if not admin
+  useEffect(() => {
+    if (isAuthenticated && user && user.userType !== 'admin') {
+      console.log('User is not admin, redirecting');
+      toast({
+        title: 'Access Denied',
+        description: 'You do not have permission to manage services.',
+        variant: 'destructive',
+      });
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, user, navigate, toast]);
   
   // Service form state
   const serviceForm = useServiceForm();

@@ -2,17 +2,22 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ServiceEditorActions } from './ServiceEditorActions';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { ServiceFormState } from '../hooks/useServiceForm';
 
 interface ServiceEditorFormProps {
   serviceForm: ServiceFormState;
   isEditMode: boolean;
-  onSubmit: (e: React.FormEvent) => Promise<void>;
+  onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
 }
 
@@ -22,205 +27,138 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
   onSubmit,
   onCancel
 }) => {
-  const categories = [
-    'Accounting',
-    'Tax Planning',
-    'Business Formation',
-    'Financial Analysis',
-    'Bookkeeping',
-    'Payroll',
-    'Consulting',
-    'Other'
-  ];
-
-  const {
-    title, setTitle,
-    description, setDescription,
-    price, setPrice,
-    iconName, setIconName,
-    badges, setBadges,
-    popular, setPopular,
-    category, setCategory,
-    status, setStatus
-  } = serviceForm;
-
-  // Add debugging for input changes
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('Title input change triggered with value:', e.target.value);
-    setTitle(e.target.value);
+  // Debugging the form inputs and state updates
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setter: (value: string) => void) => {
+    console.log('Input change:', e.target.name, e.target.value);
+    setter(e.target.value);
   };
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="title">Title*</Label>
-          <Input 
-            id="title" 
-            value={title} 
-            onChange={handleTitleChange}
-            placeholder="Service title"
-            required
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="description">Description*</Label>
-          <Textarea 
-            id="description" 
-            value={description} 
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe the service"
-            rows={5}
-            required
-          />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ServiceFormField
-            label="Price*"
-            id="price"
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="0.00"
-            required
-          />
-          
-          <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        
-        <ServiceFormField
-          label="Icon Name"
-          id="iconName"
-          value={iconName}
-          onChange={(e) => setIconName(e.target.value)}
-          placeholder="Package"
-          description="Use icon names from Lucide React like: Package, CircleDollarSign, FileText, Users, etc."
+      {/* Title */}
+      <div className="space-y-2">
+        <Label htmlFor="title">Service Title</Label>
+        <Input
+          id="title"
+          name="title"
+          placeholder="Enter service title"
+          value={serviceForm.title}
+          onChange={(e) => handleInputChange(e, serviceForm.setTitle)}
+          required
         />
-        
-        <ServiceFormField
-          label="Badges (comma separated)"
+      </div>
+
+      {/* Description */}
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          name="description"
+          placeholder="Enter service description"
+          value={serviceForm.description}
+          onChange={(e) => handleInputChange(e, serviceForm.setDescription)}
+          required
+          rows={4}
+        />
+      </div>
+
+      {/* Price */}
+      <div className="space-y-2">
+        <Label htmlFor="price">Price</Label>
+        <Input
+          id="price"
+          name="price"
+          type="number"
+          placeholder="Enter price"
+          value={serviceForm.price}
+          onChange={(e) => handleInputChange(e, serviceForm.setPrice)}
+          required
+        />
+      </div>
+
+      {/* Icon */}
+      <div className="space-y-2">
+        <Label htmlFor="iconName">Icon</Label>
+        <Select 
+          value={serviceForm.iconName} 
+          onValueChange={serviceForm.setIconName}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select an icon" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Package">Package</SelectItem>
+            <SelectItem value="FileText">Document</SelectItem>
+            <SelectItem value="Briefcase">Briefcase</SelectItem>
+            <SelectItem value="Users">Users</SelectItem>
+            <SelectItem value="CreditCard">Payment</SelectItem>
+            <SelectItem value="Calendar">Calendar</SelectItem>
+            <SelectItem value="Shield">Security</SelectItem>
+            <SelectItem value="Star">Premium</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Badges */}
+      <div className="space-y-2">
+        <Label htmlFor="badges">Badges (comma separated)</Label>
+        <Input
           id="badges"
-          value={badges}
-          onChange={(e) => setBadges(e.target.value)}
-          placeholder="New, Premium, Limited"
-        />
-        
-        <div className="flex items-center justify-between">
-          <Label htmlFor="popular">Mark as Popular</Label>
-          <Switch
-            id="popular"
-            checked={popular}
-            onCheckedChange={setPopular}
-          />
-        </div>
-        
-        <ServiceToggle
-          id="status"
-          label="Status"
-          checked={status === 'active'}
-          onCheckedChange={(checked) => {
-            const newStatus = checked ? 'active' : 'inactive';
-            setStatus(newStatus);
-          }}
-          activeLabel="Active"
-          inactiveLabel="Inactive"
+          name="badges"
+          placeholder="New, Popular, Premium"
+          value={serviceForm.badges}
+          onChange={(e) => handleInputChange(e, serviceForm.setBadges)}
         />
       </div>
-      
-      <ServiceEditorActions 
-        isEditMode={isEditMode}
-        onCancel={onCancel}
-      />
-    </form>
-  );
-};
 
-interface ServiceFormFieldProps {
-  label: string;
-  id: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-  description?: string;
-  required?: boolean;
-  type?: string;
-}
+      {/* Category */}
+      <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+        <Input
+          id="category"
+          name="category"
+          placeholder="Enter category"
+          value={serviceForm.category}
+          onChange={(e) => handleInputChange(e, serviceForm.setCategory)}
+        />
+      </div>
 
-const ServiceFormField: React.FC<ServiceFormFieldProps> = ({
-  label,
-  id,
-  value,
-  onChange,
-  placeholder,
-  description,
-  required = false,
-  type = 'text'
-}) => {
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
-      <Input 
-        id={id} 
-        type={type}
-        value={value} 
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-      />
-      {description && (
-        <p className="text-xs text-gray-500">{description}</p>
-      )}
-    </div>
-  );
-};
+      {/* Status */}
+      <div className="space-y-2">
+        <Label htmlFor="status">Status</Label>
+        <Select 
+          value={serviceForm.status} 
+          onValueChange={(value) => serviceForm.setStatus(value as 'active' | 'inactive')}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-interface ServiceToggleProps {
-  id: string;
-  label: string;
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-  activeLabel: string;
-  inactiveLabel: string;
-}
-
-const ServiceToggle: React.FC<ServiceToggleProps> = ({
-  id,
-  label,
-  checked,
-  onCheckedChange,
-  activeLabel,
-  inactiveLabel
-}) => {
-  return (
-    <div className="flex items-center justify-between">
-      <Label htmlFor={id}>{label}</Label>
+      {/* Popular */}
       <div className="flex items-center space-x-2">
-        <Label htmlFor={`${id}-active`} className={checked ? 'text-green-600' : 'text-gray-500'}>
-          {activeLabel}
-        </Label>
-        <Switch
-          id={id}
-          checked={checked}
-          onCheckedChange={onCheckedChange}
+        <Checkbox 
+          id="popular"
+          checked={serviceForm.popular}
+          onCheckedChange={serviceForm.setPopular}
         />
-        <Label htmlFor={`${id}-inactive`} className={!checked ? 'text-red-600' : 'text-gray-500'}>
-          {inactiveLabel}
-        </Label>
+        <Label htmlFor="popular">Mark as popular</Label>
       </div>
-    </div>
+
+      {/* Form Actions */}
+      <div className="flex justify-end space-x-2 pt-4">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit">
+          {isEditMode ? 'Update Service' : 'Create Service'}
+        </Button>
+      </div>
+    </form>
   );
 };
