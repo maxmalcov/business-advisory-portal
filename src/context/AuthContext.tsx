@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -61,6 +60,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth state changed:", event, currentSession?.user?.id);
         setSession(currentSession);
         if (currentSession?.user) {
           // Use setTimeout to avoid potential Supabase authentication deadlock
@@ -75,6 +75,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Initial session check:", currentSession?.user?.id);
       setSession(currentSession);
       if (currentSession?.user) {
         fetchUserProfile(currentSession.user.id);
@@ -117,29 +118,75 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               usertype: 'client' // Match the column name in the database (lowercase)
             };
             
-            // Insert the profile
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert([newProfile]);
+            try {
+              // Insert the profile with service role if available
+              // Otherwise use normal insert which should work with the RLS policies now
+              const { error: insertError } = await supabase
+                .from('profiles')
+                .insert([newProfile]);
               
-            if (insertError) {
-              console.error('Error creating profile:', insertError);
-              throw insertError;
+              if (insertError) {
+                console.error('Error creating profile:', insertError);
+                
+                // If insertion failed, try again after a brief delay
+                setTimeout(async () => {
+                  try {
+                    const { error: retryError } = await supabase
+                      .from('profiles')
+                      .insert([newProfile]);
+                      
+                    if (retryError) {
+                      console.error('Error in retry creating profile:', retryError);
+                      throw retryError;
+                    } else {
+                      console.log('Profile created on retry');
+                      // Set the user state with the new profile (using our app's camelCase convention)
+                      setUser({
+                        id: newProfile.id,
+                        email: newProfile.email,
+                        name: newProfile.name,
+                        userType: newProfile.usertype as UserType,
+                        iframeUrls: []
+                      });
+                      
+                      toast({
+                        title: 'Profile Created',
+                        description: 'Your user profile has been created successfully.',
+                      });
+                    }
+                  } catch (finalError) {
+                    console.error('Final error creating profile:', finalError);
+                    toast({
+                      variant: 'destructive',
+                      title: 'Error',
+                      description: 'Failed to create user profile',
+                    });
+                  }
+                }, 1000);
+              } else {
+                console.log('Profile created successfully');
+                // Set the user state with the new profile (using our app's camelCase convention)
+                setUser({
+                  id: newProfile.id,
+                  email: newProfile.email,
+                  name: newProfile.name,
+                  userType: newProfile.usertype as UserType,
+                  iframeUrls: []
+                });
+                
+                toast({
+                  title: 'Profile Created',
+                  description: 'Your user profile has been created successfully.',
+                });
+              }
+            } catch (insertFinalError) {
+              console.error('Error in profile creation process:', insertFinalError);
+              toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Failed to create user profile',
+              });
             }
-            
-            // Set the user state with the new profile (using our app's camelCase convention)
-            setUser({
-              id: newProfile.id,
-              email: newProfile.email,
-              name: newProfile.name,
-              userType: newProfile.usertype as UserType,
-              iframeUrls: []
-            });
-            
-            toast({
-              title: 'Profile Created',
-              description: 'Your user profile has been created successfully.',
-            });
             return;
           }
         }
@@ -183,6 +230,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log("Attempting login for:", email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password

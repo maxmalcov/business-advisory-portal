@@ -147,23 +147,34 @@ export const useUserManagement = () => {
     if (!userToDelete) return;
     
     try {
-      // Delete the user from Supabase Auth
-      const { error: authError } = await supabase.auth.admin.deleteUser(
-        userToDelete.id
-      );
+      console.log("Attempting to delete user:", userToDelete.id);
       
-      if (authError) {
-        console.error('Error deleting user from Auth:', authError);
-        // Try to delete from profiles table anyway
-      }
-      
-      // Delete from profiles table
+      // Delete from profiles table first
       const { error: profileError } = await supabase
         .from('profiles')
         .delete()
         .eq('id', userToDelete.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Error deleting user from profiles:', profileError);
+        throw profileError;
+      }
+      
+      // Then try to delete from auth
+      try {
+        // This may require admin privileges
+        const { error: authError } = await supabase.auth.admin.deleteUser(
+          userToDelete.id
+        );
+        
+        if (authError) {
+          console.error('Error deleting user from Auth:', authError);
+          // Continue anyway since we've deleted the profile
+        }
+      } catch (authDeleteError) {
+        console.error('Exception during auth deletion:', authDeleteError);
+        // Continue anyway since we've deleted the profile
+      }
 
       // Update local state
       setUsers(users.filter(user => user.id !== userToDelete.id));
