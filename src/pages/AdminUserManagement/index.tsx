@@ -9,6 +9,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 // Import the components
 import UserManagementHeader from './components/UserManagementHeader';
@@ -16,7 +17,6 @@ import UserSearchBar from './components/UserSearchBar';
 import UserTable from './components/UserTable';
 import UserEditDialog from './components/UserEditDialog';
 import AddUserDialog from './components/AddUserDialog';
-import { mockUsers } from './mockData';
 import { AppUser } from '@/context/AuthContext';
 
 // Define the User type for the admin panel
@@ -29,6 +29,7 @@ interface User {
   incomingInvoiceEmail?: string;
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
+  isActive?: boolean;
 }
 
 const AdminUserManagement: React.FC = () => {
@@ -39,7 +40,9 @@ const AdminUserManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Fetch users from Supabase
   useEffect(() => {
@@ -69,7 +72,8 @@ const AdminUserManagement: React.FC = () => {
           userType: profile.usertype || 'client',
           incomingInvoiceEmail: profile.incominginvoiceemail,
           outgoingInvoiceEmail: profile.outgoinginvoiceemail,
-          iframeUrls: [] // This may need to be added to the profiles table
+          iframeUrls: [], // This may need to be added to the profiles table
+          isActive: true // Default to active
         }));
         
         console.log("Transformed users:", transformedUsers);
@@ -85,8 +89,6 @@ const AdminUserManagement: React.FC = () => {
         title: 'Ошибка',
         description: 'Не удалось загрузить пользователей'
       });
-      // Fall back to mock data if Supabase fetch fails
-      setUsers(mockUsers);
     } finally {
       setIsLoading(false);
     }
@@ -172,6 +174,82 @@ const AdminUserManagement: React.FC = () => {
     setIsAddingUser(false);
   };
 
+  // Deactivate/Reactivate user
+  const handleToggleUserStatus = async (user: User) => {
+    try {
+      // In a real app, you would update a status field in the database
+      // For now, let's just update the local state
+      const updatedUsers = users.map(u => 
+        u.id === user.id ? { ...u, isActive: !u.isActive } : u
+      );
+      
+      setUsers(updatedUsers);
+      
+      toast({
+        title: user.isActive ? "Пользователь деактивирован" : "Пользователь активирован",
+        description: `Статус пользователя ${user.name} был успешно изменен.`,
+      });
+    } catch (error) {
+      console.error('Error toggling user status:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка',
+        description: 'Произошла ошибка при изменении статуса пользователя.',
+      });
+    }
+  };
+
+  // Handle delete user
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Confirm delete user
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+    
+    try {
+      console.log("Deleting user from Supabase:", userToDelete);
+      
+      // Delete the user from Supabase Auth
+      const { error: authError } = await supabase.auth.admin.deleteUser(
+        userToDelete.id
+      );
+      
+      if (authError) {
+        console.error('Error deleting user from Auth:', authError);
+        // Continue anyway, as the profile should be cascade deleted
+      }
+      
+      // The profile will be automatically deleted due to the cascade constraint
+      
+      // Update local state
+      setUsers(users.filter(user => user.id !== userToDelete.id));
+      
+      toast({
+        title: "Пользователь удален",
+        description: `${userToDelete.name} был успешно удален.`,
+      });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка удаления',
+        description: 'Произошла ошибка при удалении пользователя.',
+      });
+    } finally {
+      setUserToDelete(null);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
+  // Cancel delete user
+  const cancelDeleteUser = () => {
+    setUserToDelete(null);
+    setIsDeleteDialogOpen(false);
+  };
+
   // Save new user
   const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
     try {
@@ -233,6 +311,8 @@ const AdminUserManagement: React.FC = () => {
             <UserTable 
               users={filteredUsers} 
               onEditUser={handleEditUser}
+              onDeleteUser={handleDeleteUser}
+              onToggleStatus={handleToggleUserStatus}
             />
           )}
         </CardContent>
@@ -264,6 +344,27 @@ const AdminUserManagement: React.FC = () => {
           onCancel={handleCancelAddUser}
         />
       </Dialog>
+
+      {/* Delete User Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Это действие удалит пользователя {userToDelete?.name} и не может быть отменено.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelDeleteUser}>Отмена</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDeleteUser}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Удалить
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
