@@ -48,11 +48,13 @@ const ServiceRequestsTable: React.FC<ServiceRequestsTableProps> = ({
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'N/A';
+    
     try {
       return format(new Date(dateString), 'yyyy-MM-dd HH:mm');
     } catch (error) {
-      console.error('Error formatting date:', error);
+      console.error('Error formatting date:', error, dateString);
       return dateString;
     }
   };
@@ -82,10 +84,10 @@ const ServiceRequestsTable: React.FC<ServiceRequestsTableProps> = ({
             <TableBody>
               {filteredRequests.map((request) => (
                 <TableRow key={request.id}>
-                  <TableCell>{request.client_name}</TableCell>
-                  <TableCell>{request.service_name}</TableCell>
+                  <TableCell>{request.client_name || 'Unknown Client'}</TableCell>
+                  <TableCell>{request.service_name || 'Unknown Service'}</TableCell>
                   <TableCell>{formatDate(request.request_date)}</TableCell>
-                  <TableCell>{getStatusBadge(request.status)}</TableCell>
+                  <TableCell>{getStatusBadge(request.status || 'unknown')}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-2">
                       <Button 

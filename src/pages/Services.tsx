@@ -24,6 +24,7 @@ const Services: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
   const [userRequests, setUserRequests] = useState<{[key: string]: ServiceStatus}>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Load service request status from database on component mount
   useEffect(() => {
@@ -102,6 +103,8 @@ const Services: React.FC = () => {
     const service = services.find(s => s.id === serviceId);
     if (!service) return;
     
+    setIsSubmitting(true);
+    
     try {
       console.log(`Requesting service ${serviceId} for user ${user.id}`);
       
@@ -143,6 +146,8 @@ const Services: React.FC = () => {
         description: "There was a problem submitting your service request. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -178,6 +183,19 @@ const Services: React.FC = () => {
           />
         ))}
       </div>
+      
+      {/* Debug information during development */}
+      {process.env.NODE_ENV !== 'production' && (
+        <div className="p-4 mt-8 text-sm bg-gray-100 rounded">
+          <h3 className="font-bold">Debug Info</h3>
+          <p>User ID: {user?.id || 'Not logged in'}</p>
+          <p>User Requests: {Object.keys(userRequests).length}</p>
+          <details>
+            <summary className="cursor-pointer text-blue-600">User Requests Data</summary>
+            <pre>{JSON.stringify(userRequests, null, 2)}</pre>
+          </details>
+        </div>
+      )}
     </div>
   );
 };
