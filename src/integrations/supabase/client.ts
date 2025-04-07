@@ -44,11 +44,11 @@ export const serviceRequestsTable = () => {
 };
 
 // Helper function to safely access the services table
-// We're using a simple approach since the services table
+// We're using an explicit type assertion since the services table
 // isn't in the generated types yet
 export const servicesTable = () => {
-  // Using a simpler, type-compatible approach
-  return supabase.from('services');
+  // Using type assertion to work around type limitations until DB schema is updated
+  return supabase.from('services') as unknown as ReturnType<typeof supabase.from<Service>>;
 };
 
 // Setup realtime subscription for the service_requests table

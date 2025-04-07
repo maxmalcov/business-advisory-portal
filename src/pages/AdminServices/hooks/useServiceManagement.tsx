@@ -33,7 +33,8 @@ export const useServiceManagement = () => {
         }
         
         if (data) {
-          setServices(data);
+          // Cast data to the correct type
+          setServices(data as unknown as Service[]);
         }
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -92,7 +93,7 @@ export const useServiceManagement = () => {
       if (isEditMode && currentService) {
         // Update existing service
         const { error } = await servicesTable()
-          .update(serviceData)
+          .update(serviceData as unknown as Record<string, any>)
           .eq('id', currentService.id);
           
         if (error) {
@@ -111,7 +112,7 @@ export const useServiceManagement = () => {
       } else {
         // Add new service
         const { data, error } = await servicesTable()
-          .insert(serviceData)
+          .insert(serviceData as unknown as Record<string, any>)
           .select();
           
         if (error) {
@@ -119,8 +120,8 @@ export const useServiceManagement = () => {
         }
         
         if (data) {
-          // Add to local state
-          setServices(prev => [data[0], ...prev]);
+          // Add to local state with type assertion
+          setServices(prev => [data[0] as unknown as Service, ...prev]);
         }
         
         toast({
