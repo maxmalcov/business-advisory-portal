@@ -26,39 +26,23 @@ export const useUserManagement = () => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
+  // Fetch users from Supabase
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
       console.log("Fetching users from Supabase...");
-      // Fetch all user profiles from the profiles table
-      const { data: profileData, error: profileError } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*');
 
-      if (profileError) {
-        throw profileError;
+      if (error) {
+        throw error;
       }
 
-      // Also fetch the auth users to check their status
-      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) {
-        console.error('Error fetching auth users:', authError);
-        // Continue with profile data even if auth fetch fails
-      }
-
-      if (profileData) {
-        console.log("Fetched profiles data:", profileData);
-        
-        // Create a map of user IDs to their auth status
-        const authStatusMap = new Map();
-        if (authData?.users) {
-          authData.users.forEach(user => {
-            authStatusMap.set(user.id, !user.banned);
-          });
-        }
-        
-        const transformedUsers: User[] = profileData.map(profile => ({
+      if (data) {
+        console.log("Fetched profiles data:", data);
+        // Transform the profiles data to match our User interface
+        const transformedUsers: User[] = data.map(profile => ({
           id: profile.id,
           name: profile.name || '',
           email: profile.email || '',
@@ -66,9 +50,8 @@ export const useUserManagement = () => {
           userType: profile.usertype || 'client',
           incomingInvoiceEmail: profile.incominginvoiceemail,
           outgoingInvoiceEmail: profile.outgoinginvoiceemail,
-          iframeUrls: [],
-          // Use auth status if available, otherwise default to true
-          isActive: authStatusMap.has(profile.id) ? authStatusMap.get(profile.id) : true
+          iframeUrls: [], // This may need to be added to the profiles table
+          isActive: true // Assuming all users are active by default
         }));
         
         console.log("Transformed users:", transformedUsers);
@@ -93,39 +76,46 @@ export const useUserManagement = () => {
     fetchUsers();
   }, []);
 
+  // Filter users based on search query
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.companyName?.toLowerCase().includes(searchQuery.toLowerCase() || '')
   );
 
+  // Handle user edit
   const handleEditUser = (user: User) => {
     setEditingUser({...user});
   };
 
+  // Handle user update
   const handleUpdateUser = (updatedUser: User) => {
     setEditingUser(updatedUser);
   };
 
+  // Save edited user
   const handleSaveUser = async () => {
     if (!editingUser) return;
     
     try {
       console.log("Updating user in Supabase:", editingUser);
+      // Update the user in Supabase - ensure column names match the database
       const { error } = await supabase
         .from('profiles')
         .update({
           name: editingUser.name,
           email: editingUser.email,
-          usertype: editingUser.userType,
-          companyname: editingUser.companyName,
-          incominginvoiceemail: editingUser.incomingInvoiceEmail,
-          outgoinginvoiceemail: editingUser.outgoingInvoiceEmail
+          usertype: editingUser.userType, // Match database column name (lowercase)
+          companyname: editingUser.companyName, // Match database column name (lowercase)
+          incominginvoiceemail: editingUser.incomingInvoiceEmail, // Match database column name (lowercase)
+          outgoinginvoiceemail: editingUser.outgoingInvoiceEmail // Match database column name (lowercase)
+          // Note: iframeUrls may need to be added to the profiles table
         })
         .eq('id', editingUser.id);
 
       if (error) throw error;
 
+      // Update local state
       setUsers(users.map(user => 
         user.id === editingUser.id ? editingUser : user
       ));
@@ -146,30 +136,47 @@ export const useUserManagement = () => {
     }
   };
 
+  // Handle user deletion
   const handleDeleteUser = (user: User) => {
     setUserToDelete(user);
     setShowConfirmDelete(true);
   };
 
+  // Confirm user deletion
   const confirmDeleteUser = async () => {
     if (!userToDelete) return;
     
     try {
-      const { error: authError } = await supabase.auth.admin.deleteUser(
-        userToDelete.id
-      );
+      console.log("Attempting to delete user:", userToDelete.id);
       
-      if (authError) {
-        console.error('Error deleting user from Auth:', authError);
-      }
-      
+      // Delete from profiles table first
       const { error: profileError } = await supabase
         .from('profiles')
         .delete()
         .eq('id', userToDelete.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Error deleting user from profiles:', profileError);
+        throw profileError;
+      }
+      
+      // Then try to delete from auth
+      try {
+        // This may require admin privileges
+        const { error: authError } = await supabase.auth.admin.deleteUser(
+          userToDelete.id
+        );
+        
+        if (authError) {
+          console.error('Error deleting user from Auth:', authError);
+          // Continue anyway since we've deleted the profile
+        }
+      } catch (authDeleteError) {
+        console.error('Exception during auth deletion:', authDeleteError);
+        // Continue anyway since we've deleted the profile
+      }
 
+      // Update local state
       setUsers(users.filter(user => user.id !== userToDelete.id));
       
       toast({
@@ -189,12 +196,15 @@ export const useUserManagement = () => {
     }
   };
 
+  // Toggle user active status
   const toggleUserStatus = async (user: User) => {
     const updatedUser = { ...user, isActive: !user.isActive };
     
     try {
-      // For now, we're just updating the local state
-      // In a real app, you might want to update user status in auth system
+      // In a real implementation, you would update user status in Supabase
+      // For this example, we're just updating the local state
+      
+      // Update local state
       setUsers(users.map(u => u.id === user.id ? updatedUser : u));
       
       toast({
@@ -211,50 +221,85 @@ export const useUserManagement = () => {
     }
   };
 
+  // Cancel editing
   const handleCancelEdit = () => {
     setEditingUser(null);
   };
 
+  // Open add user dialog
   const handleAddUser = () => {
     setIsAddingUser(true);
   };
 
+  // Cancel adding user
   const handleCancelAddUser = () => {
     setIsAddingUser(false);
   };
 
+  // Save new user - IMPROVED IMPLEMENTATION
   const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
     try {
-      console.log("Creating new user:", newUser);
+      if (!newUser.email || !newUser.password) {
+        throw new Error("Email and password are required");
+      }
+      
+      console.log("Creating new user:", {...newUser, password: '[REDACTED]'});
+      
+      // Register the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: newUser.email,
-        password: newUser.password || 'tempPassword123',
+        password: newUser.password,
         options: {
           data: {
-            name: newUser.name,
-            userType: newUser.userType,
-            companyName: newUser.companyName,
-            incomingInvoiceEmail: newUser.incomingInvoiceEmail,
-            outgoingInvoiceEmail: newUser.outgoingInvoiceEmail
+            name: newUser.name || '',
+            userType: newUser.userType || 'client',
+            companyName: newUser.companyName || '',
           }
         }
       });
       
-      if (authError) throw authError;
+      if (authError) {
+        console.error('Error creating user in Auth:', authError);
+        throw authError;
+      }
+      
+      if (!authData.user) {
+        throw new Error("User creation failed: No user data returned");
+      }
+      
       console.log("User created in Auth:", authData);
+      
+      // Create a profile for the user if not automatically created by the trigger
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: authData.user.id,
+          name: newUser.name || '',
+          email: newUser.email,
+          usertype: newUser.userType || 'client', // Match database column name (lowercase)
+          companyname: newUser.companyName || '', // Match database column name (lowercase)
+          incominginvoiceemail: newUser.incomingInvoiceEmail || '', // Match database column name (lowercase)
+          outgoinginvoiceemail: newUser.outgoingInvoiceEmail || '', // Match database column name (lowercase)
+        }, { onConflict: 'id' });
+      
+      if (profileError) {
+        console.error('Error creating user profile:', profileError);
+        throw profileError;
+      }
 
+      // Fetch users again to update the list
       await fetchUsers();
       
       toast({
         title: "User Created",
-        description: `${newUser.name} was successfully added.`,
+        description: `${newUser.name || 'New user'} was successfully added.`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating user:', error);
       toast({
         variant: 'destructive',
         title: 'Creation Error',
-        description: 'An error occurred while creating the user.',
+        description: error.message || 'An error occurred while creating the user.',
       });
     } finally {
       setIsAddingUser(false);
@@ -281,6 +326,5 @@ export const useUserManagement = () => {
     handleCancelAddUser,
     handleSaveNewUser,
     setShowConfirmDelete,
-    fetchUsers, // Export the fetchUsers function for manual refreshing
   };
 };
