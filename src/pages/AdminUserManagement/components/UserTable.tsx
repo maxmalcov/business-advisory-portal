@@ -9,7 +9,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { UserCog } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { UserCog, Trash2, Power } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 interface User {
@@ -21,50 +22,92 @@ interface User {
   incomingInvoiceEmail?: string;
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
+  isActive?: boolean;
 }
 
 interface UserTableProps {
   users: User[];
   onEditUser: (user: User) => void;
+  onDeleteUser: (user: User) => void;
+  onToggleStatus: (user: User) => void;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => {
+const UserTable: React.FC<UserTableProps> = ({ 
+  users, 
+  onEditUser, 
+  onDeleteUser, 
+  onToggleStatus 
+}) => {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
+          <TableHead>Имя</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead>Company</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Actions</TableHead>
+          <TableHead>Компания</TableHead>
+          <TableHead>Роль</TableHead>
+          <TableHead>Статус</TableHead>
+          <TableHead>Действия</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell className="font-medium">{user.name}</TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell>{user.companyName}</TableCell>
-            <TableCell>
-              <span className="capitalize">{user.userType}</span>
+        {users.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={6} className="text-center py-8">
+              Нет данных для отображения
             </TableCell>
-            <TableCell>
-              <Dialog>
-                <DialogTrigger asChild>
+          </TableRow>
+        ) : (
+          users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell className="font-medium">{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>{user.companyName}</TableCell>
+              <TableCell>
+                <span className="capitalize">{user.userType}</span>
+              </TableCell>
+              <TableCell>
+                <Badge variant={user.isActive ? "secondary" : "destructive"}>
+                  {user.isActive ? "Активен" : "Неактивен"}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="flex space-x-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onEditUser(user)}
+                      >
+                        <UserCog className="h-4 w-4 mr-1" />
+                        Изменить
+                      </Button>
+                    </DialogTrigger>
+                  </Dialog>
+                  
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => onEditUser(user)}
+                    onClick={() => onToggleStatus(user)}
                   >
-                    <UserCog className="h-4 w-4 mr-1" />
-                    Edit
+                    <Power className="h-4 w-4 mr-1" />
+                    {user.isActive ? "Деактивировать" : "Активировать"}
                   </Button>
-                </DialogTrigger>
-              </Dialog>
-            </TableCell>
-          </TableRow>
-        ))}
+                  
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDeleteUser(user)}
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Удалить
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))
+        )}
       </TableBody>
     </Table>
   );

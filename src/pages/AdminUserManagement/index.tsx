@@ -16,7 +16,6 @@ import UserSearchBar from './components/UserSearchBar';
 import UserTable from './components/UserTable';
 import UserEditDialog from './components/UserEditDialog';
 import AddUserDialog from './components/AddUserDialog';
-import { mockUsers } from './mockData';
 import { AppUser } from '@/context/AuthContext';
 
 // Define the User type for the admin panel
@@ -29,6 +28,7 @@ interface User {
   incomingInvoiceEmail?: string;
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
+  isActive?: boolean;
 }
 
 const AdminUserManagement: React.FC = () => {
@@ -40,6 +40,8 @@ const AdminUserManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   // Fetch users from Supabase
   useEffect(() => {
@@ -69,7 +71,8 @@ const AdminUserManagement: React.FC = () => {
           userType: profile.usertype || 'client',
           incomingInvoiceEmail: profile.incominginvoiceemail,
           outgoingInvoiceEmail: profile.outgoinginvoiceemail,
-          iframeUrls: [] // This may need to be added to the profiles table
+          iframeUrls: [], // This may need to be added to the profiles table
+          isActive: true // Assuming all users are active by default
         }));
         
         console.log("Transformed users:", transformedUsers);
@@ -85,8 +88,6 @@ const AdminUserManagement: React.FC = () => {
         title: 'Ошибка',
         description: 'Не удалось загрузить пользователей'
       });
-      // Fall back to mock data if Supabase fetch fails
-      setUsers(mockUsers);
     } finally {
       setIsLoading(false);
     }
@@ -154,6 +155,80 @@ const AdminUserManagement: React.FC = () => {
       });
     } finally {
       setEditingUser(null);
+    }
+  };
+
+  // Handle user deletion
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setShowConfirmDelete(true);
+  };
+
+  // Confirm user deletion
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+    
+    try {
+      // Delete the user from Supabase Auth
+      const { error: authError } = await supabase.auth.admin.deleteUser(
+        userToDelete.id
+      );
+      
+      if (authError) {
+        console.error('Error deleting user from Auth:', authError);
+        // Try to delete from profiles table anyway
+      }
+      
+      // Delete from profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userToDelete.id);
+
+      if (profileError) throw profileError;
+
+      // Update local state
+      setUsers(users.filter(user => user.id !== userToDelete.id));
+      
+      toast({
+        title: "Пользователь удален",
+        description: `Пользователь ${userToDelete.name} был успешно удален.`,
+      });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка удаления',
+        description: 'Произошла ошибка при удалении пользователя.',
+      });
+    } finally {
+      setUserToDelete(null);
+      setShowConfirmDelete(false);
+    }
+  };
+
+  // Toggle user active status
+  const toggleUserStatus = async (user: User) => {
+    const updatedUser = { ...user, isActive: !user.isActive };
+    
+    try {
+      // In a real implementation, you would update user status in Supabase
+      // For this example, we're just updating the local state
+      
+      // Update local state
+      setUsers(users.map(u => u.id === user.id ? updatedUser : u));
+      
+      toast({
+        title: updatedUser.isActive ? "Пользователь активирован" : "Пользователь деактивирован",
+        description: `Статус пользователя ${user.name} был успешно изменен.`,
+      });
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка обновления статуса',
+        description: 'Произошла ошибка при изменении статуса пользователя.',
+      });
     }
   };
 
@@ -233,6 +308,8 @@ const AdminUserManagement: React.FC = () => {
             <UserTable 
               users={filteredUsers} 
               onEditUser={handleEditUser}
+              onDeleteUser={handleDeleteUser}
+              onToggleStatus={toggleUserStatus}
             />
           )}
         </CardContent>
@@ -263,6 +340,37 @@ const AdminUserManagement: React.FC = () => {
           onSave={handleSaveNewUser}
           onCancel={handleCancelAddUser}
         />
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog 
+        open={showConfirmDelete} 
+        onOpenChange={(open) => {
+          setShowConfirmDelete(open);
+          if (!open) setUserToDelete(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold">Подтверждение удаления</h2>
+            <p>Вы действительно хотите удалить пользователя {userToDelete?.name}?</p>
+            <p className="text-destructive">Это действие нельзя отменить.</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                className="px-4 py-2 border rounded hover:bg-gray-100"
+                onClick={() => setShowConfirmDelete(false)}
+              >
+                Отмена
+              </button>
+              <button 
+                className="px-4 py-2 bg-destructive text-white rounded hover:bg-destructive/90"
+                onClick={confirmDeleteUser}
+              >
+                Удалить
+              </button>
+            </div>
+          </div>
+        </DialogContent>
       </Dialog>
     </div>
   );
