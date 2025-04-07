@@ -44,12 +44,11 @@ export const serviceRequestsTable = () => {
 };
 
 // Helper function to safely access the services table
-// We need to use any here to get around TypeScript limitations
-// since the services table isn't in the generated types yet
+// This is a workaround because the services table isn't in the generated types yet
 export const servicesTable = () => {
-  // Using any as a workaround - this bypasses TypeScript's strict checking
-  // which is okay in this case since we're defining our own Service type
-  return supabase.from('services') as any;
+  // Force TypeScript to treat this as any to bypass type checking
+  // since we're manually defining the Service type above
+  return supabase.from('services' as any);
 };
 
 // Setup realtime subscription for the service_requests table
