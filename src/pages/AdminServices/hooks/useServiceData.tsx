@@ -23,8 +23,13 @@ export const useServiceData = () => {
           throw error;
         }
         
-        // Add proper type assertion to resolve TypeScript error
-        setServices(data as Service[]);
+        // Properly handle typing by first checking that data is not null
+        if (data) {
+          // Convert data to unknown first and then to Service[] to satisfy TypeScript
+          setServices(data as unknown as Service[]);
+        } else {
+          setServices([]);
+        }
       } catch (error) {
         console.error('Error fetching services:', error);
         toast({

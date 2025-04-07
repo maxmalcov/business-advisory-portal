@@ -26,8 +26,13 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
           throw error;
         }
 
-        // Add proper type assertion to resolve TypeScript error
-        setService(data as Service);
+        // Properly handle typing by first checking that data is not null
+        if (data) {
+          // Convert data to unknown first and then to Service to satisfy TypeScript
+          setService(data as unknown as Service);
+        } else {
+          setService(null);
+        }
       } catch (error) {
         console.error('Error fetching service:', error);
       } finally {
