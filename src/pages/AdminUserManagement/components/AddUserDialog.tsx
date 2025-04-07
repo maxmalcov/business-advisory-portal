@@ -1,6 +1,4 @@
-
 import React, { useState } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
 import { 
   DialogContent, 
   DialogDescription, 
@@ -12,11 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mail, Link as LinkIcon, Plus, Save, X } from 'lucide-react';
+import { Mail, UserPlus } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
-// Define the user structure based on existing code
+// Define the User interface
 interface User {
-  id?: string;
+  id: string;
   name: string;
   email: string;
   companyName?: string;
@@ -24,216 +23,119 @@ interface User {
   incomingInvoiceEmail?: string;
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
-  password?: string; // Add password field for new users
 }
 
 interface AddUserDialogProps {
-  onSave: (user: Omit<User, 'id'>) => void;
+  onSave: (newUser: Omit<User, 'id'>) => void;
   onCancel: () => void;
 }
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   const { t } = useLanguage();
-  const [newUser, setNewUser] = useState<User>({
-    name: '',
-    email: '',
-    companyName: '',
-    userType: 'client',
-    incomingInvoiceEmail: '',
-    outgoingInvoiceEmail: '',
-    iframeUrls: [],
-    password: ''
-  });
-  const [newIframeUrl, setNewIframeUrl] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [userType, setUserType] = useState('client');
+  const [incomingInvoiceEmail, setIncomingInvoiceEmail] = useState('');
+  const [outgoingInvoiceEmail, setOutgoingInvoiceEmail] = useState('');
 
-  // Handle adding a new iframe URL
-  const handleAddIframeUrl = () => {
-    if (!newIframeUrl) return;
-    
-    setNewUser({
-      ...newUser,
-      iframeUrls: [...(newUser.iframeUrls || []), newIframeUrl]
-    });
-    
-    setNewIframeUrl('');
-  };
-
-  // Handle removing an iframe URL
-  const handleRemoveIframeUrl = (index: number) => {
-    const newUrls = [...(newUser.iframeUrls || [])];
-    newUrls.splice(index, 1);
-    
-    setNewUser({
-      ...newUser,
-      iframeUrls: newUrls
-    });
-  };
-
-  // Handle changing user type
-  const handleChangeUserType = (value: string) => {
-    setNewUser({
-      ...newUser,
-      userType: value
-    });
-  };
-
-  // Handle saving the new user
   const handleSave = () => {
-    // Basic validation
-    if (!newUser.name || !newUser.email) {
-      alert('Please fill in required fields: Name and Email');
-      return;
-    }
-    
-    // Generate a random password if not provided
-    if (!newUser.password) {
-      newUser.password = Math.random().toString(36).slice(-8);
-    }
-    
+    const newUser = {
+      name,
+      email,
+      companyName,
+      userType,
+      incomingInvoiceEmail,
+      outgoingInvoiceEmail,
+      iframeUrls: []
+    };
     onSave(newUser);
   };
 
   return (
     <DialogContent className="max-w-2xl">
       <DialogHeader>
-        <DialogTitle>Add New User</DialogTitle>
+        <DialogTitle>Добавить нового пользователя</DialogTitle>
         <DialogDescription>
-          Create a new user account
+          Заполните форму ниже, чтобы создать нового пользователя
         </DialogDescription>
       </DialogHeader>
       
       <div className="grid grid-cols-2 gap-4 py-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Name *</Label>
+          <Label htmlFor="name">Имя</Label>
           <Input 
             id="name"
-            value={newUser.name}
-            onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="email">Email *</Label>
+          <Label htmlFor="email">Email</Label>
           <Input 
             id="email"
-            value={newUser.email}
-            onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input 
-            id="password"
-            type="password"
-            value={newUser.password || ''}
-            onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-            placeholder="Leave blank for auto-generated password"
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="company">Company Name</Label>
+          <Label htmlFor="company">Название компании</Label>
           <Input 
             id="company"
-            value={newUser.companyName || ''}
-            onChange={(e) => setNewUser({...newUser, companyName: e.target.value})}
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="role">Role</Label>
+          <Label htmlFor="role">Роль</Label>
           <Select 
-            value={newUser.userType} 
-            onValueChange={handleChangeUserType}
+            value={userType} 
+            onValueChange={setUserType}
           >
             <SelectTrigger id="role">
-              <SelectValue placeholder="Select a role" />
+              <SelectValue placeholder="Выберите роль" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="client">Client</SelectItem>
-              <SelectItem value="admin">Administrator</SelectItem>
-              <SelectItem value="manager">Manager</SelectItem>
+              <SelectItem value="client">Клиент</SelectItem>
+              <SelectItem value="admin">Администратор</SelectItem>
+              <SelectItem value="manager">Менеджер</SelectItem>
             </SelectContent>
           </Select>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="incoming-email">Email for Incoming Invoices</Label>
+          <Label htmlFor="incoming-email">Email для входящих счетов</Label>
           <div className="flex">
             <Mail className="mr-2 h-4 w-4 mt-2.5" />
             <Input 
               id="incoming-email"
-              value={newUser.incomingInvoiceEmail || ''}
-              onChange={(e) => setNewUser({...newUser, incomingInvoiceEmail: e.target.value})}
+              value={incomingInvoiceEmail}
+              onChange={(e) => setIncomingInvoiceEmail(e.target.value)}
             />
           </div>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="outgoing-email">Email for Outgoing Invoices</Label>
+          <Label htmlFor="outgoing-email">Email для исходящих счетов</Label>
           <div className="flex">
             <Mail className="mr-2 h-4 w-4 mt-2.5" />
             <Input 
               id="outgoing-email"
-              value={newUser.outgoingInvoiceEmail || ''}
-              onChange={(e) => setNewUser({...newUser, outgoingInvoiceEmail: e.target.value})}
+              value={outgoingInvoiceEmail}
+              onChange={(e) => setOutgoingInvoiceEmail(e.target.value)}
             />
-          </div>
-        </div>
-        
-        <div className="col-span-2 space-y-2">
-          <Label>IFRAME URLs</Label>
-          <div className="space-y-2">
-            {newUser.iframeUrls?.map((url: string, index: number) => (
-              <div key={index} className="flex items-center">
-                <LinkIcon className="mr-2 h-4 w-4" />
-                <Input 
-                  value={url}
-                  onChange={(e) => {
-                    const newUrls = [...(newUser.iframeUrls || [])];
-                    newUrls[index] = e.target.value;
-                    setNewUser({...newUser, iframeUrls: newUrls});
-                  }}
-                  className="flex-grow"
-                />
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => handleRemoveIframeUrl(index)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-            
-            <div className="flex items-center mt-2">
-              <LinkIcon className="mr-2 h-4 w-4" />
-              <Input 
-                placeholder="Add new URL"
-                value={newIframeUrl}
-                onChange={(e) => setNewIframeUrl(e.target.value)}
-                className="flex-grow"
-              />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={handleAddIframeUrl}
-                className="ml-2"
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                Add
-              </Button>
-            </div>
           </div>
         </div>
       </div>
       
       <DialogFooter>
-        <Button variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button variant="outline" onClick={onCancel}>Отмена</Button>
         <Button onClick={handleSave}>
-          <Save className="mr-2 h-4 w-4" />
-          Create User
+          <UserPlus className="mr-2 h-4 w-4" />
+          Создать пользователя
         </Button>
       </DialogFooter>
     </DialogContent>
