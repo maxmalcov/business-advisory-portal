@@ -58,7 +58,9 @@ export const useUserManagement = () => {
           const supabaseUsers = authData.users as SupabaseAuthUser[];
           supabaseUsers.forEach(authUser => {
             // Access the banned property on the SupabaseAuthUser type, not our User interface
-            authStatusMap.set(authUser.id, !authUser.banned);
+            // Check if the banned property exists before accessing it
+            const isBanned = 'banned' in authUser ? authUser.banned : false;
+            authStatusMap.set(authUser.id, !isBanned);
           });
         }
         
