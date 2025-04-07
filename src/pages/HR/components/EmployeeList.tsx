@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -12,6 +13,9 @@ import { format } from 'date-fns';
 import { Employee } from '../types/employee';
 import { Skeleton } from '@/components/ui/skeleton';
 import EmployeeDetailDialog from './EmployeeDetailDialog';
+import { FilterInput } from './FilterInput';
+import { EmployeeStatus } from '../types/employee';
+import EmployeeStatusToggle from './EmployeeStatusToggle';
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -26,6 +30,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 }) => {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [filterText, setFilterText] = useState('');
+  const [activeStatus, setActiveStatus] = useState<EmployeeStatus>('active');
 
   const formatDate = (dateStr: string) => {
     try {
@@ -39,10 +45,18 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
     if (onEmployeeSelect) {
       onEmployeeSelect(employee);
     } else {
+      console.log('Opening employee details:', employee); // Add debug log
       setSelectedEmployee(employee);
       setDetailDialogOpen(true);
     }
   };
+
+  // Filter employees based on search text
+  const filteredEmployees = employees.filter(emp => 
+    emp.fullName.toLowerCase().includes(filterText.toLowerCase()) ||
+    emp.position.toLowerCase().includes(filterText.toLowerCase()) ||
+    (emp.companyName && emp.companyName.toLowerCase().includes(filterText.toLowerCase()))
+  );
 
   if (isLoading) {
     return (
@@ -75,43 +89,57 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 
   return (
     <>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Full Name</TableHead>
-              <TableHead>Position/Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>End Date</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {employees.length === 0 ? (
+      <div className="flex flex-col space-y-4">
+        <div className="flex justify-between items-center">
+          <FilterInput 
+            value={filterText} 
+            onChange={setFilterText} 
+            placeholder="Search by name, position, or company..."
+          />
+          <EmployeeStatusToggle 
+            value={activeStatus} 
+            onChange={setActiveStatus} 
+          />
+        </div>
+        
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={5} className="text-center h-24">No employees found</TableCell>
+                <TableHead>Full Name</TableHead>
+                <TableHead>Position/Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
               </TableRow>
-            ) : (
-              employees.map((employee) => (
-                <TableRow 
-                  key={employee.id}
-                  className="cursor-pointer hover:bg-gray-50"
-                  onClick={() => handleEmployeeClick(employee)}
-                >
-                  <TableCell className="font-medium">{employee.fullName}</TableCell>
-                  <TableCell>{employee.position}</TableCell>
-                  <TableCell>
-                    <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
-                      {employee.status === 'active' ? 'Active' : 'Terminated'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{formatDate(employee.startDate)}</TableCell>
-                  <TableCell>{employee.endDate ? formatDate(employee.endDate) : '-'}</TableCell>
+            </TableHeader>
+            <TableBody>
+              {filteredEmployees.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center h-24">No employees found</TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                filteredEmployees.map((employee) => (
+                  <TableRow 
+                    key={employee.id}
+                    className="cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleEmployeeClick(employee)}
+                  >
+                    <TableCell className="font-medium">{employee.fullName}</TableCell>
+                    <TableCell>{employee.position}</TableCell>
+                    <TableCell>
+                      <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
+                        {employee.status === 'active' ? 'Active' : 'Terminated'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(employee.startDate)}</TableCell>
+                    <TableCell>{employee.endDate ? formatDate(employee.endDate) : '-'}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       
       <EmployeeDetailDialog 

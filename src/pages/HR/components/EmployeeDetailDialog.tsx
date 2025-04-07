@@ -5,7 +5,8 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle,
-  DialogFooter
+  DialogFooter, 
+  DialogDescription
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Employee } from '../types/employee';
@@ -46,6 +47,8 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     setIsSubmitting(true);
     
     try {
+      console.log('Saving employee update:', updatedEmployee);
+      
       const { error } = await employeesTable()
         .update({
           full_name: updatedEmployee.fullName,
@@ -67,6 +70,9 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
       });
       
       setIsEditing(false);
+      
+      // Reload the page to show updated data
+      window.location.reload();
     } catch (error) {
       console.error('Error updating employee:', error);
       toast({
@@ -98,6 +104,9 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
               </Button>
             )}
           </DialogTitle>
+          <DialogDescription>
+            View or edit employee information
+          </DialogDescription>
         </DialogHeader>
 
         {isEditing ? (

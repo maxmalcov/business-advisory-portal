@@ -8,9 +8,9 @@ import {
   EmailRecipientInput,
   WorkHoursForm,
   WorkHoursTable,
-  FilterInput,
 } from './components';
 
+import FilterInput from './components/FilterInput';
 import { useEmployeeData } from './hooks/useEmployeeData';
 import { useFormState } from './hooks/useFormState';
 import { useEmailRecipient } from './hooks/useEmailRecipient';
@@ -83,8 +83,8 @@ const WorkHours: React.FC = () => {
           {/* Search and filter */}
           <div className="my-4">
             <FilterInput 
-              filterValue={filterValue}
-              setFilterValue={setFilterValue}
+              value={filterValue}
+              onChange={setFilterValue}
               placeholder="Filter by company or employee name..."
             />
           </div>
