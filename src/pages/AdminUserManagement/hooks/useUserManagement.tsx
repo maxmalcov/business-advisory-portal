@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/context/AuthContext';
 
 export interface User {
   id: string;
@@ -18,6 +19,7 @@ export interface User {
 
 export const useUserManagement = () => {
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,14 +28,13 @@ export const useUserManagement = () => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
-  // Fetch users from Supabase profiles table instead of using admin api
+  // Fetch users from profiles table
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      console.log("Fetching users from profiles table...");
+      console.log("Fetching users from profiles table as", currentUser?.userType);
       
-      // Instead of using auth.admin.listUsers() which requires service_role,
-      // let's query the profiles table which is accessible with normal permissions
+      // With our RLS policies, admins can see all profiles
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*');
@@ -149,14 +150,14 @@ export const useUserManagement = () => {
     setShowConfirmDelete(true);
   };
 
-  // Confirm user deletion - now using regular API to delete a profile
+  // Confirm user deletion
   const confirmDeleteUser = async () => {
     if (!userToDelete) return;
     
     try {
       console.log("Attempting to delete user profile:", userToDelete.id);
       
-      // Delete the profile from profiles table instead of using admin API
+      // Delete the profile from profiles table
       const { error } = await supabase
         .from('profiles')
         .delete()
@@ -230,7 +231,7 @@ export const useUserManagement = () => {
     setIsAddingUser(false);
   };
 
-  // Save new user - using Supabase auth signup instead of admin API
+  // Save new user - using Supabase auth signup
   const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
     try {
       if (!newUser.email || !newUser.password) {
