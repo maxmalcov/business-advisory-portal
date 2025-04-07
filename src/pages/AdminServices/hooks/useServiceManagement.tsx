@@ -19,10 +19,14 @@ export const useServiceManagement = () => {
   const [badges, setBadges] = useState('');
   const [popular, setPopular] = useState(false);
 
-  // Fetch services from Supabase
+  // Fetch services from Supabase - optimized to prevent flickering
   useEffect(() => {
+    let isMounted = true;
+    
     const fetchServices = async () => {
       try {
+        if (!isMounted) return;
+        
         setLoading(true);
         
         const { data, error } = await servicesTable()
@@ -33,23 +37,32 @@ export const useServiceManagement = () => {
           throw error;
         }
         
-        if (data) {
+        if (data && isMounted) {
           // Explicitly cast the data to the Service type
           setServices(data as any as Service[]);
         }
       } catch (error) {
         console.error('Error fetching services:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load services",
-          variant: "destructive"
-        });
+        if (isMounted) {
+          toast({
+            title: "Error",
+            description: "Failed to load services",
+            variant: "destructive"
+          });
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
     
     fetchServices();
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
   }, [toast]);
 
   const resetForm = () => {
@@ -82,6 +95,8 @@ export const useServiceManagement = () => {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
+      
       const serviceData = {
         title,
         description,
@@ -141,6 +156,8 @@ export const useServiceManagement = () => {
         description: "Failed to save service. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -148,6 +165,8 @@ export const useServiceManagement = () => {
     if (!confirm("Are you sure you want to delete this service?")) return;
     
     try {
+      setLoading(true);
+      
       const { error } = await servicesTable()
         .delete()
         .eq('id', serviceId);
@@ -170,6 +189,8 @@ export const useServiceManagement = () => {
         description: "Failed to delete service. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setLoading(false);
     }
   };
 
