@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
 
 const Login: React.FC = () => {
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -21,9 +20,11 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already authenticated
-  if (isAuthenticated && !authLoading) {
-    return <Navigate to="/dashboard" />;
-  }
+  useEffect(() => {
+    if (isAuthenticated && !authLoading) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +42,9 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
-      // No need to navigate here as the component will redirect automatically when isAuthenticated changes
+      // Navigation will be handled by the useEffect above
     } catch (error) {
-      console.error('Login submission error:', error);
+      console.error('Login error:', error);
       // Toast is already handled in the auth context
     } finally {
       setIsLoading(false);
@@ -85,13 +86,6 @@ const Login: React.FC = () => {
                 disabled={isLoading || authLoading}
               />
             </div>
-            
-            {authLoading && (
-              <div className="flex justify-center items-center py-2">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                <span className="ml-2">Checking authentication...</span>
-              </div>
-            )}
           </CardContent>
           
           <CardFooter className="flex-col space-y-4">
@@ -100,14 +94,7 @@ const Login: React.FC = () => {
               className="w-full" 
               disabled={isLoading || authLoading}
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('app.loading')}
-                </>
-              ) : (
-                t('app.login')
-              )}
+              {isLoading || authLoading ? t('app.loading') : t('app.login')}
             </Button>
             
             <div className="text-center text-sm">

@@ -32,6 +32,7 @@ export interface AppUser {
 // Auth context type
 type AuthContextType = {
   user: AppUser | null;
+  session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -42,6 +43,7 @@ type AuthContextType = {
 // Create auth context with default values
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  session: null,
   isLoading: true,
   isAuthenticated: false,
   login: async () => {},
@@ -55,51 +57,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const [profileCreationAttempts, setProfileCreationAttempts] = useState(0);
 
   // Check for existing auth on mount and set up auth state listener
   useEffect(() => {
-    console.log("Setting up authentication state handling");
-    
-    // First set up auth state listener to catch all events
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
         console.log("Auth state changed:", event, currentSession?.user?.id);
+        setSession(currentSession);
         
-        if (currentSession) {
-          setSession(currentSession);
-          
-          if (currentSession.user) {
-            console.log("User authenticated in state change, fetching profile");
-            // Use setTimeout to avoid potential Supabase authentication deadlock
-            setTimeout(() => {
-              fetchUserProfile(currentSession.user.id);
-            }, 100);
-          }
+        if (currentSession?.user) {
+          // Use setTimeout to avoid potential Supabase authentication deadlock
+          setTimeout(() => {
+            fetchUserProfile(currentSession.user.id);
+          }, 0);
         } else {
           setUser(null);
-          setSession(null);
           setIsLoading(false);
         }
       }
     );
 
-    // Then check for existing session
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       console.log("Initial session check:", currentSession?.user?.id);
+      setSession(currentSession);
       
-      if (currentSession) {
-        setSession(currentSession);
-        
-        if (currentSession.user) {
-          console.log("User authenticated in initial check, fetching profile");
-          // Use setTimeout to avoid potential deadlocks
-          setTimeout(() => {
-            fetchUserProfile(currentSession.user.id);
-          }, 100);
-        } else {
-          setIsLoading(false);
-        }
+      if (currentSession?.user) {
+        fetchUserProfile(currentSession.user.id);
       } else {
         setIsLoading(false);
       }
@@ -113,7 +98,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
   }, []);
 
-  // Enhanced fetch user profile function with retry mechanism
+  // Fetch user profile from the database with improved error handling and retries
   const fetchUserProfile = async (userId: string) => {
     try {
       console.log("Fetching user profile with ID:", userId);
@@ -125,21 +110,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         .single();
 
       if (error) {
-        // Handle case when profile doesn't exist yet
+        console.error('Error fetching profile:', error);
+        
+        // Only create a new profile if the error is that the profile doesn't exist
         if (error.code === 'PGRST116') {
           console.log('Profile not found, creating a default profile');
-          await createNewProfile(userId);
+          await createUserProfile(userId);
         } else {
-          console.error('Error fetching profile:', error);
-          toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'Failed to load user profile: ' + error.message,
-          });
-          setIsLoading(false);
+          throw error;
         }
       } else if (data) {
-        console.log("Profile data fetched successfully:", data);
+        console.log("Profile data fetched:", data);
         // Map database column names (lowercase) to our app's interface (camelCase)
         setUser({
           id: data.id,
@@ -162,7 +143,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('Error in fetchUserProfile:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -172,119 +153,64 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // New function to create a profile with better error handling
-  const createNewProfile = async (userId: string) => {
+  // Create user profile if it doesn't exist
+  const createUserProfile = async (userId: string) => {
     try {
-      console.log("Creating new profile for user:", userId);
-      setProfileCreationAttempts(prev => prev + 1);
+      console.log("Creating profile for user:", userId);
       
-      // Get the user's email directly from the session to ensure we have it
-      const { data: { user } } = await supabase.auth.getUser();
+      // Get the user's email from auth
+      const { data: userData } = await supabase.auth.getUser();
       
-      if (!user) {
-        throw new Error("User data not available");
+      if (!userData || !userData.user) {
+        throw new Error('No user data available');
       }
-      
-      console.log("Retrieved user data for profile creation:", user.email);
       
       // Create a basic profile
       const newProfile = {
         id: userId,
-        email: user.email || '',
-        name: user.email?.split('@')[0] || 'New User',
+        email: userData.user.email || '',
+        name: userData.user.email?.split('@')[0] || 'New User',
         usertype: 'client' // Match the column name in the database (lowercase)
       };
       
-      console.log("Attempting to create profile with data:", newProfile);
-      
-      // First try direct insert
-      const { error: insertError } = await supabase
+      // Insert the profile
+      const { error: insertError, data } = await supabase
         .from('profiles')
-        .insert([newProfile]);
+        .upsert([newProfile], { onConflict: 'id' });
       
       if (insertError) {
-        console.log('Insert attempt failed, trying upsert:', insertError);
-        
-        // If insert fails, try upsert
-        const { error: upsertError } = await supabase
-          .from('profiles')
-          .upsert([newProfile]);
-        
-        if (upsertError) {
-          console.error('Profile creation failed with upsert:', upsertError);
-          throw upsertError;
-        }
+        console.error('Error creating profile:', insertError);
+        throw insertError;
       }
       
-      console.log('Profile created successfully, now fetching it');
+      console.log('Profile created successfully:', data);
       
-      // Wait a moment to ensure the profile is available
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Set the user state with the new profile
+      setUser({
+        id: newProfile.id,
+        email: newProfile.email,
+        name: newProfile.name,
+        userType: newProfile.usertype as UserType,
+        iframeUrls: []
+      });
       
-      // Try to fetch the newly created profile
-      const { data: profileData, error: fetchError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      
-      if (fetchError) {
-        console.error('Error fetching newly created profile:', fetchError);
-        throw fetchError;
-      }
-      
-      if (profileData) {
-        console.log('Successfully fetched newly created profile:', profileData);
-        setUser({
-          id: profileData.id,
-          email: profileData.email || '',
-          name: profileData.name || '',
-          userType: (profileData.usertype as UserType) || 'client',
-          accountType: profileData.accounttype as AccountType,
-          companyName: profileData.companyname,
-          nif: profileData.nif,
-          address: profileData.address,
-          postalCode: profileData.postalcode,
-          city: profileData.city,
-          province: profileData.province,
-          country: profileData.country,
-          phone: profileData.phone,
-          incomingInvoiceEmail: profileData.incominginvoiceemail,
-          outgoingInvoiceEmail: profileData.outgoinginvoiceemail,
-          iframeUrls: []
-        });
-        
-        toast({
-          title: 'Profile Created',
-          description: 'Your user profile has been created successfully.',
-        });
-      } else {
-        throw new Error("Profile created but data is null");
-      }
-    } catch (error: any) {
-      console.error('Error in profile creation process:', error);
-      
-      // Retry logic with backoff
-      if (profileCreationAttempts < 3) {
-        console.log(`Retrying profile creation (attempt ${profileCreationAttempts + 1}/3)`);
-        setTimeout(() => {
-          createNewProfile(userId);
-        }, 1000 * (profileCreationAttempts + 1)); // Increasing delay for each retry
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to create user profile: ' + (error.message || 'Unknown error'),
-        });
-        // Set isLoading to false to ensure UI is responsive even if profile creation fails
-        setIsLoading(false);
-      }
+      toast({
+        title: 'Profile Created',
+        description: 'Your user profile has been created successfully.',
+      });
+    } catch (error) {
+      console.error('Error in createUserProfile:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to create user profile',
+      });
     } finally {
-      // We'll set isLoading to false in the fetchUserProfile function when it completes
+      setIsLoading(false);
     }
   };
 
-  // Login function
+  // Login function with improved error handling
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
@@ -298,10 +224,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw error;
       }
 
-      console.log("Login successful, session:", data.session?.user.id);
-      
-      // We don't need to manually fetch profile here as the auth state listener will do it
-      
       toast({
         title: 'Login Successful',
         description: 'Welcome back!',
@@ -386,18 +308,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Debug output
-  useEffect(() => {
-    console.log("Auth state updated:", {
-      isAuthenticated: !!session,
-      isLoading,
-      user: user?.name
-    });
-  }, [session, isLoading, user]);
-
   return (
     <AuthContext.Provider value={{ 
       user, 
+      session,
       isLoading, 
       isAuthenticated: !!session,
       login,
