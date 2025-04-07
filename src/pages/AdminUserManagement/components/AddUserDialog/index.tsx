@@ -21,7 +21,9 @@ interface AddUserDialogProps {
 }
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
+  // Using a temporary ID for state management, but we'll omit it when saving
   const [newUser, setNewUser] = React.useState<User>({
+    id: 'temp-id', // Temporary ID to satisfy TypeScript
     name: '',
     email: '',
     companyName: '',
@@ -44,7 +46,9 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
       newUser.password = Math.random().toString(36).slice(-8);
     }
     
-    onSave(newUser);
+    // Omit the ID when saving as it's not needed for creating a new user
+    const { id, ...userWithoutId } = newUser;
+    onSave(userWithoutId);
   };
 
   return (

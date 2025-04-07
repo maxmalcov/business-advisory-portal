@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -232,7 +231,7 @@ export const useUserManagement = () => {
       // Register the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: newUser.email,
-        password: 'tempPassword123', // This should be provided by the user in a real app
+        password: newUser.password || 'tempPassword123', // This should be provided by the user in a real app
         options: {
           data: {
             name: newUser.name,
