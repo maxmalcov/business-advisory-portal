@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
 export interface User {
   id: string;
@@ -52,8 +53,10 @@ export const useUserManagement = () => {
         
         // Create a map of user IDs to their auth status
         const authStatusMap = new Map();
-        if (authData?.users) {
-          authData.users.forEach(user => {
+        if (authData && authData.users) {
+          // Explicitly type the users as an array of SupabaseAuthUser
+          const supabaseUsers = authData.users as SupabaseAuthUser[];
+          supabaseUsers.forEach(user => {
             authStatusMap.set(user.id, !user.banned);
           });
         }
