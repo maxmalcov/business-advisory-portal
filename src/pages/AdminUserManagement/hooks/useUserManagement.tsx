@@ -1,6 +1,8 @@
+
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 export interface User {
   id: string;
@@ -72,7 +74,10 @@ export const useUserManagement = () => {
       if (authData && authData.users) {
         console.log("Checking for auth users without profiles...");
         
-        const usersWithoutProfiles = authData.users.filter(
+        // Explicitly type the auth users
+        const authUsers = authData.users as SupabaseUser[];
+        
+        const usersWithoutProfiles = authUsers.filter(
           authUser => !profileIds.has(authUser.id)
         );
         
