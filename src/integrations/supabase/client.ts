@@ -30,3 +30,22 @@ export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
 };
 
+// Enable Realtime for the service_requests table
+const enableRealtime = async () => {
+  try {
+    const { error } = await supabase.rpc('supabase_functions.enable_realtime', {
+      table_name: 'service_requests'
+    });
+    
+    if (error) {
+      console.error('Error enabling realtime:', error);
+    } else {
+      console.log('Realtime enabled for service_requests table');
+    }
+  } catch (err) {
+    console.error('Failed to enable realtime:', err);
+  }
+};
+
+// Call enableRealtime when the file is first loaded
+enableRealtime();

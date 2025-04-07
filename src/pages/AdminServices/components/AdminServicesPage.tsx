@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { serviceRequestsTable, ServiceRequest } from '@/integrations/supabase/client';
-import { supabase } from '@/integrations/supabase/client';
+import { serviceRequestsTable, ServiceRequest, supabase } from '@/integrations/supabase/client';
 import AdminEmailSettings from './AdminEmailSettings';
 import ServiceFilters from './ServiceFilters';
 import ServiceRequestsTable from './ServiceRequestsTable';
@@ -22,26 +21,37 @@ const AdminServicesPage: React.FC = () => {
   const [selectedRequest, setSelectedRequest] = useState<ServiceRequest | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [adminNotes, setAdminNotes] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch service requests from Supabase
   useEffect(() => {
     const fetchServiceRequests = async () => {
       try {
         setLoading(true);
+        setError(null);
         
-        const { data, error } = await serviceRequestsTable()
+        console.log('Fetching service requests...');
+        
+        // Use a more direct query to ensure we get all requests
+        const { data, error } = await supabase
+          .from('service_requests')
           .select('*')
           .order('request_date', { ascending: false });
           
         if (error) {
+          console.error('Supabase error:', error);
+          setError(`Error fetching data: ${error.message}`);
           throw error;
         }
+        
+        console.log('Service requests fetched:', data);
         
         if (data) {
           setServiceRequests(data);
         }
       } catch (error) {
         console.error('Error fetching service requests:', error);
+        setError('Failed to load service requests');
         toast({
           title: "Error",
           description: "Failed to load service requests",
@@ -153,8 +163,8 @@ const AdminServicesPage: React.FC = () => {
 
   const filteredRequests = serviceRequests.filter(request => {
     const matchesSearch = 
-      request.service_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      request.client_name.toLowerCase().includes(searchQuery.toLowerCase());
+      (request.service_name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || 
+      (request.client_name?.toLowerCase() || '').includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
     
@@ -180,6 +190,28 @@ const AdminServicesPage: React.FC = () => {
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
       />
+      
+      {error && (
+        <div className="p-4 mb-4 text-white bg-red-500 rounded-md">
+          <p><strong>Error:</strong> {error}</p>
+          <p>Check browser console for more details.</p>
+        </div>
+      )}
+      
+      {/* Debug information section */}
+      <div className="p-4 mb-4 text-black bg-yellow-100 rounded-md">
+        <h3 className="font-semibold mb-2">Debug Information</h3>
+        <p>Total service requests: {serviceRequests.length}</p>
+        <p>Filtered service requests: {filteredRequests.length}</p>
+        <p>Current search query: {searchQuery || "(none)"}</p>
+        <p>Current status filter: {statusFilter}</p>
+        <details>
+          <summary className="cursor-pointer text-blue-600">View raw service requests data</summary>
+          <pre className="mt-2 p-2 bg-gray-100 rounded overflow-auto text-xs">
+            {JSON.stringify(serviceRequests, null, 2)}
+          </pre>
+        </details>
+      </div>
       
       <ServiceRequestsTable 
         loading={loading}

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -30,6 +31,8 @@ const Services: React.FC = () => {
       if (!user) return;
       
       try {
+        console.log('Fetching service requests for user:', user.id);
+        
         const { data, error } = await serviceRequestsTable()
           .select('service_id, status')
           .eq('client_id', user.id);
@@ -39,11 +42,15 @@ const Services: React.FC = () => {
           return;
         }
         
+        console.log('User service requests data:', data);
+        
         // Create a map of service_id to status
         const requestsMap: {[key: string]: ServiceStatus} = {};
         data.forEach(request => {
           requestsMap[request.service_id] = request.status as ServiceStatus;
         });
+        
+        console.log('Service requests map:', requestsMap);
         
         setUserRequests(requestsMap);
         
@@ -96,6 +103,8 @@ const Services: React.FC = () => {
     if (!service) return;
     
     try {
+      console.log(`Requesting service ${serviceId} for user ${user.id}`);
+      
       // Insert the service request into the database
       const { data, error } = await serviceRequestsTable()
         .insert({
@@ -108,8 +117,11 @@ const Services: React.FC = () => {
         .select();
         
       if (error) {
+        console.error('Error details:', error);
         throw error;
       }
+      
+      console.log('Service request created:', data);
       
       // Update local state
       setServices(prevServices => 
@@ -124,8 +136,6 @@ const Services: React.FC = () => {
         title: "Service Requested",
         description: `Your request for ${service.title} has been submitted. The admin has been notified.`,
       });
-      
-      console.log(`Service ${serviceId} requested. Data saved to Supabase.`);
     } catch (error) {
       console.error('Error requesting service:', error);
       toast({
