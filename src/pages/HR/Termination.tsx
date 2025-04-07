@@ -55,16 +55,18 @@ const Termination: React.FC = () => {
           
         if (error) throw error;
         
-        const transformedData: Employee[] = data.map(emp => ({
-          id: emp.id,
-          name: emp.full_name,
-          position: emp.position,
-          startDate: new Date(emp.start_date),
-          vacationDaysTotal: 23,
-          vacationDaysUsed: Math.floor(Math.random() * 20)
-        }));
-        
-        setEmployees(transformedData);
+        if (data) {
+          const transformedData: Employee[] = data.map(emp => ({
+            id: emp.id,
+            name: emp.full_name,
+            position: emp.position,
+            startDate: new Date(emp.start_date),
+            vacationDaysTotal: 23,
+            vacationDaysUsed: Math.floor(Math.random() * 20)
+          }));
+          
+          setEmployees(transformedData);
+        }
       } catch (error) {
         console.error('Error fetching employees:', error);
         toast({
