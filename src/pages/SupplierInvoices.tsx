@@ -10,12 +10,9 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileDown, Check, AlertCircle, Clock, Search, FileX } from 'lucide-react';
+import { FileDown, Check, AlertCircle, Clock, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { useAuth } from '@/context/AuthContext';
 
 interface SupplierInvoice {
   id: string;
@@ -61,10 +58,7 @@ const SupplierInvoices: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-  const [invoiceType, setInvoiceType] = useState<'incoming' | 'outgoing'>('incoming');
-  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -162,7 +156,7 @@ const SupplierInvoices: React.FC = () => {
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     if (selectedFiles.length === 0) {
       toast({
         variant: 'destructive',
@@ -172,44 +166,15 @@ const SupplierInvoices: React.FC = () => {
       return;
     }
 
-    // Determine email based on invoice type
-    const targetEmail = invoiceType === 'incoming' 
-      ? user?.incomingInvoiceEmail 
-      : user?.outgoingInvoiceEmail;
+    // Here we would normally upload the files to the server
+    // For now, we'll just show a success message
+    toast({
+      title: 'Upload Successful',
+      description: `${selectedFiles.length} supplier invoice(s) uploaded successfully.`,
+    });
 
-    if (!targetEmail) {
-      toast({
-        variant: 'destructive',
-        title: 'Email not configured',
-        description: `You don't have a ${invoiceType} invoice email configured. Please update your profile.`,
-      });
-      return;
-    }
-
-    setIsUploading(true);
-
-    try {
-      // In a real implementation, we would upload these files to a server
-      // For this demo, we'll simulate sending the files to the email
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulating upload delay
-
-      toast({
-        title: 'Upload Successful',
-        description: `${selectedFiles.length} supplier invoice(s) sent to ${targetEmail}`,
-      });
-
-      // Reset the file input
-      setSelectedFiles([]);
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Upload Failed',
-        description: 'There was an error uploading your files.',
-      });
-      console.error('Upload error:', error);
-    } finally {
-      setIsUploading(false);
-    }
+    // Reset the file input
+    setSelectedFiles([]);
   };
 
   const handleRemoveFile = (index: number) => {
@@ -260,33 +225,6 @@ const SupplierInvoices: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Invoice Type Selection */}
-              <div className="space-y-2">
-                <h3 className="font-medium">Invoice Type</h3>
-                <RadioGroup 
-                  value={invoiceType} 
-                  onValueChange={(value) => setInvoiceType(value as 'incoming' | 'outgoing')}
-                  className="flex space-x-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="incoming" id="supplier-incoming" />
-                    <Label htmlFor="supplier-incoming">Incoming Invoice</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="outgoing" id="supplier-outgoing" />
-                    <Label htmlFor="supplier-outgoing">Outgoing Invoice</Label>
-                  </div>
-                </RadioGroup>
-                {user && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Selected email: {invoiceType === 'incoming' 
-                      ? (user.incomingInvoiceEmail || 'Not configured')
-                      : (user.outgoingInvoiceEmail || 'Not configured')
-                    }
-                  </p>
-                )}
-              </div>
-
               {/* Upload guidelines */}
               <div className="bg-muted p-4 rounded-md text-sm space-y-1">
                 <p>Maximum file size: 25MB per file</p>
@@ -347,7 +285,7 @@ const SupplierInvoices: React.FC = () => {
                           size="icon"
                           onClick={() => handleRemoveFile(index)}
                         >
-                          <FileX className="h-5 w-5 text-muted-foreground" />
+                          &times;
                         </Button>
                       </div>
                     ))}
@@ -355,12 +293,8 @@ const SupplierInvoices: React.FC = () => {
                   <Button 
                     className="w-full" 
                     onClick={handleUpload}
-                    disabled={isUploading}
                   >
-                    {isUploading 
-                      ? 'Uploading...' 
-                      : `Upload ${selectedFiles.length} ${selectedFiles.length === 1 ? 'File' : 'Files'}`
-                    }
+                    Upload {selectedFiles.length} {selectedFiles.length === 1 ? 'File' : 'Files'}
                   </Button>
                 </div>
               )}
