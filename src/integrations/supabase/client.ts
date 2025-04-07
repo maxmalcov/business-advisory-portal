@@ -30,22 +30,32 @@ export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
 };
 
-// Enable Realtime for the service_requests table
-const enableRealtime = async () => {
+// Setup realtime subscription for the service_requests table
+// We're removing the problematic RPC call and using direct channel subscription instead
+const setupRealtimeSubscription = () => {
   try {
-    const { error } = await supabase.rpc('supabase_functions.enable_realtime', {
-      table_name: 'service_requests'
-    });
+    console.log('Setting up realtime subscription for service_requests table');
     
-    if (error) {
-      console.error('Error enabling realtime:', error);
-    } else {
-      console.log('Realtime enabled for service_requests table');
-    }
+    // Instead of trying to call a DB function, we'll just subscribe to the channel directly
+    const channel = supabase
+      .channel('service_requests_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'service_requests'
+      }, (payload) => {
+        console.log('Realtime change received:', payload);
+      })
+      .subscribe((status) => {
+        console.log(`Realtime subscription status: ${status}`);
+      });
+      
+    return channel;
   } catch (err) {
-    console.error('Failed to enable realtime:', err);
+    console.error('Failed to setup realtime subscription:', err);
+    return null;
   }
 };
 
-// Call enableRealtime when the file is first loaded
-enableRealtime();
+// Initialize realtime subscription
+setupRealtimeSubscription();
