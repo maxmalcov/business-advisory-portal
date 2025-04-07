@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -8,13 +8,6 @@ import AdminEmailSettings from './AdminEmailSettings';
 import ServiceFilters from './ServiceFilters';
 import ServiceRequestsTable from './ServiceRequestsTable';
 import ServiceRequestDialog from './ServiceRequestDialog';
-import ServicesManagement from './ServicesManagement';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from "@/components/ui/tabs";
 
 const AdminServicesPage: React.FC = () => {
   const { t } = useLanguage();
@@ -29,47 +22,46 @@ const AdminServicesPage: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [adminNotes, setAdminNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('requests');
 
   // Fetch service requests from Supabase
-  const fetchServiceRequests = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      console.log('Fetching service requests...');
-      
-      // Use a more direct query to ensure we get all requests
-      const { data, error } = await supabase
-        .from('service_requests')
-        .select('*')
-        .order('request_date', { ascending: false });
-        
-      if (error) {
-        console.error('Supabase error:', error);
-        setError(`Error fetching data: ${error.message}`);
-        throw error;
-      }
-      
-      console.log('Service requests fetched:', data);
-      
-      if (data) {
-        setServiceRequests(data);
-      }
-    } catch (error) {
-      console.error('Error fetching service requests:', error);
-      setError('Failed to load service requests');
-      toast({
-        title: "Error",
-        description: "Failed to load service requests",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
-  
   useEffect(() => {
+    const fetchServiceRequests = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('Fetching service requests...');
+        
+        // Use a more direct query to ensure we get all requests
+        const { data, error } = await supabase
+          .from('service_requests')
+          .select('*')
+          .order('request_date', { ascending: false });
+          
+        if (error) {
+          console.error('Supabase error:', error);
+          setError(`Error fetching data: ${error.message}`);
+          throw error;
+        }
+        
+        console.log('Service requests fetched:', data);
+        
+        if (data) {
+          setServiceRequests(data);
+        }
+      } catch (error) {
+        console.error('Error fetching service requests:', error);
+        setError('Failed to load service requests');
+        toast({
+          title: "Error",
+          description: "Failed to load service requests",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     fetchServiceRequests();
     
     // Set up a realtime subscription for updates to the service_requests table
@@ -88,7 +80,7 @@ const AdminServicesPage: React.FC = () => {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, [fetchServiceRequests]);
+  }, [toast]);
 
   const handleUpdateStatus = async (requestId: string, newStatus: 'available' | 'pending' | 'completed' | 'rejected') => {
     try {
@@ -182,8 +174,8 @@ const AdminServicesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">Manage Services</h1>
-        <p className="text-muted-foreground">Oversee services offered and handle client requests</p>
+        <h1 className="text-2xl font-bold tracking-tight">Manage Service Requests</h1>
+        <p className="text-muted-foreground">Oversee and update service requests from clients</p>
       </div>
       
       <AdminEmailSettings 
@@ -192,39 +184,41 @@ const AdminServicesPage: React.FC = () => {
         handleSaveEmail={handleSaveEmail}
       />
       
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2">
-          <TabsTrigger value="requests">Client Requests</TabsTrigger>
-          <TabsTrigger value="services">Service Catalog</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="requests" className="space-y-6">
-          <ServiceFilters 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-          />
-          
-          {error && (
-            <div className="p-4 mb-4 text-white bg-red-500 rounded-md">
-              <p><strong>Error:</strong> {error}</p>
-              <p>Check browser console for more details.</p>
-            </div>
-          )}
-          
-          <ServiceRequestsTable 
-            loading={loading}
-            filteredRequests={filteredRequests}
-            openDetailsDialog={openDetailsDialog}
-            handleUpdateStatus={handleUpdateStatus}
-          />
-        </TabsContent>
-        
-        <TabsContent value="services">
-          <ServicesManagement />
-        </TabsContent>
-      </Tabs>
+      <ServiceFilters 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+      />
+      
+      {error && (
+        <div className="p-4 mb-4 text-white bg-red-500 rounded-md">
+          <p><strong>Error:</strong> {error}</p>
+          <p>Check browser console for more details.</p>
+        </div>
+      )}
+      
+      {/* Debug information section */}
+      <div className="p-4 mb-4 text-black bg-yellow-100 rounded-md">
+        <h3 className="font-semibold mb-2">Debug Information</h3>
+        <p>Total service requests: {serviceRequests.length}</p>
+        <p>Filtered service requests: {filteredRequests.length}</p>
+        <p>Current search query: {searchQuery || "(none)"}</p>
+        <p>Current status filter: {statusFilter}</p>
+        <details>
+          <summary className="cursor-pointer text-blue-600">View raw service requests data</summary>
+          <pre className="mt-2 p-2 bg-gray-100 rounded overflow-auto text-xs">
+            {JSON.stringify(serviceRequests, null, 2)}
+          </pre>
+        </details>
+      </div>
+      
+      <ServiceRequestsTable 
+        loading={loading}
+        filteredRequests={filteredRequests}
+        openDetailsDialog={openDetailsDialog}
+        handleUpdateStatus={handleUpdateStatus}
+      />
       
       <ServiceRequestDialog 
         isDialogOpen={isDialogOpen}

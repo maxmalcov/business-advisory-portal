@@ -25,26 +25,10 @@ export type ServiceRequest = {
   updated_at: string;
 }
 
-// Type definitions for services
-export type Service = {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  category: string | null;
-  status: 'active' | 'inactive';
-  created_at: string;
-  updated_at: string;
-}
-
 // Helper function to safely access the service_requests table
 export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
 };
-
-// Note: We don't have a helper function for services table since TypeScript
-// doesn't recognize it in the Database type yet. We'll use the direct method
-// with type assertions instead.
 
 // Setup realtime subscription for the service_requests table
 // We're removing the problematic RPC call and using direct channel subscription instead
