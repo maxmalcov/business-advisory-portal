@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 
 const Login: React.FC = () => {
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -22,6 +23,7 @@ const Login: React.FC = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
+      console.log('User authenticated, redirecting to dashboard');
       navigate('/dashboard');
     }
   }, [isAuthenticated, authLoading, navigate]);
@@ -41,11 +43,17 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
+      console.log('Attempting to login with:', email);
       await login(email, password);
+      console.log('Login successful');
       // Navigation will be handled by the useEffect above
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      // Toast is already handled in the auth context
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: error?.message || 'Invalid email or password',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -94,7 +102,14 @@ const Login: React.FC = () => {
               className="w-full" 
               disabled={isLoading || authLoading}
             >
-              {isLoading || authLoading ? t('app.loading') : t('app.login')}
+              {isLoading || authLoading ? (
+                <span className="flex items-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('app.loading')}
+                </span>
+              ) : (
+                t('app.login')
+              )}
             </Button>
             
             <div className="text-center text-sm">

@@ -32,7 +32,7 @@ const Header: React.FC = () => {
             <div className="flex items-center space-x-3">
               <Link to="/profile" className="text-sm text-gray-600 hover:text-gray-900 flex items-center">
                 <User size={18} className="mr-1" />
-                {user?.name || 'User'}
+                {user?.name || user?.email || 'User'}
               </Link>
               <Button variant="ghost" size="sm" onClick={logout} className="text-gray-600 hover:text-gray-900">
                 <LogOut size={18} className="mr-1" />
