@@ -12,7 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { supabase } from '@/integrations/supabase/client';
+import { employeesTable } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
 const reasonOptions = [
@@ -49,8 +49,7 @@ const Termination: React.FC = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const { data, error } = await supabase
-          .from('employees')
+        const { data, error } = await employeesTable()
           .select('id, full_name, position, start_date')
           .eq('status', 'active');
           
@@ -112,8 +111,7 @@ const Termination: React.FC = () => {
     }
     
     try {
-      const { error } = await supabase
-        .from('employees')
+      const { error } = await employeesTable()
         .update({
           status: 'terminated',
           end_date: terminationDate.toISOString().split('T')[0]

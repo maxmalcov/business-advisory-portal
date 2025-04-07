@@ -1,12 +1,12 @@
 
 import { useState, useEffect } from 'react';
-import { Employee, EmployeeStatus } from '../types/employee';
-import { supabase } from '@/integrations/supabase/client';
+import { Employee as EmployeeType, EmployeeStatus } from '../types/employee';
+import { employeesTable } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 export function useEmployeeList() {
   const [statusFilter, setStatusFilter] = useState<EmployeeStatus>('active');
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<EmployeeType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
@@ -14,8 +14,7 @@ export function useEmployeeList() {
       setIsLoading(true);
       
       try {
-        const { data, error } = await supabase
-          .from('employees')
+        const { data, error } = await employeesTable()
           .select('id, full_name, position, status, start_date, end_date')
           .eq('status', statusFilter);
           
@@ -24,7 +23,7 @@ export function useEmployeeList() {
         }
         
         // Transform the data to match our Employee interface
-        const transformedData: Employee[] = data.map(emp => ({
+        const transformedData: EmployeeType[] = data.map(emp => ({
           id: emp.id,
           fullName: emp.full_name,
           position: emp.position,

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { FormData, FormErrors } from './types';
 import RequiredFields from './FormSections/RequiredFields';
 import OptionalFields from './FormSections/OptionalFields';
-import { supabase } from '@/integrations/supabase/client';
+import { employeesTable } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
 const NewEmployeeForm: React.FC = () => {
@@ -119,8 +120,7 @@ const NewEmployeeForm: React.FC = () => {
         start_date: formData.startDate?.toISOString().split('T')[0],
       };
       
-      const { error } = await supabase
-        .from('employees')
+      const { error } = await employeesTable()
         .insert(employeeData);
         
       if (error) throw error;
