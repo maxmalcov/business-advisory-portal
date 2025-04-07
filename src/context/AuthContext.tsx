@@ -55,44 +55,56 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const [profileCreationAttempts, setProfileCreationAttempts] = useState(0);
 
   // Check for existing auth on mount and set up auth state listener
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        console.log("Auth state changed:", event, currentSession?.user?.id);
-        setSession(currentSession);
-        if (currentSession?.user) {
-          // Use setTimeout to avoid potential Supabase authentication deadlock
-          setTimeout(() => {
-            fetchUserProfile(currentSession.user.id);
-          }, 0);
-        } else {
-          setUser(null);
-        }
-      }
-    );
-
-    // Check for existing session
+    // First check for existing session to avoid unnecessary loading state
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       console.log("Initial session check:", currentSession?.user?.id);
       setSession(currentSession);
+      
       if (currentSession?.user) {
-        fetchUserProfile(currentSession.user.id);
+        // Use a brief timeout to avoid deadlocks
+        setTimeout(() => {
+          fetchUserProfile(currentSession.user.id);
+        }, 100);
+      } else {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }).catch((error) => {
       console.error('Error retrieving session:', error);
       setIsLoading(false);
     });
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        console.log("Auth state changed:", event, currentSession?.user?.id);
+        
+        // Only update session if it has changed
+        if (JSON.stringify(session) !== JSON.stringify(currentSession)) {
+          setSession(currentSession);
+          
+          if (currentSession?.user) {
+            // Use setTimeout to avoid potential Supabase authentication deadlock
+            setTimeout(() => {
+              fetchUserProfile(currentSession.user.id);
+            }, 100);
+          } else {
+            setUser(null);
+            setIsLoading(false);
+          }
+        }
+      }
+    );
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
 
-  // Fetch user profile from the database
+  // Enhanced fetch user profile function with retry mechanism
   const fetchUserProfile = async (userId: string) => {
     try {
       console.log("Fetching user profile with ID:", userId);
@@ -107,102 +119,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Handle case when profile doesn't exist yet
         if (error.code === 'PGRST116') {
           console.log('Profile not found, creating a default profile');
-          // Get the user's email from auth
-          const { data: userData } = await supabase.auth.getUser();
-          
-          if (userData && userData.user) {
-            // Create a basic profile
-            const newProfile = {
-              id: userId,
-              email: userData.user.email || '',
-              name: userData.user.email?.split('@')[0] || 'New User',
-              usertype: 'client' // Match the column name in the database (lowercase)
-            };
-            
-            try {
-              // Use the service role client if available, or use authenticated client
-              // Insert using upsert to handle edge cases
-              console.log("Attempting to create profile for user:", userId);
-              
-              const { error: insertError } = await supabase
-                .from('profiles')
-                .upsert([newProfile], { onConflict: 'id' });
-              
-              if (insertError) {
-                console.error('Error creating profile:', insertError);
-                
-                // If the first attempt fails, try a different approach
-                // Wait a moment and try to get the profile once more
-                // (it might have been created by the trigger)
-                setTimeout(async () => {
-                  const { data: retryData, error: retryFetchError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
-                  
-                  if (retryFetchError) {
-                    console.error('Error fetching profile on retry:', retryFetchError);
-                    toast({
-                      variant: 'destructive',
-                      title: 'Error',
-                      description: 'Failed to create user profile',
-                    });
-                  } else if (retryData) {
-                    console.log('Profile found on retry fetch:', retryData);
-                    // Map database column names (lowercase) to our app's interface (camelCase)
-                    setUser({
-                      id: retryData.id,
-                      email: retryData.email || '',
-                      name: retryData.name || '',
-                      userType: (retryData.usertype as UserType) || 'client',
-                      accountType: retryData.accounttype as AccountType,
-                      companyName: retryData.companyname,
-                      nif: retryData.nif,
-                      address: retryData.address,
-                      postalCode: retryData.postalcode,
-                      city: retryData.city,
-                      province: retryData.province,
-                      country: retryData.country,
-                      phone: retryData.phone,
-                      incomingInvoiceEmail: retryData.incominginvoiceemail,
-                      outgoingInvoiceEmail: retryData.outgoinginvoiceemail,
-                      iframeUrls: [] // You might want to add this to your database schema
-                    });
-                  }
-                }, 1000);
-              } else {
-                console.log('Profile created successfully');
-                // Set the user state with the new profile (using our app's camelCase convention)
-                setUser({
-                  id: newProfile.id,
-                  email: newProfile.email,
-                  name: newProfile.name,
-                  userType: newProfile.usertype as UserType,
-                  iframeUrls: []
-                });
-                
-                toast({
-                  title: 'Profile Created',
-                  description: 'Your user profile has been created successfully.',
-                });
-              }
-            } catch (insertFinalError) {
-              console.error('Error in profile creation process:', insertFinalError);
-              toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: 'Failed to create user profile',
-              });
-            }
-            return;
-          }
+          await createNewProfile(userId);
+        } else {
+          console.error('Error fetching profile:', error);
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'Failed to load user profile',
+          });
+          setIsLoading(false);
         }
-        console.error('Error fetching profile:', error);
-        throw error;
-      }
-
-      if (data) {
+      } else if (data) {
         console.log("Profile data fetched:", data);
         // Map database column names (lowercase) to our app's interface (camelCase)
         setUser({
@@ -223,6 +150,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           outgoingInvoiceEmail: data.outgoinginvoiceemail,
           iframeUrls: [] // You might want to add this to your database schema
         });
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -231,6 +159,115 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Error',
         description: 'Failed to load user profile',
       });
+      setIsLoading(false);
+    }
+  };
+
+  // New function to create a profile with better error handling
+  const createNewProfile = async (userId: string) => {
+    try {
+      console.log("Creating new profile for user:", userId);
+      setProfileCreationAttempts(prev => prev + 1);
+      
+      // Get the user's email from auth
+      const { data: userData } = await supabase.auth.getUser();
+      
+      if (!userData || !userData.user) {
+        throw new Error("User data not available");
+      }
+      
+      // Create a basic profile
+      const newProfile = {
+        id: userId,
+        email: userData.user.email || '',
+        name: userData.user.email?.split('@')[0] || 'New User',
+        usertype: 'client' // Match the column name in the database (lowercase)
+      };
+      
+      console.log("Attempting to create profile with data:", newProfile);
+      
+      // Try a direct upsert
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .upsert([newProfile]);
+      
+      if (insertError) {
+        console.error('Error creating profile via upsert:', insertError);
+        
+        // If upsert fails, try direct insert
+        const { error: insertDirectError } = await supabase
+          .from('profiles')
+          .insert([newProfile]);
+        
+        if (insertDirectError) {
+          console.error('Error creating profile via direct insert:', insertDirectError);
+          throw insertDirectError;
+        }
+      }
+      
+      console.log('Profile created successfully, now fetching it');
+      
+      // Wait a moment to ensure the profile is available
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Try to fetch the newly created profile
+      const { data: profileData, error: fetchError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (fetchError) {
+        console.error('Error fetching newly created profile:', fetchError);
+        throw fetchError;
+      }
+      
+      if (profileData) {
+        console.log('Successfully fetched newly created profile:', profileData);
+        setUser({
+          id: profileData.id,
+          email: profileData.email || '',
+          name: profileData.name || '',
+          userType: (profileData.usertype as UserType) || 'client',
+          accountType: profileData.accounttype as AccountType,
+          companyName: profileData.companyname,
+          nif: profileData.nif,
+          address: profileData.address,
+          postalCode: profileData.postalcode,
+          city: profileData.city,
+          province: profileData.province,
+          country: profileData.country,
+          phone: profileData.phone,
+          incomingInvoiceEmail: profileData.incominginvoiceemail,
+          outgoingInvoiceEmail: profileData.outgoinginvoiceemail,
+          iframeUrls: []
+        });
+        
+        toast({
+          title: 'Profile Created',
+          description: 'Your user profile has been created successfully.',
+        });
+      } else {
+        throw new Error("Profile created but data is null");
+      }
+    } catch (error) {
+      console.error('Error in profile creation process:', error);
+      
+      // Retry logic with backoff
+      if (profileCreationAttempts < 3) {
+        console.log(`Retrying profile creation (attempt ${profileCreationAttempts + 1}/3)`);
+        setTimeout(() => {
+          createNewProfile(userId);
+        }, 1000 * (profileCreationAttempts + 1)); // Increasing delay for each retry
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to create user profile after multiple attempts',
+        });
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
