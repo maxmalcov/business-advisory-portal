@@ -5,10 +5,10 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/LanguageSelector';
 import { Button } from '@/components/ui/button';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Loader2 } from 'lucide-react';
 
 const Header: React.FC = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { t } = useLanguage();
 
   return (
@@ -23,11 +23,16 @@ const Header: React.FC = () => {
         <div className="flex items-center space-x-4">
           <LanguageSelector />
           
-          {isAuthenticated ? (
+          {isLoading ? (
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <Loader2 size={18} className="animate-spin" />
+              <span>Loading...</span>
+            </div>
+          ) : isAuthenticated ? (
             <div className="flex items-center space-x-3">
               <Link to="/profile" className="text-sm text-gray-600 hover:text-gray-900 flex items-center">
                 <User size={18} className="mr-1" />
-                {user?.name}
+                {user?.name || 'User'}
               </Link>
               <Button variant="ghost" size="sm" onClick={logout} className="text-gray-600 hover:text-gray-900">
                 <LogOut size={18} className="mr-1" />
