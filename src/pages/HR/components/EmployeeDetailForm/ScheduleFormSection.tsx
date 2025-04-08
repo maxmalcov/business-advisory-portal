@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Employee } from '../types/employee';
+import { Employee } from '../../types/employee';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
