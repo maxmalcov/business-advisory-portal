@@ -150,8 +150,8 @@ const NewEmployeeForm: React.FC = () => {
       if (Array.isArray(employeeRecord) && employeeRecord.length > 0) {
         const dbEmployee = employeeRecord[0];
         
-        // Check if the response has the expected structure
-        if (dbEmployee && typeof dbEmployee === 'object' && 'id' in dbEmployee) {
+        // Check if the response has the expected structure with proper null checking
+        if (dbEmployee && typeof dbEmployee === 'object' && 'id' in dbEmployee && dbEmployee.id) {
           const employeeId = dbEmployee.id;
           
           // If there's a file to upload, upload it to storage
