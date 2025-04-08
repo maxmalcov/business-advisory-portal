@@ -12,6 +12,12 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { InvoiceUpload } from './InvoiceHistoryList';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger 
+} from '@/components/ui/tooltip';
 
 interface InvoiceHistoryTableProps {
   isLoading: boolean;
@@ -35,6 +41,11 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
     );
   }
 
+  // Function to truncate filenames longer than 50 characters
+  const truncateFileName = (fileName: string): string => {
+    return fileName.length > 50 ? `${fileName.substring(0, 47)}...` : fileName;
+  };
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -51,13 +62,26 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
         <TableBody>
           {invoices.map((invoice) => (
             <TableRow key={invoice.id}>
-              <TableCell className="font-medium flex items-center">
-                {invoice.invoice_type === 'sale' ? (
-                  <FileUp className="h-4 w-4 mr-2 text-muted-foreground" />
-                ) : (
-                  <FileDown className="h-4 w-4 mr-2 text-muted-foreground" />
-                )}
-                <span className="truncate" title={invoice.file_name}>{invoice.file_name}</span>
+              <TableCell className="font-medium">
+                <div className="flex items-center">
+                  {invoice.invoice_type === 'sale' ? (
+                    <FileUp className="h-4 w-4 mr-2 text-muted-foreground" />
+                  ) : (
+                    <FileDown className="h-4 w-4 mr-2 text-muted-foreground" />
+                  )}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="truncate max-w-[300px] inline-block">
+                          {truncateFileName(invoice.file_name)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-[300px]">
+                        {invoice.file_name}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </TableCell>
               <TableCell>
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -71,8 +95,19 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
               <TableCell title={invoice.created_at}>
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
               </TableCell>
-              <TableCell className="truncate" title={invoice.sent_to_email || 'Not sent'}>
-                {invoice.sent_to_email || 'Not sent'}
+              <TableCell>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="truncate max-w-[150px] inline-block">
+                        {invoice.sent_to_email || 'Not sent'}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      {invoice.sent_to_email || 'Not sent'}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </TableCell>
               <TableCell>
                 {invoice.sent_at 
@@ -108,3 +143,4 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
 };
 
 export default InvoiceHistoryTable;
+

@@ -10,6 +10,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { SupplierInvoice } from '../mockData';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface SupplierInvoiceListProps {
   invoices: SupplierInvoice[];
@@ -35,6 +41,11 @@ const SupplierInvoiceList: React.FC<SupplierInvoiceListProps> = ({ invoices }) =
       default:
         return null;
     }
+  };
+
+  // Function to truncate filenames longer than 50 characters
+  const truncateFileName = (fileName: string): string => {
+    return fileName.length > 50 ? `${fileName.substring(0, 47)}...` : fileName;
   };
 
   return (
@@ -74,7 +85,18 @@ const SupplierInvoiceList: React.FC<SupplierInvoiceListProps> = ({ invoices }) =
                 >
                   <div className="col-span-2 flex items-center">
                     <FileDown className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span className="truncate">{invoice.fileName}</span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="truncate max-w-[250px] inline-block">
+                            {truncateFileName(invoice.fileName)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-[300px]">
+                          {invoice.fileName}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   <div>{invoice.uploadDate}</div>
                   <div>{invoice.size}</div>
@@ -97,3 +119,4 @@ const SupplierInvoiceList: React.FC<SupplierInvoiceListProps> = ({ invoices }) =
 };
 
 export default SupplierInvoiceList;
+

@@ -15,6 +15,12 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { LogEntry } from '../types';
 import { getLogIcon, getLogBadgeStyle } from '../utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface LogsTableProps {
   logs: LogEntry[];
@@ -24,6 +30,11 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString();
+  };
+
+  // Function to truncate text longer than 50 characters
+  const truncateText = (text: string): string => {
+    return text.length > 50 ? `${text.substring(0, 47)}...` : text;
   };
 
   return (
@@ -49,7 +60,20 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                   </div>
                 </TableCell>
                 <TableCell className="font-medium">{log.action}</TableCell>
-                <TableCell>{log.description}</TableCell>
+                <TableCell>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="inline-block max-w-[250px] truncate">
+                          {truncateText(log.description)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-[400px]">
+                        {log.description}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableCell>
                 <TableCell>{log.user}</TableCell>
                 <TableCell>{formatDate(log.timestamp)}</TableCell>
                 <TableCell>
@@ -67,3 +91,4 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
 };
 
 export default LogsTable;
+
