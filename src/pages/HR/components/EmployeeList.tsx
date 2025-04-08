@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -133,10 +134,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                 e.stopPropagation();
                                 handleEmployeeClick(employee);
                               }}
-                              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                              className="flex items-center justify-center h-8 w-8 rounded-full hover:bg-blue-50 transition-colors"
                               aria-label="View employee details"
                             >
-                              <Eye className="h-4 w-4 text-gray-500" />
+                              <Eye className="h-4 w-4 text-blue-600" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent>

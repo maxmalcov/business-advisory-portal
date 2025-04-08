@@ -4,11 +4,10 @@ import {
   Dialog, 
   DialogContent, 
   DialogHeader, 
-  DialogTitle,
-  DialogDescription
+  DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil } from 'lucide-react';
+import { Pencil, X } from 'lucide-react';
 import { Employee } from '../../types/employee';
 import { useEmployeeDetail } from '../../hooks/useEmployeeDetail';
 import EmployeeDetailDialogContent from './EmployeeDetailDialogContent';
@@ -61,37 +60,49 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>{isEditing ? 'Edit Employee' : 'Employee Details'}</span>
+      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
+        <div className="relative">
+          <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+            <DialogTitle className="text-xl font-bold">
+              {isEditing ? 'Edit Employee' : 'Employee Details'}
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onOpenChange(false)}
+              className="absolute right-4 top-4 rounded-full h-8 w-8 p-0"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogHeader>
+          
+          <div className="p-6">
             {!isEditing && employee && !isLoading && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditing(true)}
+                className="absolute right-6 top-16 z-10"
               >
                 <Pencil className="h-4 w-4 mr-2" />
                 Edit
               </Button>
             )}
-          </DialogTitle>
-          <DialogDescription>
-            {isEditing ? 'Edit employee information' : 'View employee details'}
-          </DialogDescription>
-        </DialogHeader>
-
-        <EmployeeDetailDialogContent
-          employee={employee}
-          isLoading={isLoading}
-          isSubmitting={isSubmitting}
-          error={error}
-          isEditing={isEditing}
-          onEdit={() => setIsEditing(true)}
-          onSave={handleSaveWrapper}
-          onCancel={() => setIsEditing(false)}
-          onClose={() => onOpenChange(false)}
-        />
+            
+            <EmployeeDetailDialogContent
+              employee={employee}
+              isLoading={isLoading}
+              isSubmitting={isSubmitting}
+              error={error}
+              isEditing={isEditing}
+              onEdit={() => setIsEditing(true)}
+              onSave={handleSaveWrapper}
+              onCancel={() => setIsEditing(false)}
+              onClose={() => onOpenChange(false)}
+            />
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

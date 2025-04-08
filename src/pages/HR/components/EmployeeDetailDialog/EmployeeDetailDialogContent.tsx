@@ -5,6 +5,7 @@ import { Employee } from '../../types/employee';
 import EmployeeDetailForm from '../EmployeeDetailForm/EmployeeDetailForm';
 import { EmployeeDetailView } from '../EmployeeDetail';
 import EmployeeDetailSkeleton from '../EmployeeDetail/EmployeeDetailSkeleton';
+import { AlertCircle } from 'lucide-react';
 
 interface EmployeeDetailDialogContentProps {
   employee: Employee | null;
@@ -43,12 +44,15 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
   if (error) {
     return (
       <div className="py-8 text-center">
-        <h3 className="text-lg font-medium text-red-500 mb-2">Error Loading Data</h3>
-        <p className="text-gray-500">{error}</p>
+        <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+          <AlertCircle className="h-6 w-6 text-red-500" />
+        </div>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Error Loading Data</h3>
+        <p className="text-gray-500 mb-6">{error}</p>
         <Button 
           variant="outline" 
           onClick={onClose} 
-          className="mt-4"
+          className="mx-auto"
         >
           Close
         </Button>
@@ -59,12 +63,15 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
   if (!employee) {
     return (
       <div className="py-8 text-center">
-        <h3 className="text-lg font-medium text-gray-500 mb-2">No Data Available</h3>
-        <p className="text-gray-500">Employee information could not be loaded.</p>
+        <div className="mx-auto w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-4">
+          <AlertCircle className="h-6 w-6 text-gray-400" />
+        </div>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No Data Available</h3>
+        <p className="text-gray-500 mb-6">Employee information could not be loaded.</p>
         <Button 
           variant="outline" 
           onClick={onClose} 
-          className="mt-4"
+          className="mx-auto"
         >
           Close
         </Button>
