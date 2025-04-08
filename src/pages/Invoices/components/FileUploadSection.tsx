@@ -20,6 +20,7 @@ interface FileUploadSectionProps {
   onFileSelect: () => void;
   onRemoveFile: (index: number) => void;
   onSendEmail: () => void;
+  onResetUpload: () => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -39,6 +40,7 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
   onFileSelect,
   onRemoveFile,
   onSendEmail,
+  onResetUpload,
   onFileChange
 }) => {
   return (
@@ -72,6 +74,7 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
           uploadedFiles={uploadedFiles}
           onRemoveFile={onRemoveFile}
           onSendEmail={onSendEmail}
+          onResetUpload={onResetUpload}
           isLoading={isLoading}
           isSending={isSending}
           uploadProgress={uploadProgress}

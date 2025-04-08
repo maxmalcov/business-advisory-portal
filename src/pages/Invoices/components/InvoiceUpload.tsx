@@ -79,6 +79,10 @@ const InvoiceUpload: React.FC = () => {
   const handleFileSelect = () => {
     document.getElementById('file-upload')?.click();
   };
+  
+  const handleResetUpload = () => {
+    resetFiles();
+  };
 
   return (
     <Card>
@@ -112,6 +116,7 @@ const InvoiceUpload: React.FC = () => {
           onFileSelect={handleFileSelect}
           onRemoveFile={handleRemoveFile}
           onSendEmail={handleSendEmail}
+          onResetUpload={handleResetUpload}
           onFileChange={handleFileChange}
         />
       </CardContent>

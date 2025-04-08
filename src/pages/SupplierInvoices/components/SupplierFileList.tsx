@@ -11,6 +11,7 @@ interface SupplierFileListProps {
   uploadedFiles: UploadedFile[];
   onRemoveFile: (index: number) => void;
   onSendEmail: () => void;
+  onResetUpload: () => void;
   isLoading: boolean;
   isSending: boolean;
   uploadProgress?: number;
@@ -24,6 +25,7 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
   uploadedFiles,
   onRemoveFile,
   onSendEmail,
+  onResetUpload,
   isLoading,
   isSending,
   uploadProgress = 0,
@@ -99,7 +101,7 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
         <Button 
           className="w-full sm:w-auto" 
           variant="outline"
-          onClick={() => window.location.reload()}
+          onClick={onResetUpload}
           disabled={isSending}
         >
           {uploadComplete && uploadSuccess ? 'Upload More Files' : 'Cancel'}
