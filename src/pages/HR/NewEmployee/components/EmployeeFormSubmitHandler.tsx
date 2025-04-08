@@ -10,6 +10,7 @@ interface EmployeeFormSubmitHandlerProps {
   isSubmitting: boolean;
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   validate: () => boolean;
+  children: React.ReactNode; // Added missing children prop definition
 }
 
 const EmployeeFormSubmitHandler: React.FC<EmployeeFormSubmitHandlerProps> = ({
@@ -54,10 +55,10 @@ const EmployeeFormSubmitHandler: React.FC<EmployeeFormSubmitHandlerProps> = ({
       
       console.log('Employee added successfully:', employeeRecord);
       
-      // Fix TypeScript errors with proper null/undefined checks
+      // Fixed potential null/undefined checks more thoroughly
       if (Array.isArray(employeeRecord) && employeeRecord.length > 0) {
         const dbEmployee = employeeRecord[0];
-        if (dbEmployee && typeof dbEmployee === 'object' && 'id' in dbEmployee) {
+        if (dbEmployee && typeof dbEmployee === 'object' && 'id' in dbEmployee && dbEmployee.id) {
           console.log(`Created employee with ID: ${dbEmployee.id}`);
         }
       }
