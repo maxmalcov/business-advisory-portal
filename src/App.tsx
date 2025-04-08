@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import './i18n';
 import Layout from './components/Layout';
 import Index from './pages/Index';
@@ -21,12 +20,12 @@ import Reports from './pages/Reports';
 import Profile from './pages/Profile';
 import Services from './pages/Services';
 import Subscriptions from './pages/Subscriptions';
-import AdminDashboard from './pages/Admin/Dashboard';
-import AdminServicesPage from './pages/Admin/Services';
-import ServiceEditor from './pages/Admin/Services/ServiceEditor';
-import AdminSubscriptions from './pages/Admin/Subscriptions';
-import AdminUserManagement from './pages/Admin/UserManagement';
-import LogsContent from './pages/Admin/LogsContent';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminServicesPage from './pages/AdminServices';
+import ServiceEditor from './pages/AdminServices/components/ServiceEditor';
+import AdminSubscriptions from './pages/AdminSubscriptions';
+import AdminUserManagement from './pages/AdminUserManagement';
+import LogsContent from './pages/AdminLogs/components/LogsContent';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 // Import SaleInvoice pages
