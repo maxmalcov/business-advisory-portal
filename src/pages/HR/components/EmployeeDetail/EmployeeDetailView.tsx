@@ -5,7 +5,7 @@ import { User, Briefcase, Calendar, Clock, FileText, Mail, Home, DollarSign, Cre
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { IdentificationSection } from './index';
 
 interface EmployeeDetailViewProps {
   employee: Employee;
@@ -117,49 +117,8 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
         </CardContent>
       </Card>
       
-      {/* Identification Card */}
-      <Card className="overflow-hidden border-0 shadow-md">
-        <div className="bg-gray-50 px-6 py-3 border-b">
-          <h3 className="text-md font-medium flex items-center">
-            <Briefcase className="h-4 w-4 mr-2 text-blue-600" />
-            Identification
-          </h3>
-        </div>
-        <CardContent className="pt-4">
-          {employee.dniTie || employee.idDocument || employee.socialSecurityNumber ? (
-            <div className="grid grid-cols-2 gap-4">
-              {employee.dniTie && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">DNI/TIE</p>
-                  <p className="text-sm font-semibold">{employee.dniTie}</p>
-                </div>
-              )}
-              
-              {employee.socialSecurityNumber && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Social Security Number</p>
-                  <p className="text-sm font-semibold">{employee.socialSecurityNumber}</p>
-                </div>
-              )}
-              
-              {employee.idDocument && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">ID Document</p>
-                  <div className="flex items-center">
-                    <p className="text-sm font-semibold truncate max-w-[150px]">{employee.idDocument}</p>
-                    <Button variant="ghost" size="sm" className="ml-2 h-6 p-1">
-                      <FileText className="h-3.5 w-3.5" />
-                      <span className="sr-only">View document</span>
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500 italic">No identification information available</p>
-          )}
-        </CardContent>
-      </Card>
+      {/* Identification Card - Using the dedicated component */}
+      <IdentificationSection employee={employee} />
       
       {/* Financial Information Card */}
       {(employee.salary || employee.iban) && (
