@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
 import { useSupplierFileUpload } from '../hooks/useSupplierFileUpload';
 import { useSupplierInvoiceEmail } from '../hooks/useSupplierInvoiceEmail';
 import SupplierFileUploadArea from './SupplierFileUploadArea';
@@ -26,7 +25,7 @@ const SupplierInvoiceUpload: React.FC = () => {
     isDragging, 
     isLoading, 
     uploadProgress,
-    uploadComplete,
+    uploadComplete, 
     uploadSuccess,
     uploadError,
     setIsLoading,
@@ -53,8 +52,8 @@ const SupplierInvoiceUpload: React.FC = () => {
 
     try {
       // Send email notification with file attachments
-      const emailSuccess = await sendInvoiceByEmail({
-        files: uploadedFiles
+      const emailSuccess = await sendInvoiceByEmail({ 
+        files: uploadedFiles 
       });
       
       setEmailSent(emailSuccess);
@@ -86,14 +85,13 @@ const SupplierInvoiceUpload: React.FC = () => {
       <CardHeader>
         <CardTitle>Upload Supplier Invoices</CardTitle>
         <CardDescription>
-          Upload your supplier invoices for processing
+          Upload invoices received from your suppliers
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Upload guidelines */}
         <UploadGuidelines
           emailAddress={user?.incomingInvoiceEmail}
-          emailType="incoming"
         />
         
         {/* Only show file upload area if not currently uploading */}

@@ -1,100 +1,201 @@
 
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import './i18n';
-import Layout from './components/Layout';
-import Index from './pages/Index';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Invoices from './pages/Invoices';
-import CreateInvoice from './pages/Invoices/Create';
-import SupplierInvoices from './pages/SupplierInvoices';
-import CreateSupplierInvoice from './pages/SupplierInvoices/Create';
-import HR from './pages/HR';
-import NewEmployee from './pages/HR/NewEmployee';
-import Termination from './pages/HR/Termination';
-import WorkHours from './pages/HR/WorkHours';
-import Contracts from './pages/Contracts';
-import Documents from './pages/Documents';
-import Reports from './pages/Reports';
-import Profile from './pages/Profile';
-import Services from './pages/Services';
-import Subscriptions from './pages/Subscriptions';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminServicesPage from './pages/AdminServices';
-import ServiceEditor from './pages/AdminServices/components/ServiceEditor';
-import AdminSubscriptions from './pages/AdminSubscriptions';
-import AdminUserManagement from './pages/AdminUserManagement';
-import LogsContent from './pages/AdminLogs/components/LogsContent';
-import NotFound from './pages/NotFound';
-import ProtectedRoute from './components/ProtectedRoute';
-// Import SaleInvoice pages
-import SaleInvoices from "./pages/SaleInvoices";
-import CreateSaleInvoice from "./pages/SaleInvoices/Create";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { ReactNode } from "react";
+import Layout from "@/components/Layout";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUserManagement from "./pages/AdminUserManagement";
+import AdminLogs from "./pages/AdminLogs";
+import AdminSubscriptions from "./pages/AdminSubscriptions";
+import Invoices from "./pages/Invoices";
+import CreateInvoice from "./pages/Invoices/Create";
+import SupplierInvoices from "./pages/SupplierInvoices";
+import NewEmployee from "./pages/HR/NewEmployee"; // Updated import path
+import Contracts from "./pages/Contracts";
+import Documents from "./pages/Documents";
+import Reports from "./pages/Reports";
+import Services from "./pages/Services";
+import AdminServices from "./pages/AdminServices";
+import ServiceEditor from "./pages/AdminServices/components/ServiceEditor";
+import Subscriptions from "./pages/Subscriptions";
+import Profile from "./pages/Profile";
+import HR from "./pages/HR";
+import Termination from "./pages/HR/Termination";
+import WorkHours from "./pages/HR/WorkHours";
 
-function App() {
-  const { i18n } = useTranslation();
-
-  React.useEffect(() => {
-    const storedLanguage = localStorage.getItem('language');
-    if (storedLanguage) {
-      i18n.changeLanguage(storedLanguage);
-    }
-  }, [i18n]);
-
-  return (
-    <Router>
-      <div className="app">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              {/* Public routes */}
-              <Route index element={<Index />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              
-              {/* Protected client routes */}
-              <Route element={<ProtectedRoute allowedRoles={['client', 'admin']} />}>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="invoices" element={<Invoices />} />
-                <Route path="invoices/create" element={<CreateInvoice />} />
-                <Route path="sale-invoices" element={<SaleInvoices />} />
-                <Route path="sale-invoices/create" element={<CreateSaleInvoice />} />
-                <Route path="supplier-invoices" element={<SupplierInvoices />} />
-                <Route path="supplier-invoices/create" element={<CreateSupplierInvoice />} />
-                <Route path="hr" element={<HR />} />
-                <Route path="hr/new-employee" element={<NewEmployee />} />
-                <Route path="hr/termination" element={<Termination />} />
-                <Route path="hr/work-hours" element={<WorkHours />} />
-                <Route path="contracts" element={<Contracts />} />
-                <Route path="documents" element={<Documents />} />
-                <Route path="reports" element={<Reports />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="services" element={<Services />} />
-                <Route path="subscriptions" element={<Subscriptions />} />
-              </Route>
-              
-              {/* Admin routes */}
-              <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-                <Route path="admin" element={<AdminDashboard />} />
-                <Route path="admin/reports" element={<Reports />} />
-                <Route path="admin/services" element={<AdminServicesPage />} />
-                <Route path="admin/services/create" element={<ServiceEditor />} />
-                <Route path="admin/subscriptions" element={<AdminSubscriptions />} />
-                <Route path="admin/users" element={<AdminUserManagement />} />
-                <Route path="admin/logs" element={<LogsContent logs={[]} chartData={[]} weeklyData={[]} />} />
-              </Route>
-              
-              {/* Catch all route */}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </div>
-    </Router>
-  );
+interface ProtectedRouteProps {
+  children: ReactNode;
+  requiredRole?: "admin" | "client";
 }
+
+const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  if (requiredRole && user?.userType !== requiredRole) {
+    return <Navigate to={user?.userType === 'admin' ? '/admin' : '/dashboard'} />;
+  }
+
+  return <>{children}</>;
+};
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                
+                {/* Client routes */}
+                <Route path="dashboard" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="invoices" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Invoices />
+                  </ProtectedRoute>
+                } />
+                <Route path="invoices/create" element={
+                  <ProtectedRoute requiredRole="client">
+                    <CreateInvoice />
+                  </ProtectedRoute>
+                } />
+                <Route path="supplier-invoices" element={
+                  <ProtectedRoute requiredRole="client">
+                    <SupplierInvoices />
+                  </ProtectedRoute>
+                } />
+                <Route path="contracts" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Contracts />
+                  </ProtectedRoute>
+                } />
+                <Route path="documents" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Documents />
+                  </ProtectedRoute>
+                } />
+                <Route path="reports" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Reports />
+                  </ProtectedRoute>
+                } />
+                <Route path="profile" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+                <Route path="services" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Services />
+                  </ProtectedRoute>
+                } />
+                <Route path="subscriptions" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Subscriptions />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="hr" element={
+                  <ProtectedRoute requiredRole="client">
+                    <HR />
+                  </ProtectedRoute>
+                } />
+                <Route path="hr/new-employee" element={
+                  <ProtectedRoute requiredRole="client">
+                    <NewEmployee />
+                  </ProtectedRoute>
+                } />
+                <Route path="hr/termination" element={
+                  <ProtectedRoute requiredRole="client">
+                    <Termination />
+                  </ProtectedRoute>
+                } />
+                <Route path="hr/work-hours" element={
+                  <ProtectedRoute requiredRole="client">
+                    <WorkHours />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Admin routes */}
+                <Route path="admin" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/reports" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Reports />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/services" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminServices />
+                  </ProtectedRoute>
+                } />
+                {/* New routes for service editor */}
+                <Route path="admin/services/create" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <ServiceEditor />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/services/edit/:serviceId" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <ServiceEditor />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/users" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminUserManagement />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/logs" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminLogs />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/subscriptions" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminSubscriptions />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </LanguageProvider>
+  </QueryClientProvider>
+);
 
 export default App;

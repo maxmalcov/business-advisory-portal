@@ -45,12 +45,12 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
     },
     {
       name: t('nav.sale_invoices'),
-      path: '/sale-invoices',
+      path: '/invoices',
       icon: FileUp,
       children: [
         {
           name: t('nav.sale_invoices.create'),
-          path: '/sale-invoices/create',
+          path: '/invoices/create',
           icon: FileText,
         },
       ],
