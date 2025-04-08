@@ -139,10 +139,14 @@ const NewEmployeeForm: React.FC = () => {
         
       if (error) throw error;
       
+      if (!employeeRecord || employeeRecord.length === 0) {
+        throw new Error('Failed to create employee record');
+      }
+      
       console.log('Employee added successfully:', employeeRecord);
       
       // If there's a file to upload, upload it to storage
-      if (formData.idDocument && employeeRecord[0]?.id) {
+      if (formData.idDocument && employeeRecord[0]) {
         const file = formData.idDocument;
         const employeeId = employeeRecord[0].id;
         const filename = `${Date.now()}-${file.name}`;
