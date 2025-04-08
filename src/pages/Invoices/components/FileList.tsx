@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Loader2, FileUp, FileX, Check } from 'lucide-react';
+import { Loader2, FileDown, FileX, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 
@@ -33,7 +33,7 @@ const FileList: React.FC<FileListProps> = ({
             className="flex items-center justify-between p-2 border rounded-md"
           >
             <div className="flex items-center">
-              <FileUp className="h-5 w-5 mr-2 text-muted-foreground" />
+              <FileDown className="h-5 w-5 mr-2 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium truncate max-w-xs">{file.name}</p>
                 <p className="text-xs text-muted-foreground">

@@ -127,10 +127,6 @@ const InvoiceUpload: React.FC = () => {
     document.getElementById('file-upload')?.click();
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleFileChange(e);
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -163,7 +159,7 @@ const InvoiceUpload: React.FC = () => {
           className="hidden"
           multiple
           accept=".pdf,.jpg,.jpeg"
-          onChange={handleInputChange}
+          onChange={handleFileChange}
         />
         
         {/* Selected files list */}
