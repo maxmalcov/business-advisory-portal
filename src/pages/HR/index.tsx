@@ -77,8 +77,9 @@ const HR: React.FC = () => {
       </div>
       
       <div className="mt-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-          <h2 className="text-xl font-semibold">Employee List</h2>
+        <h2 className="text-xl font-semibold mb-3">Employee List</h2>
+        
+        <div className="mb-2">
           <EmployeeStatusToggle 
             value={statusFilter} 
             onChange={setStatusFilter} 
