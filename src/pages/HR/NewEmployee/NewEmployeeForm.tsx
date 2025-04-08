@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -145,43 +146,47 @@ const NewEmployeeForm: React.FC = () => {
       
       console.log('Employee added successfully:', employeeRecord);
       
-      // Explicitly type the employee record to ensure we can access its properties
-      const newEmployee = employeeRecord[0] as Employee;
-      
-      // If there's a file to upload, upload it to storage
-      if (formData.idDocument && newEmployee) {
-        const file = formData.idDocument;
-        const employeeId = newEmployee.id;
-        const filename = `${Date.now()}-${file.name}`;
-        const filePath = `${employeeId}/${filename}`;
+      // Instead of direct casting, we first check that we have valid data
+      if (Array.isArray(employeeRecord) && employeeRecord.length > 0) {
+        const newEmployee = employeeRecord[0];
         
-        console.log('Uploading file to Supabase Storage:', filePath);
-        
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('employee-id-documents')
-          .upload(filePath, file, {
-            cacheControl: '3600',
-            upsert: true
-          });
+        // If there's a file to upload, upload it to storage
+        if (formData.idDocument && newEmployee && 'id' in newEmployee) {
+          const file = formData.idDocument;
+          const employeeId = newEmployee.id;
+          const filename = `${Date.now()}-${file.name}`;
+          const filePath = `${employeeId}/${filename}`;
           
-        if (uploadError) {
-          console.error('Error uploading file:', uploadError);
-          // Continue even if file upload fails
-        } else {
-          console.log('File uploaded successfully:', uploadData);
+          console.log('Uploading file to Supabase Storage:', filePath);
           
-          // Get public URL for the file
-          const { data: urlData } = supabase.storage
+          const { data: uploadData, error: uploadError } = await supabase.storage
             .from('employee-id-documents')
-            .getPublicUrl(filePath);
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: true
+            });
             
-          // Update the employee record with the file URL
-          const { error: updateError } = await employeesTable()
-            .update({ id_document_url: urlData.publicUrl })
-            .eq('id', employeeId);
+          if (uploadError) {
+            console.error('Error uploading file:', uploadError);
+            // Continue even if file upload fails
+          } else {
+            console.log('File uploaded successfully:', uploadData);
             
-          if (updateError) {
-            console.error('Error updating employee with file URL:', updateError);
+            // Get public URL for the file
+            const { data: urlData } = supabase.storage
+              .from('employee-id-documents')
+              .getPublicUrl(filePath);
+              
+            // Update the employee record with the file URL
+            if (urlData) {
+              const { error: updateError } = await employeesTable()
+                .update({ id_document_url: urlData.publicUrl })
+                .eq('id', employeeId);
+                
+              if (updateError) {
+                console.error('Error updating employee with file URL:', updateError);
+              }
+            }
           }
         }
       }
