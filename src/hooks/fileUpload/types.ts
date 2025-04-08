@@ -35,13 +35,15 @@ export interface FileUploadActions {
   setUploadComplete: (complete: boolean) => void;
   setUploadSuccess: (success: boolean) => void;
   setUploadError: (error: string | null) => void;
-  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>, append?: boolean) => void;
   handleDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
   handleDragLeave: () => void;
-  handleDrop: (e: React.DragEvent<HTMLDivElement>) => void;
+  handleDrop: (e: React.DragEvent<HTMLDivElement>, append?: boolean) => void;
   handleRemoveFile: (index: number) => void;
   uploadFilesToSupabase: (filesToUpload?: File[]) => Promise<boolean>;
   resetFiles: () => void;
+  handleAddMoreFiles?: () => void;
+  handleSupplierAddMoreFiles?: () => void;
 }
 
 export type FileUploadReturn = FileUploadState & FileUploadActions;

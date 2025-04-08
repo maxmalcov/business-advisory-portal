@@ -84,6 +84,36 @@ const InvoiceUpload: React.FC = () => {
     resetFiles();
   };
 
+  const handleAddMoreFiles = () => {
+    document.getElementById('file-upload')?.click();
+  };
+
+  // For handling drag and drop with append mode
+  const handleDragOverAppend = (e: React.DragEvent<HTMLDivElement>) => {
+    handleDragOver(e);
+  };
+
+  const handleDropAppend = (e: React.DragEvent<HTMLDivElement>) => {
+    if (uploadComplete && uploadSuccess) {
+      // In append mode
+      handleDrop(e, true);
+    } else {
+      // In regular mode
+      handleDrop(e);
+    }
+  };
+
+  // For handling file input change with append mode
+  const handleFileChangeWithMode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (uploadComplete && uploadSuccess) {
+      // In append mode
+      handleFileChange(e, true);
+    } else {
+      // In regular mode
+      handleFileChange(e);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -110,14 +140,15 @@ const InvoiceUpload: React.FC = () => {
           uploadComplete={uploadComplete}
           uploadSuccess={uploadSuccess}
           uploadError={uploadError}
-          onDragOver={handleDragOver}
+          onDragOver={handleDragOverAppend}
           onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
+          onDrop={handleDropAppend}
           onFileSelect={handleFileSelect}
           onRemoveFile={handleRemoveFile}
           onSendEmail={handleSendEmail}
           onResetUpload={handleResetUpload}
-          onFileChange={handleFileChange}
+          onAddMoreFiles={handleAddMoreFiles}
+          onFileChange={handleFileChangeWithMode}
         />
       </CardContent>
     </Card>

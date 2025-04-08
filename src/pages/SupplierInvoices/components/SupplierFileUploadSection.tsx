@@ -21,6 +21,7 @@ interface SupplierFileUploadSectionProps {
   onRemoveFile: (index: number) => void;
   onSendEmail: () => void;
   onResetUpload: () => void;
+  onAddMoreFiles: () => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -41,6 +42,7 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
   onRemoveFile,
   onSendEmail,
   onResetUpload,
+  onAddMoreFiles,
   onFileChange
 }) => {
   return (
@@ -64,7 +66,7 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
         className="hidden"
         multiple
         accept=".pdf,.jpg,.jpeg"
-        onChange={onFileChange}
+        onChange={(e) => onFileChange(e)}
       />
       
       {/* Selected files list with progress */}
@@ -75,6 +77,7 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
           onRemoveFile={onRemoveFile}
           onSendEmail={onSendEmail}
           onResetUpload={onResetUpload}
+          onAddMoreFiles={onAddMoreFiles}
           isLoading={isLoading}
           isSending={isSending}
           uploadProgress={uploadProgress}

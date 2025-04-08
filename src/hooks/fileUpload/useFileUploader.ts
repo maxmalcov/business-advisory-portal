@@ -34,14 +34,16 @@ export const useFileUploader = (uploadConfig: UploadConfig) => {
 
     setIsLoading(true);
     setUploadProgress(0);
-    setUploadComplete(false);
-    setUploadSuccess(false);
+    // Don't reset these on additional uploads
+    // setUploadComplete(false);
+    // setUploadSuccess(false);
     setUploadError(null);
-    setUploadedFiles([]);
+    // Don't reset uploadedFiles - we'll append to it
+    // setUploadedFiles([]);
 
     let totalSize = 0;
     const totalFiles = filesToUpload.length;
-    let uploadedFiles = 0;
+    let uploadedFilesCount = 0;
     const newUploadedFiles: UploadedFile[] = [];
 
     try {
@@ -99,13 +101,14 @@ export const useFileUploader = (uploadConfig: UploadConfig) => {
         });
         
         uploadedSize += file.size;
-        uploadedFiles++;
+        uploadedFilesCount++;
         
         const newProgress = Math.round((uploadedSize / totalSize) * 100);
         setUploadProgress(newProgress);
       }
       
-      setUploadedFiles(newUploadedFiles);
+      // Append new uploaded files to existing ones
+      setUploadedFiles(prevFiles => [...prevFiles, ...newUploadedFiles]);
       setUploadComplete(true);
       setUploadSuccess(true);
       

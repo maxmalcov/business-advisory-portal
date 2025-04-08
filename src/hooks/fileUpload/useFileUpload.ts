@@ -15,12 +15,12 @@ export const useFileUpload = (
     fileUploader.uploadFilesToSupabase(files);
   }, [fileUploader.uploadFilesToSupabase]);
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    fileSelection.handleFileChange(e, handleFilesUploaded);
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, append: boolean = false) => {
+    fileSelection.handleFileChange(e, handleFilesUploaded, append);
   }, [fileSelection.handleFileChange, handleFilesUploaded]);
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    fileSelection.handleDrop(e, handleFilesUploaded);
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, append: boolean = false) => {
+    fileSelection.handleDrop(e, handleFilesUploaded, append);
   }, [fileSelection.handleDrop, handleFilesUploaded]);
 
   const uploadFilesToSupabase = useCallback((filesToUpload: File[] = fileSelection.selectedFiles) => {
@@ -31,6 +31,15 @@ export const useFileUpload = (
     fileSelection.resetFiles();
     fileUploader.resetUploadState();
   }, [fileSelection.resetFiles, fileUploader.resetUploadState]);
+
+  // Add new function to handle "Upload More Files" button click
+  const handleAddMoreFiles = useCallback(() => {
+    document.getElementById('file-upload')?.click();
+  }, []);
+
+  const handleSupplierAddMoreFiles = useCallback(() => {
+    document.getElementById('supplier-file-upload')?.click();
+  }, []);
 
   return {
     // State from selection hook
@@ -60,5 +69,7 @@ export const useFileUpload = (
     handleRemoveFile: fileSelection.handleRemoveFile,
     uploadFilesToSupabase,
     resetFiles,
+    handleAddMoreFiles,
+    handleSupplierAddMoreFiles,
   };
 };

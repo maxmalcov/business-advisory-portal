@@ -12,6 +12,7 @@ interface FileListProps {
   onRemoveFile: (index: number) => void;
   onSendEmail: () => void;
   onResetUpload: () => void;
+  onAddMoreFiles: () => void;
   isLoading: boolean;
   isSending: boolean;
   uploadProgress?: number;
@@ -26,6 +27,7 @@ const FileList: React.FC<FileListProps> = ({
   onRemoveFile,
   onSendEmail,
   onResetUpload,
+  onAddMoreFiles,
   isLoading,
   isSending,
   uploadProgress = 0,
@@ -98,14 +100,25 @@ const FileList: React.FC<FileListProps> = ({
       )}
       
       <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-        <Button 
-          className="w-full sm:w-auto" 
-          variant="outline"
-          onClick={onResetUpload}
-          disabled={isSending}
-        >
-          {uploadComplete && uploadSuccess ? 'Upload More Files' : 'Cancel'}
-        </Button>
+        {uploadComplete && uploadSuccess ? (
+          <Button 
+            className="w-full sm:w-auto" 
+            variant="outline"
+            onClick={onAddMoreFiles}
+            disabled={isSending}
+          >
+            Upload More Files
+          </Button>
+        ) : (
+          <Button 
+            className="w-full sm:w-auto" 
+            variant="outline"
+            onClick={onResetUpload}
+            disabled={isSending}
+          >
+            Cancel
+          </Button>
+        )}
         
         <Button 
           className="w-full sm:w-auto flex-1" 
