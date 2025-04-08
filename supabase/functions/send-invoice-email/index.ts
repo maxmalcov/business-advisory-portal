@@ -92,18 +92,28 @@ serve(async (req) => {
         
         console.log(`Successfully downloaded file: ${fileName} (${data.size} bytes)`);
         
-        // Convert blob to base64 for email attachment
+        // Convert blob to base64 for email attachment - using a safer approach
+        // to avoid Maximum call stack size exceeded error
         const buffer = await data.arrayBuffer();
-        const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        const chunkSize = 1024; // Process in smaller chunks to avoid stack issues
+        
+        for (let j = 0; j < bytes.length; j += chunkSize) {
+          const chunk = bytes.slice(j, Math.min(j + chunkSize, bytes.length));
+          binary += String.fromCharCode.apply(null, [...chunk]);
+        }
+        
+        const base64 = btoa(binary);
         
         attachments.push({
           filename: fileName,
           content: base64,
-          encoding: 'base64',  // Explicitly specify encoding
-          type: getContentType(fileName), // Get proper MIME type based on file extension
+          encoding: 'base64',
+          type: getContentType(fileName),
         });
         
-        console.log(`File ${fileName} prepared for email attachment`);
+        console.log(`File ${fileName} prepared for email attachment, base64 length: ${base64.length}`);
       } catch (error) {
         console.error(`Error processing file ${fileId}: ${error}`);
       }
