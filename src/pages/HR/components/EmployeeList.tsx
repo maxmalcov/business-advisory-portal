@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -95,10 +94,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
             value={filterText} 
             onChange={setFilterText} 
             placeholder="Search by name, position, or company..."
-          />
-          <EmployeeStatusToggle 
-            value={activeStatus} 
-            onChange={setActiveStatus} 
           />
         </div>
         
