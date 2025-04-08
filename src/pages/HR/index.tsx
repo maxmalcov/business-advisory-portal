@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,11 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Users, UserMinus, Clock } from 'lucide-react';
 import EmployeeStatusToggle from './components/EmployeeStatusToggle';
 import EmployeeList from './components/EmployeeList';
+import { FilterInput } from './components/FilterInput';
 import { useEmployeeList } from './hooks/useEmployeeList';
 
 const HR: React.FC = () => {
   const { t } = useLanguage();
   const { employees, statusFilter, setStatusFilter, isLoading, refreshEmployees } = useEmployeeList();
+  const [filterText, setFilterText] = useState('');
 
   return (
     <div className="space-y-6">
@@ -79,7 +81,12 @@ const HR: React.FC = () => {
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Employee List</h2>
         
-        <div className="mb-2">
+        <div className="flex justify-between items-center mb-3">
+          <FilterInput 
+            value={filterText} 
+            onChange={setFilterText} 
+            placeholder="Search by name, position, or company..."
+          />
           <EmployeeStatusToggle 
             value={statusFilter} 
             onChange={setStatusFilter} 
@@ -89,6 +96,7 @@ const HR: React.FC = () => {
         <EmployeeList 
           employees={employees} 
           isLoading={isLoading} 
+          filterText={filterText}
         />
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -13,7 +12,6 @@ import { format } from 'date-fns';
 import { Employee } from '../types/employee';
 import { Skeleton } from '@/components/ui/skeleton';
 import EmployeeDetailDialog from './EmployeeDetailDialog';
-import { FilterInput } from './FilterInput';
 import { Eye } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -21,16 +19,18 @@ interface EmployeeListProps {
   employees: Employee[];
   isLoading?: boolean;
   onEmployeeSelect?: (employee: Employee) => void;
+  filterText?: string;
 }
 
 const EmployeeList: React.FC<EmployeeListProps> = ({ 
   employees, 
   isLoading = false,
-  onEmployeeSelect
+  onEmployeeSelect,
+  filterText = ''
 }) => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-  const [filterText, setFilterText] = useState('');
+  const [localFilterText, setLocalFilterText] = useState(filterText);
 
   const formatDate = (dateStr: string) => {
     try {
@@ -52,9 +52,9 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 
   // Filter employees based on search text
   const filteredEmployees = employees.filter(emp => 
-    emp.fullName.toLowerCase().includes(filterText.toLowerCase()) ||
-    emp.position.toLowerCase().includes(filterText.toLowerCase()) ||
-    (emp.companyName && emp.companyName.toLowerCase().includes(filterText.toLowerCase()))
+    emp.fullName.toLowerCase().includes(localFilterText.toLowerCase()) ||
+    emp.position.toLowerCase().includes(localFilterText.toLowerCase()) ||
+    (emp.companyName && emp.companyName.toLowerCase().includes(localFilterText.toLowerCase()))
   );
 
   if (isLoading) {
@@ -91,14 +91,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   return (
     <>
       <div className="flex flex-col space-y-4">
-        <div className="flex justify-between items-center">
-          <FilterInput 
-            value={filterText} 
-            onChange={setFilterText} 
-            placeholder="Search by name, position, or company..."
-          />
-        </div>
-        
         <div className="rounded-md border">
           <Table>
             <TableHeader>
