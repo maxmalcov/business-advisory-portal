@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Employee } from '../../types/employee';
 import { User, Briefcase, Calendar, Clock, FileText, Mail, Home, DollarSign, CreditCard } from 'lucide-react';
@@ -68,6 +69,10 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
             <div>
               <p className="text-sm font-medium text-gray-500">Company Name</p>
               <p className="text-sm font-semibold">{employee.companyName || '-'}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Status</p>
+              <p className="text-sm font-semibold">{employee.status === 'active' ? 'Active' : 'Terminated'}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Position</p>

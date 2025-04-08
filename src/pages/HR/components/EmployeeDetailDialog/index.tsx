@@ -7,7 +7,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil } from 'lucide-react';
+import { Pencil, X } from 'lucide-react';
 import { Employee } from '../../types/employee';
 import { useEmployeeDetail } from '../../hooks/useEmployeeDetail';
 import EmployeeDetailDialogContent from './EmployeeDetailDialogContent';
@@ -67,7 +67,15 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
             <DialogTitle className="text-xl font-bold">
               {isEditing ? 'Edit Employee' : 'Employee Details'}
             </DialogTitle>
-            {/* The X button from DialogPrimitive.Close in dialog.tsx will be shown automatically */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onOpenChange(false)}
+              className="absolute right-4 top-4 rounded-full h-8 w-8 p-0"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </DialogHeader>
           
           <ScrollArea className="flex-1 p-6 overflow-auto">
