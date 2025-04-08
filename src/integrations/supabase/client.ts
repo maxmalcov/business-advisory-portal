@@ -53,18 +53,6 @@ export type Employee = {
   updated_at?: string;
 }
 
-// Type definition for invoice files - matching our new database table
-export type InvoiceFile = {
-  id: string;
-  user_id: string;
-  file_path: string;
-  file_name: string;
-  file_size: number;
-  invoice_type: string;
-  storage_path: string;
-  created_at?: string;
-}
-
 // Helper function to safely access the service_requests table
 export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
@@ -84,11 +72,6 @@ export const employeesTable = () => {
   // We'll cast the result to any to bypass TypeScript's type checking
   // and handle the type conversion in the component code
   return supabase.from('employees' as any);
-};
-
-// Helper function to safely access the invoice_files table
-export const invoiceFilesTable = () => {
-  return supabase.from('invoice_files' as any);
 };
 
 // Setup realtime subscription for the service_requests table

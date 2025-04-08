@@ -1,6 +1,7 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase, invoiceFilesTable } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '@/context/AuthContext';
 
@@ -202,8 +203,8 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
         
         console.log('Creating database record for file with ID:', recordId);
         
-        // Now using our helper function to access invoice_files
-        const { error: dbError, data: insertedData } = await invoiceFilesTable()
+        const { error: dbError, data: insertedData } = await supabase
+          .from('invoice_files')
           .insert({
             id: recordId,
             user_id: user.id,
