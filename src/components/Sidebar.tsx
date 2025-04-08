@@ -1,5 +1,5 @@
+
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -19,19 +19,13 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Button } from '@/components/ui/button';
+import SidebarHeader from './sidebar/SidebarHeader';
+import SidebarNav from './sidebar/SidebarNav';
+import { SidebarItem, SidebarProps } from './sidebar/types';
 
-type SidebarItem = {
-  name: string;
-  path: string;
-  icon: React.ElementType;
-  children?: SidebarItem[];
-};
-
-const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const location = useLocation();
   const isMobile = useIsMobile();
   
   const isAdmin = user?.userType === 'admin';
@@ -146,18 +140,6 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
 
   const menuItems = isAdmin ? adminMenuItems : clientMenuItems;
 
-  const isItemActive = (item: SidebarItem): boolean => {
-    if (location.pathname === item.path) return true;
-    if (item.children) {
-      return item.children.some(child => location.pathname === child.path);
-    }
-    return false;
-  };
-
-  const isParentActive = (path: string): boolean => {
-    return location.pathname.startsWith(path) && path !== '/';
-  };
-
   return (
     <aside 
       className={cn(
@@ -166,82 +148,8 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
         isMobile && "shadow-lg"
       )}
     >
-      <div className="px-4 py-2 mb-6">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center">
-            <span className="text-xl font-bold text-white">Business Advisory</span>
-          </Link>
-          {isMobile && (
-            <Button variant="ghost" size="sm" onClick={onClose} className="text-sidebar-foreground">
-              &times;
-            </Button>
-          )}
-        </div>
-      </div>
-      
-      <nav className="px-4 pb-4">
-        <ul className="space-y-1">
-          {menuItems.map((item) => (
-            <li key={item.path}>
-              {!item.children ? (
-                <Link
-                  to={item.path}
-                  className={cn(
-                    "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
-                    isItemActive(item) 
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
-                      : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-                  )}
-                  onClick={isMobile ? onClose : undefined}
-                >
-                  <item.icon className="h-4 w-4 mr-2" />
-                  <span>{item.name}</span>
-                </Link>
-              ) : (
-                <div className="mb-2">
-                  <Link
-                    to={item.path}
-                    className={cn(
-                      "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors",
-                      isParentActive(item.path) 
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                        : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-                    )}
-                    onClick={isMobile ? onClose : undefined}
-                  >
-                    <div className="flex items-center">
-                      <item.icon className="h-4 w-4 mr-2" />
-                      <span>{item.name}</span>
-                    </div>
-                  </Link>
-                  
-                  {isParentActive(item.path) && (
-                    <ul className="pl-6 mt-1 space-y-1">
-                      {item.children?.map((child) => (
-                        <li key={child.path}>
-                          <Link
-                            to={child.path}
-                            className={cn(
-                              "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
-                              location.pathname === child.path
-                                ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                                : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-                            )}
-                            onClick={isMobile ? onClose : undefined}
-                          >
-                            <child.icon className="h-4 w-4 mr-2" />
-                            <span>{child.name}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <SidebarHeader onClose={onClose} />
+      <SidebarNav menuItems={menuItems} onClose={onClose} />
     </aside>
   );
 };
