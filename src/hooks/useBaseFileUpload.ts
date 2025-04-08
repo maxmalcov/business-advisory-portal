@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -155,6 +156,8 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
     const newUploadedFiles: UploadedFile[] = [];
 
     try {
+      console.log(`Starting upload process to bucket: ${uploadConfig.bucketName}`);
+      
       filesToUpload.forEach(file => {
         totalSize += file.size;
       });
@@ -166,6 +169,22 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
         const fileExtension = file.name.split('.').pop();
         const storagePath = `${uploadConfig.folderPath}/${user.id}/${fileId}.${fileExtension}`;
         
+        console.log(`Uploading file to: ${uploadConfig.bucketName}/${storagePath}`);
+        
+        // Check if bucket exists before uploading
+        const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+        
+        if (bucketError) {
+          console.error('Error listing buckets:', bucketError);
+          throw new Error(`Failed to list storage buckets: ${bucketError.message}`);
+        }
+        
+        const bucketExists = buckets.some(bucket => bucket.name === uploadConfig.bucketName);
+        
+        if (!bucketExists) {
+          throw new Error(`Bucket "${uploadConfig.bucketName}" does not exist`);
+        }
+        
         const { data, error } = await supabase.storage
           .from(uploadConfig.bucketName)
           .upload(storagePath, file, {
@@ -175,14 +194,17 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
           
         if (error) {
           console.error('Error uploading file:', error);
-          setUploadError(error.message);
-          throw error;
+          throw new Error(`Failed to upload file: ${error.message}`);
         }
+        
+        console.log('File uploaded successfully:', data);
         
         const recordId = uuidv4();
         
+        console.log('Creating database record for file with ID:', recordId);
+        
         const { error: dbError, data: insertedData } = await supabase
-          .from('invoice_files' as any)
+          .from('invoice_files')
           .insert({
             id: recordId,
             user_id: user.id,
@@ -191,15 +213,16 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
             file_size: file.size,
             invoice_type: uploadConfig.invoiceType,
             storage_path: data.path
-          } as any)
+          })
           .select('id')
           .single();
           
         if (dbError) {
           console.error('Error storing file metadata:', dbError);
-          setUploadError(dbError.message);
-          throw dbError;
+          throw new Error(`Failed to store file metadata: ${dbError.message}`);
         }
+        
+        console.log('File metadata stored successfully:', insertedData);
         
         newUploadedFiles.push({
           id: recordId,
@@ -225,19 +248,17 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
       });
       
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error);
       setUploadSuccess(false);
       setUploadComplete(true);
       
-      if (!uploadError) {
-        setUploadError('There was an error uploading your files.');
-        toast({
-          variant: 'destructive',
-          title: 'Upload failed',
-          description: 'There was an error uploading your files.',
-        });
-      }
+      setUploadError(error.message || 'There was an error uploading your files.');
+      toast({
+        variant: 'destructive',
+        title: 'Upload failed',
+        description: error.message || 'There was an error uploading your files.',
+      });
       return false;
     } finally {
       setIsLoading(false);

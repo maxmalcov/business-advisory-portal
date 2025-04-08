@@ -4,7 +4,7 @@ import { useBaseFileUpload, FileUploadOptions } from '@/hooks/useBaseFileUpload'
 export const useFileUpload = (options: FileUploadOptions = {}) => {
   const uploadConfig = {
     bucketName: 'invoices',
-    folderPath: 'sale-invoices',
+    folderPath: 'sales-invoices',
     invoiceType: 'sale' as const
   };
   
