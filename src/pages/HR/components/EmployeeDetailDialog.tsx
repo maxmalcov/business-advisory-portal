@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -31,6 +31,13 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  
+  // Add logging to track the employee prop received
+  useEffect(() => {
+    if (open && employee) {
+      console.log('EmployeeDetailDialog received employee:', employee);
+    }
+  }, [open, employee]);
 
   const formatDate = (dateStr: string | undefined) => {
     if (!dateStr) return '-';
@@ -85,7 +92,11 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     }
   };
 
-  if (!employee) return null;
+  // Return early if no employee data
+  if (!employee) {
+    console.log('No employee data provided to dialog');
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
