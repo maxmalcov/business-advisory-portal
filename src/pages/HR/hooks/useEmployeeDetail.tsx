@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
-import { Employee } from '../types/employee';
+import { Employee, fromDbEmployee } from '../types/employee';
 
 interface UseEmployeeDetailReturn {
   employee: Employee | null;
@@ -46,22 +46,8 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
       
       console.log('Raw employee data from Supabase:', data);
       
-      // Type assertion to handle the returned data
-      const rowData = data as any;
-      
-      const employeeData: Employee = {
-        id: String(rowData.id || ''),
-        fullName: String(rowData.full_name || ''),
-        position: String(rowData.position || ''),
-        status: (rowData.status as 'active' | 'terminated') || 'active',
-        startDate: String(rowData.start_date || ''),
-        endDate: rowData.end_date ? String(rowData.end_date) : undefined,
-        companyName: String(rowData.company_name || ''),
-        dniTie: String(rowData.dni_tie || ''),
-        idDocument: String(rowData.id_document || ''),
-        idDocumentUrl: rowData.id_document_url ? String(rowData.id_document_url) : undefined,
-        weeklySchedule: String(rowData.weekly_schedule || '')
-      };
+      // Use our helper function to convert database record to Employee type
+      const employeeData = fromDbEmployee(data);
       
       console.log('Employee data fetched successfully:', employeeData);
       setEmployee(employeeData);
@@ -100,7 +86,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
           id_document_url: updatedEmployee.idDocumentUrl || null,
           weekly_schedule: updatedEmployee.weeklySchedule || null
         })
-        .eq('id', employee.id);
+        .eq('id', updatedEmployee.id);
         
       if (error) throw error;
       

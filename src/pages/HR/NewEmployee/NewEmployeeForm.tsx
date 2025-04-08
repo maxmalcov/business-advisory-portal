@@ -16,7 +16,7 @@ import OptionalFields from './FormSections/OptionalFields';
 import { employeesTable } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Employee } from '../types/employee';
+import { Employee, fromDbEmployee } from '../types/employee';
 
 const NewEmployeeForm: React.FC = () => {
   const { t } = useLanguage();
@@ -146,48 +146,54 @@ const NewEmployeeForm: React.FC = () => {
       
       console.log('Employee added successfully:', employeeRecord);
       
-      // Instead of direct casting, we first check that we have valid data
+      // Safely extract the employee ID from the response
       if (Array.isArray(employeeRecord) && employeeRecord.length > 0) {
-        const newEmployee = employeeRecord[0];
+        const dbEmployee = employeeRecord[0];
         
-        // If there's a file to upload, upload it to storage
-        if (formData.idDocument && newEmployee && 'id' in newEmployee) {
-          const file = formData.idDocument;
-          const employeeId = newEmployee.id;
-          const filename = `${Date.now()}-${file.name}`;
-          const filePath = `${employeeId}/${filename}`;
+        // Check if the response has the expected structure
+        if (dbEmployee && typeof dbEmployee === 'object' && 'id' in dbEmployee) {
+          const employeeId = dbEmployee.id;
           
-          console.log('Uploading file to Supabase Storage:', filePath);
-          
-          const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('employee-id-documents')
-            .upload(filePath, file, {
-              cacheControl: '3600',
-              upsert: true
-            });
+          // If there's a file to upload, upload it to storage
+          if (formData.idDocument) {
+            const file = formData.idDocument;
+            const filename = `${Date.now()}-${file.name}`;
+            const filePath = `${employeeId}/${filename}`;
             
-          if (uploadError) {
-            console.error('Error uploading file:', uploadError);
-            // Continue even if file upload fails
-          } else {
-            console.log('File uploaded successfully:', uploadData);
+            console.log('Uploading file to Supabase Storage:', filePath);
             
-            // Get public URL for the file
-            const { data: urlData } = supabase.storage
+            const { data: uploadData, error: uploadError } = await supabase.storage
               .from('employee-id-documents')
-              .getPublicUrl(filePath);
+              .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: true
+              });
               
-            // Update the employee record with the file URL
-            if (urlData) {
-              const { error: updateError } = await employeesTable()
-                .update({ id_document_url: urlData.publicUrl })
-                .eq('id', employeeId);
+            if (uploadError) {
+              console.error('Error uploading file:', uploadError);
+              // Continue even if file upload fails
+            } else {
+              console.log('File uploaded successfully:', uploadData);
+              
+              // Get public URL for the file
+              const { data: urlData } = supabase.storage
+                .from('employee-id-documents')
+                .getPublicUrl(filePath);
                 
-              if (updateError) {
-                console.error('Error updating employee with file URL:', updateError);
+              // Update the employee record with the file URL
+              if (urlData) {
+                const { error: updateError } = await employeesTable()
+                  .update({ id_document_url: urlData.publicUrl })
+                  .eq('id', employeeId);
+                  
+                if (updateError) {
+                  console.error('Error updating employee with file URL:', updateError);
+                }
               }
             }
           }
+        } else {
+          console.error('Unexpected employee record structure:', dbEmployee);
         }
       }
       
