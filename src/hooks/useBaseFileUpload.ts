@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -173,9 +174,10 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
           throw error;
         }
         
-        // Store metadata in the database
+        // Store metadata in the database - using 'from' with type assertion instead
+        // to avoid TypeScript errors since invoice_files isn't in the generated types yet
         const { error: dbError } = await supabase
-          .from('invoice_files')
+          .from('invoice_files' as any)
           .insert({
             user_id: user.id,
             file_path: storagePath,
@@ -183,7 +185,7 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
             file_size: file.size,
             invoice_type: uploadConfig.invoiceType,
             storage_path: data.path
-          });
+          } as any);
           
         if (dbError) {
           console.error('Error storing file metadata:', dbError);
