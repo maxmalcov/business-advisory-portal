@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { FileDown } from 'lucide-react';
+import { FileUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface SupplierFileUploadAreaProps {
@@ -29,7 +29,7 @@ const SupplierFileUploadArea: React.FC<SupplierFileUploadAreaProps> = ({
       onDragLeave={onDragLeave}
       onDrop={onDrop}
     >
-      <FileDown className="h-10 w-10 mx-auto mb-4 text-muted-foreground" />
+      <FileUp className="h-10 w-10 mx-auto mb-4 text-muted-foreground" />
       <p className="text-muted-foreground mb-2">
         Drag and drop files here, or click to browse
       </p>
