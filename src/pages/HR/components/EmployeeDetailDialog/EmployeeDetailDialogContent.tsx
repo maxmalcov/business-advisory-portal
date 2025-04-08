@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Employee } from '../../types/employee';
-import EmployeeDetailForm from '../EmployeeDetailForm';
+import EmployeeDetailForm from '../EmployeeDetailForm/EmployeeDetailForm';
 import { EmployeeDetailView } from '../EmployeeDetail';
 import EmployeeDetailSkeleton from '../EmployeeDetail/EmployeeDetailSkeleton';
 
@@ -29,6 +29,13 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
   onCancel,
   onClose
 }) => {
+  console.log("EmployeeDetailDialogContent rendering with:", {
+    employee,
+    isLoading,
+    error,
+    isEditing
+  });
+  
   if (isLoading) {
     return <EmployeeDetailSkeleton />;
   }

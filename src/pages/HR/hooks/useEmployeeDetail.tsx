@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
 import { Employee } from '../types/employee';
@@ -20,7 +20,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const fetchEmployeeData = async (employeeId: string) => {
+  const fetchEmployeeData = useCallback(async (employeeId: string) => {
     if (!employeeId) return;
     
     setIsLoading(true);
@@ -34,11 +34,17 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
         .eq('id', employeeId)
         .single();
         
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
       
       if (!data) {
+        console.error('No employee data found for ID:', employeeId);
         throw new Error('Employee not found');
       }
+      
+      console.log('Raw employee data from Supabase:', data);
       
       // Type assertion to handle the returned data
       const rowData = data as any;
@@ -69,7 +75,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   const handleSave = async (updatedEmployee: Employee) => {
     if (!employee) return;

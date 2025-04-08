@@ -46,7 +46,15 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     }
   }, [employeeId, open, fetchEmployeeData]);
 
+  // Add debugging logs
+  useEffect(() => {
+    console.log("Employee data in dialog:", employee);
+    console.log("Loading state:", isLoading);
+    console.log("Error state:", error);
+  }, [employee, isLoading, error]);
+
   const handleSaveWrapper = (updatedEmployee: Employee) => {
+    console.log("Saving employee:", updatedEmployee);
     handleSave(updatedEmployee);
     setIsEditing(false);
   };
