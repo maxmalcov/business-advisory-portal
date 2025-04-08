@@ -76,6 +76,8 @@ serve(async (req) => {
           console.error(`Error retrieving file metadata: ${fileError?.message}`);
           continue;
         }
+
+        console.log(`Retrieved file path: ${fileData.storage_path}`);
         
         // Download the file from storage
         const { data, error } = await supabase
@@ -88,6 +90,8 @@ serve(async (req) => {
           continue;
         }
         
+        console.log(`Successfully downloaded file: ${fileName} (${data.size} bytes)`);
+        
         // Convert blob to base64 for email attachment
         const buffer = await data.arrayBuffer();
         const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
@@ -99,7 +103,7 @@ serve(async (req) => {
           type: getContentType(fileName), // Get proper MIME type based on file extension
         });
         
-        console.log(`File ${fileName} prepared for email`);
+        console.log(`File ${fileName} prepared for email attachment`);
       } catch (error) {
         console.error(`Error processing file ${fileId}: ${error}`);
       }
@@ -112,7 +116,11 @@ serve(async (req) => {
     const invoiceTypeLabel = invoiceType === 'incoming' ? 'Supplier' : 'Sales';
     const senderName = companyName || userName;
     
-    console.log(`About to send email with ${attachments.length} attachments`);
+    console.log(`About to send email with ${attachments.length} attachments of sizes: ${attachments.map(a => a.content.length).join(', ')} characters`);
+    
+    if (attachments.length === 0) {
+      throw new Error("No valid attachments were prepared for the email");
+    }
     
     // Send the email with attachments
     const emailResponse = await resend.emails.send({

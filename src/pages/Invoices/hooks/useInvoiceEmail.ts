@@ -44,8 +44,10 @@ export const useInvoiceEmail = () => {
     setIsSending(true);
 
     try {
+      console.log(`Sending ${invoiceType} invoice with files:`, files);
+      
       // Call the Supabase Edge Function to send email with attachments
-      const { error } = await supabase.functions.invoke('send-invoice-email', {
+      const { error, data } = await supabase.functions.invoke('send-invoice-email', {
         body: {
           recipientEmail: emailField,
           fileIds: files.map(file => file.id),
@@ -57,6 +59,8 @@ export const useInvoiceEmail = () => {
           userId: user?.id
         }
       });
+
+      console.log("Edge function response:", data);
 
       if (error) {
         console.error('Error sending email:', error);
