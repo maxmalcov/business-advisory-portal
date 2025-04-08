@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { FormData, FormErrors } from './types';
 import RequiredFields from './FormSections/RequiredFields';
 import OptionalFields from './FormSections/OptionalFields';
-import { employeesTable } from '@/integrations/supabase/client';
+import { employeesTable, supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
 const NewEmployeeForm: React.FC = () => {
@@ -40,6 +40,7 @@ const NewEmployeeForm: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -54,11 +55,11 @@ const NewEmployeeForm: React.FC = () => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       
-      const isValidType = ['application/pdf', 'image/jpeg', 'image/jpg'].includes(file.type);
+      const isValidType = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'].includes(file.type);
       if (!isValidType) {
         setErrors((prev) => ({ 
           ...prev, 
-          idDocument: 'Only PDF and JPG files are accepted' 
+          idDocument: 'Only PDF, JPG and PNG files are accepted' 
         }));
         return;
       }
@@ -91,6 +92,37 @@ const NewEmployeeForm: React.FC = () => {
     setFormData((prev) => ({ ...prev, salaryType: type }));
   };
 
+  const uploadDocumentToStorage = async (file: File): Promise<string> => {
+    try {
+      // Create a unique file path with timestamp
+      const timestamp = new Date().getTime();
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${timestamp}_${file.name}`;
+      
+      // Upload the file to the 'employee_documents' bucket
+      const { data, error } = await supabase.storage
+        .from('employee_documents')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+          onUploadProgress: (progress) => {
+            const calculatedProgress = (progress.loaded / progress.total) * 100;
+            setUploadProgress(calculatedProgress);
+          }
+        });
+      
+      if (error) {
+        throw error;
+      }
+      
+      // Return the file path
+      return filePath;
+    } catch (error) {
+      console.error('Error uploading document:', error);
+      throw new Error('Failed to upload document');
+    }
+  };
+
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     
@@ -117,6 +149,24 @@ const NewEmployeeForm: React.FC = () => {
     try {
       console.log('Submitting employee data:', formData);
       
+      // Upload the ID document to Supabase Storage
+      let documentPath = '';
+      if (formData.idDocument) {
+        try {
+          documentPath = await uploadDocumentToStorage(formData.idDocument);
+          console.log('Document uploaded successfully:', documentPath);
+        } catch (uploadError) {
+          console.error('Document upload failed:', uploadError);
+          toast({
+            title: 'Document Upload Failed',
+            description: 'Could not upload the ID document. Please try again.',
+            variant: 'destructive'
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+      
       // Updated to include all relevant fields from the form
       const employeeData = {
         full_name: formData.fullName,
@@ -133,7 +183,7 @@ const NewEmployeeForm: React.FC = () => {
         email: formData.employeeEmail || null,
         address: formData.address || null,
         comments: formData.comments || null,
-        id_document: formData.idDocument ? formData.idDocument.name : null
+        id_document: documentPath || null
       };
       
       console.log('Sending employee data to Supabase:', employeeData);
@@ -161,6 +211,7 @@ const NewEmployeeForm: React.FC = () => {
       });
     } finally {
       setIsSubmitting(false);
+      setUploadProgress(0);
     }
   };
 
@@ -179,6 +230,7 @@ const NewEmployeeForm: React.FC = () => {
             handleInputChange={handleInputChange}
             handleDateChange={handleDateChange}
             handleFileChange={handleFileChange}
+            uploadProgress={uploadProgress}
           />
           
           <OptionalFields 
@@ -189,7 +241,11 @@ const NewEmployeeForm: React.FC = () => {
         </CardContent>
         
         <CardFooter className="flex justify-between">
-          <Button type="button" variant="outline">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => navigate('/hr')}
+          >
             {t('app.cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>

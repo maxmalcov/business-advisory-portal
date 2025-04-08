@@ -65,6 +65,13 @@ export function useEmployeeForm(employee: Employee, onSave: (updatedEmployee: Em
     }));
   };
 
+  const updateDocument = (documentPath: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      idDocument: documentPath
+    }));
+  };
+
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     
@@ -98,6 +105,7 @@ export function useEmployeeForm(employee: Employee, onSave: (updatedEmployee: Em
     handleStartDateChange,
     handleEndDateChange,
     handleStatusChange,
+    updateDocument,
     handleSubmit
   };
 }
