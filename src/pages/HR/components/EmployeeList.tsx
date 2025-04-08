@@ -89,76 +89,74 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   }
 
   return (
-    <>
-      <div className="flex flex-col space-y-4">
-        <div className="flex justify-between items-center">
-          <FilterInput 
-            value={filterText} 
-            onChange={setFilterText} 
-            placeholder="Search by name, position, or company..."
-          />
-        </div>
-        
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
+    <div className="flex flex-col space-y-4">
+      <div className="mb-2">
+        <FilterInput 
+          value={filterText} 
+          onChange={setFilterText} 
+          placeholder="Search by name, position, or company..."
+        />
+      </div>
+      
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Full Name</TableHead>
+              <TableHead>Position/Role</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
+              <TableHead className="w-[60px]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredEmployees.length === 0 ? (
               <TableRow>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Position/Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead className="w-[60px]"></TableHead>
+                <TableCell colSpan={6} className="text-center h-24">No employees found</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredEmployees.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center h-24">No employees found</TableCell>
+            ) : (
+              filteredEmployees.map((employee) => (
+                <TableRow 
+                  key={employee.id}
+                  className="cursor-pointer hover:bg-gray-50"
+                  onClick={() => handleEmployeeClick(employee)}
+                >
+                  <TableCell className="font-medium">{employee.fullName}</TableCell>
+                  <TableCell>{employee.position}</TableCell>
+                  <TableCell>
+                    <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
+                      {employee.status === 'active' ? 'Active' : 'Terminated'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{formatDate(employee.startDate)}</TableCell>
+                  <TableCell>{employee.endDate ? formatDate(employee.endDate) : '-'}</TableCell>
+                  <TableCell className="text-right">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEmployeeClick(employee);
+                            }}
+                            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                            aria-label="View employee details"
+                          >
+                            <Eye className="h-4 w-4 text-gray-500" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>View details</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
                 </TableRow>
-              ) : (
-                filteredEmployees.map((employee) => (
-                  <TableRow 
-                    key={employee.id}
-                    className="cursor-pointer hover:bg-gray-50"
-                    onClick={() => handleEmployeeClick(employee)}
-                  >
-                    <TableCell className="font-medium">{employee.fullName}</TableCell>
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell>
-                      <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
-                        {employee.status === 'active' ? 'Active' : 'Terminated'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(employee.startDate)}</TableCell>
-                    <TableCell>{employee.endDate ? formatDate(employee.endDate) : '-'}</TableCell>
-                    <TableCell className="text-right">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEmployeeClick(employee);
-                              }}
-                              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                              aria-label="View employee details"
-                            >
-                              <Eye className="h-4 w-4 text-gray-500" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>View details</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
       
       <EmployeeDetailDialog 
@@ -166,7 +164,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         open={detailDialogOpen}
         onOpenChange={setDetailDialogOpen}
       />
-    </>
+    </div>
   );
 };
 
