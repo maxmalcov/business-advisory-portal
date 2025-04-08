@@ -75,6 +75,33 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_email_logs: {
+        Row: {
+          file_ids: string[]
+          id: string
+          invoice_type: string
+          recipient_email: string
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          file_ids: string[]
+          id?: string
+          invoice_type: string
+          recipient_email: string
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          file_ids?: string[]
+          id?: string
+          invoice_type?: string
+          recipient_email?: string
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           accounttype: string | null

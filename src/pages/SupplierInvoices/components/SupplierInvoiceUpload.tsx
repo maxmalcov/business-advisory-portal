@@ -21,6 +21,7 @@ const SupplierInvoiceUpload: React.FC = () => {
   
   const { 
     selectedFiles, 
+    uploadedFiles,
     isDragging, 
     isLoading, 
     uploadProgress,
@@ -33,55 +34,44 @@ const SupplierInvoiceUpload: React.FC = () => {
     handleDragLeave, 
     handleDrop, 
     handleRemoveFile,
-    uploadFilesToSupabase,
     resetFiles
   } = useSupplierFileUpload();
   
   const { sendInvoiceByEmail, isSending } = useSupplierInvoiceEmail();
   const [emailSent, setEmailSent] = useState(false);
 
-  const handleUpload = async () => {
-    if (selectedFiles.length === 0) {
+  const handleSendEmail = async () => {
+    if (uploadedFiles.length === 0) {
       toast({
         variant: 'destructive',
-        title: 'No files selected',
-        description: 'Please select files to upload.',
+        title: 'No files processed',
+        description: 'Please wait for files to finish uploading.',
       });
       return;
     }
 
-    setIsLoading(true);
-    
     try {
-      // Upload files to Supabase
-      const uploadSuccess = await uploadFilesToSupabase();
+      // Send email notification with file attachments
+      const emailSuccess = await sendInvoiceByEmail({ 
+        files: uploadedFiles 
+      });
       
-      if (!uploadSuccess) {
-        return; // Error is already handled in the hook
-      }
-      
-      // Send email notification
-      const emailSuccess = await sendInvoiceByEmail({ files: selectedFiles });
       setEmailSent(emailSuccess);
       
-      // Show success message
-      toast({
-        title: 'Success',
-        description: `${selectedFiles.length} supplier invoice(s) uploaded successfully${emailSuccess ? ' and email notification sent' : ''}.`,
-      });
-
-      // Reset the file input after a short delay to show completion state
-      setTimeout(() => {
-        resetFiles();
-      }, 3000);
+      if (emailSuccess) {
+        // Reset the file input after a successful email
+        setTimeout(() => {
+          resetFiles();
+        }, 3000);
+      }
       
     } catch (error) {
-      console.error('Error during upload process:', error);
+      console.error('Error during email process:', error);
       
       toast({
         variant: 'destructive',
-        title: 'Upload Failed',
-        description: 'An error occurred during the upload process.',
+        title: 'Email Failed',
+        description: 'An error occurred while sending the email.',
       });
     }
   };
@@ -105,7 +95,7 @@ const SupplierInvoiceUpload: React.FC = () => {
         />
         
         {/* Only show file upload area if not currently uploading */}
-        {!isLoading && (
+        {!isLoading && !uploadComplete && (
           <SupplierFileUploadArea 
             isDragging={isDragging}
             onDragOver={handleDragOver}
@@ -129,9 +119,11 @@ const SupplierInvoiceUpload: React.FC = () => {
         {/* Selected files list with progress */}
         <SupplierFileList 
           files={selectedFiles}
+          uploadedFiles={uploadedFiles}
           onRemoveFile={handleRemoveFile}
-          onUpload={handleUpload}
-          isLoading={isLoading || isSending}
+          onSendEmail={handleSendEmail}
+          isLoading={isLoading}
+          isSending={isSending}
           uploadProgress={uploadProgress}
           uploadComplete={uploadComplete}
           uploadSuccess={uploadSuccess}

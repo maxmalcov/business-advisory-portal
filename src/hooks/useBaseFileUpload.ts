@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,6 +16,13 @@ export interface UploadConfig {
   invoiceType: 'sale' | 'supplier';
 }
 
+export interface UploadedFile {
+  id: string;
+  name: string;
+  size: number;
+  path: string;
+}
+
 export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig: UploadConfig) => {
   const {
     maxFiles = 15,
@@ -25,6 +31,7 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
   } = options;
   
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -35,7 +42,6 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
   const { user } = useAuth();
 
   const validateFiles = (files: File[]): File[] => {
-    // Check number of files
     if (files.length > maxFiles) {
       toast({
         variant: 'destructive',
@@ -45,7 +51,6 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
       return [];
     }
     
-    // Check file types and sizes
     return files.filter(file => {
       const isValidType = allowedTypes.includes(file.type);
       const isValidSize = file.size <= maxSizeInMB * 1024 * 1024;
@@ -71,11 +76,11 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
   };
 
   const handleFiles = (fileList: FileList | null) => {
-    // Reset states when new files are selected
     setUploadComplete(false);
     setUploadSuccess(false);
     setUploadError(null);
     setUploadProgress(0);
+    setUploadedFiles([]);
     
     if (!fileList) return;
     
@@ -84,6 +89,7 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
     
     if (validFiles.length > 0) {
       setSelectedFiles(validFiles);
+      uploadFilesToSupabase(validFiles);
     }
   };
 
@@ -110,17 +116,17 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
     setSelectedFiles(prev => {
       const newFiles = prev.filter((_, i) => i !== index);
       if (newFiles.length === 0) {
-        // Reset states if all files are removed
         setUploadComplete(false);
         setUploadSuccess(false);
         setUploadError(null);
         setUploadProgress(0);
+        setUploadedFiles([]);
       }
       return newFiles;
     });
   };
 
-  const uploadFilesToSupabase = async () => {
+  const uploadFilesToSupabase = async (filesToUpload: File[] = selectedFiles) => {
     if (!user || !user.id) {
       setUploadError('Authentication required');
       toast({
@@ -131,7 +137,7 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
       return false;
     }
 
-    if (selectedFiles.length === 0) {
+    if (filesToUpload.length === 0) {
       setUploadError('No files selected');
       return false;
     }
@@ -141,26 +147,25 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
     setUploadComplete(false);
     setUploadSuccess(false);
     setUploadError(null);
+    setUploadedFiles([]);
 
     let totalSize = 0;
-    const totalFiles = selectedFiles.length;
+    const totalFiles = filesToUpload.length;
     let uploadedFiles = 0;
+    const newUploadedFiles: UploadedFile[] = [];
 
     try {
-      // Calculate total size for progress tracking
-      selectedFiles.forEach(file => {
+      filesToUpload.forEach(file => {
         totalSize += file.size;
       });
 
       let uploadedSize = 0;
 
-      // Upload each file
-      for (const file of selectedFiles) {
+      for (const file of filesToUpload) {
         const fileId = uuidv4();
         const fileExtension = file.name.split('.').pop();
         const storagePath = `${uploadConfig.folderPath}/${user.id}/${fileId}.${fileExtension}`;
         
-        // Upload file to Supabase Storage
         const { data, error } = await supabase.storage
           .from(uploadConfig.bucketName)
           .upload(storagePath, file, {
@@ -174,18 +179,21 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
           throw error;
         }
         
-        // Store metadata in the database - using 'from' with type assertion instead
-        // to avoid TypeScript errors since invoice_files isn't in the generated types yet
-        const { error: dbError } = await supabase
+        const recordId = uuidv4();
+        
+        const { error: dbError, data: insertedData } = await supabase
           .from('invoice_files' as any)
           .insert({
+            id: recordId,
             user_id: user.id,
             file_path: storagePath,
             file_name: file.name,
             file_size: file.size,
             invoice_type: uploadConfig.invoiceType,
             storage_path: data.path
-          } as any);
+          } as any)
+          .select('id')
+          .single();
           
         if (dbError) {
           console.error('Error storing file metadata:', dbError);
@@ -193,7 +201,13 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
           throw dbError;
         }
         
-        // Update progress
+        newUploadedFiles.push({
+          id: recordId,
+          name: file.name,
+          size: file.size,
+          path: storagePath
+        });
+        
         uploadedSize += file.size;
         uploadedFiles++;
         
@@ -201,9 +215,15 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
         setUploadProgress(newProgress);
       }
       
-      // All files uploaded successfully
+      setUploadedFiles(newUploadedFiles);
       setUploadComplete(true);
       setUploadSuccess(true);
+      
+      toast({
+        title: 'Upload Complete',
+        description: `${totalFiles} file${totalFiles > 1 ? 's' : ''} uploaded successfully.`,
+      });
+      
       return true;
     } catch (error) {
       console.error('Upload error:', error);
@@ -220,13 +240,13 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
       }
       return false;
     } finally {
-      // We keep isLoading true until the user explicitly resets or continues with email
-      // This will be controlled by the parent component
+      setIsLoading(false);
     }
   };
 
   const resetFiles = () => {
     setSelectedFiles([]);
+    setUploadedFiles([]);
     setUploadProgress(0);
     setUploadComplete(false);
     setUploadSuccess(false);
@@ -236,6 +256,7 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
 
   return {
     selectedFiles,
+    uploadedFiles,
     isDragging,
     isLoading,
     uploadProgress,

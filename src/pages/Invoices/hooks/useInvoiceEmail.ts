@@ -4,9 +4,14 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 
+interface FileInfo {
+  id: string;
+  name: string;
+}
+
 interface SendEmailOptions {
   invoiceType: 'incoming' | 'outgoing';
-  files: File[];
+  files: FileInfo[];
   message?: string;
 }
 
@@ -27,17 +32,29 @@ export const useInvoiceEmail = () => {
       return false;
     }
 
+    if (!files.length) {
+      toast({
+        variant: 'destructive',
+        title: 'No Files Selected',
+        description: 'Please select at least one file to send.',
+      });
+      return false;
+    }
+
     setIsSending(true);
 
     try {
-      // Call the Supabase Edge Function to send email
+      // Call the Supabase Edge Function to send email with attachments
       const { error } = await supabase.functions.invoke('send-invoice-email', {
         body: {
           recipientEmail: emailField,
+          fileIds: files.map(file => file.id),
           fileNames: files.map(file => file.name),
           userName: user?.name || 'User',
+          companyName: user?.companyName,
           invoiceType,
-          message
+          message,
+          userId: user?.id
         }
       });
 
@@ -50,6 +67,11 @@ export const useInvoiceEmail = () => {
         });
         return false;
       }
+
+      toast({
+        title: 'Email Sent',
+        description: `Invoice${files.length > 1 ? 's' : ''} successfully sent to ${emailField}.`,
+      });
 
       return true;
     } catch (error) {

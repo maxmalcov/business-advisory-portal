@@ -1,15 +1,18 @@
 
 import React from 'react';
-import { Loader2, FileUp, FileX, Check, AlertCircle } from 'lucide-react';
+import { Loader2, FileUp, FileX, Check, AlertCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { UploadedFile } from '@/hooks/useBaseFileUpload';
 
 interface SupplierFileListProps {
   files: File[];
+  uploadedFiles: UploadedFile[];
   onRemoveFile: (index: number) => void;
-  onUpload: () => void;
+  onSendEmail: () => void;
   isLoading: boolean;
+  isSending: boolean;
   uploadProgress?: number;
   uploadComplete?: boolean;
   uploadSuccess?: boolean;
@@ -18,15 +21,19 @@ interface SupplierFileListProps {
 
 const SupplierFileList: React.FC<SupplierFileListProps> = ({
   files,
+  uploadedFiles,
   onRemoveFile,
-  onUpload,
+  onSendEmail,
   isLoading,
+  isSending,
   uploadProgress = 0,
   uploadComplete = false,
   uploadSuccess = false,
   uploadError = null
 }) => {
   if (files.length === 0) return null;
+
+  const canSendEmail = uploadComplete && uploadSuccess && uploadedFiles.length > 0;
 
   return (
     <div className="space-y-4">
@@ -50,7 +57,7 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
               variant="ghost"
               size="icon"
               onClick={() => onRemoveFile(index)}
-              disabled={isLoading}
+              disabled={isLoading || isSending}
             >
               <FileX className="h-5 w-5 text-muted-foreground" />
             </Button>
@@ -88,29 +95,34 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
         </Alert>
       )}
       
-      <Button 
-        className="w-full"
-        onClick={onUpload}
-        disabled={isLoading || files.length === 0}
-      >
-        {isLoading ? (
-          <span className="flex items-center">
-            {uploadComplete && uploadSuccess ? (
-              <>
-                <Check className="mr-2 h-4 w-4" /> 
-                Upload Complete
-              </>
-            ) : (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
-                Uploading...
-              </>
-            )}
-          </span>
-        ) : (
-          `Upload ${files.length} ${files.length === 1 ? 'File' : 'Files'}`
-        )}
-      </Button>
+      <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+        <Button 
+          className="w-full sm:w-auto" 
+          variant="outline"
+          onClick={() => window.location.reload()}
+          disabled={isSending}
+        >
+          {uploadComplete && uploadSuccess ? 'Upload More Files' : 'Cancel'}
+        </Button>
+        
+        <Button 
+          className="w-full sm:w-auto flex-1" 
+          onClick={onSendEmail}
+          disabled={!canSendEmail || isSending}
+        >
+          {isSending ? (
+            <span className="flex items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+              Sending...
+            </span>
+          ) : (
+            <span className="flex items-center">
+              <Send className="mr-2 h-4 w-4" /> 
+              Send Invoice{files.length > 1 ? 's' : ''} by Email
+            </span>
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
