@@ -81,16 +81,22 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
 
   if (isEditing) {
     return (
-      <EmployeeDetailForm 
-        employee={employee}
-        onSave={onSave}
-        onCancel={onCancel}
-        isSubmitting={isSubmitting}
-      />
+      <div className="pb-4">
+        <EmployeeDetailForm 
+          employee={employee}
+          onSave={onSave}
+          onCancel={onCancel}
+          isSubmitting={isSubmitting}
+        />
+      </div>
     );
   }
   
-  return <EmployeeDetailView employee={employee} />;
+  return (
+    <div className="pb-4">
+      <EmployeeDetailView employee={employee} />
+    </div>
+  );
 };
 
 export default EmployeeDetailDialogContent;

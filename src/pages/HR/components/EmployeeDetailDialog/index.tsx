@@ -12,6 +12,7 @@ import { Employee } from '../../types/employee';
 import { useEmployeeDetail } from '../../hooks/useEmployeeDetail';
 import EmployeeDetailDialogContent from './EmployeeDetailDialogContent';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface EmployeeDetailDialogProps {
   employeeId: string | null;
@@ -25,6 +26,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
   onOpenChange
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const isMobile = useIsMobile();
   const {
     employee,
     isLoading,
@@ -61,8 +63,8 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden max-h-[85vh] w-[95vw]">
-        <div className="relative flex flex-col h-full">
+      <DialogContent className={`p-0 overflow-hidden ${isMobile ? 'w-[95vw] max-w-none' : 'sm:max-w-[650px] md:max-w-[700px]'} max-h-[90vh]`}>
+        <div className="flex flex-col h-full">
           <DialogHeader className="px-6 py-4 border-b bg-gray-50 sticky top-0 z-10">
             <DialogTitle className="text-xl font-bold">
               {isEditing ? 'Edit Employee' : 'Employee Details'}
@@ -78,7 +80,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
             </Button>
           </DialogHeader>
           
-          <ScrollArea className="flex-1 p-6 overflow-auto">
+          <ScrollArea className="flex-1 p-6" style={{ maxHeight: 'calc(90vh - 70px)' }}>
             {!isEditing && employee && !isLoading && (
               <Button
                 variant="outline"
