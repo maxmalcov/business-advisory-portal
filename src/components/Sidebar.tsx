@@ -16,7 +16,6 @@ import {
   Layers,
   LayoutGrid,
   Activity,
-  Plus,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -47,13 +46,6 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
       name: t('nav.sale_invoices'),
       path: '/invoices',
       icon: FileUp,
-      children: [
-        {
-          name: t('nav.sale_invoices.create'),
-          path: '/invoices/create',
-          icon: FileText,
-        },
-      ],
     },
     {
       name: t('nav.supplier_invoices'),

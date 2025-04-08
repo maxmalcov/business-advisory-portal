@@ -20,7 +20,7 @@ import AdminSubscriptions from "./pages/AdminSubscriptions";
 import Invoices from "./pages/Invoices";
 import CreateInvoice from "./pages/Invoices/Create";
 import SupplierInvoices from "./pages/SupplierInvoices";
-import NewEmployee from "./pages/HR/NewEmployee"; // Updated import path
+import NewEmployee from "./pages/HR/NewEmployee";
 import Contracts from "./pages/Contracts";
 import Documents from "./pages/Documents";
 import Reports from "./pages/Reports";
