@@ -9,6 +9,16 @@ interface DocumentDisplayProps {
 }
 
 const DocumentDisplay: React.FC<DocumentDisplayProps> = ({ documentPath }) => {
+  // Early return if documentPath is empty or undefined
+  if (!documentPath) {
+    return (
+      <div className="flex items-center">
+        <FileText className="h-4 w-4 mr-2 text-gray-400" />
+        <span className="text-sm text-gray-500 italic">No document available</span>
+      </div>
+    );
+  }
+  
   const filename = getDocumentFilename(documentPath);
   
   return (

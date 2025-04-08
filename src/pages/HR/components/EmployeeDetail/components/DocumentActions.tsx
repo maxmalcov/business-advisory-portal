@@ -15,7 +15,9 @@ const DocumentActions: React.FC<DocumentActionsProps> = ({ documentPath, filenam
   
   const handleViewDocument = async () => {
     try {
+      console.log('Attempting to view document:', documentPath);
       const signedUrl = await getDocumentUrl(documentPath);
+      console.log('Successfully generated signed URL:', signedUrl);
       window.open(signedUrl, '_blank');
     } catch (error) {
       console.error('Error viewing document:', error);
@@ -29,7 +31,9 @@ const DocumentActions: React.FC<DocumentActionsProps> = ({ documentPath, filenam
   
   const handleDownloadDocument = async () => {
     try {
+      console.log('Attempting to download document:', documentPath);
       const signedUrl = await getDocumentUrl(documentPath);
+      console.log('Successfully generated signed URL for download:', signedUrl);
       
       // Create an anchor element and trigger download
       const link = document.createElement('a');
