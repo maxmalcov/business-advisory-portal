@@ -18,7 +18,6 @@ import AdminUserManagement from "./pages/AdminUserManagement";
 import AdminLogs from "./pages/AdminLogs";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
 import Invoices from "./pages/Invoices";
-import CreateInvoice from "./pages/Invoices/Create";
 import SupplierInvoices from "./pages/SupplierInvoices";
 import NewEmployee from "./pages/HR/NewEmployee";
 import Contracts from "./pages/Contracts";
@@ -81,11 +80,6 @@ const App = () => (
                 <Route path="invoices" element={
                   <ProtectedRoute requiredRole="client">
                     <Invoices />
-                  </ProtectedRoute>
-                } />
-                <Route path="invoices/create" element={
-                  <ProtectedRoute requiredRole="client">
-                    <CreateInvoice />
                   </ProtectedRoute>
                 } />
                 <Route path="supplier-invoices" element={
