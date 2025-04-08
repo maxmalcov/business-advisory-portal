@@ -37,23 +37,23 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
   };
   
   return (
-    <div className="space-y-6">
-      {/* Header Section with Avatar and Title */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16 border-2 border-gray-100">
-            <AvatarFallback className="bg-blue-100 text-blue-600 text-xl">
+    <div className="space-y-4">
+      {/* Header Section with Avatar and Title - Made more compact */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12 border border-gray-100">
+            <AvatarFallback className="bg-blue-100 text-blue-600 text-lg">
               {getInitials(employee.fullName)}
             </AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-xl font-bold">{employee.fullName}</h2>
-            <p className="text-gray-500">{employee.position}</p>
+            <h2 className="text-lg font-bold">{employee.fullName}</h2>
+            <p className="text-sm text-gray-500">{employee.position}</p>
           </div>
         </div>
         {employee.status === 'active' ? (
-          <div className="bg-green-100 text-green-600 px-4 py-2 rounded-md flex items-center gap-2">
-            <CheckCircle className="h-4 w-4" />
+          <div className="bg-green-100 text-green-600 px-3 py-1 rounded-md flex items-center gap-1 text-sm">
+            <CheckCircle className="h-3 w-3" />
             <span className="font-medium">Active</span>
           </div>
         ) : (
@@ -61,94 +61,94 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
         )}
       </div>
       
-      {/* Basic Information Card */}
-      <Card className="overflow-hidden border-0 shadow-md">
-        <div className="bg-gray-50 px-6 py-3 border-b">
-          <h3 className="text-md font-medium flex items-center">
-            <User className="h-4 w-4 mr-2 text-blue-600" />
+      {/* Basic Information Card - More compact layout */}
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <div className="bg-gray-50 px-4 py-2 border-b">
+          <h3 className="text-sm font-medium flex items-center">
+            <User className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
             Basic Information
           </h3>
         </div>
-        <CardContent className="pt-4">
-          <div className="grid grid-cols-2 gap-4">
+        <CardContent className="pt-3 pb-3 px-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
             <div>
-              <p className="text-sm font-medium text-gray-500">Company Name</p>
-              <p className="text-sm font-semibold">{employee.companyName || '-'}</p>
+              <p className="font-medium text-gray-500">Company Name</p>
+              <p className="font-semibold">{employee.companyName || '-'}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">Status</p>
-              <p className="text-sm font-semibold">{employee.status === 'active' ? 'Active' : 'Terminated'}</p>
+              <p className="font-medium text-gray-500">Status</p>
+              <p className="font-semibold">{employee.status === 'active' ? 'Active' : 'Terminated'}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">Position</p>
-              <p className="text-sm font-semibold">{employee.position || '-'}</p>
+              <p className="font-medium text-gray-500">Position</p>
+              <p className="font-semibold">{employee.position || '-'}</p>
             </div>
             {employee.email && (
               <div>
-                <p className="text-sm font-medium text-gray-500">Email</p>
-                <p className="text-sm font-semibold">{employee.email}</p>
+                <p className="font-medium text-gray-500">Email</p>
+                <p className="font-semibold">{employee.email}</p>
               </div>
             )}
           </div>
         </CardContent>
       </Card>
       
-      {/* Employment Dates Card */}
-      <Card className="overflow-hidden border-0 shadow-md">
-        <div className="bg-gray-50 px-6 py-3 border-b">
-          <h3 className="text-md font-medium flex items-center">
-            <Calendar className="h-4 w-4 mr-2 text-blue-600" />
+      {/* Employment Dates Card - More compact */}
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <div className="bg-gray-50 px-4 py-2 border-b">
+          <h3 className="text-sm font-medium flex items-center">
+            <Calendar className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
             Employment Dates
           </h3>
         </div>
-        <CardContent className="pt-4">
-          <div className="grid grid-cols-2 gap-4">
+        <CardContent className="pt-3 pb-3 px-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
             <div>
-              <p className="text-sm font-medium text-gray-500">Start Date</p>
-              <p className="text-sm font-semibold">{formatDate(employee.startDate)}</p>
+              <p className="font-medium text-gray-500">Start Date</p>
+              <p className="font-semibold">{formatDate(employee.startDate)}</p>
             </div>
             {(employee.status === 'terminated' || employee.endDate) && (
               <div>
-                <p className="text-sm font-medium text-gray-500">End Date</p>
-                <p className="text-sm font-semibold">{formatDate(employee.endDate)}</p>
+                <p className="font-medium text-gray-500">End Date</p>
+                <p className="font-semibold">{formatDate(employee.endDate)}</p>
               </div>
             )}
           </div>
         </CardContent>
       </Card>
       
-      {/* Identification Card */}
-      <Card className="overflow-hidden border-0 shadow-md">
-        <div className="bg-gray-50 px-6 py-3 border-b">
-          <h3 className="text-md font-medium flex items-center">
-            <Briefcase className="h-4 w-4 mr-2 text-blue-600" />
+      {/* Identification Card - More compact */}
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <div className="bg-gray-50 px-4 py-2 border-b">
+          <h3 className="text-sm font-medium flex items-center">
+            <Briefcase className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
             Identification
           </h3>
         </div>
-        <CardContent className="pt-4">
+        <CardContent className="pt-3 pb-3 px-4">
           {employee.dniTie || employee.idDocument || employee.socialSecurityNumber ? (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
               {employee.dniTie && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500">DNI/TIE</p>
-                  <p className="text-sm font-semibold">{employee.dniTie}</p>
+                  <p className="font-medium text-gray-500">DNI/TIE</p>
+                  <p className="font-semibold">{employee.dniTie}</p>
                 </div>
               )}
               
               {employee.socialSecurityNumber && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Social Security Number</p>
-                  <p className="text-sm font-semibold">{employee.socialSecurityNumber}</p>
+                  <p className="font-medium text-gray-500">Social Security Number</p>
+                  <p className="font-semibold">{employee.socialSecurityNumber}</p>
                 </div>
               )}
               
               {employee.idDocument && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500">ID Document</p>
+                  <p className="font-medium text-gray-500">ID Document</p>
                   <div className="flex items-center">
-                    <p className="text-sm font-semibold truncate max-w-[150px]">{employee.idDocument}</p>
-                    <Button variant="ghost" size="sm" className="ml-2 h-6 p-1">
-                      <FileText className="h-3.5 w-3.5" />
+                    <p className="font-semibold truncate max-w-[150px]">{employee.idDocument}</p>
+                    <Button variant="ghost" size="sm" className="ml-1 h-5 p-0">
+                      <FileText className="h-3 w-3" />
                       <span className="sr-only">View document</span>
                     </Button>
                   </div>
@@ -161,21 +161,21 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
         </CardContent>
       </Card>
       
-      {/* Financial Information Card */}
+      {/* Financial Information Card - More compact */}
       {(employee.salary || employee.iban) && (
-        <Card className="overflow-hidden border-0 shadow-md">
-          <div className="bg-gray-50 px-6 py-3 border-b">
-            <h3 className="text-md font-medium flex items-center">
-              <DollarSign className="h-4 w-4 mr-2 text-blue-600" />
+        <Card className="overflow-hidden border-0 shadow-sm">
+          <div className="bg-gray-50 px-4 py-2 border-b">
+            <h3 className="text-sm font-medium flex items-center">
+              <DollarSign className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
               Financial Information
             </h3>
           </div>
-          <CardContent className="pt-4">
-            <div className="grid grid-cols-2 gap-4">
+          <CardContent className="pt-3 pb-3 px-4">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
               {employee.salary && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Salary</p>
-                  <p className="text-sm font-semibold">
+                  <p className="font-medium text-gray-500">Salary</p>
+                  <p className="font-semibold">
                     {employee.salary} EUR {employee.salaryType === 'gross' ? '(Gross)' : '(Net)'}
                   </p>
                 </div>
@@ -183,8 +183,8 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
               
               {employee.iban && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500">IBAN</p>
-                  <p className="text-sm font-semibold">{employee.iban}</p>
+                  <p className="font-medium text-gray-500">IBAN</p>
+                  <p className="font-semibold">{employee.iban}</p>
                 </div>
               )}
             </div>
@@ -192,37 +192,37 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
         </Card>
       )}
       
-      {/* Contact Information */}
+      {/* Contact Information - More compact */}
       {employee.address && (
-        <Card className="overflow-hidden border-0 shadow-md">
-          <div className="bg-gray-50 px-6 py-3 border-b">
-            <h3 className="text-md font-medium flex items-center">
-              <Home className="h-4 w-4 mr-2 text-blue-600" />
+        <Card className="overflow-hidden border-0 shadow-sm">
+          <div className="bg-gray-50 px-4 py-2 border-b">
+            <h3 className="text-sm font-medium flex items-center">
+              <Home className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
               Contact Information
             </h3>
           </div>
-          <CardContent className="pt-4">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Address</p>
-              <p className="text-sm font-semibold">{employee.address}</p>
+          <CardContent className="pt-3 pb-3 px-4">
+            <div className="text-sm">
+              <p className="font-medium text-gray-500">Address</p>
+              <p className="font-semibold">{employee.address}</p>
             </div>
           </CardContent>
         </Card>
       )}
       
-      {/* Schedule Card */}
-      <Card className="overflow-hidden border-0 shadow-md">
-        <div className="bg-gray-50 px-6 py-3 border-b">
-          <h3 className="text-md font-medium flex items-center">
-            <Clock className="h-4 w-4 mr-2 text-blue-600" />
+      {/* Schedule Card - More compact */}
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <div className="bg-gray-50 px-4 py-2 border-b">
+          <h3 className="text-sm font-medium flex items-center">
+            <Clock className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
             Schedule
           </h3>
         </div>
-        <CardContent className="pt-4">
+        <CardContent className="pt-3 pb-3 px-4">
           {employee.weeklySchedule ? (
-            <div>
-              <p className="text-sm font-medium text-gray-500">Weekly Working Schedule</p>
-              <p className="text-sm font-semibold whitespace-pre-line mt-1">{employee.weeklySchedule}</p>
+            <div className="text-sm">
+              <p className="font-medium text-gray-500">Weekly Working Schedule</p>
+              <p className="font-semibold whitespace-pre-line">{employee.weeklySchedule}</p>
             </div>
           ) : (
             <p className="text-sm text-gray-500 italic">No schedule information available</p>
@@ -230,16 +230,16 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
         </CardContent>
       </Card>
       
-      {/* Comments Section */}
+      {/* Comments Section - More compact */}
       {employee.comments && (
-        <Card className="overflow-hidden border-0 shadow-md">
-          <div className="bg-gray-50 px-6 py-3 border-b">
-            <h3 className="text-md font-medium flex items-center">
-              <Mail className="h-4 w-4 mr-2 text-blue-600" />
+        <Card className="overflow-hidden border-0 shadow-sm">
+          <div className="bg-gray-50 px-4 py-2 border-b">
+            <h3 className="text-sm font-medium flex items-center">
+              <Mail className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
               Additional Comments
             </h3>
           </div>
-          <CardContent className="pt-4">
+          <CardContent className="pt-3 pb-3 px-4">
             <p className="text-sm whitespace-pre-line">{employee.comments}</p>
           </CardContent>
         </Card>

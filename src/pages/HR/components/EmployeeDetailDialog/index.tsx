@@ -65,8 +65,8 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={`p-0 overflow-hidden ${isMobile ? 'w-[95vw] max-w-none' : 'sm:max-w-[650px] md:max-w-[700px]'} max-h-[90vh]`}>
         <div className="flex flex-col h-full">
-          <DialogHeader className="px-6 py-4 border-b bg-gray-50 sticky top-0 z-10 flex flex-row items-center justify-between">
-            <DialogTitle className="text-xl font-bold">
+          <DialogHeader className="px-4 py-3 border-b bg-gray-50 sticky top-0 z-10 flex flex-row items-center justify-between">
+            <DialogTitle className="text-lg font-bold">
               {isEditing ? 'Edit Employee' : 'Employee Details'}
             </DialogTitle>
             <div className="flex items-center gap-2">
@@ -76,7 +76,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
                   size="sm"
                   onClick={() => setIsEditing(true)}
                 >
-                  <Pencil className="h-4 w-4 mr-2" />
+                  <Pencil className="h-4 w-4 mr-1" />
                   Edit
                 </Button>
               )}
@@ -84,7 +84,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={() => onOpenChange(false)}
-                className="rounded-full h-8 w-8 p-0"
+                className="rounded-full h-7 w-7 p-0"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
@@ -92,7 +92,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
             </div>
           </DialogHeader>
           
-          <ScrollArea className="flex-1 p-6" style={{ maxHeight: 'calc(90vh - 70px)' }}>
+          <ScrollArea className="flex-1 p-4" style={{ maxHeight: 'calc(90vh - 60px)' }}>
             <EmployeeDetailDialogContent
               employee={employee}
               isLoading={isLoading}
