@@ -18,43 +18,24 @@ import UploadGuidelines from './UploadGuidelines';
 const SupplierInvoiceUpload: React.FC = () => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadComplete, setUploadComplete] = useState(false);
   
   const { 
     selectedFiles, 
     isDragging, 
     isLoading, 
+    uploadProgress,
+    uploadComplete, 
     setIsLoading,
     handleFileChange, 
     handleDragOver, 
     handleDragLeave, 
     handleDrop, 
     handleRemoveFile,
+    uploadFilesToSupabase,
     resetFiles
   } = useSupplierFileUpload();
   
   const { sendInvoiceByEmail, isSending } = useSupplierInvoiceEmail();
-
-  const simulateProgress = () => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.random() * 10;
-      if (progress > 95) {
-        clearInterval(interval);
-        setUploadProgress(100);
-        
-        // Small delay before marking as complete for better UX
-        setTimeout(() => {
-          setUploadComplete(true);
-        }, 500);
-      } else {
-        setUploadProgress(Math.min(progress, 95));
-      }
-    }, 300);
-    
-    return interval;
-  };
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
@@ -67,23 +48,15 @@ const SupplierInvoiceUpload: React.FC = () => {
     }
 
     setIsLoading(true);
-    setUploadProgress(0);
-    setUploadComplete(false);
     
-    // Start progress simulation
-    const progressInterval = simulateProgress();
-
     try {
-      // Here we would normally upload the files to the server
-      // For now, we'll just simulate uploading and send the email notification
+      // Upload files to Supabase
+      const uploadSuccess = await uploadFilesToSupabase();
       
-      // Simulate a delay for the upload
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Stop progress simulation and set to 100%
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-      setUploadComplete(true);
+      if (!uploadSuccess) {
+        setIsLoading(false);
+        return;
+      }
       
       // Send email notification
       const emailSent = await sendInvoiceByEmail({ files: selectedFiles });
@@ -97,15 +70,11 @@ const SupplierInvoiceUpload: React.FC = () => {
       // Reset the file input after a short delay to show completion state
       setTimeout(() => {
         resetFiles();
-        setUploadProgress(0);
-        setUploadComplete(false);
         setIsLoading(false);
       }, 1500);
       
     } catch (error) {
       console.error('Error during upload process:', error);
-      // Stop progress simulation
-      clearInterval(progressInterval);
       
       toast({
         variant: 'destructive',
@@ -114,8 +83,6 @@ const SupplierInvoiceUpload: React.FC = () => {
       });
       
       setIsLoading(false);
-      setUploadProgress(0);
-      setUploadComplete(false);
     }
   };
 
