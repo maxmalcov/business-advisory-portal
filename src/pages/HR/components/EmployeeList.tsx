@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -13,8 +14,6 @@ import { Employee } from '../types/employee';
 import { Skeleton } from '@/components/ui/skeleton';
 import EmployeeDetailDialog from './EmployeeDetailDialog';
 import { FilterInput } from './FilterInput';
-import { EmployeeStatus } from '../types/employee';
-import EmployeeStatusToggle from './EmployeeStatusToggle';
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -30,7 +29,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [filterText, setFilterText] = useState('');
-  const [activeStatus, setActiveStatus] = useState<EmployeeStatus>('active');
 
   const formatDate = (dateStr: string) => {
     try {

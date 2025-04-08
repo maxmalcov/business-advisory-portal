@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -76,10 +77,14 @@ const HR: React.FC = () => {
       </div>
       
       <div className="mt-8">
-        <EmployeeStatusToggle 
-          value={statusFilter} 
-          onChange={setStatusFilter} 
-        />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h2 className="text-xl font-semibold">Employee List</h2>
+          <EmployeeStatusToggle 
+            value={statusFilter} 
+            onChange={setStatusFilter} 
+          />
+        </div>
+        
         <EmployeeList 
           employees={employees} 
           isLoading={isLoading} 
