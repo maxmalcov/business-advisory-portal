@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Languages
@@ -46,8 +45,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Navigation
     'nav.dashboard': 'Dashboard',
-    'nav.invoices': 'Invoices',
-    'nav.invoices.create': 'Create New',
+    'nav.sale_invoices': 'Sale Invoices',
+    'nav.sale_invoices.create': 'Create New',
     'nav.supplier_invoices': 'Supplier Invoices',
     'nav.hr': 'HR & Payroll',
     'nav.hr.new_employee': 'New Employee',
@@ -77,7 +76,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.quick_actions': 'Quick Actions',
     
     // Invoices
-    'invoices.title': 'Invoices',
+    'invoices.title': 'Sale Invoices',
     'invoices.upload': 'Upload Invoice',
     'invoices.history': 'Upload History',
     'invoices.date': 'Date',
@@ -202,8 +201,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Navigation
     'nav.dashboard': 'Panel de control',
-    'nav.invoices': 'Facturas',
-    'nav.invoices.create': 'Crear nueva',
+    'nav.sale_invoices': 'Facturas de Venta',
+    'nav.sale_invoices.create': 'Crear nueva',
     'nav.supplier_invoices': 'Facturas de proveedores',
     'nav.hr': 'RRHH & Nóminas',
     'nav.hr.new_employee': 'Nuevo empleado',
@@ -233,7 +232,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.quick_actions': 'Acciones rápidas',
     
     // Invoices
-    'invoices.title': 'Facturas',
+    'invoices.title': 'Facturas de Venta',
     'invoices.upload': 'Subir factura',
     'invoices.history': 'Historial de subidas',
     'invoices.date': 'Fecha',
@@ -358,8 +357,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Navigation
     'nav.dashboard': 'Панель управления',
-    'nav.invoices': 'Счета',
-    'nav.invoices.create': 'Создать новый',
+    'nav.sale_invoices': 'Счета Продаж',
+    'nav.sale_invoices.create': 'Создать новый',
     'nav.supplier_invoices': 'Счета поставщиков',
     'nav.hr': 'HR и зарплата',
     'nav.hr.new_employee': 'Новый сотрудник',
@@ -389,7 +388,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.quick_actions': 'Быстрые действия',
     
     // Invoices
-    'invoices.title': 'Счета',
+    'invoices.title': 'Счета Продаж',
     'invoices.upload': 'Загрузить счет',
     'invoices.history': 'История загрузок',
     'invoices.date': 'Дата',

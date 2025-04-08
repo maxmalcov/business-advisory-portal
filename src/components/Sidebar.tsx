@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -45,12 +44,12 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
       icon: LayoutGrid,
     },
     {
-      name: t('nav.invoices'),
+      name: t('nav.sale_invoices'),
       path: '/invoices',
       icon: FileUp,
       children: [
         {
-          name: t('nav.invoices.create'),
+          name: t('nav.sale_invoices.create'),
           path: '/invoices/create',
           icon: FileText,
         },
