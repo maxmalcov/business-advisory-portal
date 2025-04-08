@@ -1,10 +1,7 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileUp } from 'lucide-react';
 import InvoiceUpload from './components/InvoiceUpload';
 import InvoiceList from './components/InvoiceList';
 import { mockInvoices } from './mockData';
@@ -14,14 +11,8 @@ const Invoices: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div>
         <h1 className="text-2xl font-bold">{t('invoices.title')}</h1>
-        <Link to="/invoices/create">
-          <Button>
-            <FileUp className="mr-2 h-4 w-4" />
-            {t('invoices.upload')}
-          </Button>
-        </Link>
       </div>
 
       <Tabs defaultValue="upload" className="w-full">
