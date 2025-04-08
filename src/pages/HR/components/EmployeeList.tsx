@@ -14,6 +14,8 @@ import { Employee } from '../types/employee';
 import { Skeleton } from '@/components/ui/skeleton';
 import EmployeeDetailDialog from './EmployeeDetailDialog';
 import { FilterInput } from './FilterInput';
+import { Eye } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -66,6 +68,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
               <TableHead>Status</TableHead>
               <TableHead>Start Date</TableHead>
               <TableHead>End Date</TableHead>
+              <TableHead className="w-[60px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -76,6 +79,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                 <TableCell><Skeleton className="h-5 w-[80px]" /></TableCell>
                 <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
                 <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
+                <TableCell><Skeleton className="h-5 w-[30px]" /></TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -104,12 +108,13 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                 <TableHead>Status</TableHead>
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
+                <TableHead className="w-[60px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredEmployees.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center h-24">No employees found</TableCell>
+                  <TableCell colSpan={6} className="text-center h-24">No employees found</TableCell>
                 </TableRow>
               ) : (
                 filteredEmployees.map((employee) => (
@@ -127,6 +132,27 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                     </TableCell>
                     <TableCell>{formatDate(employee.startDate)}</TableCell>
                     <TableCell>{employee.endDate ? formatDate(employee.endDate) : '-'}</TableCell>
+                    <TableCell className="text-right">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEmployeeClick(employee);
+                              }}
+                              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                              aria-label="View employee details"
+                            >
+                              <Eye className="h-4 w-4 text-gray-500" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>View details</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
