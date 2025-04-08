@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -104,12 +103,16 @@ const NewEmployeeForm: React.FC = () => {
         .from('employee_documents')
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false,
-          onUploadProgress: (progress) => {
-            const calculatedProgress = (progress.loaded / progress.total) * 100;
-            setUploadProgress(calculatedProgress);
-          }
+          upsert: false
         });
+      
+      // Track upload progress manually since onUploadProgress is not supported
+      // This is just for UI feedback
+      setUploadProgress(50); // Set to 50% immediately
+      
+      // Add a small delay to simulate progress
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setUploadProgress(100); // Set to 100% after delay
       
       if (error) {
         throw error;

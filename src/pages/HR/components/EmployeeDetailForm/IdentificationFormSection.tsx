@@ -57,17 +57,26 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
       const fileExt = file.name.split('.').pop();
       const filePath = `${timestamp}_${file.name}`;
       
+      // Set initial progress for better UX
+      setUploadProgress(10);
+      
       // Upload file to Supabase storage
       const { data, error } = await supabase.storage
         .from('employee_documents')
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false,
-          onUploadProgress: (progress) => {
-            const calculatedProgress = (progress.loaded / progress.total) * 100;
-            setUploadProgress(calculatedProgress);
-          }
+          upsert: false
         });
+      
+      // Simulate progress since onUploadProgress is not available
+      setUploadProgress(50);
+      
+      // Add a small delay to simulate progress
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setUploadProgress(80);
+      
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setUploadProgress(100);
       
       if (error) throw error;
       
@@ -90,7 +99,7 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
       });
     } finally {
       setIsUploading(false);
-      setUploadProgress(0);
+      setTimeout(() => setUploadProgress(0), 1000); // Reset progress after a short delay
     }
   };
 
