@@ -45,13 +45,13 @@ const TerminationForm = ({
             return;
           }
           
-          // Check if data exists before accessing properties
-          if (data) {
+          // Check if data exists and has start_date property before accessing it
+          if (data && 'start_date' in data) {
             // Safely access start_date and ensure it's a string
             const startDate = typeof data.start_date === 'string' ? data.start_date : undefined;
             setEmployeeStartDate(startDate);
           } else {
-            console.warn('Employee data not found:', selectedEmployee);
+            console.warn('Employee data not found or missing start_date:', selectedEmployee);
             setEmployeeStartDate(undefined);
           }
         } catch (err) {
