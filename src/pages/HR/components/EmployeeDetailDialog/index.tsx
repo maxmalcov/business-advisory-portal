@@ -36,7 +36,13 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
   
   useEffect(() => {
     if (open && employeeId) {
+      console.log("Dialog opened with employeeId:", employeeId);
       fetchEmployeeData(employeeId);
+    }
+    
+    // Reset editing state when dialog opens/closes
+    if (!open) {
+      setIsEditing(false);
     }
   }, [employeeId, open, fetchEmployeeData]);
 
