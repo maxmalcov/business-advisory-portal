@@ -14,12 +14,12 @@ export interface Employee {
   idDocument?: string;
   weeklySchedule?: string;
   
-  // Additional fields that might be collected but not stored in DB
-  email?: string;
+  // Additional fields now available in the database
   socialSecurityNumber?: string;
   salary?: string;
   salaryType?: SalaryType;
   iban?: string;
+  email?: string;
   address?: string;
   comments?: string;
 }

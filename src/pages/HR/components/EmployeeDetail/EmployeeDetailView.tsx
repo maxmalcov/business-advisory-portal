@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Employee } from '../../types/employee';
-import { User, Briefcase, Calendar, Clock, FileText, Mail, Home, DollarSign, CreditCard, CheckCircle } from 'lucide-react';
+import { User, Briefcase, Calendar, Clock, FileText, Mail, Home, DollarSign, CreditCard, CheckCircle, Phone } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';

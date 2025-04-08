@@ -126,9 +126,14 @@ const NewEmployeeForm: React.FC = () => {
         company_name: formData.companyName || null,
         dni_tie: formData.employeeDni || null,
         weekly_schedule: formData.schedule || null,
+        social_security_number: formData.socialSecurityNumber || null,
+        salary: formData.salary || null,
+        salary_type: formData.salaryType || null,
+        iban: formData.iban || null,
+        email: formData.employeeEmail || null,
+        address: formData.address || null,
+        comments: formData.comments || null,
         id_document: formData.idDocument ? formData.idDocument.name : null
-        // Note: Additional fields like social security number, salary, etc.
-        // would need new columns in the employees table if you want to store them
       };
       
       console.log('Sending employee data to Supabase:', employeeData);

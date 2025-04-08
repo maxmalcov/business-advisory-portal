@@ -11,42 +11,63 @@ export type Database = {
     Tables: {
       employees: {
         Row: {
+          address: string | null
+          comments: string | null
           company_name: string | null
           created_at: string | null
           dni_tie: string | null
+          email: string | null
           end_date: string | null
           full_name: string
+          iban: string | null
           id: string
           id_document: string | null
           position: string
+          salary: string | null
+          salary_type: string | null
+          social_security_number: string | null
           start_date: string
           status: string
           updated_at: string | null
           weekly_schedule: string | null
         }
         Insert: {
+          address?: string | null
+          comments?: string | null
           company_name?: string | null
           created_at?: string | null
           dni_tie?: string | null
+          email?: string | null
           end_date?: string | null
           full_name: string
+          iban?: string | null
           id?: string
           id_document?: string | null
           position: string
+          salary?: string | null
+          salary_type?: string | null
+          social_security_number?: string | null
           start_date: string
           status: string
           updated_at?: string | null
           weekly_schedule?: string | null
         }
         Update: {
+          address?: string | null
+          comments?: string | null
           company_name?: string | null
           created_at?: string | null
           dni_tie?: string | null
+          email?: string | null
           end_date?: string | null
           full_name?: string
+          iban?: string | null
           id?: string
           id_document?: string | null
           position?: string
+          salary?: string | null
+          salary_type?: string | null
+          social_security_number?: string | null
           start_date?: string
           status?: string
           updated_at?: string | null

@@ -62,8 +62,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
         idDocument: String(rowData.id_document || ''),
         weeklySchedule: String(rowData.weekly_schedule || ''),
         
-        // Map any additional fields that might be in the database
-        // These will be undefined if not present in the database
+        // Map the additional fields we've added to the database
         socialSecurityNumber: rowData.social_security_number ? String(rowData.social_security_number) : undefined,
         salary: rowData.salary ? String(rowData.salary) : undefined,
         salaryType: rowData.salary_type as 'gross' | 'net' | undefined,
@@ -107,37 +106,15 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
         company_name: updatedEmployee.companyName || null,
         dni_tie: updatedEmployee.dniTie || null,
         weekly_schedule: updatedEmployee.weeklySchedule || null,
-        id_document: updatedEmployee.idDocument || null
+        id_document: updatedEmployee.idDocument || null,
+        social_security_number: updatedEmployee.socialSecurityNumber || null,
+        salary: updatedEmployee.salary || null,
+        salary_type: updatedEmployee.salaryType || null,
+        iban: updatedEmployee.iban || null,
+        email: updatedEmployee.email || null,
+        address: updatedEmployee.address || null,
+        comments: updatedEmployee.comments || null
       };
-      
-      // Add additional fields if they exist in the updated employee data
-      if (updatedEmployee.socialSecurityNumber) {
-        Object.assign(updateData, { social_security_number: updatedEmployee.socialSecurityNumber });
-      }
-      
-      if (updatedEmployee.salary) {
-        Object.assign(updateData, { salary: updatedEmployee.salary });
-      }
-      
-      if (updatedEmployee.salaryType) {
-        Object.assign(updateData, { salary_type: updatedEmployee.salaryType });
-      }
-      
-      if (updatedEmployee.iban) {
-        Object.assign(updateData, { iban: updatedEmployee.iban });
-      }
-      
-      if (updatedEmployee.email) {
-        Object.assign(updateData, { email: updatedEmployee.email });
-      }
-      
-      if (updatedEmployee.address) {
-        Object.assign(updateData, { address: updatedEmployee.address });
-      }
-      
-      if (updatedEmployee.comments) {
-        Object.assign(updateData, { comments: updatedEmployee.comments });
-      }
       
       const { error } = await employeesTable()
         .update(updateData)
