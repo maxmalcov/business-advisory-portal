@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
@@ -54,17 +55,20 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
           throw new Error('Employee not found');
         }
         
+        // Type assertion to handle the returned data
+        const rowData = data as any;
+        
         const employeeData: Employee = {
-          id: String(data?.id || ''),
-          fullName: String(data?.full_name || ''),
-          position: String(data?.position || ''),
-          status: (data?.status as 'active' | 'terminated') || 'active',
-          startDate: String(data?.start_date || ''),
-          endDate: data?.end_date ? String(data?.end_date) : undefined,
-          companyName: String(data?.company_name || ''),
-          dniTie: String(data?.dni_tie || ''),
-          idDocument: String(data?.id_document || ''),
-          weeklySchedule: String(data?.weekly_schedule || '')
+          id: String(rowData.id || ''),
+          fullName: String(rowData.full_name || ''),
+          position: String(rowData.position || ''),
+          status: (rowData.status as 'active' | 'terminated') || 'active',
+          startDate: String(rowData.start_date || ''),
+          endDate: rowData.end_date ? String(rowData.end_date) : undefined,
+          companyName: String(rowData.company_name || ''),
+          dniTie: String(rowData.dni_tie || ''),
+          idDocument: String(rowData.id_document || ''),
+          weeklySchedule: String(rowData.weekly_schedule || '')
         };
         
         console.log('Employee data fetched successfully:', employeeData);
