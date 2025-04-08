@@ -1,5 +1,7 @@
+
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './i18n';
 import Layout from './components/Layout';
 import Index from './pages/Index';
@@ -82,7 +84,7 @@ function App() {
                 <Route path="admin/services/create" element={<ServiceEditor />} />
                 <Route path="admin/subscriptions" element={<AdminSubscriptions />} />
                 <Route path="admin/users" element={<AdminUserManagement />} />
-                <Route path="admin/logs" element={<LogsContent />} />
+                <Route path="admin/logs" element={<LogsContent logs={[]} chartData={[]} weeklyData={[]} />} />
               </Route>
               
               {/* Catch all route */}

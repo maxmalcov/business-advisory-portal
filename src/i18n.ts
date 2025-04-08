@@ -16,12 +16,9 @@ const resources = {
         dashboard: "Dashboard",
         invoices: "Invoices",
         sale_invoices: "Sale Invoices",
-        sale_invoices: {
-          create: "Upload Sale Invoice"
-        },
         supplier_invoices: "Supplier Invoices",
         hr: "HR",
-        hr: {
+        hr_sections: {
           new_employee: "New Employee",
           termination: "Termination",
           work_hours: "Work Hours"
@@ -34,8 +31,11 @@ const resources = {
         subscriptions: "Subscriptions",
         users: "User Management",
         services: "Services",
-        services: {
+        services_actions: {
           add: "Add Service"
+        },
+        sale_invoices_actions: {
+          create: "Upload Sale Invoice"
         }
       },
       admin: {
@@ -45,7 +45,14 @@ const resources = {
       invoices: {
         title: "Sale Invoices",
         upload: "Upload",
-        upload_title: "Upload Sale Invoice"
+        upload_title: "Upload Sale Invoice",
+        history: "History",
+        date: "Date",
+        filename: "Filename",
+        type: "Type",
+        status: "Status",
+        status_processed: "Processed",
+        status_pending: "Pending"
       }
     }
   },
@@ -62,12 +69,9 @@ const resources = {
         dashboard: "Panel",
         invoices: "Facturas",
         sale_invoices: "Facturas de Venta",
-        sale_invoices: {
-          create: "Subir Factura de Venta"
-        },
         supplier_invoices: "Facturas de Proveedor",
         hr: "RRHH",
-        hr: {
+        hr_sections: {
           new_employee: "Nuevo Empleado",
           termination: "Terminación",
           work_hours: "Horas de Trabajo"
@@ -80,8 +84,11 @@ const resources = {
         subscriptions: "Suscripciones",
         users: "Gestión de Usuarios",
         services: "Servicios",
-        services: {
+        services_actions: {
           add: "Añadir Servicio"
+        },
+        sale_invoices_actions: {
+          create: "Subir Factura de Venta"
         }
       },
       admin: {
@@ -91,7 +98,14 @@ const resources = {
       invoices: {
         title: "Facturas de Venta",
         upload: "Subir",
-        upload_title: "Subir Factura de Venta"
+        upload_title: "Subir Factura de Venta",
+        history: "Historial",
+        date: "Fecha",
+        filename: "Nombre de archivo",
+        type: "Tipo",
+        status: "Estado",
+        status_processed: "Procesado",
+        status_pending: "Pendiente"
       }
     }
   },
@@ -108,12 +122,9 @@ const resources = {
         dashboard: "Панель управления",
         invoices: "Счета",
         sale_invoices: "Счета продаж",
-        sale_invoices: {
-          create: "Загрузить счет продажи"
-        },
         supplier_invoices: "Счета поставщиков",
         hr: "HR",
-        hr: {
+        hr_sections: {
           new_employee: "Новый сотрудник",
           termination: "Увольнение",
           work_hours: "Рабочее время"
@@ -126,8 +137,11 @@ const resources = {
         subscriptions: "Подписки",
         users: "Управление пользователями",
         services: "Услуги",
-        services: {
+        services_actions: {
           add: "Добавить услугу"
+        },
+        sale_invoices_actions: {
+          create: "Загрузить счет продажи"
         }
       },
       admin: {
@@ -137,7 +151,14 @@ const resources = {
       invoices: {
         title: "Счета продаж",
         upload: "Загрузить",
-        upload_title: "Загрузить счет продажи"
+        upload_title: "Загрузить счет продажи",
+        history: "История",
+        date: "Дата",
+        filename: "Имя файла",
+        type: "Тип",
+        status: "Статус",
+        status_processed: "Обработан",
+        status_pending: "В ожидании"
       }
     }
   }
