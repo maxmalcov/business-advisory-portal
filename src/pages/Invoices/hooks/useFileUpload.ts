@@ -137,9 +137,10 @@ export const useFileUpload = (options: FileUploadOptions = {}) => {
           throw error;
         }
         
-        // Store metadata in the database
+        // Store metadata in the database - using the "as any" type assertion as a workaround
+        // for tables that might not be in the generated types yet
         const { error: dbError } = await supabase
-          .from('invoice_files')
+          .from('invoice_files' as any)
           .insert({
             user_id: user.id,
             file_path: storagePath,
@@ -147,7 +148,7 @@ export const useFileUpload = (options: FileUploadOptions = {}) => {
             file_size: file.size,
             invoice_type: 'sale',
             storage_path: data.path
-          });
+          } as any);
           
         if (dbError) {
           console.error('Error storing file metadata:', dbError);
