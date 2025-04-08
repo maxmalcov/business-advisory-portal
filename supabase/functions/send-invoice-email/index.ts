@@ -95,6 +95,8 @@ serve(async (req) => {
         attachments.push({
           filename: fileName,
           content: base64,
+          encoding: 'base64',  // Explicitly specify encoding
+          type: getContentType(fileName), // Get proper MIME type based on file extension
         });
         
         console.log(`File ${fileName} prepared for email`);
@@ -109,6 +111,8 @@ serve(async (req) => {
     // Determine appropriate email subject based on invoice type
     const invoiceTypeLabel = invoiceType === 'incoming' ? 'Supplier' : 'Sales';
     const senderName = companyName || userName;
+    
+    console.log(`About to send email with ${attachments.length} attachments`);
     
     // Send the email with attachments
     const emailResponse = await resend.emails.send({
@@ -169,3 +173,19 @@ serve(async (req) => {
     );
   }
 });
+
+// Helper function to determine MIME type from filename
+function getContentType(filename: string): string {
+  const extension = filename.split('.').pop()?.toLowerCase();
+  switch (extension) {
+    case 'pdf':
+      return 'application/pdf';
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'png':
+      return 'image/png';
+    default:
+      return 'application/octet-stream';
+  }
+}
