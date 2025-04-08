@@ -6,6 +6,7 @@ interface UploadGuidelinesProps {
   maxFiles?: number;
   acceptedFormats?: string[];
   emailAddress?: string | null;
+  emailType?: string;
 }
 
 const UploadGuidelines: React.FC<UploadGuidelinesProps> = ({
@@ -13,6 +14,7 @@ const UploadGuidelines: React.FC<UploadGuidelinesProps> = ({
   maxFiles = 15,
   acceptedFormats = ['PDF', 'JPG'],
   emailAddress,
+  emailType = 'general',
 }) => {
   return (
     <div className="bg-muted p-4 rounded-md text-sm space-y-1">
@@ -22,7 +24,7 @@ const UploadGuidelines: React.FC<UploadGuidelinesProps> = ({
       {emailAddress ? (
         <p className="text-green-600">Email notifications will be sent to: {emailAddress}</p>
       ) : (
-        <p className="text-amber-600">Warning: No incoming invoice email configured in your profile</p>
+        <p className="text-amber-600">Warning: No {emailType} invoice email configured in your profile</p>
       )}
     </div>
   );
