@@ -65,34 +65,34 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={`p-0 overflow-hidden ${isMobile ? 'w-[95vw] max-w-none' : 'sm:max-w-[650px] md:max-w-[700px]'} max-h-[90vh]`}>
         <div className="flex flex-col h-full">
-          <DialogHeader className="px-6 py-4 border-b bg-gray-50 sticky top-0 z-10">
+          <DialogHeader className="px-6 py-4 border-b bg-gray-50 sticky top-0 z-10 flex flex-row items-center justify-between">
             <DialogTitle className="text-xl font-bold">
               {isEditing ? 'Edit Employee' : 'Employee Details'}
             </DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenChange(false)}
-              className="absolute right-4 top-4 rounded-full h-8 w-8 p-0"
-              aria-label="Close"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {!isEditing && employee && !isLoading && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onOpenChange(false)}
+                className="rounded-full h-8 w-8 p-0"
+                aria-label="Close"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </DialogHeader>
           
           <ScrollArea className="flex-1 p-6" style={{ maxHeight: 'calc(90vh - 70px)' }}>
-            {!isEditing && employee && !isLoading && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(true)}
-                className="absolute right-6 top-16 z-10"
-              >
-                <Pencil className="h-4 w-4 mr-2" />
-                Edit
-              </Button>
-            )}
-            
             <EmployeeDetailDialogContent
               employee={employee}
               isLoading={isLoading}
