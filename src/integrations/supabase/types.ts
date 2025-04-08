@@ -18,6 +18,7 @@ export type Database = {
           full_name: string
           id: string
           id_document: string | null
+          id_document_url: string | null
           position: string
           start_date: string
           status: string
@@ -32,6 +33,7 @@ export type Database = {
           full_name: string
           id?: string
           id_document?: string | null
+          id_document_url?: string | null
           position: string
           start_date: string
           status: string
@@ -46,6 +48,7 @@ export type Database = {
           full_name?: string
           id?: string
           id_document?: string | null
+          id_document_url?: string | null
           position?: string
           start_date?: string
           status?: string

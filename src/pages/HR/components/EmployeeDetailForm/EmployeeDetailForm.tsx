@@ -30,6 +30,7 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
     handleStartDateChange,
     handleEndDateChange,
     handleStatusChange,
+    handleFileUpload,
     handleSubmit
   } = useEmployeeForm(employee, onSave);
   
@@ -48,6 +49,7 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
       <IdentificationFormSection 
         formData={formData}
         handleInputChange={handleInputChange}
+        handleFileUpload={handleFileUpload}
       />
       
       <EmploymentDatesFormSection 

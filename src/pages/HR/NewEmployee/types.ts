@@ -1,7 +1,7 @@
 
 export interface FormData {
   companyName: string;
-  fullName: string; // Added new field for employee's full name
+  fullName: string;
   employeeDni: string;
   startDate: Date | undefined;
   schedule: string;
@@ -14,6 +14,7 @@ export interface FormData {
   employeeEmail: string;
   comments: string;
   idDocument: File | null;
+  idDocumentUrl?: string;
 }
 
 export type FormErrors = Partial<Record<keyof FormData, string>>;

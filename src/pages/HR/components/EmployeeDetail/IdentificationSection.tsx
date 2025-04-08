@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Briefcase, Eye, FileText } from 'lucide-react';
+import { Briefcase, Eye, FileText, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Employee } from '../../types/employee';
 import { Card, CardContent } from '@/components/ui/card';
@@ -33,14 +33,23 @@ const IdentificationSection: React.FC<IdentificationSectionProps> = ({ employee 
             
             <div>
               <p className="text-sm font-medium mb-1">ID Document</p>
-              {employee.idDocument ? (
+              {employee.idDocumentUrl ? (
                 <div className="flex items-center">
                   <FileText className="h-4 w-4 mr-2 text-blue-500" />
-                  <span className="text-sm truncate max-w-[150px]">{employee.idDocument}</span>
-                  <Button variant="ghost" size="sm" className="ml-2 h-6 p-1">
-                    <Eye className="h-3.5 w-3.5" />
-                    <span className="sr-only">View document</span>
-                  </Button>
+                  <span className="text-sm truncate max-w-[150px]">
+                    {employee.idDocument || 'ID Document'}
+                  </span>
+                  <a
+                    href={employee.idDocumentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-2"
+                  >
+                    <Button variant="ghost" size="sm" className="h-6 p-1">
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      <span className="sr-only">View document</span>
+                    </Button>
+                  </a>
                 </div>
               ) : (
                 <p className="text-sm text-gray-500 italic">No document uploaded</p>

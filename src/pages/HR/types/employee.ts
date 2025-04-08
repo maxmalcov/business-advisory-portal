@@ -11,5 +11,6 @@ export interface Employee {
   companyName?: string;
   dniTie?: string;
   idDocument?: string;
+  idDocumentUrl?: string;
   weeklySchedule?: string;
 }

@@ -15,6 +15,7 @@ import RequiredFields from './FormSections/RequiredFields';
 import OptionalFields from './FormSections/OptionalFields';
 import { employeesTable } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 const NewEmployeeForm: React.FC = () => {
   const { t } = useLanguage();
@@ -54,19 +55,19 @@ const NewEmployeeForm: React.FC = () => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       
-      const isValidType = ['application/pdf', 'image/jpeg', 'image/jpg'].includes(file.type);
+      const isValidType = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'].includes(file.type);
       if (!isValidType) {
         setErrors((prev) => ({ 
           ...prev, 
-          idDocument: 'Only PDF and JPG files are accepted' 
+          idDocument: 'Only PDF, JPG, and PNG files are accepted' 
         }));
         return;
       }
       
-      if (file.size > 25 * 1024 * 1024) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
         setErrors((prev) => ({ 
           ...prev, 
-          idDocument: 'File size must be less than 25MB' 
+          idDocument: 'File size must be less than 5MB' 
         }));
         return;
       }
@@ -117,7 +118,7 @@ const NewEmployeeForm: React.FC = () => {
     try {
       console.log('Submitting employee data:', formData);
       
-      // Updated to include all relevant fields from the form
+      // First create the employee record
       const employeeData = {
         full_name: formData.fullName,
         position: formData.position,
@@ -127,19 +128,56 @@ const NewEmployeeForm: React.FC = () => {
         dni_tie: formData.employeeDni || null,
         weekly_schedule: formData.schedule || null,
         id_document: formData.idDocument ? formData.idDocument.name : null
-        // Note: Additional fields like social security number, salary, etc.
-        // would need new columns in the employees table if you want to store them
+        // Note: We'll update the id_document_url after uploading the file
       };
       
       console.log('Sending employee data to Supabase:', employeeData);
       
-      const { data, error } = await employeesTable()
+      const { data: employeeRecord, error } = await employeesTable()
         .insert(employeeData)
         .select();
         
       if (error) throw error;
       
-      console.log('Employee added successfully:', data);
+      console.log('Employee added successfully:', employeeRecord);
+      
+      // If there's a file to upload, upload it to storage
+      if (formData.idDocument && employeeRecord[0]?.id) {
+        const file = formData.idDocument;
+        const employeeId = employeeRecord[0].id;
+        const filename = `${Date.now()}-${file.name}`;
+        const filePath = `${employeeId}/${filename}`;
+        
+        console.log('Uploading file to Supabase Storage:', filePath);
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('employee-id-documents')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: true
+          });
+          
+        if (uploadError) {
+          console.error('Error uploading file:', uploadError);
+          // Continue even if file upload fails
+        } else {
+          console.log('File uploaded successfully:', uploadData);
+          
+          // Get public URL for the file
+          const { data: urlData } = supabase.storage
+            .from('employee-id-documents')
+            .getPublicUrl(filePath);
+            
+          // Update the employee record with the file URL
+          const { error: updateError } = await employeesTable()
+            .update({ id_document_url: urlData.publicUrl })
+            .eq('id', employeeId);
+            
+          if (updateError) {
+            console.error('Error updating employee with file URL:', updateError);
+          }
+        }
+      }
       
       toast({
         title: 'Employee Added',

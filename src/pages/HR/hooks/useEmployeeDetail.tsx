@@ -30,7 +30,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
       console.log('Fetching employee data for ID:', employeeId);
       
       const { data, error } = await employeesTable()
-        .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule')
+        .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, id_document_url, weekly_schedule')
         .eq('id', employeeId)
         .single();
         
@@ -59,6 +59,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
         companyName: String(rowData.company_name || ''),
         dniTie: String(rowData.dni_tie || ''),
         idDocument: String(rowData.id_document || ''),
+        idDocumentUrl: rowData.id_document_url ? String(rowData.id_document_url) : undefined,
         weeklySchedule: String(rowData.weekly_schedule || '')
       };
       
@@ -95,6 +96,8 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
           end_date: updatedEmployee.endDate || null,
           company_name: updatedEmployee.companyName || null,
           dni_tie: updatedEmployee.dniTie || null,
+          id_document: updatedEmployee.idDocument || null,
+          id_document_url: updatedEmployee.idDocumentUrl || null,
           weekly_schedule: updatedEmployee.weeklySchedule || null
         })
         .eq('id', employee.id);
