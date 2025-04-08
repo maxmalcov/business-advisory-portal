@@ -1,5 +1,5 @@
 
-import { useBaseFileUpload, FileUploadOptions } from '@/hooks/useBaseFileUpload';
+import { useFileUpload, FileUploadOptions } from '@/hooks/fileUpload';
 import { useCallback } from 'react';
 
 export const useSupplierFileUpload = (options: FileUploadOptions = {}) => {
@@ -9,7 +9,7 @@ export const useSupplierFileUpload = (options: FileUploadOptions = {}) => {
     invoiceType: 'supplier' as const
   };
   
-  const baseUploadHook = useBaseFileUpload(options, uploadConfig);
+  const baseUploadHook = useFileUpload(options, uploadConfig);
 
   // Ensure the file change handler is properly connected to the input
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,5 +1,5 @@
 
-import { useBaseFileUpload, FileUploadOptions } from '@/hooks/useBaseFileUpload';
+import { useFileUpload, FileUploadOptions } from '@/hooks/fileUpload';
 
 export const useFileUpload = (options: FileUploadOptions = {}) => {
   const uploadConfig = {
@@ -8,7 +8,7 @@ export const useFileUpload = (options: FileUploadOptions = {}) => {
     invoiceType: 'sale' as const
   };
   
-  return useBaseFileUpload(options, uploadConfig);
+  return useFileUpload(options, uploadConfig);
 };
 
 export type { FileUploadOptions };
