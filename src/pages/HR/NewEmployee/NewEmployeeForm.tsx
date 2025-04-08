@@ -93,12 +93,10 @@ const NewEmployeeForm: React.FC = () => {
 
   const uploadDocumentToStorage = async (file: File): Promise<string> => {
     try {
-      // Create a unique file path with timestamp
       const timestamp = new Date().getTime();
       const fileExt = file.name.split('.').pop();
       const filePath = `${timestamp}_${file.name}`;
       
-      // Upload the file to the 'employee_documents' bucket
       const { data, error } = await supabase.storage
         .from('employee_documents')
         .upload(filePath, file, {
@@ -106,19 +104,15 @@ const NewEmployeeForm: React.FC = () => {
           upsert: false
         });
       
-      // Track upload progress manually since onUploadProgress is not supported
-      // This is just for UI feedback
-      setUploadProgress(50); // Set to 50% immediately
+      setUploadProgress(50);
       
-      // Add a small delay to simulate progress
       await new Promise(resolve => setTimeout(resolve, 500));
-      setUploadProgress(100); // Set to 100% after delay
+      setUploadProgress(100);
       
       if (error) {
         throw error;
       }
       
-      // Return the file path
       return filePath;
     } catch (error) {
       console.error('Error uploading document:', error);
@@ -152,7 +146,6 @@ const NewEmployeeForm: React.FC = () => {
     try {
       console.log('Submitting employee data:', formData);
       
-      // Upload the ID document to Supabase Storage
       let documentPath = '';
       if (formData.idDocument) {
         try {
@@ -170,7 +163,6 @@ const NewEmployeeForm: React.FC = () => {
         }
       }
       
-      // Updated to include all relevant fields from the form
       const employeeData = {
         full_name: formData.fullName,
         position: formData.position,
@@ -218,6 +210,10 @@ const NewEmployeeForm: React.FC = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate('/hr');
+  };
+
   return (
     <>
       <CardHeader>
@@ -247,7 +243,7 @@ const NewEmployeeForm: React.FC = () => {
           <Button 
             type="button" 
             variant="outline" 
-            onClick={() => navigate('/hr')}
+            onClick={handleCancel}
           >
             {t('app.cancel')}
           </Button>

@@ -48,7 +48,7 @@ const TerminationForm = ({
           // Check if data exists and contains start_date property
           if (data && typeof data === 'object' && 'start_date' in data) {
             // Explicitly type and ensure string type
-            const startDate = data.start_date as string;
+            const startDate = data?.start_date as string;
             setEmployeeStartDate(startDate);
           } else {
             setEmployeeStartDate(undefined);
