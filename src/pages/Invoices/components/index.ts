@@ -2,6 +2,9 @@
 export { default as InvoiceList } from './InvoiceList';
 export { default as InvoiceUpload } from './InvoiceUpload';
 export { default as InvoiceHistoryList } from './InvoiceHistoryList';
+export { default as InvoiceHistoryFilter } from './InvoiceHistoryFilter';
+export { default as InvoiceHistoryTable } from './InvoiceHistoryTable';
+export { default as InvoiceHistoryEmptyState } from './InvoiceHistoryEmptyState';
 export { default as InvoiceTabs } from './InvoiceTabs';
 export { default as FileUploadSection } from './FileUploadSection';
 export { default as FileUploadArea } from './FileUploadArea';
