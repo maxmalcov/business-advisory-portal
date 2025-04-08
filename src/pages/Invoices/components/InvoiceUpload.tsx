@@ -26,6 +26,8 @@ const InvoiceUpload: React.FC = () => {
     isLoading, 
     uploadProgress,
     uploadComplete,
+    uploadSuccess,
+    uploadError,
     setIsLoading,
     handleFileChange, 
     handleDragOver, 
@@ -37,6 +39,7 @@ const InvoiceUpload: React.FC = () => {
   } = useFileUpload();
   
   const { sendInvoiceByEmail, isSending } = useInvoiceEmail();
+  const [emailSent, setEmailSent] = useState(false);
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
@@ -55,27 +58,26 @@ const InvoiceUpload: React.FC = () => {
       const uploadSuccess = await uploadFilesToSupabase();
       
       if (!uploadSuccess) {
-        setIsLoading(false);
-        return;
+        return; // Error is already handled in the hook
       }
       
       // Send email notification
-      const emailSent = await sendInvoiceByEmail({
+      const emailSuccess = await sendInvoiceByEmail({
         invoiceType: 'outgoing',
         files: selectedFiles
       });
+      setEmailSent(emailSuccess);
       
       // Show success message
       toast({
-        title: 'Upload Successful',
-        description: `${selectedFiles.length} invoice(s) uploaded successfully${emailSent ? ' and email notification sent' : ''}.`,
+        title: 'Success',
+        description: `${selectedFiles.length} invoice(s) uploaded successfully${emailSuccess ? ' and email notification sent' : ''}.`,
       });
 
       // Reset the file input after a short delay to show completion state
       setTimeout(() => {
         resetFiles();
-        setIsLoading(false);
-      }, 1500);
+      }, 3000);
       
     } catch (error) {
       console.error('Error during upload process:', error);
@@ -85,8 +87,6 @@ const InvoiceUpload: React.FC = () => {
         title: 'Upload Failed',
         description: 'An error occurred during the upload process.',
       });
-      
-      setIsLoading(false);
     }
   };
 
@@ -109,15 +109,17 @@ const InvoiceUpload: React.FC = () => {
           emailType="outgoing"
         />
         
-        {/* File upload area */}
-        <FileUploadArea 
-          isDragging={isDragging}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onFileSelect={handleFileSelect}
-          isLoading={isLoading || isSending}
-        />
+        {/* Only show file upload area if not currently uploading */}
+        {!isLoading && (
+          <FileUploadArea 
+            isDragging={isDragging}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onFileSelect={handleFileSelect}
+            isLoading={isLoading || isSending}
+          />
+        )}
         
         {/* Hidden file input used by FileUploadArea */}
         <input
@@ -137,6 +139,8 @@ const InvoiceUpload: React.FC = () => {
           isLoading={isLoading || isSending}
           uploadProgress={uploadProgress}
           uploadComplete={uploadComplete}
+          uploadSuccess={uploadSuccess}
+          uploadError={uploadError}
         />
       </CardContent>
     </Card>

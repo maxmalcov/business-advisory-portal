@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { Loader2, FileUp, FileX, Check } from 'lucide-react';
+import { Loader2, FileUp, FileX, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface SupplierFileListProps {
   files: File[];
@@ -11,6 +12,8 @@ interface SupplierFileListProps {
   isLoading: boolean;
   uploadProgress?: number;
   uploadComplete?: boolean;
+  uploadSuccess?: boolean;
+  uploadError?: string | null;
 }
 
 const SupplierFileList: React.FC<SupplierFileListProps> = ({
@@ -19,7 +22,9 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
   onUpload,
   isLoading,
   uploadProgress = 0,
-  uploadComplete = false
+  uploadComplete = false,
+  uploadSuccess = false,
+  uploadError = null
 }) => {
   if (files.length === 0) return null;
 
@@ -56,23 +61,41 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
       {isLoading && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            {uploadComplete ? (
+              uploadSuccess ? (
+                <Check className="h-4 w-4 text-green-500" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-destructive" />
+              )
+            ) : (
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            )}
             <p className="text-sm text-muted-foreground">
-              {uploadComplete ? 'Processing complete' : 'Uploading files...'}
+              {uploadComplete 
+                ? (uploadSuccess 
+                  ? 'Upload complete' 
+                  : 'Upload failed')
+                : 'Uploading files...'}
             </p>
           </div>
           <Progress value={uploadProgress} className="h-2" />
         </div>
       )}
+
+      {uploadError && (
+        <Alert variant="destructive" className="mt-2">
+          <AlertDescription>{uploadError}</AlertDescription>
+        </Alert>
+      )}
       
       <Button 
-        className="w-full" 
+        className="w-full"
         onClick={onUpload}
         disabled={isLoading || files.length === 0}
       >
         {isLoading ? (
           <span className="flex items-center">
-            {uploadComplete ? (
+            {uploadComplete && uploadSuccess ? (
               <>
                 <Check className="mr-2 h-4 w-4" /> 
                 Upload Complete

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -29,6 +28,8 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
   const [isLoading, setIsLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -69,6 +70,12 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
   };
 
   const handleFiles = (fileList: FileList | null) => {
+    // Reset states when new files are selected
+    setUploadComplete(false);
+    setUploadSuccess(false);
+    setUploadError(null);
+    setUploadProgress(0);
+    
     if (!fileList) return;
     
     const files = Array.from(fileList);
@@ -99,11 +106,22 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
   };
 
   const handleRemoveFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles(prev => {
+      const newFiles = prev.filter((_, i) => i !== index);
+      if (newFiles.length === 0) {
+        // Reset states if all files are removed
+        setUploadComplete(false);
+        setUploadSuccess(false);
+        setUploadError(null);
+        setUploadProgress(0);
+      }
+      return newFiles;
+    });
   };
 
   const uploadFilesToSupabase = async () => {
     if (!user || !user.id) {
+      setUploadError('Authentication required');
       toast({
         variant: 'destructive',
         title: 'Authentication required',
@@ -111,6 +129,17 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
       });
       return false;
     }
+
+    if (selectedFiles.length === 0) {
+      setUploadError('No files selected');
+      return false;
+    }
+
+    setIsLoading(true);
+    setUploadProgress(0);
+    setUploadComplete(false);
+    setUploadSuccess(false);
+    setUploadError(null);
 
     let totalSize = 0;
     const totalFiles = selectedFiles.length;
@@ -140,12 +169,13 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
           
         if (error) {
           console.error('Error uploading file:', error);
+          setUploadError(error.message);
           throw error;
         }
         
         // Store metadata in the database
         const { error: dbError } = await supabase
-          .from('invoice_files' as any)
+          .from('invoice_files')
           .insert({
             user_id: user.id,
             file_path: storagePath,
@@ -153,10 +183,11 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
             file_size: file.size,
             invoice_type: uploadConfig.invoiceType,
             storage_path: data.path
-          } as any);
+          });
           
         if (dbError) {
           console.error('Error storing file metadata:', dbError);
+          setUploadError(dbError.message);
           throw dbError;
         }
         
@@ -166,22 +197,29 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
         
         const newProgress = Math.round((uploadedSize / totalSize) * 100);
         setUploadProgress(newProgress);
-        
-        // If all files are processed, set upload to complete
-        if (uploadedFiles === totalFiles) {
-          setUploadComplete(true);
-        }
       }
       
+      // All files uploaded successfully
+      setUploadComplete(true);
+      setUploadSuccess(true);
       return true;
     } catch (error) {
       console.error('Upload error:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Upload failed',
-        description: 'There was an error uploading your files.',
-      });
+      setUploadSuccess(false);
+      setUploadComplete(true);
+      
+      if (!uploadError) {
+        setUploadError('There was an error uploading your files.');
+        toast({
+          variant: 'destructive',
+          title: 'Upload failed',
+          description: 'There was an error uploading your files.',
+        });
+      }
       return false;
+    } finally {
+      // We keep isLoading true until the user explicitly resets or continues with email
+      // This will be controlled by the parent component
     }
   };
 
@@ -189,6 +227,9 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
     setSelectedFiles([]);
     setUploadProgress(0);
     setUploadComplete(false);
+    setUploadSuccess(false);
+    setUploadError(null);
+    setIsLoading(false);
   };
 
   return {
@@ -197,9 +238,13 @@ export const useBaseFileUpload = (options: FileUploadOptions = {}, uploadConfig:
     isLoading,
     uploadProgress,
     uploadComplete,
+    uploadSuccess,
+    uploadError,
     setIsLoading,
     setUploadProgress,
     setUploadComplete,
+    setUploadSuccess,
+    setUploadError,
     handleFileChange,
     handleDragOver,
     handleDragLeave,
