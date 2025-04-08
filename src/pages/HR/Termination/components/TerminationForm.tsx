@@ -39,13 +39,20 @@ const TerminationForm = ({
             .eq('id', selectedEmployee)
             .single();
             
-          if (error) throw error;
+          if (error) {
+            console.error('Error fetching employee start date:', error);
+            setEmployeeStartDate(undefined);
+            return;
+          }
           
-          if (data) {
+          if (data && 'start_date' in data) {
             setEmployeeStartDate(data.start_date);
+          } else {
+            setEmployeeStartDate(undefined);
           }
         } catch (err) {
           console.error('Error fetching employee start date:', err);
+          setEmployeeStartDate(undefined);
         }
       } else {
         setEmployeeStartDate(undefined);
