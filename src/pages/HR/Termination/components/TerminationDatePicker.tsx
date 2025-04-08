@@ -13,13 +13,17 @@ interface TerminationDatePickerProps {
   setTerminationDate: (date: Date | undefined) => void;
   isDatePickerOpen: boolean;
   setIsDatePickerOpen: (isOpen: boolean) => void;
+  dateError?: string | null;
+  employeeStartDate?: string;
 }
 
 const TerminationDatePicker = ({
   terminationDate,
   setTerminationDate,
   isDatePickerOpen,
-  setIsDatePickerOpen
+  setIsDatePickerOpen,
+  dateError,
+  employeeStartDate
 }: TerminationDatePickerProps) => {
   const { t } = useLanguage();
   
@@ -30,7 +34,7 @@ const TerminationDatePicker = ({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-full justify-start text-left font-normal"
+            className={`w-full justify-start text-left font-normal ${dateError ? 'border-red-500' : ''}`}
             id="terminationDate"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -46,9 +50,18 @@ const TerminationDatePicker = ({
               setIsDatePickerOpen(false);
             }}
             initialFocus
+            className="p-3 pointer-events-auto"
+            disabled={(date) => {
+              if (!employeeStartDate) return false;
+              // Disable dates before the employee's start date
+              return date < new Date(employeeStartDate);
+            }}
           />
         </PopoverContent>
       </Popover>
+      {dateError && (
+        <p className="text-xs text-red-500">{dateError}</p>
+      )}
     </div>
   );
 };

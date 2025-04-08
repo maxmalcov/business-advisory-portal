@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { EmployeeData } from '../types';
 import EmployeeSelector from './EmployeeSelector';
@@ -7,6 +7,7 @@ import TerminationDatePicker from './TerminationDatePicker';
 import TerminationReasonSelector from './TerminationReasonSelector';
 import AdditionalFields from './AdditionalFields';
 import { useTerminationForm } from '../hooks/useTerminationForm';
+import { employeesTable } from '@/integrations/supabase/client';
 
 interface TerminationFormProps {
   employees: EmployeeData[];
@@ -27,8 +28,53 @@ const TerminationForm = ({
   const [terminationReason, setTerminationReason] = useState<string>('');
   const [comments, setComments] = useState<string>('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [employeeStartDate, setEmployeeStartDate] = useState<string | undefined>(undefined);
   
-  const { handleSubmit, isSubmitting } = useTerminationForm(selectedEmployee, terminationDate);
+  useEffect(() => {
+    const fetchEmployeeData = async () => {
+      if (selectedEmployee) {
+        try {
+          const { data, error } = await employeesTable()
+            .select('start_date')
+            .eq('id', selectedEmployee)
+            .single();
+            
+          if (error) throw error;
+          
+          if (data) {
+            setEmployeeStartDate(data.start_date);
+          }
+        } catch (err) {
+          console.error('Error fetching employee start date:', err);
+        }
+      } else {
+        setEmployeeStartDate(undefined);
+      }
+    };
+    
+    fetchEmployeeData();
+  }, [selectedEmployee]);
+  
+  const { handleSubmit, isSubmitting, dateError, setDateError } = useTerminationForm(
+    selectedEmployee, 
+    terminationDate,
+    employeeStartDate
+  );
+  
+  const onTerminationDateChange = (date: Date | undefined) => {
+    setTerminationDate(date);
+    
+    // Clear any existing date errors
+    setDateError(null);
+    
+    // Validate date if employee start date is available
+    if (date && employeeStartDate) {
+      const startDate = new Date(employeeStartDate);
+      if (date < startDate) {
+        setDateError('End Date cannot be before Start Date');
+      }
+    }
+  };
   
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,9 +92,11 @@ const TerminationForm = ({
         
         <TerminationDatePicker
           terminationDate={terminationDate}
-          setTerminationDate={setTerminationDate}
+          setTerminationDate={onTerminationDateChange}
           isDatePickerOpen={isDatePickerOpen}
           setIsDatePickerOpen={setIsDatePickerOpen}
+          dateError={dateError}
+          employeeStartDate={employeeStartDate}
         />
         
         <TerminationReasonSelector
@@ -64,7 +112,7 @@ const TerminationForm = ({
         />
       </div>
       
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button type="submit" className="w-full" disabled={isSubmitting || !!dateError}>
         {isSubmitting ? 'Processing...' : 'Submit Termination Request'}
       </Button>
     </form>

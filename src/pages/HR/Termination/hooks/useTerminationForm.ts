@@ -5,14 +5,17 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { employeesTable } from '@/integrations/supabase/client';
 
-export const useTerminationForm = (selectedEmployee: string, terminationDate: Date | undefined) => {
+export const useTerminationForm = (selectedEmployee: string, terminationDate: Date | undefined, employeeStartDate?: string) => {
   const { t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dateError, setDateError] = useState<string | null>(null);
   
   const validateForm = () => {
+    setDateError(null);
+    
     if (!selectedEmployee) {
       toast({
         title: t('app.warning'),
@@ -29,6 +32,20 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
         variant: 'destructive'
       });
       return false;
+    }
+    
+    // Validate that termination date is not before start date
+    if (employeeStartDate) {
+      const startDate = new Date(employeeStartDate);
+      if (terminationDate < startDate) {
+        setDateError('End Date cannot be before Start Date');
+        toast({
+          title: t('app.warning'),
+          description: 'End Date cannot be before Start Date',
+          variant: 'destructive'
+        });
+        return false;
+      }
     }
     
     return true;
@@ -72,6 +89,8 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
   return {
     handleSubmit,
     isSubmitting,
-    validateForm
+    validateForm,
+    dateError,
+    setDateError
   };
 };
