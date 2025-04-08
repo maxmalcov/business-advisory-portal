@@ -54,7 +54,7 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
         {employee.status === 'active' ? (
           <div className="bg-green-100 text-green-600 px-4 py-2 rounded-md flex items-center gap-2">
             <CheckCircle className="h-4 w-4" />
-            <span className="font-medium">Available now</span>
+            <span className="font-medium">Active</span>
           </div>
         ) : (
           <Badge className="bg-red-500">Terminated</Badge>
