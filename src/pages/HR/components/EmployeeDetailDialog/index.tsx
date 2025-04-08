@@ -11,6 +11,7 @@ import { Pencil, X } from 'lucide-react';
 import { Employee } from '../../types/employee';
 import { useEmployeeDetail } from '../../hooks/useEmployeeDetail';
 import EmployeeDetailDialogContent from './EmployeeDetailDialogContent';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface EmployeeDetailDialogProps {
   employeeId: string | null;
@@ -60,9 +61,9 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
-        <div className="relative">
-          <DialogHeader className="px-6 py-4 border-b bg-gray-50">
+      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden max-h-[85vh] w-[95vw]">
+        <div className="relative flex flex-col h-full">
+          <DialogHeader className="px-6 py-4 border-b bg-gray-50 sticky top-0 z-10">
             <DialogTitle className="text-xl font-bold">
               {isEditing ? 'Edit Employee' : 'Employee Details'}
             </DialogTitle>
@@ -77,7 +78,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
             </Button>
           </DialogHeader>
           
-          <div className="p-6">
+          <ScrollArea className="flex-1 p-6 overflow-auto">
             {!isEditing && employee && !isLoading && (
               <Button
                 variant="outline"
@@ -101,7 +102,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
               onCancel={() => setIsEditing(false)}
               onClose={() => onOpenChange(false)}
             />
-          </div>
+          </ScrollArea>
         </div>
       </DialogContent>
     </Dialog>
