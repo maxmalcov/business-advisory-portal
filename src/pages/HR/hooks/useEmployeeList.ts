@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { Employee as EmployeeType, EmployeeStatus, fromDbEmployee } from '../types/employee';
+import { Employee as EmployeeType, EmployeeStatus } from '../types/employee';
 import { employeesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -23,7 +23,7 @@ export function useEmployeeList() {
         console.log(`Fetching employees with status filter: ${statusFilter}`);
         // Query the database using the employeesTable helper
         const { data, error } = await employeesTable()
-          .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, id_document_url, weekly_schedule')
+          .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule')
           .eq('status', statusFilter);
           
         if (error) {
@@ -33,8 +33,19 @@ export function useEmployeeList() {
         console.log('Employee data received:', data);
         
         if (data && Array.isArray(data)) {
-          // Transform the data to match our Employee interface using our helper
-          const transformedData: EmployeeType[] = data.map(emp => fromDbEmployee(emp));
+          // Transform the data to match our Employee interface
+          const transformedData: EmployeeType[] = data.map((emp: any) => ({
+            id: emp.id,
+            fullName: emp.full_name,
+            position: emp.position,
+            status: emp.status as EmployeeStatus,
+            startDate: emp.start_date,
+            endDate: emp.end_date || undefined,
+            companyName: emp.company_name || '',
+            dniTie: emp.dni_tie || '',
+            idDocument: emp.id_document || '',
+            weeklySchedule: emp.weekly_schedule || ''
+          }));
           
           console.log('Transformed employee data:', transformedData);
           setEmployees(transformedData);

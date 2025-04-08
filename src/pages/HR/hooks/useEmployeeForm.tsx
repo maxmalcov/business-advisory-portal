@@ -64,14 +64,6 @@ export function useEmployeeForm(employee: Employee, onSave: (updatedEmployee: Em
       status: value 
     }));
   };
-  
-  const handleFileUpload = (url: string, filename: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      idDocument: filename,
-      idDocumentUrl: url
-    }));
-  };
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
@@ -106,7 +98,6 @@ export function useEmployeeForm(employee: Employee, onSave: (updatedEmployee: Em
     handleStartDateChange,
     handleEndDateChange,
     handleStatusChange,
-    handleFileUpload,
     handleSubmit
   };
 }

@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
-import { Employee, fromDbEmployee } from '../types/employee';
+import { Employee } from '../types/employee';
 
 interface UseEmployeeDetailReturn {
   employee: Employee | null;
@@ -30,7 +30,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
       console.log('Fetching employee data for ID:', employeeId);
       
       const { data, error } = await employeesTable()
-        .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, id_document_url, weekly_schedule')
+        .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule')
         .eq('id', employeeId)
         .single();
         
@@ -46,8 +46,21 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
       
       console.log('Raw employee data from Supabase:', data);
       
-      // Use our helper function to convert database record to Employee type
-      const employeeData = fromDbEmployee(data);
+      // Type assertion to handle the returned data
+      const rowData = data as any;
+      
+      const employeeData: Employee = {
+        id: String(rowData.id || ''),
+        fullName: String(rowData.full_name || ''),
+        position: String(rowData.position || ''),
+        status: (rowData.status as 'active' | 'terminated') || 'active',
+        startDate: String(rowData.start_date || ''),
+        endDate: rowData.end_date ? String(rowData.end_date) : undefined,
+        companyName: String(rowData.company_name || ''),
+        dniTie: String(rowData.dni_tie || ''),
+        idDocument: String(rowData.id_document || ''),
+        weeklySchedule: String(rowData.weekly_schedule || '')
+      };
       
       console.log('Employee data fetched successfully:', employeeData);
       setEmployee(employeeData);
@@ -82,11 +95,9 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
           end_date: updatedEmployee.endDate || null,
           company_name: updatedEmployee.companyName || null,
           dni_tie: updatedEmployee.dniTie || null,
-          id_document: updatedEmployee.idDocument || null,
-          id_document_url: updatedEmployee.idDocumentUrl || null,
           weekly_schedule: updatedEmployee.weeklySchedule || null
         })
-        .eq('id', updatedEmployee.id);
+        .eq('id', employee.id);
         
       if (error) throw error;
       

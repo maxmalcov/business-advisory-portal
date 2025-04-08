@@ -104,7 +104,7 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
       <div className="space-y-2">
         <div className="flex items-center">
           <Label htmlFor="idDocument" className="flex items-center">
-            ID Document (PDF, JPG or PNG) <span className="text-red-500 ml-1">*</span>
+            ID Document (PDF or JPG) <span className="text-red-500 ml-1">*</span>
           </Label>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -120,7 +120,7 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
             id="idDocument"
             name="idDocument"
             type="file"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept=".pdf,.jpg,.jpeg"
             onChange={handleFileChange}
             className={errors.idDocument ? "border-red-500" : ""}
           />
@@ -134,9 +134,6 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
             ({(formData.idDocument.size / (1024 * 1024)).toFixed(2)} MB)
           </p>
         )}
-        <p className="text-xs text-gray-500">
-          Upload a PDF, JPG, or PNG file (max 5MB)
-        </p>
       </div>
       
       {/* Start Date */}
