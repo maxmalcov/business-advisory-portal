@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
@@ -34,7 +33,6 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Fetch employee data when the dialog opens
   useEffect(() => {
     const fetchEmployeeData = async () => {
       if (!open || !employeeId) return;
@@ -56,27 +54,21 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
           throw new Error('Employee not found');
         }
         
-        // Type check the data before transforming it
-        if (typeof data === 'object' && data !== null) {
-          // Transform the data to match our Employee interface
-          const employeeData: Employee = {
-            id: String(data.id || ''),
-            fullName: String(data.full_name || ''),
-            position: String(data.position || ''),
-            status: (data.status as 'active' | 'terminated') || 'active',
-            startDate: String(data.start_date || ''),
-            endDate: data.end_date ? String(data.end_date) : undefined,
-            companyName: String(data.company_name || ''),
-            dniTie: String(data.dni_tie || ''),
-            idDocument: String(data.id_document || ''),
-            weeklySchedule: String(data.weekly_schedule || '')
-          };
-          
-          console.log('Employee data fetched successfully:', employeeData);
-          setEmployee(employeeData);
-        } else {
-          throw new Error('Invalid employee data format');
-        }
+        const employeeData: Employee = {
+          id: String(data?.id || ''),
+          fullName: String(data?.full_name || ''),
+          position: String(data?.position || ''),
+          status: (data?.status as 'active' | 'terminated') || 'active',
+          startDate: String(data?.start_date || ''),
+          endDate: data?.end_date ? String(data?.end_date) : undefined,
+          companyName: String(data?.company_name || ''),
+          dniTie: String(data?.dni_tie || ''),
+          idDocument: String(data?.id_document || ''),
+          weeklySchedule: String(data?.weekly_schedule || '')
+        };
+        
+        console.log('Employee data fetched successfully:', employeeData);
+        setEmployee(employeeData);
       } catch (error) {
         console.error('Error fetching employee details:', error);
         setError('Failed to load employee information. Please try again.');
@@ -122,11 +114,9 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
         description: 'Employee information has been successfully updated.',
       });
       
-      // Update the local employee state with the new data
       setEmployee(updatedEmployee);
       setIsEditing(false);
       
-      // Reload the page to show updated data in the employee list
       window.location.reload();
     } catch (error) {
       console.error('Error updating employee:', error);
