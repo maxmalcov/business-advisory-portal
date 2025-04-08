@@ -33,14 +33,6 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
       <p className="text-muted-foreground mb-2">
         Drag and drop files here, or click to browse
       </p>
-      <input
-        type="file"
-        id="file-upload"
-        className="hidden"
-        multiple
-        accept=".pdf,.jpg,.jpeg"
-        onChange={() => {}} // This will be handled in the parent component
-      />
       <Button
         variant="outline"
         onClick={onFileSelect}
