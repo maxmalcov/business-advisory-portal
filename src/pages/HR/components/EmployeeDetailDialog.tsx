@@ -5,43 +5,94 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle,
-  DialogFooter, 
   DialogDescription
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Pencil } from 'lucide-react';
 import { Employee } from '../types/employee';
-import { Pencil, Save, X } from 'lucide-react';
-import EmployeeDetailForm from './EmployeeDetailForm';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
+import EmployeeDetailForm from './EmployeeDetailForm';
 import { EmployeeDetailView } from './EmployeeDetail';
+import EmployeeDetailSkeleton from './EmployeeDetail/EmployeeDetailSkeleton';
 
 interface EmployeeDetailDialogProps {
-  employee: Employee | null;
+  employeeId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
-  employee,
+  employeeId,
   open,
   onOpenChange
 }) => {
+  const [employee, setEmployee] = useState<Employee | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Add logging to track the employee prop received
+  // Fetch employee data when the dialog opens
   useEffect(() => {
-    if (open && employee) {
-      console.log('EmployeeDetailDialog received employee:', employee);
-    }
-  }, [open, employee]);
+    const fetchEmployeeData = async () => {
+      if (!open || !employeeId) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        console.log('Fetching employee data for ID:', employeeId);
+        
+        const { data, error } = await employeesTable()
+          .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule')
+          .eq('id', employeeId)
+          .single();
+          
+        if (error) throw error;
+        
+        if (!data) {
+          throw new Error('Employee not found');
+        }
+        
+        // Transform the data to match our Employee interface
+        const employeeData: Employee = {
+          id: data.id,
+          fullName: data.full_name,
+          position: data.position,
+          status: data.status,
+          startDate: data.start_date,
+          endDate: data.end_date || undefined,
+          companyName: data.company_name || '',
+          dniTie: data.dni_tie || '',
+          idDocument: data.id_document || '',
+          weeklySchedule: data.weekly_schedule || ''
+        };
+        
+        console.log('Employee data fetched successfully:', employeeData);
+        setEmployee(employeeData);
+      } catch (error) {
+        console.error('Error fetching employee details:', error);
+        setError('Failed to load employee information. Please try again.');
+        toast({
+          title: 'Error Loading Data',
+          description: 'There was a problem loading the employee information.',
+          variant: 'destructive'
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchEmployeeData();
+  }, [employeeId, open, toast]);
 
   const handleSave = async (updatedEmployee: Employee) => {
     if (!employee) return;
     
     setIsSubmitting(true);
+    setError(null);
     
     try {
       console.log('Saving employee update:', updatedEmployee);
@@ -66,12 +117,15 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
         description: 'Employee information has been successfully updated.',
       });
       
+      // Update the local employee state with the new data
+      setEmployee(updatedEmployee);
       setIsEditing(false);
       
-      // Reload the page to show updated data
+      // Reload the page to show updated data in the employee list
       window.location.reload();
     } catch (error) {
       console.error('Error updating employee:', error);
+      setError('Failed to update employee information. Please try again.');
       toast({
         title: 'Error',
         description: 'There was a problem updating the employee information.',
@@ -82,11 +136,56 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     }
   };
 
-  // Return early if no employee data
-  if (!employee) {
-    console.log('No employee data provided to dialog');
-    return null;
-  }
+  const renderContent = () => {
+    if (isLoading) {
+      return <EmployeeDetailSkeleton />;
+    }
+    
+    if (error) {
+      return (
+        <div className="py-8 text-center">
+          <h3 className="text-lg font-medium text-red-500 mb-2">Error Loading Data</h3>
+          <p className="text-gray-500">{error}</p>
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)} 
+            className="mt-4"
+          >
+            Close
+          </Button>
+        </div>
+      );
+    }
+    
+    if (!employee) {
+      return (
+        <div className="py-8 text-center">
+          <h3 className="text-lg font-medium text-gray-500 mb-2">No Data Available</h3>
+          <p className="text-gray-500">Employee information could not be loaded.</p>
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)} 
+            className="mt-4"
+          >
+            Close
+          </Button>
+        </div>
+      );
+    }
+
+    if (isEditing) {
+      return (
+        <EmployeeDetailForm 
+          employee={employee}
+          onSave={handleSave}
+          onCancel={() => setIsEditing(false)}
+          isSubmitting={isSubmitting}
+        />
+      );
+    }
+    
+    return <EmployeeDetailView employee={employee} />;
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,7 +193,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>{isEditing ? 'Edit Employee' : 'Employee Details'}</span>
-            {!isEditing && (
+            {!isEditing && employee && !isLoading && (
               <Button
                 variant="outline"
                 size="sm"
@@ -106,20 +205,11 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
             )}
           </DialogTitle>
           <DialogDescription>
-            View or edit employee information
+            {isEditing ? 'Edit employee information' : 'View employee details'}
           </DialogDescription>
         </DialogHeader>
 
-        {isEditing ? (
-          <EmployeeDetailForm 
-            employee={employee}
-            onSave={handleSave}
-            onCancel={() => setIsEditing(false)}
-            isSubmitting={isSubmitting}
-          />
-        ) : (
-          <EmployeeDetailView employee={employee} />
-        )}
+        {renderContent()}
       </DialogContent>
     </Dialog>
   );

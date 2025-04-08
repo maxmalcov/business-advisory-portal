@@ -28,7 +28,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   isLoading = false,
   onEmployeeSelect
 }) => {
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [filterText, setFilterText] = useState('');
 
@@ -44,20 +44,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
     if (onEmployeeSelect) {
       onEmployeeSelect(employee);
     } else {
-      console.log('Opening employee details:', employee); // This debug log is working
-      
-      // Fix: Make sure the employee object is properly formatted
-      const cleanEmployee = {
-        ...employee,
-        // Convert any undefined values to empty strings
-        endDate: employee.endDate && typeof employee.endDate !== 'string' ? undefined : employee.endDate,
-        companyName: employee.companyName || '',
-        dniTie: employee.dniTie || '',
-        idDocument: employee.idDocument || '',
-        weeklySchedule: employee.weeklySchedule || ''
-      };
-      
-      setSelectedEmployee(cleanEmployee);
+      console.log('Opening employee details for ID:', employee.id);
+      setSelectedEmployeeId(employee.id);
       setDetailDialogOpen(true);
     }
   };
@@ -173,14 +161,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         </div>
       </div>
       
-      {/* Add debug information to verify data is passing correctly */}
-      {selectedEmployee && (
-        <EmployeeDetailDialog 
-          employee={selectedEmployee}
-          open={detailDialogOpen}
-          onOpenChange={setDetailDialogOpen}
-        />
-      )}
+      <EmployeeDetailDialog 
+        employeeId={selectedEmployeeId}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+      />
     </>
   );
 };
