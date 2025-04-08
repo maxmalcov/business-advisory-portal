@@ -1,10 +1,11 @@
 
 import React from 'react';
 import { Employee } from '../../types/employee';
-import { User, Briefcase, Calendar, Clock } from 'lucide-react';
+import { User, Briefcase, Calendar, Clock, FileText, Mail, Home, DollarSign, CreditCard } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface EmployeeDetailViewProps {
   employee: Employee;
@@ -73,6 +74,16 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
               <p className="text-sm font-medium text-gray-500">Status</p>
               <p className="text-sm font-semibold">{employee.status === 'active' ? 'Active' : 'Terminated'}</p>
             </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Position</p>
+              <p className="text-sm font-semibold">{employee.position || '-'}</p>
+            </div>
+            {employee.email && (
+              <div>
+                <p className="text-sm font-medium text-gray-500">Email</p>
+                <p className="text-sm font-semibold">{employee.email}</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -110,7 +121,7 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
           </h3>
         </div>
         <CardContent className="pt-4">
-          {employee.dniTie || employee.idDocument ? (
+          {employee.dniTie || employee.idDocument || employee.socialSecurityNumber ? (
             <div className="grid grid-cols-2 gap-4">
               {employee.dniTie && (
                 <div>
@@ -119,14 +130,22 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
                 </div>
               )}
               
+              {employee.socialSecurityNumber && (
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Social Security Number</p>
+                  <p className="text-sm font-semibold">{employee.socialSecurityNumber}</p>
+                </div>
+              )}
+              
               {employee.idDocument && (
                 <div>
                   <p className="text-sm font-medium text-gray-500">ID Document</p>
                   <div className="flex items-center">
                     <p className="text-sm font-semibold truncate max-w-[150px]">{employee.idDocument}</p>
-                    <button className="ml-2 px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors">
-                      View
-                    </button>
+                    <Button variant="ghost" size="sm" className="ml-2 h-6 p-1">
+                      <FileText className="h-3.5 w-3.5" />
+                      <span className="sr-only">View document</span>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -136,6 +155,55 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
           )}
         </CardContent>
       </Card>
+      
+      {/* Financial Information Card */}
+      {(employee.salary || employee.iban) && (
+        <Card className="overflow-hidden border-0 shadow-md">
+          <div className="bg-gray-50 px-6 py-3 border-b">
+            <h3 className="text-md font-medium flex items-center">
+              <DollarSign className="h-4 w-4 mr-2 text-blue-600" />
+              Financial Information
+            </h3>
+          </div>
+          <CardContent className="pt-4">
+            <div className="grid grid-cols-2 gap-4">
+              {employee.salary && (
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Salary</p>
+                  <p className="text-sm font-semibold">
+                    {employee.salary} EUR {employee.salaryType === 'gross' ? '(Gross)' : '(Net)'}
+                  </p>
+                </div>
+              )}
+              
+              {employee.iban && (
+                <div>
+                  <p className="text-sm font-medium text-gray-500">IBAN</p>
+                  <p className="text-sm font-semibold">{employee.iban}</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
+      {/* Contact Information */}
+      {employee.address && (
+        <Card className="overflow-hidden border-0 shadow-md">
+          <div className="bg-gray-50 px-6 py-3 border-b">
+            <h3 className="text-md font-medium flex items-center">
+              <Home className="h-4 w-4 mr-2 text-blue-600" />
+              Contact Information
+            </h3>
+          </div>
+          <CardContent className="pt-4">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Address</p>
+              <p className="text-sm font-semibold">{employee.address}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       
       {/* Schedule Card */}
       <Card className="overflow-hidden border-0 shadow-md">
@@ -156,6 +224,21 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
           )}
         </CardContent>
       </Card>
+      
+      {/* Comments Section */}
+      {employee.comments && (
+        <Card className="overflow-hidden border-0 shadow-md">
+          <div className="bg-gray-50 px-6 py-3 border-b">
+            <h3 className="text-md font-medium flex items-center">
+              <Mail className="h-4 w-4 mr-2 text-blue-600" />
+              Additional Comments
+            </h3>
+          </div>
+          <CardContent className="pt-4">
+            <p className="text-sm whitespace-pre-line">{employee.comments}</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

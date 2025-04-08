@@ -30,7 +30,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
       console.log('Fetching employee data for ID:', employeeId);
       
       const { data, error } = await employeesTable()
-        .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule')
+        .select('*')  // Select all fields available
         .eq('id', employeeId)
         .single();
         
@@ -60,7 +60,17 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
         companyName: String(rowData.company_name || ''),
         dniTie: String(rowData.dni_tie || ''),
         idDocument: String(rowData.id_document || ''),
-        weeklySchedule: String(rowData.weekly_schedule || '')
+        weeklySchedule: String(rowData.weekly_schedule || ''),
+        
+        // Map any additional fields that might be in the database
+        // These will be undefined if not present in the database
+        socialSecurityNumber: rowData.social_security_number ? String(rowData.social_security_number) : undefined,
+        salary: rowData.salary ? String(rowData.salary) : undefined,
+        salaryType: rowData.salary_type as 'gross' | 'net' | undefined,
+        iban: rowData.iban ? String(rowData.iban) : undefined,
+        email: rowData.email ? String(rowData.email) : undefined,
+        address: rowData.address ? String(rowData.address) : undefined,
+        comments: rowData.comments ? String(rowData.comments) : undefined
       };
       
       console.log('Employee data fetched successfully:', employeeData);
@@ -87,17 +97,50 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
     try {
       console.log('Saving employee update:', updatedEmployee);
       
+      // Create an update object with snake_case keys for Supabase
+      const updateData = {
+        full_name: updatedEmployee.fullName,
+        position: updatedEmployee.position,
+        status: updatedEmployee.status,
+        start_date: updatedEmployee.startDate,
+        end_date: updatedEmployee.endDate || null,
+        company_name: updatedEmployee.companyName || null,
+        dni_tie: updatedEmployee.dniTie || null,
+        weekly_schedule: updatedEmployee.weeklySchedule || null,
+        id_document: updatedEmployee.idDocument || null
+      };
+      
+      // Add additional fields if they exist in the updated employee data
+      if (updatedEmployee.socialSecurityNumber) {
+        Object.assign(updateData, { social_security_number: updatedEmployee.socialSecurityNumber });
+      }
+      
+      if (updatedEmployee.salary) {
+        Object.assign(updateData, { salary: updatedEmployee.salary });
+      }
+      
+      if (updatedEmployee.salaryType) {
+        Object.assign(updateData, { salary_type: updatedEmployee.salaryType });
+      }
+      
+      if (updatedEmployee.iban) {
+        Object.assign(updateData, { iban: updatedEmployee.iban });
+      }
+      
+      if (updatedEmployee.email) {
+        Object.assign(updateData, { email: updatedEmployee.email });
+      }
+      
+      if (updatedEmployee.address) {
+        Object.assign(updateData, { address: updatedEmployee.address });
+      }
+      
+      if (updatedEmployee.comments) {
+        Object.assign(updateData, { comments: updatedEmployee.comments });
+      }
+      
       const { error } = await employeesTable()
-        .update({
-          full_name: updatedEmployee.fullName,
-          position: updatedEmployee.position,
-          status: updatedEmployee.status,
-          start_date: updatedEmployee.startDate,
-          end_date: updatedEmployee.endDate || null,
-          company_name: updatedEmployee.companyName || null,
-          dni_tie: updatedEmployee.dniTie || null,
-          weekly_schedule: updatedEmployee.weeklySchedule || null
-        })
+        .update(updateData)
         .eq('id', employee.id);
         
       if (error) throw error;
