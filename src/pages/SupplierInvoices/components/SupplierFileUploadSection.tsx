@@ -23,6 +23,8 @@ interface SupplierFileUploadSectionProps {
   onResetUpload: () => void;
   onAddMoreFiles: () => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  remainingFilesCount?: number;
+  hasReachedFileLimit?: boolean;
 }
 
 const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
@@ -43,12 +45,14 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
   onSendEmail,
   onResetUpload,
   onAddMoreFiles,
-  onFileChange
+  onFileChange,
+  remainingFilesCount,
+  hasReachedFileLimit
 }) => {
   return (
     <>
-      {/* Only show file upload area if not currently uploading */}
-      {!isLoading && !uploadComplete && (
+      {/* Only show file upload area if not currently uploading and file limit not reached */}
+      {!isLoading && !uploadComplete && !hasReachedFileLimit && (
         <SupplierFileUploadArea 
           isDragging={isDragging}
           onDragOver={onDragOver}
@@ -67,6 +71,7 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
         multiple
         accept=".pdf,.jpg,.jpeg"
         onChange={(e) => onFileChange(e)}
+        disabled={hasReachedFileLimit}
       />
       
       {/* Selected files list with progress */}
@@ -84,6 +89,8 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
           uploadComplete={uploadComplete}
           uploadSuccess={uploadSuccess}
           uploadError={uploadError}
+          remainingFilesCount={remainingFilesCount}
+          hasReachedFileLimit={hasReachedFileLimit}
         />
       )}
     </>

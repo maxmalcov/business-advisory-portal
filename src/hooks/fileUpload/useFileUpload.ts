@@ -34,12 +34,16 @@ export const useFileUpload = (
 
   // Add new function to handle "Upload More Files" button click
   const handleAddMoreFiles = useCallback(() => {
-    document.getElementById('file-upload')?.click();
-  }, []);
+    if (!fileSelection.hasReachedFileLimit()) {
+      document.getElementById('file-upload')?.click();
+    }
+  }, [fileSelection.hasReachedFileLimit]);
 
   const handleSupplierAddMoreFiles = useCallback(() => {
-    document.getElementById('supplier-file-upload')?.click();
-  }, []);
+    if (!fileSelection.hasReachedFileLimit()) {
+      document.getElementById('supplier-file-upload')?.click();
+    }
+  }, [fileSelection.hasReachedFileLimit]);
 
   return {
     // State from selection hook
@@ -71,5 +75,9 @@ export const useFileUpload = (
     resetFiles,
     handleAddMoreFiles,
     handleSupplierAddMoreFiles,
+    
+    // File limit helpers
+    getRemainingFilesCount: fileSelection.getRemainingFilesCount,
+    hasReachedFileLimit: fileSelection.hasReachedFileLimit,
   };
 };

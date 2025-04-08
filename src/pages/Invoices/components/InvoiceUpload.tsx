@@ -33,7 +33,9 @@ const InvoiceUpload: React.FC = () => {
     handleDragLeave, 
     handleDrop, 
     handleRemoveFile,
-    resetFiles
+    resetFiles,
+    getRemainingFilesCount,
+    hasReachedFileLimit
   } = useInvoiceFileUpload();
   
   const { sendInvoiceByEmail, isSending } = useInvoiceEmail();
@@ -77,7 +79,15 @@ const InvoiceUpload: React.FC = () => {
   };
 
   const handleFileSelect = () => {
-    document.getElementById('file-upload')?.click();
+    if (!hasReachedFileLimit?.()) {
+      document.getElementById('file-upload')?.click();
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'File limit reached',
+        description: 'You can upload a maximum of 15 files.',
+      });
+    }
   };
   
   const handleResetUpload = () => {
@@ -85,7 +95,15 @@ const InvoiceUpload: React.FC = () => {
   };
 
   const handleAddMoreFiles = () => {
-    document.getElementById('file-upload')?.click();
+    if (!hasReachedFileLimit?.()) {
+      document.getElementById('file-upload')?.click();
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'File limit reached',
+        description: 'You can upload a maximum of 15 files.',
+      });
+    }
   };
 
   // For handling drag and drop with append mode
@@ -113,6 +131,9 @@ const InvoiceUpload: React.FC = () => {
       handleFileChange(e);
     }
   };
+
+  const remainingFilesCount = getRemainingFilesCount?.() || 0;
+  const fileLimit = hasReachedFileLimit?.() || false;
 
   return (
     <Card>
@@ -149,6 +170,8 @@ const InvoiceUpload: React.FC = () => {
           onResetUpload={handleResetUpload}
           onAddMoreFiles={handleAddMoreFiles}
           onFileChange={handleFileChangeWithMode}
+          remainingFilesCount={remainingFilesCount}
+          hasReachedFileLimit={fileLimit}
         />
       </CardContent>
     </Card>

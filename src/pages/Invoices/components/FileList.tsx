@@ -19,6 +19,8 @@ interface FileListProps {
   uploadComplete?: boolean;
   uploadSuccess?: boolean;
   uploadError?: string | null;
+  remainingFilesCount?: number;
+  hasReachedFileLimit?: boolean;
 }
 
 const FileList: React.FC<FileListProps> = ({
@@ -33,15 +35,24 @@ const FileList: React.FC<FileListProps> = ({
   uploadProgress = 0,
   uploadComplete = false,
   uploadSuccess = false,
-  uploadError = null
+  uploadError = null,
+  remainingFilesCount = 0,
+  hasReachedFileLimit = false
 }) => {
   if (files.length === 0) return null;
 
   const canSendEmail = uploadComplete && uploadSuccess && uploadedFiles.length > 0;
+  const maxFiles = 15; // Same as default in useFileValidation
 
   return (
     <div className="space-y-4">
-      <h3 className="font-medium">Selected Files ({files.length})</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="font-medium">Selected Files ({files.length})</h3>
+        <span className={`text-sm ${hasReachedFileLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+          {files.length}/{maxFiles} files
+        </span>
+      </div>
+      
       <div className="max-h-60 overflow-y-auto space-y-2">
         {files.map((file, index) => (
           <div 
@@ -105,9 +116,9 @@ const FileList: React.FC<FileListProps> = ({
             className="w-full sm:w-auto" 
             variant="outline"
             onClick={onAddMoreFiles}
-            disabled={isSending}
+            disabled={isSending || hasReachedFileLimit}
           >
-            Upload More Files
+            {hasReachedFileLimit ? 'File Limit Reached' : 'Upload More Files'}
           </Button>
         ) : (
           <Button 

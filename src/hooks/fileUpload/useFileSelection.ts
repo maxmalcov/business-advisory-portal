@@ -2,16 +2,30 @@
 import { useState } from 'react';
 import { useFileValidation } from './useFileValidation';
 import { FileUploadOptions } from './types';
+import { useToast } from '@/hooks/use-toast';
 
 export const useFileSelection = (options: FileUploadOptions = {}) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const { validateFiles } = useFileValidation(options);
+  const { toast } = useToast();
+  const { maxFiles = 15 } = options;
 
   const handleFiles = (fileList: FileList | null, onValidFilesSelected: (files: File[]) => void, append: boolean = false) => {
     if (!fileList) return;
     
     const files = Array.from(fileList);
+    
+    // Check if adding these files would exceed the maximum
+    if (append && selectedFiles.length + files.length > maxFiles) {
+      toast({
+        variant: 'destructive',
+        title: 'File limit exceeded',
+        description: `You can upload a maximum of ${maxFiles} files. You already have ${selectedFiles.length} file(s).`,
+      });
+      return;
+    }
+    
     const validFiles = validateFiles(files);
     
     if (validFiles.length > 0) {
@@ -77,6 +91,14 @@ export const useFileSelection = (options: FileUploadOptions = {}) => {
     setSelectedFiles([]);
   };
 
+  const getRemainingFilesCount = () => {
+    return maxFiles - selectedFiles.length;
+  };
+
+  const hasReachedFileLimit = () => {
+    return selectedFiles.length >= maxFiles;
+  };
+
   return {
     selectedFiles,
     isDragging,
@@ -86,5 +108,7 @@ export const useFileSelection = (options: FileUploadOptions = {}) => {
     handleDrop,
     handleRemoveFile,
     resetFiles,
+    getRemainingFilesCount,
+    hasReachedFileLimit,
   };
 };

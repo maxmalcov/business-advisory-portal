@@ -44,6 +44,8 @@ export interface FileUploadActions {
   resetFiles: () => void;
   handleAddMoreFiles?: () => void;
   handleSupplierAddMoreFiles?: () => void;
+  getRemainingFilesCount?: () => number;
+  hasReachedFileLimit?: () => boolean;
 }
 
 export type FileUploadReturn = FileUploadState & FileUploadActions;
