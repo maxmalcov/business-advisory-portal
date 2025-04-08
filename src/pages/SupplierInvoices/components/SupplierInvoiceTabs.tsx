@@ -2,8 +2,7 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SupplierInvoiceUpload from './SupplierInvoiceUpload';
-import SupplierInvoiceList from './SupplierInvoiceList';
-import { mockSupplierInvoices } from '../mockData';
+import { InvoiceHistoryList } from '@/pages/Invoices/components';
 
 interface SupplierInvoiceTabsProps {
   defaultTab?: string;
@@ -24,7 +23,7 @@ const SupplierInvoiceTabs: React.FC<SupplierInvoiceTabsProps> = ({
       </TabsContent>
       
       <TabsContent value="history">
-        <SupplierInvoiceList invoices={mockSupplierInvoices} />
+        <InvoiceHistoryList defaultType="supplier" />
       </TabsContent>
     </Tabs>
   );

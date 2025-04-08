@@ -135,6 +135,48 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_uploads: {
+        Row: {
+          created_at: string
+          file_id: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          invoice_type: string
+          sent_at: string | null
+          sent_to_email: string | null
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_id: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          invoice_type: string
+          sent_at?: string | null
+          sent_to_email?: string | null
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_id?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          invoice_type?: string
+          sent_at?: string | null
+          sent_to_email?: string | null
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           accounttype: string | null

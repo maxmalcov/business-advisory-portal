@@ -173,6 +173,48 @@ serve(async (req) => {
       console.error("Failed to log email sending:", logErr);
     }
 
+    // Log to the invoice_uploads table for each file
+    try {
+      const fileUploads = fileIds.map(async (fileId, index) => {
+        // Get the file data from invoice_files
+        const { data: fileData, error: fileDataError } = await supabase
+          .from('invoice_files')
+          .select('*')
+          .eq('id', fileId)
+          .single();
+
+        if (fileDataError || !fileData) {
+          console.error(`Error retrieving file data for upload record: ${fileDataError?.message}`);
+          return;
+        }
+
+        // Insert into invoice_uploads
+        const { error: uploadError } = await supabase
+          .from('invoice_uploads')
+          .insert({
+            user_id: userId,
+            invoice_type: invoiceType === 'incoming' ? 'supplier' : 'sale',
+            file_name: fileNames[index],
+            file_path: fileData.file_path,
+            storage_path: fileData.storage_path,
+            file_size: fileData.file_size,
+            file_id: fileId,
+            sent_to_email: recipientEmail,
+            sent_at: new Date().toISOString()
+          });
+
+        if (uploadError) {
+          console.error(`Error recording upload history: ${uploadError.message}`);
+        } else {
+          console.log(`Recorded upload history for file: ${fileNames[index]}`);
+        }
+      });
+
+      await Promise.all(fileUploads);
+    } catch (uploadErr) {
+      console.error("Failed to record upload history:", uploadErr);
+    }
+
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
       headers: {
