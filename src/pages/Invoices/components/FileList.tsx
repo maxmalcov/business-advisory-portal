@@ -1,25 +1,30 @@
 
 import React from 'react';
-import { FileUp, FileX } from 'lucide-react';
+import { Loader2, FileUp, FileX, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 
 interface FileListProps {
   files: File[];
   onRemoveFile: (index: number) => void;
   onUpload: () => void;
   isLoading: boolean;
+  uploadProgress?: number;
+  uploadComplete?: boolean;
 }
 
 const FileList: React.FC<FileListProps> = ({
   files,
   onRemoveFile,
   onUpload,
-  isLoading
+  isLoading,
+  uploadProgress = 0,
+  uploadComplete = false
 }) => {
   if (files.length === 0) return null;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       <h3 className="font-medium">Selected Files ({files.length})</h3>
       <div className="max-h-60 overflow-y-auto space-y-2">
         {files.map((file, index) => (
@@ -47,12 +52,41 @@ const FileList: React.FC<FileListProps> = ({
           </div>
         ))}
       </div>
+      
+      {isLoading && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">
+              {uploadComplete ? 'Processing complete' : 'Uploading files...'}
+            </p>
+          </div>
+          <Progress value={uploadProgress} className="h-2" />
+        </div>
+      )}
+      
       <Button 
         className="w-full" 
         onClick={onUpload}
         disabled={isLoading}
       >
-        {isLoading ? 'Processing...' : `Upload ${files.length} ${files.length === 1 ? 'File' : 'Files'}`}
+        {isLoading ? (
+          <span className="flex items-center">
+            {uploadComplete ? (
+              <>
+                <Check className="mr-2 h-4 w-4" /> 
+                Upload Complete
+              </>
+            ) : (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                Uploading...
+              </>
+            )}
+          </span>
+        ) : (
+          `Upload ${files.length} ${files.length === 1 ? 'File' : 'Files'}`
+        )}
       </Button>
     </div>
   );
