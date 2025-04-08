@@ -41,6 +41,19 @@ export function useEmployeeForm(employee: Employee, onSave: (updatedEmployee: Em
     if (errors.startDate) {
       setErrors((prev) => ({ ...prev, startDate: undefined }));
     }
+    
+    // Check if end date is before the new start date and set error if needed
+    if (formData.endDate) {
+      const endDate = new Date(formData.endDate);
+      if (date > endDate) {
+        setErrors((prev) => ({ 
+          ...prev, 
+          endDate: 'End Date cannot be before Start Date' 
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, endDate: undefined }));
+      }
+    }
   };
 
   const handleEndDateChange = (date: Date | undefined) => {
@@ -49,7 +62,25 @@ export function useEmployeeForm(employee: Employee, onSave: (updatedEmployee: Em
         ...prev, 
         endDate: undefined
       }));
+      
+      // Clear any end date errors when removing the end date
+      if (errors.endDate) {
+        setErrors((prev) => ({ ...prev, endDate: undefined }));
+      }
       return;
+    }
+    
+    // Check if end date is before start date
+    if (formData.startDate) {
+      const startDate = new Date(formData.startDate);
+      if (date < startDate) {
+        setErrors((prev) => ({ 
+          ...prev, 
+          endDate: 'End Date cannot be before Start Date' 
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, endDate: undefined }));
+      }
     }
     
     setFormData((prev) => ({ 
@@ -82,6 +113,16 @@ export function useEmployeeForm(employee: Employee, onSave: (updatedEmployee: Em
     // If employee is terminated, end date is required
     if (formData.status === 'terminated' && !formData.endDate) {
       newErrors.endDate = 'End date is required for terminated employees';
+    }
+    
+    // Validate that end date is not before start date
+    if (formData.startDate && formData.endDate) {
+      const startDate = new Date(formData.startDate);
+      const endDate = new Date(formData.endDate);
+      
+      if (endDate < startDate) {
+        newErrors.endDate = 'End Date cannot be before Start Date';
+      }
     }
     
     setErrors(newErrors);

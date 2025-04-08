@@ -59,6 +59,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
                 selected={formData.startDate ? new Date(formData.startDate) : undefined}
                 onSelect={handleStartDateChange}
                 initialFocus
+                className="p-3 pointer-events-auto"
               />
             </PopoverContent>
           </Popover>
@@ -89,6 +90,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
                 selected={formData.endDate ? new Date(formData.endDate) : undefined}
                 onSelect={handleEndDateChange}
                 initialFocus
+                className="p-3 pointer-events-auto"
                 disabled={(date) => {
                   if (!formData.startDate) return false;
                   return date < new Date(formData.startDate);
