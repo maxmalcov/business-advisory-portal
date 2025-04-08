@@ -1,3 +1,3 @@
 
-import { default as EmployeeDetailForm } from './EmployeeDetailForm/index';
+import EmployeeDetailForm from './EmployeeDetailForm/index';
 export default EmployeeDetailForm;
