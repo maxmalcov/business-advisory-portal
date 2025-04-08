@@ -4,7 +4,7 @@ import { Employee } from '../../../types/employee';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { InfoCircle } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 interface ScheduleFormSectionProps {
   formData: Employee;
@@ -25,7 +25,7 @@ const ScheduleFormSection: React.FC<ScheduleFormSectionProps> = ({
             <div className="flex items-start justify-between">
               <Label htmlFor="weeklySchedule" className="text-base">Weekly Working Schedule</Label>
               <div className="flex items-center text-gray-500 text-xs">
-                <InfoCircle className="h-3.5 w-3.5 mr-1" />
+                <Info className="h-3.5 w-3.5 mr-1" />
                 <span>Please enter the full weekly schedule</span>
               </div>
             </div>

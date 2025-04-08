@@ -58,16 +58,16 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
         
         // Transform the data to match our Employee interface
         const employeeData: Employee = {
-          id: data.id,
-          fullName: data.full_name,
-          position: data.position,
-          status: data.status,
-          startDate: data.start_date,
-          endDate: data.end_date || undefined,
-          companyName: data.company_name || '',
-          dniTie: data.dni_tie || '',
-          idDocument: data.id_document || '',
-          weeklySchedule: data.weekly_schedule || ''
+          id: data.id as string,
+          fullName: data.full_name as string,
+          position: data.position as string,
+          status: data.status as 'active' | 'terminated',
+          startDate: data.start_date as string,
+          endDate: data.end_date as string | undefined,
+          companyName: data.company_name as string || '',
+          dniTie: data.dni_tie as string || '',
+          idDocument: data.id_document as string || '',
+          weeklySchedule: data.weekly_schedule as string || ''
         };
         
         console.log('Employee data fetched successfully:', employeeData);
