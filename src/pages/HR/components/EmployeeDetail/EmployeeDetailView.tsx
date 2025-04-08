@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Employee } from '../../types/employee';
-import { User, Briefcase, Calendar, Clock, FileText, Mail, Home, DollarSign, CreditCard } from 'lucide-react';
+import { User, Briefcase, Calendar, Clock, FileText, Mail, Home, DollarSign, CreditCard, CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -51,9 +51,14 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
             <p className="text-gray-500">{employee.position}</p>
           </div>
         </div>
-        <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
-          {employee.status === 'active' ? 'Active' : 'Terminated'}
-        </Badge>
+        {employee.status === 'active' ? (
+          <div className="bg-green-100 text-green-600 px-4 py-2 rounded-md flex items-center gap-2">
+            <CheckCircle className="h-4 w-4" />
+            <span className="font-medium">Available now</span>
+          </div>
+        ) : (
+          <Badge className="bg-red-500">Terminated</Badge>
+        )}
       </div>
       
       {/* Basic Information Card */}
