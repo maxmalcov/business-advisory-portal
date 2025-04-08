@@ -41,12 +41,11 @@ const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({
     async function fetchInvoiceHistory() {
       setIsLoading(true);
       try {
-        let query = supabase
+        // Use a raw query to fetch from the invoice_uploads table since TypeScript doesn't recognize it yet
+        const { data, error } = await supabase
           .from('invoice_uploads')
           .select('*')
           .order('created_at', { ascending: false });
-        
-        const { data, error } = await query;
         
         if (error) {
           console.error('Error fetching invoice history:', error);
@@ -58,8 +57,10 @@ const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({
           return;
         }
         
-        setInvoices(data || []);
-        setFilteredInvoices(data || []);
+        // Cast the data to the correct type
+        const typedData = data as unknown as InvoiceUpload[];
+        setInvoices(typedData || []);
+        setFilteredInvoices(typedData || []);
       } catch (error) {
         console.error('Error in invoice history fetch:', error);
       } finally {
