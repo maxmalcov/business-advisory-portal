@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, UserMinus, Clock } from 'lucide-react';
+import { Users, UserPlus, UserMinus, Clock } from 'lucide-react';
 import EmployeeStatusToggle from './components/EmployeeStatusToggle';
 import EmployeeList from './components/EmployeeList';
 import { FilterInput } from './components/FilterInput';
@@ -23,7 +23,7 @@ const HR: React.FC = () => {
         <Card className="card-hover">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-lg">
-              <Users className="mr-2 h-5 w-5" />
+              <UserPlus className="mr-2 h-5 w-5" />
               {t('nav.hr.new_employee')}
             </CardTitle>
           </CardHeader>

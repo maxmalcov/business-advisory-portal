@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -16,6 +15,9 @@ import {
   Layers,
   LayoutGrid,
   Activity,
+  UserPlus,
+  UserMinus,
+  Clock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -54,17 +56,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {
           name: t('nav.hr.new_employee'),
           path: '/hr/new-employee',
-          icon: Users,
+          icon: UserPlus,
         },
         {
           name: t('nav.hr.termination'),
           path: '/hr/termination',
-          icon: Users,
+          icon: UserMinus,
         },
         {
           name: t('nav.hr.work_hours'),
           path: '/hr/work-hours',
-          icon: Users,
+          icon: Clock,
         },
       ],
     },
