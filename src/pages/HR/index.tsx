@@ -77,19 +77,18 @@ const HR: React.FC = () => {
       </div>
       
       <div className="mt-8">
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
           <h2 className="text-xl font-semibold">Employee List</h2>
-          
           <EmployeeStatusToggle 
             value={statusFilter} 
             onChange={setStatusFilter} 
           />
-          
-          <EmployeeList 
-            employees={employees} 
-            isLoading={isLoading} 
-          />
         </div>
+        
+        <EmployeeList 
+          employees={employees} 
+          isLoading={isLoading} 
+        />
       </div>
     </div>
   );
