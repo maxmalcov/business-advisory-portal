@@ -1,5 +1,5 @@
 
-import { useFileUpload } from './fileUpload';
+import { useFileUpload as useBaseFileUploadHook } from './fileUpload';
 export type { 
   FileUploadOptions, 
   UploadConfig, 
@@ -7,4 +7,4 @@ export type {
   FileUploadReturn
 } from './fileUpload';
 
-export const useBaseFileUpload = useFileUpload;
+export const useBaseFileUpload = useBaseFileUploadHook;

@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-import { useFileUpload } from '../hooks/useFileUpload';
+import { useInvoiceFileUpload } from '../hooks/useInvoiceFileUpload';
 import { useInvoiceEmail } from '../hooks/useInvoiceEmail';
 import FileUploadArea from './FileUploadArea';
 import FileList from './FileList';
@@ -36,7 +36,7 @@ const InvoiceUpload: React.FC = () => {
     handleDrop, 
     handleRemoveFile,
     resetFiles
-  } = useFileUpload();
+  } = useInvoiceFileUpload();
   
   const { sendInvoiceByEmail, isSending } = useInvoiceEmail();
   const [emailSent, setEmailSent] = useState(false);
