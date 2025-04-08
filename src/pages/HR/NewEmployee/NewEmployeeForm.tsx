@@ -23,7 +23,7 @@ const NewEmployeeForm: React.FC = () => {
 
   const [formData, setFormData] = useState<FormData>({
     companyName: '',
-    fullName: '', // Added new field for employee's full name
+    fullName: '',
     employeeDni: '',
     startDate: undefined,
     schedule: '',
@@ -95,7 +95,7 @@ const NewEmployeeForm: React.FC = () => {
     const newErrors: FormErrors = {};
     
     if (!formData.companyName) newErrors.companyName = 'Company name is required';
-    if (!formData.fullName) newErrors.fullName = 'Full name is required'; // Added validation for fullName
+    if (!formData.fullName) newErrors.fullName = 'Full name is required';
     if (!formData.employeeDni) newErrors.employeeDni = 'Employee DNI/TIE is required';
     if (!formData.startDate) newErrors.startDate = 'Start date is required';
     if (!formData.schedule) newErrors.schedule = 'Schedule is required';
@@ -115,17 +115,31 @@ const NewEmployeeForm: React.FC = () => {
     setIsSubmitting(true);
     
     try {
+      console.log('Submitting employee data:', formData);
+      
+      // Updated to include all relevant fields from the form
       const employeeData = {
-        full_name: formData.fullName, // Use the new fullName field instead of companyName
+        full_name: formData.fullName,
         position: formData.position,
         status: 'active',
         start_date: formData.startDate?.toISOString().split('T')[0],
+        company_name: formData.companyName || null,
+        dni_tie: formData.employeeDni || null,
+        weekly_schedule: formData.schedule || null,
+        id_document: formData.idDocument ? formData.idDocument.name : null
+        // Note: Additional fields like social security number, salary, etc.
+        // would need new columns in the employees table if you want to store them
       };
       
-      const { error } = await employeesTable()
-        .insert(employeeData);
+      console.log('Sending employee data to Supabase:', employeeData);
+      
+      const { data, error } = await employeesTable()
+        .insert(employeeData)
+        .select();
         
       if (error) throw error;
+      
+      console.log('Employee added successfully:', data);
       
       toast({
         title: 'Employee Added',

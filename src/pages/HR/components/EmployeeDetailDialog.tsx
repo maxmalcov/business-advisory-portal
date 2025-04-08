@@ -56,22 +56,27 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
           throw new Error('Employee not found');
         }
         
-        // Transform the data to match our Employee interface
-        const employeeData: Employee = {
-          id: data.id as string,
-          fullName: data.full_name as string,
-          position: data.position as string,
-          status: data.status as 'active' | 'terminated',
-          startDate: data.start_date as string,
-          endDate: data.end_date as string | undefined,
-          companyName: data.company_name as string || '',
-          dniTie: data.dni_tie as string || '',
-          idDocument: data.id_document as string || '',
-          weeklySchedule: data.weekly_schedule as string || ''
-        };
-        
-        console.log('Employee data fetched successfully:', employeeData);
-        setEmployee(employeeData);
+        // Type check the data before transforming it
+        if (typeof data === 'object' && data !== null) {
+          // Transform the data to match our Employee interface
+          const employeeData: Employee = {
+            id: String(data.id || ''),
+            fullName: String(data.full_name || ''),
+            position: String(data.position || ''),
+            status: (data.status as 'active' | 'terminated') || 'active',
+            startDate: String(data.start_date || ''),
+            endDate: data.end_date ? String(data.end_date) : undefined,
+            companyName: String(data.company_name || ''),
+            dniTie: String(data.dni_tie || ''),
+            idDocument: String(data.id_document || ''),
+            weeklySchedule: String(data.weekly_schedule || '')
+          };
+          
+          console.log('Employee data fetched successfully:', employeeData);
+          setEmployee(employeeData);
+        } else {
+          throw new Error('Invalid employee data format');
+        }
       } catch (error) {
         console.error('Error fetching employee details:', error);
         setError('Failed to load employee information. Please try again.');
