@@ -9,6 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface Invoice {
   id: string;
@@ -42,6 +48,16 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices }) => {
       default:
         return null;
     }
+  };
+
+  // Function to truncate filenames longer than 50 characters
+  const truncateFileName = (fileName: string): string => {
+    return fileName.length > 50 ? `${fileName.substring(0, 47)}...` : fileName;
+  };
+
+  // Function to check if text needs truncation
+  const needsTruncation = (text: string): boolean => {
+    return text.length > 50;
   };
 
   return (
@@ -81,7 +97,24 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices }) => {
                 >
                   <div className="col-span-2 flex items-center">
                     <FileUp className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span className="truncate">{invoice.fileName}</span>
+                    {needsTruncation(invoice.fileName) ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="truncate max-w-[300px] inline-block">
+                              {truncateFileName(invoice.fileName)}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[300px]">
+                            {invoice.fileName}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <span className="truncate max-w-[300px] inline-block">
+                        {invoice.fileName}
+                      </span>
+                    )}
                   </div>
                   <div>{invoice.uploadDate}</div>
                   <div>{invoice.size}</div>

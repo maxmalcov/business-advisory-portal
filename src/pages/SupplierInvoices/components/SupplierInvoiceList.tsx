@@ -47,6 +47,11 @@ const SupplierInvoiceList: React.FC<SupplierInvoiceListProps> = ({ invoices }) =
   const truncateFileName = (fileName: string): string => {
     return fileName.length > 50 ? `${fileName.substring(0, 47)}...` : fileName;
   };
+  
+  // Function to check if text needs truncation
+  const needsTruncation = (text: string): boolean => {
+    return text.length > 50;
+  };
 
   return (
     <Card>
@@ -85,18 +90,24 @@ const SupplierInvoiceList: React.FC<SupplierInvoiceListProps> = ({ invoices }) =
                 >
                   <div className="col-span-2 flex items-center">
                     <FileDown className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="truncate max-w-[250px] inline-block">
-                            {truncateFileName(invoice.fileName)}
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="max-w-[300px]">
-                          {invoice.fileName}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    {needsTruncation(invoice.fileName) ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="truncate max-w-[250px] inline-block">
+                              {truncateFileName(invoice.fileName)}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[300px]">
+                            {invoice.fileName}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <span className="truncate max-w-[250px] inline-block">
+                        {invoice.fileName}
+                      </span>
+                    )}
                   </div>
                   <div>{invoice.uploadDate}</div>
                   <div>{invoice.size}</div>
@@ -119,4 +130,3 @@ const SupplierInvoiceList: React.FC<SupplierInvoiceListProps> = ({ invoices }) =
 };
 
 export default SupplierInvoiceList;
-

@@ -45,6 +45,11 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
   const truncateFileName = (fileName: string): string => {
     return fileName.length > 50 ? `${fileName.substring(0, 47)}...` : fileName;
   };
+  
+  // Function to check if text needs truncation
+  const needsTruncation = (text: string): boolean => {
+    return text.length > 50;
+  };
 
   return (
     <div className="rounded-md border">
@@ -69,18 +74,24 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
                   ) : (
                     <FileDown className="h-4 w-4 mr-2 text-muted-foreground" />
                   )}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="truncate max-w-[300px] inline-block">
-                          {truncateFileName(invoice.file_name)}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="max-w-[300px]">
-                        {invoice.file_name}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  {needsTruncation(invoice.file_name) ? (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="truncate max-w-[300px] inline-block">
+                            {truncateFileName(invoice.file_name)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-[300px]">
+                          {invoice.file_name}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : (
+                    <span className="truncate max-w-[300px] inline-block">
+                      {invoice.file_name}
+                    </span>
+                  )}
                 </div>
               </TableCell>
               <TableCell>
@@ -96,18 +107,24 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
               </TableCell>
               <TableCell>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="truncate max-w-[150px] inline-block">
+                {needsTruncation(invoice.sent_to_email || 'Not sent') ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="truncate max-w-[150px] inline-block">
+                          {invoice.sent_to_email || 'Not sent'}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
                         {invoice.sent_to_email || 'Not sent'}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">
-                      {invoice.sent_to_email || 'Not sent'}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <span className="truncate max-w-[150px] inline-block">
+                    {invoice.sent_to_email || 'Not sent'}
+                  </span>
+                )}
               </TableCell>
               <TableCell>
                 {invoice.sent_at 
@@ -143,4 +160,3 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
 };
 
 export default InvoiceHistoryTable;
-

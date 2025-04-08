@@ -36,6 +36,11 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
   const truncateText = (text: string): string => {
     return text.length > 50 ? `${text.substring(0, 47)}...` : text;
   };
+  
+  // Function to check if text needs truncation
+  const needsTruncation = (text: string): boolean => {
+    return text.length > 50;
+  };
 
   return (
     <Card>
@@ -61,18 +66,24 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                 </TableCell>
                 <TableCell className="font-medium">{log.action}</TableCell>
                 <TableCell>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="inline-block max-w-[250px] truncate">
-                          {truncateText(log.description)}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="max-w-[400px]">
-                        {log.description}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  {needsTruncation(log.description) ? (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-block max-w-[250px] truncate">
+                            {truncateText(log.description)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-[400px]">
+                          {log.description}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : (
+                    <span className="inline-block max-w-[250px]">
+                      {log.description}
+                    </span>
+                  )}
                 </TableCell>
                 <TableCell>{log.user}</TableCell>
                 <TableCell>{formatDate(log.timestamp)}</TableCell>
@@ -91,4 +102,3 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
 };
 
 export default LogsTable;
-
