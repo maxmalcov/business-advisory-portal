@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useInvoiceHistory } from '../hooks/useInvoiceHistory';
 import InvoiceHistoryFilter from './InvoiceHistoryFilter';
 import InvoiceHistoryTable from './InvoiceHistoryTable';
+import InvoiceHistoryEmptyState from './InvoiceHistoryEmptyState';
 
 export interface InvoiceUpload {
   id: string;
@@ -46,12 +47,19 @@ const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({
         setFilterType={setFilterType}
       />
       
-      <InvoiceHistoryTable
-        isLoading={isLoading}
-        invoices={invoices}
-        onViewInvoice={handleViewInvoice}
-        onDownloadInvoice={handleDownloadInvoice}
-      />
+      {invoices.length > 0 ? (
+        <InvoiceHistoryTable
+          isLoading={isLoading}
+          invoices={invoices}
+          onViewInvoice={handleViewInvoice}
+          onDownloadInvoice={handleDownloadInvoice}
+        />
+      ) : (
+        <InvoiceHistoryEmptyState 
+          searchQuery={searchQuery}
+          filterType={filterType}
+        />
+      )}
     </div>
   );
 };

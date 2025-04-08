@@ -3,6 +3,14 @@ import React from 'react';
 import { format } from 'date-fns';
 import { FileUp, FileDown, Download, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { 
+  Table,
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
 import { InvoiceUpload } from './InvoiceHistoryList';
 
 interface InvoiceHistoryTableProps {
@@ -29,30 +37,29 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
 
   return (
     <div className="rounded-md border">
-      <div className="bg-muted py-2 px-4 grid grid-cols-7 text-sm font-medium">
-        <div className="col-span-2">File Name</div>
-        <div>Type</div>
-        <div>Upload Date</div>
-        <div>Sent To</div>
-        <div>Sent At</div>
-        <div className="text-right">Actions</div>
-      </div>
-      <div className="divide-y">
-        {invoices.length > 0 ? (
-          invoices.map((invoice) => (
-            <div 
-              key={invoice.id} 
-              className="grid grid-cols-7 py-3 px-4 items-center text-sm"
-            >
-              <div className="col-span-2 flex items-center">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[30%]">File Name</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Upload Date</TableHead>
+            <TableHead>Sent To</TableHead>
+            <TableHead>Sent At</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {invoices.map((invoice) => (
+            <TableRow key={invoice.id}>
+              <TableCell className="font-medium flex items-center">
                 {invoice.invoice_type === 'sale' ? (
                   <FileUp className="h-4 w-4 mr-2 text-muted-foreground" />
                 ) : (
                   <FileDown className="h-4 w-4 mr-2 text-muted-foreground" />
                 )}
                 <span className="truncate" title={invoice.file_name}>{invoice.file_name}</span>
-              </div>
-              <div>
+              </TableCell>
+              <TableCell>
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                   invoice.invoice_type === 'sale' 
                     ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' 
@@ -60,44 +67,42 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
                 }`}>
                   {invoice.invoice_type === 'sale' ? 'Sales' : 'Supplier'}
                 </span>
-              </div>
-              <div title={invoice.created_at}>
+              </TableCell>
+              <TableCell title={invoice.created_at}>
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
-              </div>
-              <div className="truncate" title={invoice.sent_to_email || 'Not sent'}>
+              </TableCell>
+              <TableCell className="truncate" title={invoice.sent_to_email || 'Not sent'}>
                 {invoice.sent_to_email || 'Not sent'}
-              </div>
-              <div>
+              </TableCell>
+              <TableCell>
                 {invoice.sent_at 
                   ? format(new Date(invoice.sent_at), 'MMM d, yyyy') 
                   : 'Not sent'}
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  title="View Invoice"
-                  onClick={() => onViewInvoice(invoice)}
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  title="Download Invoice"
-                  onClick={() => onDownloadInvoice(invoice)}
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="py-6 text-center text-muted-foreground">
-            No invoices found.
-          </div>
-        )}
-      </div>
+              </TableCell>
+              <TableCell className="text-right">
+                <div className="flex justify-end space-x-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    title="View Invoice"
+                    onClick={() => onViewInvoice(invoice)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    title="Download Invoice"
+                    onClick={() => onDownloadInvoice(invoice)}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
