@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +15,7 @@ import OptionalFields from './FormSections/OptionalFields';
 import { employeesTable } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { Employee } from '../types/employee';
 
 const NewEmployeeForm: React.FC = () => {
   const { t } = useLanguage();
@@ -145,10 +145,13 @@ const NewEmployeeForm: React.FC = () => {
       
       console.log('Employee added successfully:', employeeRecord);
       
+      // Explicitly type the employee record to ensure we can access its properties
+      const newEmployee = employeeRecord[0] as Employee;
+      
       // If there's a file to upload, upload it to storage
-      if (formData.idDocument && employeeRecord[0]) {
+      if (formData.idDocument && newEmployee) {
         const file = formData.idDocument;
-        const employeeId = employeeRecord[0].id;
+        const employeeId = newEmployee.id;
         const filename = `${Date.now()}-${file.name}`;
         const filePath = `${employeeId}/${filename}`;
         
