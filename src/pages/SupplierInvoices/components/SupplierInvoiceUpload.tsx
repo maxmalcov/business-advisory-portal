@@ -11,9 +11,8 @@ import {
 } from '@/components/ui/card';
 import { useSupplierFileUpload } from '../hooks/useSupplierFileUpload';
 import { useSupplierInvoiceEmail } from '../hooks/useSupplierInvoiceEmail';
-import SupplierFileUploadArea from './SupplierFileUploadArea';
-import SupplierFileList from './SupplierFileList';
 import UploadGuidelines from './UploadGuidelines';
+import SupplierFileUploadSection from './SupplierFileUploadSection';
 
 const SupplierInvoiceUpload: React.FC = () => {
   const { toast } = useToast();
@@ -28,7 +27,6 @@ const SupplierInvoiceUpload: React.FC = () => {
     uploadComplete, 
     uploadSuccess,
     uploadError,
-    setIsLoading,
     handleFileChange, 
     handleDragOver, 
     handleDragLeave, 
@@ -94,40 +92,24 @@ const SupplierInvoiceUpload: React.FC = () => {
           emailAddress={user?.incomingInvoiceEmail}
         />
         
-        {/* Only show file upload area if not currently uploading */}
-        {!isLoading && !uploadComplete && (
-          <SupplierFileUploadArea 
-            isDragging={isDragging}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onFileSelect={handleFileSelect}
-            isLoading={isLoading || isSending}
-          />
-        )}
-        
-        {/* Hidden file input */}
-        <input
-          type="file"
-          id="supplier-file-upload"
-          className="hidden"
-          multiple
-          accept=".pdf,.jpg,.jpeg"
-          onChange={handleFileChange}
-        />
-        
-        {/* Selected files list with progress */}
-        <SupplierFileList 
-          files={selectedFiles}
+        {/* File upload section */}
+        <SupplierFileUploadSection
+          selectedFiles={selectedFiles}
           uploadedFiles={uploadedFiles}
-          onRemoveFile={handleRemoveFile}
-          onSendEmail={handleSendEmail}
+          isDragging={isDragging}
           isLoading={isLoading}
           isSending={isSending}
           uploadProgress={uploadProgress}
           uploadComplete={uploadComplete}
           uploadSuccess={uploadSuccess}
           uploadError={uploadError}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onFileSelect={handleFileSelect}
+          onRemoveFile={handleRemoveFile}
+          onSendEmail={handleSendEmail}
+          onFileChange={handleFileChange}
         />
       </CardContent>
     </Card>
