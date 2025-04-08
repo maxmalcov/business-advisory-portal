@@ -20,6 +20,21 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
       .substring(0, 2);
   };
   
+  // Safe date formatter function
+  const formatDate = (dateStr: string | undefined) => {
+    if (!dateStr) return '-';
+    try {
+      return new Date(dateStr).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return '-';
+    }
+  };
+  
   return (
     <div className="space-y-6">
       {/* Header Section with Avatar and Title */}
@@ -74,26 +89,12 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium text-gray-500">Start Date</p>
-              <p className="text-sm font-semibold">
-                {new Date(employee.startDate).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
+              <p className="text-sm font-semibold">{formatDate(employee.startDate)}</p>
             </div>
             {(employee.status === 'terminated' || employee.endDate) && (
               <div>
                 <p className="text-sm font-medium text-gray-500">End Date</p>
-                <p className="text-sm font-semibold">
-                  {employee.endDate 
-                    ? new Date(employee.endDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })
-                    : '-'}
-                </p>
+                <p className="text-sm font-semibold">{formatDate(employee.endDate)}</p>
               </div>
             )}
           </div>

@@ -22,6 +22,17 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
   handleStartDateChange,
   handleEndDateChange,
 }) => {
+  // Safe format function that handles undefined dates
+  const formatSafeDate = (dateStr: string | undefined) => {
+    if (!dateStr) return null;
+    try {
+      return format(new Date(dateStr), 'PPP');
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return null;
+    }
+  };
+
   return (
     <div className="space-y-2">
       <h3 className="text-sm font-medium text-gray-500">Employment Dates</h3>
@@ -39,7 +50,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {formData.startDate ? format(new Date(formData.startDate), 'PPP') : "Select date"}
+                {formatSafeDate(formData.startDate) || "Select date"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -69,7 +80,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {formData.endDate ? format(new Date(formData.endDate), 'PPP') : "Select date"}
+                {formatSafeDate(formData.endDate) || "Select date"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">

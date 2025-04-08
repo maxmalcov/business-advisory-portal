@@ -55,6 +55,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
         position: String(rowData.position || ''),
         status: (rowData.status as 'active' | 'terminated') || 'active',
         startDate: String(rowData.start_date || ''),
+        // Fix: Properly handle endDate as undefined or string
         endDate: rowData.end_date ? String(rowData.end_date) : undefined,
         companyName: String(rowData.company_name || ''),
         dniTie: String(rowData.dni_tie || ''),

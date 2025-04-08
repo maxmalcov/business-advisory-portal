@@ -12,9 +12,11 @@ const EmploymentDatesSection: React.FC<EmploymentDatesSectionProps> = ({ employe
   const formatDate = (dateStr: string | undefined) => {
     if (!dateStr) return '-';
     try {
+      // Ensure we have a valid date string
       return format(new Date(dateStr), 'MMM d, yyyy');
-    } catch {
-      return dateStr;
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return '-';
     }
   };
 
@@ -32,7 +34,7 @@ const EmploymentDatesSection: React.FC<EmploymentDatesSectionProps> = ({ employe
         {(employee.status === 'terminated' || employee.endDate) && (
           <div>
             <p className="text-sm font-medium">End Date</p>
-            <p className="text-sm">{employee.endDate ? formatDate(employee.endDate) : '-'}</p>
+            <p className="text-sm">{formatDate(employee.endDate)}</p>
           </div>
         )}
       </div>
