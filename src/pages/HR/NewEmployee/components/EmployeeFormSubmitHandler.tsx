@@ -55,10 +55,15 @@ const EmployeeFormSubmitHandler: React.FC<EmployeeFormSubmitHandlerProps> = ({
       
       console.log('Employee added successfully:', employeeRecord);
       
-      // Fixed potential null/undefined checks more thoroughly
-      if (Array.isArray(employeeRecord) && employeeRecord.length > 0) {
+      // Completely reworked null checks to be more thorough
+      if (employeeRecord && Array.isArray(employeeRecord) && employeeRecord.length > 0) {
         const dbEmployee = employeeRecord[0];
-        if (dbEmployee && typeof dbEmployee === 'object' && 'id' in dbEmployee && dbEmployee.id) {
+        // Make sure dbEmployee exists, is an object, has an id property, and the id isn't null
+        if (dbEmployee && 
+            typeof dbEmployee === 'object' && 
+            'id' in dbEmployee && 
+            dbEmployee.id !== null && 
+            dbEmployee.id !== undefined) {
           console.log(`Created employee with ID: ${dbEmployee.id}`);
         }
       }
