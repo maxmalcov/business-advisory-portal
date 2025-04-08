@@ -10,7 +10,7 @@ interface EmployeeFormSubmitHandlerProps {
   isSubmitting: boolean;
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   validate: () => boolean;
-  children: React.ReactNode; // Added missing children prop definition
+  children: React.ReactNode;
 }
 
 const EmployeeFormSubmitHandler: React.FC<EmployeeFormSubmitHandlerProps> = ({
@@ -55,15 +55,19 @@ const EmployeeFormSubmitHandler: React.FC<EmployeeFormSubmitHandlerProps> = ({
       
       console.log('Employee added successfully:', employeeRecord);
       
-      // Completely reworked null checks to be more thorough
+      // Fix null checks with a non-null assertion where appropriate
       if (employeeRecord && Array.isArray(employeeRecord) && employeeRecord.length > 0) {
+        // Use a non-null assertion within this scope since we've already checked
+        // that employeeRecord exists, is an array, and has elements
         const dbEmployee = employeeRecord[0];
-        // Make sure dbEmployee exists, is an object, has an id property, and the id isn't null
+        
+        // After this check, TypeScript knows dbEmployee is not null
         if (dbEmployee && 
             typeof dbEmployee === 'object' && 
             'id' in dbEmployee && 
             dbEmployee.id !== null && 
             dbEmployee.id !== undefined) {
+          // Safe to access dbEmployee.id here
           console.log(`Created employee with ID: ${dbEmployee.id}`);
         }
       }
