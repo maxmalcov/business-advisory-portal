@@ -32,7 +32,7 @@ const HR: React.FC = () => {
               Start the onboarding process for new employees
             </p>
           </CardContent>
-          <CardFooter className="pt-4 mt-auto">
+          <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/new-employee" className="w-full">
               <Button variant="outline" className="w-full">
                 Go to New Employee
@@ -53,7 +53,7 @@ const HR: React.FC = () => {
               Manage employee termination processes
             </p>
           </CardContent>
-          <CardFooter className="pt-4 mt-auto">
+          <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/termination" className="w-full">
               <Button variant="outline" className="w-full">
                 Go to Termination
@@ -74,7 +74,7 @@ const HR: React.FC = () => {
               Track and manage employee working hours
             </p>
           </CardContent>
-          <CardFooter className="pt-4 mt-auto">
+          <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/work-hours" className="w-full">
               <Button variant="outline" className="w-full">
                 Go to Work Hours
