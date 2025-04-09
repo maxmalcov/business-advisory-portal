@@ -19,8 +19,9 @@ const UsefulLinks = () => {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      // Use a type assertion that is compatible with our actual data structure
-      return (data || []) as UsefulLinkDB[];
+      
+      // First convert to unknown then to our expected type to avoid TypeScript errors
+      return (data as unknown) as UsefulLinkDB[];
     }
   });
 
