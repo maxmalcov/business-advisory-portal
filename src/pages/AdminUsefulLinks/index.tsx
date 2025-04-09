@@ -18,7 +18,8 @@ const AdminUsefulLinks = () => {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      return data as unknown as UsefulLinkDB[];
+      // Use a type assertion that is compatible with our actual data structure
+      return (data || []) as UsefulLinkDB[];
     }
   });
 
