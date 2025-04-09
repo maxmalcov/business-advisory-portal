@@ -16,20 +16,21 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-500">Identification</h3>
+      <h3 className="text-sm font-medium text-muted-foreground">Identification</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="dniTie">DNI/TIE</Label>
+          <Label htmlFor="dniTie" className="text-foreground">DNI/TIE</Label>
           <Input
             id="dniTie"
             name="dniTie"
             value={formData.dniTie || ''}
             onChange={handleInputChange}
+            className="bg-background text-foreground border-border"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="idDocument">ID Document</Label>
+          <Label htmlFor="idDocument" className="text-foreground">ID Document</Label>
           <div className="flex">
             <Input
               id="idDocument"
@@ -37,13 +38,13 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
               value={formData.idDocument || ''}
               onChange={handleInputChange}
               disabled
-              className="flex-1"
+              className="flex-1 bg-background text-foreground border-border"
             />
             <Button type="button" variant="outline" className="ml-2">
               Upload
             </Button>
           </div>
-          <p className="text-xs text-gray-500">Document upload is not available in edit mode</p>
+          <p className="text-xs text-muted-foreground">Document upload is not available in edit mode</p>
         </div>
       </div>
     </div>

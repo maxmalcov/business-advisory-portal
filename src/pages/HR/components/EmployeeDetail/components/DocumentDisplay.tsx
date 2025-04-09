@@ -1,35 +1,57 @@
 
 import React from 'react';
-import { FileText } from 'lucide-react';
-import DocumentActions from './DocumentActions';
-import { getDocumentFilename } from '../utils/documentUtils';
+import { Button } from '@/components/ui/button';
+import { Eye, Download } from 'lucide-react';
 
 interface DocumentDisplayProps {
-  documentPath: string;
+  documentUrl: string;
 }
 
-const DocumentDisplay: React.FC<DocumentDisplayProps> = ({ documentPath }) => {
-  // Early return if documentPath is empty or undefined
-  if (!documentPath) {
-    return (
-      <div className="flex items-center">
-        <FileText className="h-4 w-4 mr-2 text-gray-400" />
-        <span className="text-sm text-gray-500 italic">No document available</span>
-      </div>
-    );
-  }
+const DocumentDisplay: React.FC<DocumentDisplayProps> = ({ documentUrl }) => {
+  const fileName = documentUrl.split('/').pop() || 'Document';
   
-  const filename = getDocumentFilename(documentPath);
+  // Function to handle document preview
+  const handlePreview = () => {
+    window.open(documentUrl, '_blank');
+  };
+  
+  // Function to handle document download
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = documentUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   
   return (
-    <div className="flex items-center">
-      <FileText className="h-4 w-4 mr-2 text-blue-500" />
-      <span className="text-sm truncate max-w-[150px]">
-        {filename}
-      </span>
-      <DocumentActions documentPath={documentPath} filename={filename} />
+    <div className="flex flex-col space-y-2">
+      <div className="flex items-center text-sm text-foreground">
+        <span className="truncate max-w-[200px]">{fileName}</span>
+      </div>
+      <div className="flex space-x-2">
+        <Button 
+          size="sm" 
+          variant="outline"
+          className="h-8 px-2 text-xs"
+          onClick={handlePreview}
+        >
+          <Eye className="h-3.5 w-3.5 mr-1" />
+          View
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline"
+          className="h-8 px-2 text-xs"
+          onClick={handleDownload}
+        >
+          <Download className="h-3.5 w-3.5 mr-1" />
+          Download
+        </Button>
+      </div>
     </div>
   );
 };
 
-export default DocumentDisplay;
+export { DocumentDisplay };

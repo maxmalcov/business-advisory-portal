@@ -17,14 +17,14 @@ const ScheduleFormSection: React.FC<ScheduleFormSectionProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-500">Schedule</h3>
+      <h3 className="text-sm font-medium text-muted-foreground">Schedule</h3>
       
-      <Card>
-        <CardContent className="pt-4">
+      <Card className="border border-border">
+        <CardContent className="pt-4 bg-card">
           <div className="space-y-2">
             <div className="flex items-start justify-between">
-              <Label htmlFor="weeklySchedule" className="text-base">Weekly Working Schedule</Label>
-              <div className="flex items-center text-gray-500 text-xs">
+              <Label htmlFor="weeklySchedule" className="text-base text-foreground">Weekly Working Schedule</Label>
+              <div className="flex items-center text-muted-foreground text-xs">
                 <Info className="h-3.5 w-3.5 mr-1" />
                 <span>Please enter the full weekly schedule</span>
               </div>
@@ -37,10 +37,10 @@ const ScheduleFormSection: React.FC<ScheduleFormSectionProps> = ({
               onChange={handleInputChange}
               placeholder="E.g., Monday-Friday: 9:00-17:00, Saturday: 9:00-13:00"
               rows={4}
-              className="resize-none"
+              className="resize-none bg-background text-foreground border-border"
             />
             
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-xs text-muted-foreground mt-1">
               <p>Examples:</p>
               <ul className="list-disc list-inside space-y-1 mt-1">
                 <li>Monday-Friday: 9:00-17:00</li>

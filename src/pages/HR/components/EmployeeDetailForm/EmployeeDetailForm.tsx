@@ -38,7 +38,7 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
   const isSubmittingState = externalIsSubmitting || internalIsSubmitting;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 text-foreground">
       <BasicInfoFormSection 
         formData={formData}
         errors={errors}

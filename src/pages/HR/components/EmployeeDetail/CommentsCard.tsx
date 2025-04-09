@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Employee } from '../../types/employee';
-import { Mail } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface CommentsCardProps {
@@ -9,20 +9,22 @@ interface CommentsCardProps {
 }
 
 const CommentsCard: React.FC<CommentsCardProps> = ({ employee }) => {
-  if (!employee.comments) {
-    return null;
-  }
-  
   return (
-    <Card className="overflow-hidden border-0 shadow-md">
-      <div className="bg-gray-50 px-6 py-3 border-b">
-        <h3 className="text-md font-medium flex items-center">
-          <Mail className="h-4 w-4 mr-2 text-blue-600" />
-          Additional Comments
+    <Card className="overflow-hidden border border-border shadow-sm">
+      <div className="bg-muted/30 px-6 py-3 border-b border-border">
+        <h3 className="text-md font-medium flex items-center text-foreground">
+          <MessageSquare className="h-4 w-4 mr-2 text-primary" />
+          Comments
         </h3>
       </div>
-      <CardContent className="pt-4">
-        <p className="text-sm whitespace-pre-line">{employee.comments}</p>
+      <CardContent className="pt-4 bg-card">
+        {employee.comments ? (
+          <div>
+            <p className="text-sm whitespace-pre-line text-foreground">{employee.comments}</p>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground italic">No comments available</p>
+        )}
       </CardContent>
     </Card>
   );

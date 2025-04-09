@@ -40,21 +40,21 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
       <ContactInfoCard employee={employee} />
       
       {/* Schedule Card */}
-      <Card className="overflow-hidden border-0 shadow-md">
-        <div className="bg-gray-50 px-6 py-3 border-b">
-          <h3 className="text-md font-medium flex items-center">
-            <Clock className="h-4 w-4 mr-2 text-blue-600" />
+      <Card className="overflow-hidden border border-border shadow-sm">
+        <div className="bg-muted/30 px-6 py-3 border-b border-border">
+          <h3 className="text-md font-medium flex items-center text-foreground">
+            <Clock className="h-4 w-4 mr-2 text-primary" />
             Schedule
           </h3>
         </div>
-        <CardContent className="pt-4">
+        <CardContent className="pt-4 bg-card">
           {employee.weeklySchedule ? (
             <div>
-              <p className="text-sm font-medium text-gray-500">Weekly Working Schedule</p>
-              <p className="text-sm font-semibold whitespace-pre-line mt-1">{employee.weeklySchedule}</p>
+              <p className="text-sm font-medium text-muted-foreground">Weekly Working Schedule</p>
+              <p className="text-sm font-semibold whitespace-pre-line mt-1 text-foreground">{employee.weeklySchedule}</p>
             </div>
           ) : (
-            <p className="text-sm text-gray-500 italic">No schedule information available</p>
+            <p className="text-sm text-muted-foreground italic">No schedule information available</p>
           )}
         </CardContent>
       </Card>

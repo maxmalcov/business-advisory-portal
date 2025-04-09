@@ -6,30 +6,35 @@ import { Card, CardContent } from '@/components/ui/card';
 
 interface EmploymentDatesCardProps {
   employee: Employee;
-  formatDate: (dateStr: string | undefined) => string;
+  formatDate: (dateString: string | undefined) => string;
 }
 
-const EmploymentDatesCard: React.FC<EmploymentDatesCardProps> = ({ employee, formatDate }) => {
+const EmploymentDatesCard: React.FC<EmploymentDatesCardProps> = ({ 
+  employee, 
+  formatDate 
+}) => {
   return (
-    <Card className="overflow-hidden border-0 shadow-md">
-      <div className="bg-gray-50 px-6 py-3 border-b">
-        <h3 className="text-md font-medium flex items-center">
-          <Calendar className="h-4 w-4 mr-2 text-blue-600" />
+    <Card className="overflow-hidden border border-border shadow-sm">
+      <div className="bg-muted/30 px-6 py-3 border-b border-border">
+        <h3 className="text-md font-medium flex items-center text-foreground">
+          <Calendar className="h-4 w-4 mr-2 text-primary" />
           Employment Dates
         </h3>
       </div>
-      <CardContent className="pt-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm font-medium text-gray-500">Start Date</p>
-            <p className="text-sm font-semibold">{formatDate(employee.startDate)}</p>
-          </div>
-          {(employee.status === 'terminated' || employee.endDate) && (
-            <div>
-              <p className="text-sm font-medium text-gray-500">End Date</p>
-              <p className="text-sm font-semibold">{formatDate(employee.endDate)}</p>
-            </div>
-          )}
+      <CardContent className="pt-4 grid grid-cols-2 gap-4 bg-card">
+        <div>
+          <p className="text-sm font-medium text-muted-foreground">Start Date</p>
+          <p className="text-sm font-semibold text-foreground">
+            {employee.startDate ? formatDate(employee.startDate) : '-'}
+          </p>
+        </div>
+        
+        <div>
+          <p className="text-sm font-medium text-muted-foreground">End Date</p>
+          <p className="text-sm font-semibold text-foreground">
+            {employee.endDate ? formatDate(employee.endDate) : 
+              (employee.status === 'active' ? 'Current Employee' : '-')}
+          </p>
         </div>
       </CardContent>
     </Card>
