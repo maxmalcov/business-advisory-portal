@@ -44,11 +44,14 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
 
   return (
     <div className="space-y-4">
-      <Label className="font-medium text-base">IFRAME URLs</Label>
+      <div className="flex items-center gap-2">
+        <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
+        <Label className="font-medium text-base">IFRAME URLs</Label>
+      </div>
+      
       <div className="space-y-3">
         {user.iframeUrls?.map((url: string, index: number) => (
           <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-md">
-            <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
             <Input 
               value={url}
               onChange={(e) => {
@@ -76,7 +79,6 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
         
         {!isReadOnly && (
           <div className="flex items-center gap-3 mt-4 p-3 border border-dashed border-gray-300 rounded-md">
-            <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
             <Input 
               placeholder="https://example.com/iframe"
               value={newIframeUrl}

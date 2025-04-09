@@ -3,11 +3,12 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { User } from '../../hooks/types';
+import { User, File, Building, UserCircle } from 'lucide-react';
+import type { User as UserType } from '../../hooks/types';
 
 interface BasicInfoSectionProps {
-  user: User;
-  onUserChange: (user: User) => void;
+  user: UserType;
+  onUserChange: (user: UserType) => void;
   isReadOnly?: boolean;
 }
 
@@ -33,7 +34,10 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
   return (
     <>
       <div className="space-y-3">
-        <Label htmlFor="name" className="font-medium">Name</Label>
+        <div className="flex items-center gap-2">
+          <User className="h-5 w-5 text-gray-500 flex-shrink-0" />
+          <Label htmlFor="name" className="font-medium">Name</Label>
+        </div>
         <Input 
           id="name"
           value={user.name}
@@ -45,7 +49,10 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
       </div>
       
       <div className="space-y-3">
-        <Label htmlFor="email" className="font-medium">Email</Label>
+        <div className="flex items-center gap-2">
+          <File className="h-5 w-5 text-gray-500 flex-shrink-0" />
+          <Label htmlFor="email" className="font-medium">Email</Label>
+        </div>
         <Input 
           id="email"
           value={user.email}
@@ -57,7 +64,10 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
       </div>
       
       <div className="space-y-3">
-        <Label htmlFor="company" className="font-medium">Company Name</Label>
+        <div className="flex items-center gap-2">
+          <Building className="h-5 w-5 text-gray-500 flex-shrink-0" />
+          <Label htmlFor="company" className="font-medium">Company Name</Label>
+        </div>
         <Input 
           id="company"
           value={user.companyName || ''}
@@ -69,7 +79,10 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
       </div>
       
       <div className="space-y-3">
-        <Label htmlFor="role" className="font-medium">Role</Label>
+        <div className="flex items-center gap-2">
+          <UserCircle className="h-5 w-5 text-gray-500 flex-shrink-0" />
+          <Label htmlFor="role" className="font-medium">Role</Label>
+        </div>
         <Select 
           value={user.userType} 
           onValueChange={handleChangeUserType}

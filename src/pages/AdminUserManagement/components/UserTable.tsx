@@ -11,7 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye } from 'lucide-react';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 interface User {
   id: string;
@@ -73,18 +72,14 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onEditUser(user)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        View
-                      </Button>
-                    </DialogTrigger>
-                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEditUser(user)}
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    View
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>

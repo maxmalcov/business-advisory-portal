@@ -24,35 +24,35 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
   return (
     <>
       <div className="space-y-3">
-        <Label htmlFor="incoming-email" className="font-medium">Email for Incoming Invoices</Label>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Mail className="h-5 w-5 text-gray-500 flex-shrink-0" />
-          <Input 
-            id="incoming-email"
-            value={user.incomingInvoiceEmail || ''}
-            onChange={(e) => onUserChange({...user, incomingInvoiceEmail: e.target.value})}
-            className="flex-grow"
-            placeholder="email@example.com"
-            readOnly={isReadOnly}
-            disabled={isReadOnly}
-          />
+          <Label htmlFor="incoming-email" className="font-medium">Email for Incoming Invoices</Label>
         </div>
+        <Input 
+          id="incoming-email"
+          value={user.incomingInvoiceEmail || ''}
+          onChange={(e) => onUserChange({...user, incomingInvoiceEmail: e.target.value})}
+          className="flex-grow"
+          placeholder="email@example.com"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
+        />
       </div>
       
       <div className="space-y-3">
-        <Label htmlFor="outgoing-email" className="font-medium">Email for Outgoing Invoices</Label>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Mail className="h-5 w-5 text-gray-500 flex-shrink-0" />
-          <Input 
-            id="outgoing-email"
-            value={user.outgoingInvoiceEmail || ''}
-            onChange={(e) => onUserChange({...user, outgoingInvoiceEmail: e.target.value})}
-            className="flex-grow"
-            placeholder="email@example.com"
-            readOnly={isReadOnly}
-            disabled={isReadOnly}
-          />
+          <Label htmlFor="outgoing-email" className="font-medium">Email for Outgoing Invoices</Label>
         </div>
+        <Input 
+          id="outgoing-email"
+          value={user.outgoingInvoiceEmail || ''}
+          onChange={(e) => onUserChange({...user, outgoingInvoiceEmail: e.target.value})}
+          className="flex-grow"
+          placeholder="email@example.com"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
+        />
       </div>
     </>
   );

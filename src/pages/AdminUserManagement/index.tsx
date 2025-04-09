@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog';
 import UserManagementHeader from './components/UserManagementHeader';
 import UserSearchBar from './components/UserSearchBar';
@@ -33,12 +33,6 @@ const AdminUserManagement: React.FC = () => {
     setShowConfirmDelete,
   } = useUserManagement();
 
-  React.useEffect(() => {
-    if (editingUser) {
-      console.log("Main component received editingUser data:", editingUser);
-    }
-  }, [editingUser]);
-
   return (
     <div className="container mx-auto py-6 space-y-8">
       <UserManagementHeader onAddUser={handleAddUser} />
@@ -64,24 +58,28 @@ const AdminUserManagement: React.FC = () => {
       {/* User Details/Edit Dialog */}
       <Dialog open={!!editingUser} onOpenChange={(open) => !open && handleCancelEdit()}>
         {editingUser && (
-          <UserEditDialog
-            user={editingUser}
-            onUserChange={handleUpdateUser}
-            onSave={handleSaveUser}
-            onCancel={handleCancelEdit}
-            onDelete={handleDeleteUser}
-            onToggleStatus={toggleUserStatus}
-          />
+          <DialogContent className="max-w-5xl p-0 h-[90vh] flex flex-col mx-auto w-[95vw]">
+            <UserEditDialog
+              user={editingUser}
+              onUserChange={handleUpdateUser}
+              onSave={handleSaveUser}
+              onCancel={handleCancelEdit}
+              onDelete={handleDeleteUser}
+              onToggleStatus={toggleUserStatus}
+            />
+          </DialogContent>
         )}
       </Dialog>
       
       {/* Add User Dialog */}
       <Dialog open={isAddingUser} onOpenChange={(open) => !open && handleCancelAddUser()}>
         {isAddingUser && (
-          <AddUserDialog 
-            onSave={handleSaveNewUser}
-            onCancel={handleCancelAddUser}
-          />
+          <DialogContent>
+            <AddUserDialog 
+              onSave={handleSaveNewUser}
+              onCancel={handleCancelAddUser}
+            />
+          </DialogContent>
         )}
       </Dialog>
       

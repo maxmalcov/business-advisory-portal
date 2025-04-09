@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
+import { DialogFooter, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Save, Edit, Trash2, Power, X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -32,7 +32,6 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 }) => {
   const { t } = useLanguage();
   const [isEditMode, setIsEditMode] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Log the user data to verify we're receiving correct information
   useEffect(() => {
@@ -49,7 +48,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
   };
 
   return (
-    <DialogContent className="max-w-5xl p-0 h-[90vh] flex flex-col mx-auto w-[95vw]">
+    <>
       <DialogHeader className="px-6 pt-6 mb-2 flex flex-row items-center justify-between">
         <div>
           <DialogTitle className="text-xl">{isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
@@ -137,7 +136,9 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
           </div>
 
           <div className="flex gap-2">
-            <Button variant="outline" onClick={onCancel}>Close</Button>
+            <DialogClose asChild>
+              <Button variant="outline" onClick={onCancel}>Close</Button>
+            </DialogClose>
             {isEditMode && (
               <Button onClick={handleSave}>
                 <Save className="mr-2 h-4 w-4" />
@@ -147,7 +148,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
           </div>
         </div>
       </DialogFooter>
-    </DialogContent>
+    </>
   );
 };
 
