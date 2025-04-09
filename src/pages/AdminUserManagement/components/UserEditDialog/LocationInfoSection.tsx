@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MapPin, Building, GlobeIcon } from 'lucide-react';
-import type { User } from '../../hooks/types';
+import type { User } from '../../hooks/useUserManagement';
 
 interface LocationInfoSectionProps {
   user: User;

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Mail, Phone, CreditCard } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { User } from '../../hooks/types';
+import type { User } from '../../hooks/useUserManagement';
 
 interface ContactInfoSectionProps {
   user: User;

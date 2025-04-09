@@ -4,8 +4,11 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescripti
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
-import UserEditForm from './UserEditForm';
-import type { User } from '../../hooks/types';
+import BasicInfoSection from './BasicInfoSection';
+import ContactInfoSection from './ContactInfoSection';
+import IframeUrlsSection from './IframeUrlsSection';
+import LocationInfoSection from './LocationInfoSection';
+import type { User } from '../../hooks/useUserManagement';
 
 interface UserEditDialogProps {
   user: User;
@@ -36,7 +39,17 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </DialogDescription>
       </DialogHeader>
       
-      <UserEditForm user={user} onUserChange={onUserChange} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+        <BasicInfoSection user={user} onUserChange={onUserChange} />
+        <ContactInfoSection user={user} onUserChange={onUserChange} />
+        <LocationInfoSection user={user} onUserChange={onUserChange} />
+        <div className="col-span-1 md:col-span-2">
+          <IframeUrlsSection 
+            user={user} 
+            onUserChange={onUserChange} 
+          />
+        </div>
+      </div>
       
       <DialogFooter className="mt-8">
         <Button variant="outline" onClick={onCancel}>Cancel</Button>
