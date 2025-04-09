@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle, Upload } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { FormData, FormErrors } from '../../types';
+import { Button } from '@/components/ui/button';
 
 interface IdDocumentFieldProps {
   formData: FormData;
@@ -20,6 +21,12 @@ const IdDocumentField: React.FC<IdDocumentFieldProps> = ({
   handleFileChange,
   uploadProgress = 0,
 }) => {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const triggerFileInput = () => {
+    inputRef.current?.click();
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex items-center">
@@ -38,17 +45,31 @@ const IdDocumentField: React.FC<IdDocumentFieldProps> = ({
       <div className="flex items-center">
         <div className="relative w-full">
           <Input
+            ref={inputRef}
             id="idDocument"
             name="idDocument"
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
             onChange={handleFileChange}
-            className={`${errors.idDocument ? "border-red-500" : ""} cursor-pointer`}
+            className={`${errors.idDocument ? "border-red-500" : ""} hidden`}
           />
-          <label htmlFor="idDocument" className="absolute inset-0 flex items-center justify-center opacity-0">
-            <Upload className="h-4 w-4 mr-2" />
-            Choose File
-          </label>
+          <div className="flex gap-2">
+            <Button 
+              type="button" 
+              onClick={triggerFileInput}
+              variant="outline" 
+              className="flex-1 flex justify-center items-center gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              Choose File
+            </Button>
+            <Input 
+              value={formData.idDocument ? formData.idDocument.name : "No file selected"} 
+              readOnly
+              className="flex-1"
+              onClick={triggerFileInput}
+            />
+          </div>
         </div>
       </div>
       {uploadProgress > 0 && uploadProgress < 100 && (

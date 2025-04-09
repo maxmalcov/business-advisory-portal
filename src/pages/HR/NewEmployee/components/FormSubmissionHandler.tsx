@@ -24,14 +24,20 @@ export const submitEmployeeForm = async ({
     let documentPath = '';
     if (formData.idDocument) {
       try {
+        console.log('Uploading ID document:', formData.idDocument.name);
         documentPath = await uploadDocumentToStorage(formData.idDocument, setUploadProgress);
-        console.log('Document uploaded successfully:', documentPath);
+        console.log('Document uploaded successfully. Path:', documentPath);
       } catch (uploadError) {
         console.error('Document upload failed:', uploadError);
         onError('Could not upload the ID document. Please try again.');
         setIsSubmitting(false);
         return;
       }
+    } else {
+      console.warn('No ID document provided');
+      onError('Please upload an ID document before submitting the form.');
+      setIsSubmitting(false);
+      return;
     }
     
     const employeeData = {
@@ -58,14 +64,17 @@ export const submitEmployeeForm = async ({
       .insert(employeeData)
       .select();
       
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase insertion error:', error);
+      throw error;
+    }
     
     console.log('Employee added successfully:', data);
     onSuccess();
     
   } catch (error) {
     console.error('Error adding employee:', error);
-    onError('There was a problem adding the employee.');
+    onError('There was a problem adding the employee. Please check console for details.');
   } finally {
     setIsSubmitting(false);
     setUploadProgress(0);
