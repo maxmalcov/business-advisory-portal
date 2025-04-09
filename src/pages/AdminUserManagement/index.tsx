@@ -44,10 +44,12 @@ const AdminUserManagement: React.FC = () => {
       <UserManagementHeader onAddUser={handleAddUser} />
       
       <div className="bg-white rounded-lg border p-6">
-        <UserSearchBar 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <div className="flex justify-between items-center mb-4">
+          <UserSearchBar 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        </div>
         
         <div className="mt-6">
           <UserTable 
