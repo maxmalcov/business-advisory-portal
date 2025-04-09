@@ -14,6 +14,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
   // Log the user data to verify we're receiving correct information for this section
   React.useEffect(() => {
     console.log("ContactInfoSection received user data:", {
+      email: user.email,
       incomingInvoiceEmail: user.incomingInvoiceEmail,
       outgoingInvoiceEmail: user.outgoingInvoiceEmail
     });
