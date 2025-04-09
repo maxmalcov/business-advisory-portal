@@ -63,12 +63,21 @@ const IdDocumentField: React.FC<IdDocumentFieldProps> = ({
               <Upload className="h-4 w-4" />
               Choose File
             </Button>
-            <Input 
-              value={formData.idDocument ? formData.idDocument.name : "No file selected"} 
-              readOnly
-              className="flex-1"
-              onClick={triggerFileInput}
-            />
+            {formData.idDocument ? (
+              <Input 
+                value={formData.idDocument.name} 
+                readOnly
+                className="flex-1"
+                onClick={triggerFileInput}
+              />
+            ) : (
+              <Input 
+                value="No file selected" 
+                readOnly
+                className="flex-1 text-muted-foreground"
+                onClick={triggerFileInput}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -80,12 +89,6 @@ const IdDocumentField: React.FC<IdDocumentFieldProps> = ({
       )}
       {errors.idDocument && (
         <p className="text-sm text-red-500">{errors.idDocument}</p>
-      )}
-      {formData.idDocument && (
-        <p className="text-sm text-muted-foreground">
-          File: {formData.idDocument.name} 
-          ({(formData.idDocument.size / (1024 * 1024)).toFixed(2)} MB)
-        </p>
       )}
     </div>
   );
