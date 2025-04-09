@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { User } from '../../hooks/useUserManagement';
+import type { User } from '../../hooks/types';
 
 interface BasicInfoSectionProps {
   user: User;
@@ -18,6 +18,16 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
       userType: value
     });
   };
+
+  // Log the user data to verify we're receiving correct information for this section
+  React.useEffect(() => {
+    console.log("BasicInfoSection received user data:", {
+      name: user.name,
+      email: user.email,
+      companyName: user.companyName,
+      userType: user.userType
+    });
+  }, [user]);
 
   return (
     <>

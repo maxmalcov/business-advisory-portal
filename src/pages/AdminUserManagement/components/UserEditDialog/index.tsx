@@ -6,8 +6,10 @@ import { Save } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import BasicInfoSection from './BasicInfoSection';
 import ContactInfoSection from './ContactInfoSection';
+import AccountInfoSection from './AccountInfoSection';
+import LocationInfoSection from './LocationInfoSection';
 import IframeUrlsSection from './IframeUrlsSection';
-import type { User } from '../../hooks/useUserManagement';
+import type { User } from '../../hooks/types';
 
 interface UserEditDialogProps {
   user: User;
@@ -38,9 +40,18 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </DialogDescription>
       </DialogHeader>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-        <BasicInfoSection user={user} onUserChange={onUserChange} />
-        <ContactInfoSection user={user} onUserChange={onUserChange} />
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <BasicInfoSection user={user} onUserChange={onUserChange} />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ContactInfoSection user={user} onUserChange={onUserChange} />
+          <AccountInfoSection user={user} onUserChange={onUserChange} />
+        </div>
+        
+        <LocationInfoSection user={user} onUserChange={onUserChange} />
+        
         <div className="col-span-1 md:col-span-2">
           <IframeUrlsSection 
             user={user} 
