@@ -11,8 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye } from 'lucide-react';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import UserEditDialog from './UserEditDialog';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 interface User {
   id: string;
