@@ -71,7 +71,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
         <div className="flex items-center gap-3 mt-4 p-3 border border-dashed border-gray-300 rounded-md">
           <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
           <Input 
-            placeholder="Add new URL"
+            placeholder="https://example.com/iframe"
             value={newIframeUrl}
             onChange={(e) => setNewIframeUrl(e.target.value)}
             className="flex-grow border-gray-200"

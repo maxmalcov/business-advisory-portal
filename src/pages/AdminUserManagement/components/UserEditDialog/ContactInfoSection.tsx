@@ -31,7 +31,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
             value={user.incomingInvoiceEmail || ''}
             onChange={(e) => onUserChange({...user, incomingInvoiceEmail: e.target.value})}
             className="flex-grow"
-            placeholder="Enter email for incoming invoices"
+            placeholder="email@example.com"
           />
         </div>
       </div>
@@ -45,7 +45,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
             value={user.outgoingInvoiceEmail || ''}
             onChange={(e) => onUserChange({...user, outgoingInvoiceEmail: e.target.value})}
             className="flex-grow"
-            placeholder="Enter email for outgoing invoices"
+            placeholder="email@example.com"
           />
         </div>
       </div>

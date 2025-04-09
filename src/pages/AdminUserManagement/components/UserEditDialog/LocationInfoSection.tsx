@@ -32,7 +32,6 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
             value={user.address || ''}
             onChange={(e) => onUserChange({...user, address: e.target.value})}
             className="flex-grow"
-            placeholder="Street address"
           />
         </div>
       </div>
@@ -44,7 +43,6 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.postalCode || ''}
           onChange={(e) => onUserChange({...user, postalCode: e.target.value})}
           className="w-full"
-          placeholder="Postal code"
         />
       </div>
       
@@ -55,7 +53,6 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.city || ''}
           onChange={(e) => onUserChange({...user, city: e.target.value})}
           className="w-full"
-          placeholder="City"
         />
       </div>
       
@@ -66,7 +63,6 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.province || ''}
           onChange={(e) => onUserChange({...user, province: e.target.value})}
           className="w-full"
-          placeholder="Province or state"
         />
       </div>
       
@@ -77,7 +73,6 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.country || ''}
           onChange={(e) => onUserChange({...user, country: e.target.value})}
           className="w-full"
-          placeholder="Country"
         />
       </div>
       
@@ -88,7 +83,6 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.nif || ''}
           onChange={(e) => onUserChange({...user, nif: e.target.value})}
           className="w-full"
-          placeholder="Tax identification number"
         />
       </div>
     </div>

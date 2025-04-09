@@ -30,7 +30,6 @@ const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserCha
             value={user.phone || ''}
             onChange={(e) => onUserChange({...user, phone: e.target.value})}
             className="flex-grow"
-            placeholder="Enter phone number"
           />
         </div>
       </div>
