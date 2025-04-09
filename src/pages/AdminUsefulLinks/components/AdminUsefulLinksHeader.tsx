@@ -16,14 +16,14 @@ const AdminUsefulLinksHeader: React.FC<AdminUsefulLinksHeaderProps> = ({ refetch
   return (
     <div className="flex items-center justify-between">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">{t('admin.useful_links.title')}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Manage Useful Links</h1>
         <p className="text-muted-foreground">
-          {t('admin.useful_links.description')}
+          Add, edit or remove links that users can access from the Useful Links page.
         </p>
       </div>
       <Button onClick={() => setIsDialogOpen(true)}>
         <Plus className="mr-2 h-4 w-4" />
-        {t('admin.useful_links.add_new')}
+        Add New Link
       </Button>
       
       <AddEditLinkDialog 

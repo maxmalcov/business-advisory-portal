@@ -46,7 +46,7 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
   if (error) {
     return (
       <div className="bg-destructive/10 p-4 rounded-md text-destructive">
-        {t('app.error_loading_data')}
+        Error loading data. Please try again later.
       </div>
     );
   }
@@ -55,7 +55,7 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
     return (
       <div className="text-center p-8">
         <p className="text-muted-foreground">
-          {t('admin.useful_links.no_links')}
+          No links available. Click "Add New Link" to create your first resource.
         </p>
       </div>
     );
@@ -67,11 +67,11 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
         <table className="w-full">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="p-3 text-left font-medium">{t('admin.useful_links.title')}</th>
-              <th className="p-3 text-left font-medium">{t('admin.useful_links.category')}</th>
-              <th className="p-3 text-left font-medium">{t('admin.useful_links.icon')}</th>
-              <th className="p-3 text-left font-medium">{t('admin.useful_links.order')}</th>
-              <th className="p-3 text-center font-medium">{t('admin.useful_links.actions')}</th>
+              <th className="p-3 text-left font-medium">Title</th>
+              <th className="p-3 text-left font-medium">Category</th>
+              <th className="p-3 text-left font-medium">Icon</th>
+              <th className="p-3 text-left font-medium">Display Order</th>
+              <th className="p-3 text-center font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>

@@ -83,7 +83,7 @@ const UsefulLinks = () => {
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder={t('useful_links.search_placeholder') || "Search links..."}
+          placeholder="Search for resources..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10 max-w-md"
@@ -100,7 +100,7 @@ const UsefulLinks = () => {
         </div>
       ) : error ? (
         <div className="text-destructive p-4 bg-destructive/10 rounded-md">
-          {t('app.error_loading_data')}
+          Error loading resources. Please try again later.
         </div>
       ) : (
         filteredCategories.length > 0 ? (
@@ -124,11 +124,11 @@ const UsefulLinks = () => {
         ) : (
           searchQuery ? (
             <div className="text-center p-8">
-              <p className="text-muted-foreground">{t('useful_links.no_results')}</p>
+              <p className="text-muted-foreground">No resources match your search.</p>
             </div>
           ) : (
             <div className="text-center p-8">
-              <p className="text-muted-foreground">{t('useful_links.no_links')}</p>
+              <p className="text-muted-foreground">No resources available yet.</p>
             </div>
           )
         )
