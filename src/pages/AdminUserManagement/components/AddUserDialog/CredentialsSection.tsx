@@ -2,11 +2,11 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { User } from '../../hooks/useUserManagement';
+import type { User } from '../../hooks/types';
 
 interface CredentialsSectionProps {
-  newUser: User;
-  onUserChange: (user: User) => void;
+  newUser: Omit<User, "id">;
+  onUserChange: (user: Omit<User, "id">) => void;
 }
 
 const CredentialsSection: React.FC<CredentialsSectionProps> = ({ newUser, onUserChange }) => {

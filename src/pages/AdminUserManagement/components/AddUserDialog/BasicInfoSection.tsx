@@ -3,11 +3,11 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { User } from '../../hooks/useUserManagement';
+import type { User } from '../../hooks/types';
 
 interface BasicInfoSectionProps {
-  newUser: User;
-  onUserChange: (user: User) => void;
+  newUser: Omit<User, "id">;
+  onUserChange: (user: Omit<User, "id">) => void;
 }
 
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ newUser, onUserChange }) => {
