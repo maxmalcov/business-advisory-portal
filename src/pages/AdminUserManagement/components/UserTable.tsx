@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, Trash2, Power } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 interface User {
@@ -85,24 +85,6 @@ const UserTable: React.FC<UserTableProps> = ({
                       </Button>
                     </DialogTrigger>
                   </Dialog>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onToggleStatus(user)}
-                  >
-                    <Power className="h-4 w-4 mr-1" />
-                    {user.isActive ? "Deactivate" : "Activate"}
-                  </Button>
-                  
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => onDeleteUser(user)}
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
-                  </Button>
                 </div>
               </TableCell>
             </TableRow>
