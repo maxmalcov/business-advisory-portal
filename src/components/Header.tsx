@@ -6,13 +6,14 @@ import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/LanguageSelector';
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Loader2 } from 'lucide-react';
+import { ThemeToggleButton } from '@/components/ThemeToggle';
 
 const Header: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { t } = useLanguage();
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Link to="/" className="font-bold text-2xl text-ba-blue">
@@ -38,6 +39,7 @@ const Header: React.FC = () => {
                 <LogOut size={18} className="mr-1" />
                 {t('app.logout')}
               </Button>
+              <ThemeToggleButton />
             </div>
           ) : (
             <div className="flex items-center space-x-3">
@@ -47,6 +49,7 @@ const Header: React.FC = () => {
               <Link to="/register">
                 <Button variant="register">{t('app.register')}</Button>
               </Link>
+              <ThemeToggleButton />
             </div>
           )}
         </div>
