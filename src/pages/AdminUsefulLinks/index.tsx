@@ -39,29 +39,6 @@ const AdminUsefulLinks = () => {
     })) : [];
   }, [data]);
 
-  const handleDeleteLink = async (id: string) => {
-    try {
-      const { error } = await usefulLinksTable()
-        .delete()
-        .eq('id', id);
-      
-      if (error) throw error;
-      
-      await refetch();
-      toast({
-        title: 'Link deleted',
-        description: 'The link has been successfully deleted.',
-      });
-    } catch (error) {
-      console.error('Error deleting link:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to delete the link. Please try again.',
-        variant: 'destructive',
-      });
-    }
-  };
-
   return (
     <div className="space-y-6">
       <AdminUsefulLinksHeader refetch={refetch} />
@@ -69,7 +46,6 @@ const AdminUsefulLinks = () => {
         links={links} 
         isLoading={isLoading}
         error={error}
-        onDelete={handleDeleteLink}
         refetch={refetch}
       />
     </div>
