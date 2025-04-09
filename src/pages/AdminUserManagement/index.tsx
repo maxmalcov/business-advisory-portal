@@ -1,106 +1,75 @@
 
-import React from 'react';
-import { Dialog } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog';
+import React, { useState } from 'react';
+import { useUserManagement } from './hooks/useUserManagement';
 import UserManagementHeader from './components/UserManagementHeader';
 import UserSearchBar from './components/UserSearchBar';
 import UserTable from './components/UserTable';
-import UserEditDialog from './components/UserEditDialog/index';
-import AddUserDialog from './components/AddUserDialog/index';
-import DeleteConfirmationDialog from './components/DeleteConfirmationDialog';
-import { useUserManagement } from './hooks/useUserManagement';
+import UserEditDialog from './components/UserEditDialog';
+import AddUserDialog from './components/AddUserDialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const AdminUserManagement: React.FC = () => {
   const {
     users,
-    isLoading,
+    filteredUsers,
     searchQuery,
+    selectedUser,
+    isAddUserOpen,
+    isUserEditOpen,
     setSearchQuery,
-    editingUser,
-    isAddingUser,
-    showConfirmDelete,
-    userToDelete,
-    handleEditUser,
-    handleUpdateUser,
-    handleSaveUser,
-    handleDeleteUser,
-    confirmDeleteUser,
-    toggleUserStatus,
-    handleCancelEdit,
+    setSelectedUser,
+    setIsAddUserOpen,
+    setIsUserEditOpen,
     handleAddUser,
-    handleCancelAddUser,
-    handleSaveNewUser,
-    setShowConfirmDelete,
+    handleUpdateUser,
+    handleDeleteUser,
+    handleToggleUserStatus,
   } = useUserManagement();
 
-  React.useEffect(() => {
-    if (editingUser) {
-      console.log("Main component received editingUser data:", editingUser);
-    }
-  }, [editingUser]);
-
   return (
-    <div className="container mx-auto py-6 space-y-8">
-      <UserManagementHeader onAddUser={handleAddUser} />
+    <div className="space-y-6">
+      <UserManagementHeader onAddUser={() => setIsAddUserOpen(true)} />
       
-      <div className="bg-white rounded-lg border p-6">
-        <div className="flex justify-between items-center mb-4">
-          <UserSearchBar 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-        </div>
-        
-        <div className="mt-6">
-          <UserTable 
-            users={users}
-            onEditUser={handleEditUser}
-            onDeleteUser={handleDeleteUser}
-            onToggleStatus={toggleUserStatus}
-          />
-        </div>
-      </div>
+      <UserSearchBar 
+        searchQuery={searchQuery} 
+        onSearchChange={setSearchQuery} 
+      />
       
-      {/* User Details/Edit Dialog */}
-      <Dialog open={!!editingUser} onOpenChange={(open) => !open && handleCancelEdit()}>
-        {editingUser && (
-          <UserEditDialog
-            user={editingUser}
-            onUserChange={handleUpdateUser}
-            onSave={handleSaveUser}
-            onCancel={handleCancelEdit}
-            onDelete={handleDeleteUser}
-            onToggleStatus={toggleUserStatus}
-          />
-        )}
-      </Dialog>
+      <UserTable 
+        users={filteredUsers} 
+        onEditUser={(user) => {
+          setSelectedUser(user);
+          setIsUserEditOpen(true);
+        }}
+        onDeleteUser={handleDeleteUser}
+        onToggleStatus={handleToggleUserStatus}
+      />
       
       {/* Add User Dialog */}
-      <Dialog open={isAddingUser} onOpenChange={(open) => !open && handleCancelAddUser()}>
-        {isAddingUser && (
-          <AddUserDialog 
-            onSave={handleSaveNewUser}
-            onCancel={handleCancelAddUser}
-          />
-        )}
-      </Dialog>
+      <AddUserDialog 
+        isOpen={isAddUserOpen}
+        onClose={() => setIsAddUserOpen(false)}
+        onAddUser={handleAddUser}
+      />
       
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the user
-              {userToDelete && ` "${userToDelete.name}"`} and all associated data.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteUser}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Edit User Dialog */}
+      {selectedUser && (
+        <Dialog open={isUserEditOpen} onOpenChange={setIsUserEditOpen}>
+          <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-none">
+            <UserEditDialog
+              user={selectedUser}
+              onUserChange={setSelectedUser}
+              onSave={() => {
+                handleUpdateUser(selectedUser);
+                setIsUserEditOpen(false);
+              }}
+              onCancel={() => setIsUserEditOpen(false)}
+              onDelete={handleDeleteUser}
+              onToggleStatus={handleToggleUserStatus}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
