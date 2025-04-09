@@ -81,16 +81,16 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   };
 
   return (
-    <DialogContent className="max-w-5xl p-0 max-h-[90vh] flex flex-col mx-auto w-[95vw]">
-      <DialogHeader className="px-6 pt-6 mb-2 sticky top-0 bg-background z-10">
+    <DialogContent className="max-w-5xl p-0 h-[90vh] flex flex-col mx-auto w-[95vw]">
+      <DialogHeader className="px-6 pt-6 mb-2">
         <DialogTitle className="text-xl">Add New User</DialogTitle>
         <DialogDescription className="mt-2">
           Create a new user account with all required information
         </DialogDescription>
       </DialogHeader>
       
-      <div className="flex-1 overflow-y-auto px-6">
-        <div className="space-y-8 pb-6">
+      <ScrollArea className="flex-1 px-6 pb-4">
+        <div className="space-y-8">
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Basic Information</h3>
             <BasicInfoSection newUser={newUser} onUserChange={handleUserChange} />
@@ -108,12 +108,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
           
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Security Credentials</h3>
-            <CredentialsSection 
-              newUser={newUser} 
-              onUserChange={handleUserChange} 
-              confirmPassword={confirmPassword}
-              setConfirmPassword={setConfirmPassword}
-            />
+            <CredentialsSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
           <div className="border rounded-lg p-4">
@@ -124,9 +119,9 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
             />
           </div>
         </div>
-      </div>
+      </ScrollArea>
       
-      <DialogFooter className="px-6 py-4 border-t bg-muted/20 mt-auto sticky bottom-0 bg-background z-10">
+      <DialogFooter className="px-6 py-4 border-t bg-muted/20">
         <Button variant="outline" onClick={onCancel}>Cancel</Button>
         <Button onClick={handleSaveClick} disabled={!isFormValid}>
           <Save className="mr-2 h-4 w-4" />
