@@ -4,11 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Link as LinkIcon, Plus, X } from 'lucide-react';
-import type { User } from '../../hooks/useUserManagement';
+import type { User } from '../../hooks/types';
 
 interface IframeUrlsSectionProps {
-  newUser: User;
-  onUserChange: (user: User) => void;
+  newUser: Omit<User, 'id'>;
+  onUserChange: (user: Omit<User, 'id'>) => void;
 }
 
 const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ newUser, onUserChange }) => {

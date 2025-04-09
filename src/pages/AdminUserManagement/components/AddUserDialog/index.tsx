@@ -12,7 +12,7 @@ import IframeUrlsSection from './IframeUrlsSection';
 import { useAddUser } from '../../hooks/useAddUser';
 
 interface AddUserDialogProps {
-  onSave: (userData: User) => void;
+  onSave: (userData: Omit<User, 'id'>) => void;
   onCancel: () => void;
 }
 
@@ -37,8 +37,8 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
       <ScrollArea className="flex-1 px-6 pb-4">
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <BasicInfoSection user={newUser} onUserChange={handleUserChange} />
-            <CredentialsSection user={newUser} onUserChange={handleUserChange} />
+            <BasicInfoSection newUser={newUser} onUserChange={handleUserChange} />
+            <CredentialsSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -47,7 +47,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
           
           <div className="col-span-1 md:col-span-2">
             <IframeUrlsSection 
-              user={newUser} 
+              newUser={newUser} 
               onUserChange={handleUserChange} 
             />
           </div>

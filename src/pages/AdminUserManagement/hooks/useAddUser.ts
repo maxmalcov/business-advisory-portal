@@ -4,9 +4,27 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from './types';
 
-export const useAddUser = (refreshUsers: () => Promise<void>) => {
+export const useAddUser = (refreshUsers?: () => Promise<void>) => {
   const { toast } = useToast();
   const [isAddingUser, setIsAddingUser] = useState(false);
+  const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
+    name: '',
+    email: '',
+    userType: 'client',
+    iframeUrls: []
+  });
+  
+  // Check if form is valid
+  const isFormValid = Boolean(
+    newUser.name && 
+    newUser.email && 
+    newUser.userType
+  );
+
+  // Handle user data changes
+  const handleUserChange = (user: Omit<User, 'id'>) => {
+    setNewUser(user);
+  };
 
   // Open add user dialog
   const handleAddUser = () => {
@@ -16,26 +34,33 @@ export const useAddUser = (refreshUsers: () => Promise<void>) => {
   // Cancel adding user
   const handleCancelAddUser = () => {
     setIsAddingUser(false);
+    // Reset form
+    setNewUser({
+      name: '',
+      email: '',
+      userType: 'client',
+      iframeUrls: []
+    });
   };
 
   // Save new user - using Supabase auth signup
-  const handleSaveNewUser = async (newUser: Omit<User, 'id'>) => {
+  const handleSaveNewUser = async (newUserData: Omit<User, 'id'>) => {
     try {
-      if (!newUser.email || !newUser.password) {
+      if (!newUserData.email || !newUserData.password) {
         throw new Error("Email and password are required");
       }
       
-      console.log("Creating new user:", {...newUser, password: '[REDACTED]'});
+      console.log("Creating new user:", {...newUserData, password: '[REDACTED]'});
       
       // Register the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: newUser.email,
-        password: newUser.password,
+        email: newUserData.email,
+        password: newUserData.password,
         options: {
           data: {
-            name: newUser.name || '',
-            userType: newUser.userType || 'client',
-            companyName: newUser.companyName || '',
+            name: newUserData.name || '',
+            userType: newUserData.userType || 'client',
+            companyName: newUserData.companyName || '',
           }
         }
       });
@@ -52,11 +77,13 @@ export const useAddUser = (refreshUsers: () => Promise<void>) => {
       console.log("User created in Auth:", authData);
       
       // Refresh the users list
-      await refreshUsers();
+      if (refreshUsers) {
+        await refreshUsers();
+      }
       
       toast({
         title: "User Created",
-        description: `${newUser.name || 'New user'} was successfully added.`,
+        description: `${newUserData.name || 'New user'} was successfully added.`,
       });
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -74,6 +101,9 @@ export const useAddUser = (refreshUsers: () => Promise<void>) => {
     isAddingUser,
     handleAddUser,
     handleCancelAddUser,
-    handleSaveNewUser
+    handleSaveNewUser,
+    newUser,
+    handleUserChange,
+    isFormValid
   };
 };
