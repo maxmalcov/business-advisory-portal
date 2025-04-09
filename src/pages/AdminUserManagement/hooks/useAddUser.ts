@@ -81,6 +81,9 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
       
       console.log("Creating new user:", {...newUserData, password: '[REDACTED]'});
       
+      // Store iframeUrls separately as it's not part of the Supabase auth metadata
+      const iframeUrlsToStore = newUserData.iframeUrls || [];
+      
       // Register the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: newUserData.email,
@@ -117,11 +120,11 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
       console.log("User created in Auth:", authData);
       
       // Update profiles table with additional data if needed
-      if (newUserData.iframeUrls && newUserData.iframeUrls.length > 0) {
+      if (iframeUrlsToStore.length > 0) {
         const { error: updateError } = await supabase
           .from('profiles')
           .update({
-            iframeUrls: newUserData.iframeUrls
+            iframeurls: iframeUrlsToStore
           })
           .eq('id', authData.user.id);
           
