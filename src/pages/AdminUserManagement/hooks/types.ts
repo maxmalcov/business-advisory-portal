@@ -18,4 +18,5 @@ export interface User {
   country?: string;
   nif?: string;
   accountType?: string;
+  adminName?: string; // Administrator name for business accounts
 }

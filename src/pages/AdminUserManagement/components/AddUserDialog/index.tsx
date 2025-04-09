@@ -9,7 +9,8 @@ import BasicInfoSection from './BasicInfoSection';
 import ContactInfoSection from './ContactInfoSection';
 import CredentialsSection from './CredentialsSection';
 import IframeUrlsSection from './IframeUrlsSection';
-import { useState } from 'react';
+import LocationInfoSection from './LocationInfoSection';
+import { useState, useEffect } from 'react';
 
 interface AddUserDialogProps {
   onSave: (userData: Omit<User, 'id'>) => void;
@@ -20,18 +21,58 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     name: '',
     email: '',
-    userType: 'Client',
+    userType: 'client',
+    accountType: 'freelancer',
+    isActive: true,
     companyName: '',
-    isActive: true
   });
   
   const [isFormValid, setIsFormValid] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
   
   const handleUserChange = (updatedUser: Omit<User, 'id'>) => {
     setNewUser(updatedUser);
-    // Basic validation - check if name and email are filled
-    setIsFormValid(!!updatedUser.name && !!updatedUser.email);
+    validateForm(updatedUser);
   };
+
+  // Validate the form
+  const validateForm = (user: Omit<User, 'id'>) => {
+    const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(user.accountType || '');
+    
+    // Required fields for all users
+    const requiredFields = [
+      user.email,
+      user.userType,
+      user.password,
+      user.phone,
+      user.nif,
+      user.address,
+      user.postalCode,
+      user.city,
+      user.province,
+      user.country
+    ];
+    
+    // Add conditional required fields based on account type
+    if (isBusinessAccount) {
+      requiredFields.push(user.companyName);
+    } else {
+      requiredFields.push(user.name);
+    }
+    
+    // Check if all required fields are filled
+    const allFieldsFilled = requiredFields.every(field => field && field.trim().length > 0);
+    
+    // Check if passwords match (assuming confirmPassword is tracked in state)
+    const passwordsMatch = user.password === confirmPassword;
+    
+    setIsFormValid(allFieldsFilled && passwordsMatch);
+  };
+
+  useEffect(() => {
+    // Initialize the form with default values
+    validateForm(newUser);
+  }, [newUser, confirmPassword]);
 
   const handleSaveClick = () => {
     if (isFormValid) {
@@ -44,22 +85,34 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
       <DialogHeader className="px-6 pt-6 mb-2">
         <DialogTitle className="text-xl">Add New User</DialogTitle>
         <DialogDescription className="mt-2">
-          Create a new user account
+          Create a new user account with all required information
         </DialogDescription>
       </DialogHeader>
       
       <ScrollArea className="flex-1 px-6 pb-4">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-8">
+          <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Basic Information</h3>
             <BasicInfoSection newUser={newUser} onUserChange={handleUserChange} />
-            <CredentialsSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Contact Information</h3>
             <ContactInfoSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
-          <div className="col-span-1 md:col-span-2">
+          <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Location Details</h3>
+            <LocationInfoSection newUser={newUser} onUserChange={handleUserChange} />
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Security Credentials</h3>
+            <CredentialsSection newUser={newUser} onUserChange={handleUserChange} />
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Additional Settings</h3>
             <IframeUrlsSection 
               newUser={newUser} 
               onUserChange={handleUserChange} 

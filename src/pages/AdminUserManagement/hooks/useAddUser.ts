@@ -11,14 +11,34 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
     name: '',
     email: '',
     userType: 'client',
-    iframeUrls: []
+    accountType: 'freelancer',
+    iframeUrls: [],
+    phone: '',
+    nif: '',
+    address: '',
+    postalCode: '',
+    city: '',
+    province: '',
+    country: '',
+    companyName: ''
   });
   
   // Check if form is valid
   const isFormValid = Boolean(
-    newUser.name && 
     newUser.email && 
-    newUser.userType
+    newUser.userType &&
+    newUser.password &&
+    newUser.phone &&
+    newUser.nif &&
+    newUser.address &&
+    newUser.postalCode &&
+    newUser.city &&
+    newUser.province &&
+    newUser.country &&
+    (
+      (newUser.accountType && ['sl', 'sa', 'freelancer'].includes(newUser.accountType) && newUser.companyName) || 
+      (newUser.accountType && newUser.accountType === 'individual' && newUser.name)
+    )
   );
 
   // Handle user data changes
@@ -39,7 +59,16 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
       name: '',
       email: '',
       userType: 'client',
-      iframeUrls: []
+      accountType: 'freelancer',
+      iframeUrls: [],
+      phone: '',
+      nif: '',
+      address: '',
+      postalCode: '',
+      city: '',
+      province: '',
+      country: '',
+      companyName: ''
     });
   };
 
@@ -61,6 +90,17 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
             name: newUserData.name || '',
             userType: newUserData.userType || 'client',
             companyName: newUserData.companyName || '',
+            accountType: newUserData.accountType || 'freelancer',
+            nif: newUserData.nif || '',
+            address: newUserData.address || '',
+            postalCode: newUserData.postalCode || '',
+            city: newUserData.city || '',
+            province: newUserData.province || '',
+            country: newUserData.country || '',
+            phone: newUserData.phone || '',
+            incomingInvoiceEmail: newUserData.incomingInvoiceEmail || '',
+            outgoingInvoiceEmail: newUserData.outgoingInvoiceEmail || '',
+            adminName: newUserData.adminName || '',
           }
         }
       });
@@ -76,6 +116,21 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
       
       console.log("User created in Auth:", authData);
       
+      // Update profiles table with additional data if needed
+      if (newUserData.iframeUrls && newUserData.iframeUrls.length > 0) {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            iframeUrls: newUserData.iframeUrls
+          })
+          .eq('id', authData.user.id);
+          
+        if (updateError) {
+          console.error('Error updating user profile with iframeUrls:', updateError);
+          // Don't throw error here, as the user was created successfully
+        }
+      }
+      
       // Refresh the users list
       if (refreshUsers) {
         await refreshUsers();
@@ -83,7 +138,7 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
       
       toast({
         title: "User Created",
-        description: `${newUserData.name || 'New user'} was successfully added.`,
+        description: `${newUserData.name || newUserData.companyName || 'New user'} was successfully added.`,
       });
     } catch (error: any) {
       console.error('Error creating user:', error);
