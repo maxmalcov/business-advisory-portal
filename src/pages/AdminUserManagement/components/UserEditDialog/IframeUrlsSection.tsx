@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { Link as LinkIcon, Plus, X } from 'lucide-react';
 import type { User } from '../../hooks/useUserManagement';
 
@@ -38,12 +38,12 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
   };
 
   return (
-    <div className="col-span-2 space-y-2">
-      <Label>IFRAME URLs</Label>
-      <div className="space-y-2">
+    <div className="space-y-4">
+      <Label className="font-medium text-base">IFRAME URLs</Label>
+      <div className="space-y-3">
         {user.iframeUrls?.map((url: string, index: number) => (
-          <div key={index} className="flex items-center gap-2">
-            <LinkIcon className="h-4 w-4 flex-shrink-0" />
+          <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-md">
+            <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
             <Input 
               value={url}
               onChange={(e) => {
@@ -51,26 +51,26 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
                 newUrls[index] = e.target.value;
                 onUserChange({...user, iframeUrls: newUrls});
               }}
-              className="flex-grow"
+              className="flex-grow border-gray-200"
             />
             <Button 
               variant="ghost" 
               size="icon"
               onClick={() => handleRemoveIframeUrl(index)}
-              className="flex-shrink-0"
+              className="flex-shrink-0 hover:bg-gray-200"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
         ))}
         
-        <div className="flex items-center gap-2 mt-2">
-          <LinkIcon className="h-4 w-4 flex-shrink-0" />
+        <div className="flex items-center gap-3 mt-4 p-3 border border-dashed border-gray-300 rounded-md">
+          <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
           <Input 
             placeholder="Add new URL"
             value={newIframeUrl}
             onChange={(e) => setNewIframeUrl(e.target.value)}
-            className="flex-grow"
+            className="flex-grow border-gray-200"
           />
           <Button 
             variant="outline" 
@@ -78,7 +78,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
             onClick={handleAddIframeUrl}
             className="flex-shrink-0 whitespace-nowrap"
           >
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className="h-4 w-4 mr-2" />
             Add
           </Button>
         </div>

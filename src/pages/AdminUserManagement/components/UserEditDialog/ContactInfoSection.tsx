@@ -13,10 +13,10 @@ interface ContactInfoSectionProps {
 const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserChange }) => {
   return (
     <>
-      <div className="space-y-2">
-        <Label htmlFor="incoming-email">Email for Incoming Invoices</Label>
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 flex-shrink-0" />
+      <div className="space-y-3">
+        <Label htmlFor="incoming-email" className="font-medium">Email for Incoming Invoices</Label>
+        <div className="flex items-center gap-3">
+          <Mail className="h-5 w-5 text-gray-500 flex-shrink-0" />
           <Input 
             id="incoming-email"
             value={user.incomingInvoiceEmail || ''}
@@ -26,10 +26,10 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
         </div>
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="outgoing-email">Email for Outgoing Invoices</Label>
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 flex-shrink-0" />
+      <div className="space-y-3">
+        <Label htmlFor="outgoing-email" className="font-medium">Email for Outgoing Invoices</Label>
+        <div className="flex items-center gap-3">
+          <Mail className="h-5 w-5 text-gray-500 flex-shrink-0" />
           <Input 
             id="outgoing-email"
             value={user.outgoingInvoiceEmail || ''}

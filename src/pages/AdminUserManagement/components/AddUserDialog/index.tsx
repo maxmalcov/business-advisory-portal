@@ -52,15 +52,15 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   };
 
   return (
-    <DialogContent className="max-w-2xl">
-      <DialogHeader>
-        <DialogTitle>Add New User</DialogTitle>
-        <DialogDescription>
+    <DialogContent className="max-w-2xl p-6">
+      <DialogHeader className="mb-6">
+        <DialogTitle className="text-xl">Add New User</DialogTitle>
+        <DialogDescription className="mt-2">
           Create a new user account
         </DialogDescription>
       </DialogHeader>
       
-      <div className="grid grid-cols-2 gap-4 py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
         <BasicInfoSection 
           newUser={newUser} 
           onUserChange={setNewUser} 
@@ -76,13 +76,15 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
           onUserChange={setNewUser} 
         />
         
-        <IframeUrlsSection 
-          newUser={newUser} 
-          onUserChange={setNewUser} 
-        />
+        <div className="col-span-1 md:col-span-2">
+          <IframeUrlsSection 
+            newUser={newUser} 
+            onUserChange={setNewUser} 
+          />
+        </div>
       </div>
       
-      <DialogFooter>
+      <DialogFooter className="mt-8">
         <Button variant="outline" onClick={onCancel}>Cancel</Button>
         <Button onClick={handleSave}>
           <Save className="mr-2 h-4 w-4" />

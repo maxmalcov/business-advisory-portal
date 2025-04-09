@@ -21,8 +21,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
 
   return (
     <>
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+      <div className="space-y-3">
+        <Label htmlFor="name" className="font-medium">Name</Label>
         <Input 
           id="name"
           value={user.name}
@@ -31,8 +31,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
         />
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+      <div className="space-y-3">
+        <Label htmlFor="email" className="font-medium">Email</Label>
         <Input 
           id="email"
           value={user.email}
@@ -41,8 +41,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
         />
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="company">Company Name</Label>
+      <div className="space-y-3">
+        <Label htmlFor="company" className="font-medium">Company Name</Label>
         <Input 
           id="company"
           value={user.companyName || ''}
@@ -51,8 +51,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
         />
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="role">Role</Label>
+      <div className="space-y-3">
+        <Label htmlFor="role" className="font-medium">Role</Label>
         <Select 
           value={user.userType} 
           onValueChange={handleChangeUserType}

@@ -25,24 +25,26 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
   const { t } = useLanguage();
 
   return (
-    <DialogContent className="max-w-2xl">
-      <DialogHeader>
-        <DialogTitle>Edit User</DialogTitle>
-        <DialogDescription>
+    <DialogContent className="max-w-2xl p-6">
+      <DialogHeader className="mb-6">
+        <DialogTitle className="text-xl">Edit User</DialogTitle>
+        <DialogDescription className="mt-2">
           Modify user information and settings
         </DialogDescription>
       </DialogHeader>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
         <BasicInfoSection user={user} onUserChange={onUserChange} />
         <ContactInfoSection user={user} onUserChange={onUserChange} />
-        <IframeUrlsSection 
-          user={user} 
-          onUserChange={onUserChange} 
-        />
+        <div className="col-span-1 md:col-span-2">
+          <IframeUrlsSection 
+            user={user} 
+            onUserChange={onUserChange} 
+          />
+        </div>
       </div>
       
-      <DialogFooter className="mt-4">
+      <DialogFooter className="mt-8">
         <Button variant="outline" onClick={onCancel}>Cancel</Button>
         <Button onClick={onSave}>
           <Save className="mr-2 h-4 w-4" />
