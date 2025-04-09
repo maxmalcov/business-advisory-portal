@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -87,11 +88,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: ScrollText,
     },
     {
-      name: 'Useful Links',
-      path: '/useful-links',
-      icon: Link2,
-    },
-    {
       name: t('nav.profile'),
       path: '/profile',
       icon: UserCog,
@@ -106,6 +102,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       path: '/subscriptions',
       icon: Layers,
     },
+    {
+      name: 'Useful Links',
+      path: '/useful-links',
+      icon: Link2,
+    },
   ];
 
   const adminMenuItems: SidebarItem[] = [
@@ -118,11 +119,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: t('nav.reports'),
       path: '/admin/reports',
       icon: BarChart3,
-    },
-    {
-      name: 'Useful Links',
-      path: '/admin/useful-links',
-      icon: Link2,
     },
     {
       name: t('nav.profile'),
@@ -148,6 +144,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: t('admin.logs'),
       path: '/admin/logs',
       icon: Activity,
+    },
+    {
+      name: 'Useful Links',
+      path: '/admin/useful-links',
+      icon: Link2,
     },
   ];
 
