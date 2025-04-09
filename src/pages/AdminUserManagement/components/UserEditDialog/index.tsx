@@ -7,7 +7,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import BasicInfoSection from './BasicInfoSection';
 import ContactInfoSection from './ContactInfoSection';
 import IframeUrlsSection from './IframeUrlsSection';
-import LocationInfoSection from './LocationInfoSection';
 import type { User } from '../../hooks/useUserManagement';
 
 interface UserEditDialogProps {
@@ -42,7 +41,6 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
         <BasicInfoSection user={user} onUserChange={onUserChange} />
         <ContactInfoSection user={user} onUserChange={onUserChange} />
-        <LocationInfoSection user={user} onUserChange={onUserChange} />
         <div className="col-span-1 md:col-span-2">
           <IframeUrlsSection 
             user={user} 

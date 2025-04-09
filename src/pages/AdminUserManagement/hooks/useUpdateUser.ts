@@ -36,15 +36,7 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
           usertype: editingUser.userType, // Match database column name (lowercase)
           companyname: editingUser.companyName, // Match database column name (lowercase)
           incominginvoiceemail: editingUser.incomingInvoiceEmail, // Match database column name (lowercase)
-          outgoinginvoiceemail: editingUser.outgoingInvoiceEmail, // Match database column name (lowercase)
-          phone: editingUser.phone,
-          address: editingUser.address,
-          postalcode: editingUser.postalCode, // Match database column name (lowercase)
-          city: editingUser.city,
-          province: editingUser.province,
-          country: editingUser.country,
-          nif: editingUser.nif,
-          accounttype: editingUser.accountType // Match database column name (lowercase)
+          outgoinginvoiceemail: editingUser.outgoingInvoiceEmail // Match database column name (lowercase)
           // Note: iframeUrls may need to be added to the profiles table
         })
         .eq('id', editingUser.id);

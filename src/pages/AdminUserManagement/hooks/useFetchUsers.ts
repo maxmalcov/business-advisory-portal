@@ -46,16 +46,7 @@ export const useFetchUsers = () => {
             incomingInvoiceEmail: profile.incominginvoiceemail || '',
             outgoingInvoiceEmail: profile.outgoinginvoiceemail || '',
             iframeUrls: [], // This may need to be added to the profiles table
-            isActive: isUserActive,
-            // Add all additional fields from the profile table
-            phone: profile.phone || '',
-            address: profile.address || '',
-            postalCode: profile.postalcode || '',
-            city: profile.city || '',
-            province: profile.province || '',
-            country: profile.country || '',
-            nif: profile.nif || '',
-            accountType: profile.accounttype || ''
+            isActive: isUserActive
           };
         });
         

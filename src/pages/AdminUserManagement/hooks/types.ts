@@ -10,13 +10,4 @@ export interface User {
   iframeUrls?: string[];
   isActive?: boolean;
   password?: string; // Used for new user creation
-  // Additional fields from the profile
-  phone?: string;
-  address?: string;
-  postalCode?: string;
-  city?: string;
-  province?: string;
-  country?: string;
-  nif?: string;
-  accountType?: string;
 }
