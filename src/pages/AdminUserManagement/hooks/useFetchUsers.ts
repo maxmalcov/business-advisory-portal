@@ -33,16 +33,20 @@ export const useFetchUsers = () => {
         
         // Transform the profiles data to match our User interface
         const transformedUsers: User[] = profilesData.map(profile => {
+          // Check if user is inactive by looking for -inactive suffix
+          const isUserActive = !profile.usertype?.includes('-inactive');
+          const cleanUserType = profile.usertype?.replace('-inactive', '') || 'client';
+          
           return {
             id: profile.id,
             name: profile.name || '',
             email: profile.email || '',
             companyName: profile.companyname || '',
-            userType: profile.usertype || 'client',
+            userType: cleanUserType,
             incomingInvoiceEmail: profile.incominginvoiceemail || '',
             outgoingInvoiceEmail: profile.outgoinginvoiceemail || '',
             iframeUrls: [], // This may need to be added to the profiles table
-            isActive: true // We don't have banned status in profiles, assume all are active
+            isActive: isUserActive
           };
         });
         

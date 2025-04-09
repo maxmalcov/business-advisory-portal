@@ -1,18 +1,34 @@
 
 import { useToast } from '@/hooks/use-toast';
 import { User } from './types';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useToggleUserStatus = (users: User[], setUsers: React.Dispatch<React.SetStateAction<User[]>>) => {
   const { toast } = useToast();
 
-  // Toggle user active status - this is simplified since we don't have direct access to ban users
+  // Toggle user active status with database persistence
   const toggleUserStatus = async (user: User) => {
     try {
       const newStatus = !user.isActive;
       console.log(`Setting user ${user.id} active status to: ${newStatus}`);
       
-      // Since we can't directly ban users without admin API, we'll just update the local state
-      // In a real application, you would need to implement this differently
+      // Update the profile in Supabase
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          // We need to map isActive to a field in the profiles table
+          // The profiles table doesn't have an isActive field directly,
+          // so we'll use the usertype field to track status
+          // We'll append "-inactive" to usertype when deactivated
+          usertype: newStatus 
+            ? user.userType.replace('-inactive', '') 
+            : `${user.userType.replace('-inactive', '')}-inactive`
+        })
+        .eq('id', user.id);
+        
+      if (error) {
+        throw error;
+      }
       
       // Update local state
       setUsers(users.map(u => 
