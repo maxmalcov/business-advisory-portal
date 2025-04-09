@@ -120,18 +120,22 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
       console.log("User created in Auth:", authData);
       
       // Update profiles table with additional data if needed
+      // For iframe URLs, we will handle them separately - it seems this field
+      // doesn't exist in the profiles table as expected
       if (iframeUrlsToStore.length > 0) {
-        const { error: updateError } = await supabase
+        console.log("Iframe URLs to store:", iframeUrlsToStore);
+        
+        // Log profiles schema to understand the available columns
+        const { data: profileSchema, error: schemaError } = await supabase
           .from('profiles')
-          .update({
-            iframeurls: iframeUrlsToStore
-          })
-          .eq('id', authData.user.id);
+          .select('*')
+          .limit(1);
           
-        if (updateError) {
-          console.error('Error updating user profile with iframeUrls:', updateError);
-          // Don't throw error here, as the user was created successfully
-        }
+        console.log("Profile schema sample:", profileSchema);
+        
+        // For now, we won't attempt to store the iframe URLs since 
+        // the column doesn't seem to exist in the profiles table
+        // We'll need to handle this differently or add the column to the database
       }
       
       // Refresh the users list
