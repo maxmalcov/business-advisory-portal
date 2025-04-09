@@ -81,7 +81,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   };
 
   return (
-    <DialogContent className="max-w-5xl p-0 h-[90vh] flex flex-col mx-auto w-[95vw]">
+    <DialogContent className="max-w-5xl p-0 max-h-[90vh] flex flex-col mx-auto w-[95vw]">
       <DialogHeader className="px-6 pt-6 mb-2">
         <DialogTitle className="text-xl">Add New User</DialogTitle>
         <DialogDescription className="mt-2">
@@ -89,8 +89,8 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
         </DialogDescription>
       </DialogHeader>
       
-      <ScrollArea className="flex-1 px-6 pb-4">
-        <div className="space-y-8">
+      <ScrollArea className="flex-1 px-6 pb-4 overflow-auto">
+        <div className="space-y-8 pb-6">
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Basic Information</h3>
             <BasicInfoSection newUser={newUser} onUserChange={handleUserChange} />
@@ -108,7 +108,12 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
           
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Security Credentials</h3>
-            <CredentialsSection newUser={newUser} onUserChange={handleUserChange} />
+            <CredentialsSection 
+              newUser={newUser} 
+              onUserChange={handleUserChange} 
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
+            />
           </div>
           
           <div className="border rounded-lg p-4">
@@ -121,7 +126,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
         </div>
       </ScrollArea>
       
-      <DialogFooter className="px-6 py-4 border-t bg-muted/20">
+      <DialogFooter className="px-6 py-4 border-t bg-muted/20 mt-auto">
         <Button variant="outline" onClick={onCancel}>Cancel</Button>
         <Button onClick={handleSaveClick} disabled={!isFormValid}>
           <Save className="mr-2 h-4 w-4" />

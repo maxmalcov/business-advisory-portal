@@ -8,12 +8,18 @@ import type { User } from '../../hooks/types';
 interface CredentialsSectionProps {
   newUser: Omit<User, "id">;
   onUserChange: (user: Omit<User, "id">) => void;
+  confirmPassword: string;
+  setConfirmPassword: (password: string) => void;
 }
 
-const CredentialsSection: React.FC<CredentialsSectionProps> = ({ newUser, onUserChange }) => {
+const CredentialsSection: React.FC<CredentialsSectionProps> = ({ 
+  newUser, 
+  onUserChange, 
+  confirmPassword, 
+  setConfirmPassword 
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
