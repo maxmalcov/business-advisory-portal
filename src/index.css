@@ -97,4 +97,10 @@
   }
 }
 
+@layer components {
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:border-primary/30;
+  }
+}
+
 /* ... keep existing code (remaining CSS) */

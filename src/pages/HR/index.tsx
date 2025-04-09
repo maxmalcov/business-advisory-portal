@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, UserPlus, UserMinus, Clock } from 'lucide-react';
 import EmployeeStatusToggle from './components/EmployeeStatusToggle';
@@ -20,61 +20,67 @@ const HR: React.FC = () => {
       <h1 className="text-2xl font-bold tracking-tight">{t('nav.hr')}</h1>
       
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card className="card-hover">
+        <Card className="card-hover flex flex-col">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-lg">
               <UserPlus className="mr-2 h-5 w-5" />
               {t('nav.hr.new_employee')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
+          <CardContent className="flex-grow">
+            <p className="text-sm text-muted-foreground">
               Start the onboarding process for new employees
             </p>
-            <Link to="/hr/new-employee">
+          </CardContent>
+          <CardFooter className="pt-4 mt-auto">
+            <Link to="/hr/new-employee" className="w-full">
               <Button variant="outline" className="w-full">
                 Go to New Employee
               </Button>
             </Link>
-          </CardContent>
+          </CardFooter>
         </Card>
         
-        <Card className="card-hover">
+        <Card className="card-hover flex flex-col">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-lg">
               <UserMinus className="mr-2 h-5 w-5" />
               {t('nav.hr.termination')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
+          <CardContent className="flex-grow">
+            <p className="text-sm text-muted-foreground">
               Manage employee termination processes
             </p>
-            <Link to="/hr/termination">
+          </CardContent>
+          <CardFooter className="pt-4 mt-auto">
+            <Link to="/hr/termination" className="w-full">
               <Button variant="outline" className="w-full">
                 Go to Termination
               </Button>
             </Link>
-          </CardContent>
+          </CardFooter>
         </Card>
         
-        <Card className="card-hover">
+        <Card className="card-hover flex flex-col">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-lg">
               <Clock className="mr-2 h-5 w-5" />
               {t('nav.hr.work_hours')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
+          <CardContent className="flex-grow">
+            <p className="text-sm text-muted-foreground">
               Track and manage employee working hours
             </p>
-            <Link to="/hr/work-hours">
+          </CardContent>
+          <CardFooter className="pt-4 mt-auto">
+            <Link to="/hr/work-hours" className="w-full">
               <Button variant="outline" className="w-full">
                 Go to Work Hours
               </Button>
             </Link>
-          </CardContent>
+          </CardFooter>
         </Card>
       </div>
       
