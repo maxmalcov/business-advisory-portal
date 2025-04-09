@@ -15,7 +15,10 @@ const UsefulLinkCard: React.FC<UsefulLinkCardProps> = ({ link }) => {
   const { t } = useLanguage();
   
   // Get the icon component dynamically if specified
-  const IconComponent = link.icon ? Icons[link.icon as keyof typeof Icons] : undefined;
+  let IconComponent = null;
+  if (link.icon && typeof link.icon === 'string' && link.icon in Icons) {
+    IconComponent = Icons[link.icon as keyof typeof Icons];
+  }
   
   return (
     <Card className="h-full flex flex-col transition-all hover:shadow-md">

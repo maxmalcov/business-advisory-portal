@@ -90,8 +90,9 @@ const AddEditLinkDialog: React.FC<AddEditLinkDialogProps> = ({
   const onSubmit = async (values: FormValues) => {
     try {
       if (mode === 'add') {
+        // For adding, we need to use an array with a single object
         const { error } = await usefulLinksTable()
-          .insert([values]);
+          .insert([values] as any);
           
         if (error) throw error;
         
@@ -100,8 +101,9 @@ const AddEditLinkDialog: React.FC<AddEditLinkDialogProps> = ({
           description: 'The link has been successfully added.',
         });
       } else {
+        // For updating, we update a specific record by ID
         const { error } = await usefulLinksTable()
-          .update(values)
+          .update(values as any)
           .eq('id', initialData?.id as string);
           
         if (error) throw error;

@@ -89,8 +89,8 @@ export const employeesTable = () => {
 
 // Helper function to safely access the useful_links table
 export const usefulLinksTable = () => {
-  // Use a simple approach that works with the type system
-  return supabase.from('useful_links' as any);
+  // Use the correct approach with explicit casting to work around type issues
+  return supabase.from('useful_links' as any) as unknown as ReturnType<typeof supabase.from<UsefulLinkDB>>;
 };
 
 // Setup realtime subscription for the service_requests table

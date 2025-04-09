@@ -18,7 +18,7 @@ const AdminUsefulLinks = () => {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      return data as UsefulLinkDB[];
+      return data as unknown as UsefulLinkDB[];
     }
   });
 
