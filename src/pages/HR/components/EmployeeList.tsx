@@ -113,7 +113,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                 filteredEmployees.map((employee) => (
                   <TableRow 
                     key={employee.id}
-                    className="cursor-pointer hover:bg-gray-50"
+                    className="cursor-pointer transition-colors hover:bg-muted/50"
                     onClick={() => handleEmployeeClick(employee)}
                   >
                     <TableCell className="font-medium">{employee.fullName}</TableCell>
@@ -134,10 +134,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                 e.stopPropagation();
                                 handleEmployeeClick(employee);
                               }}
-                              className="flex items-center justify-center h-8 w-8 rounded-full hover:bg-blue-50 transition-colors"
+                              className="flex items-center justify-center h-8 w-8 rounded-full hover:bg-muted/60 transition-colors"
                               aria-label="View employee details"
                             >
-                              <Eye className="h-4 w-4 text-blue-600" />
+                              <Eye className="h-4 w-4 text-primary" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent>
@@ -164,3 +164,4 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 };
 
 export default EmployeeList;
+
