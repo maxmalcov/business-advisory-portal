@@ -87,7 +87,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('admin.useful_links.form.title')}</FormLabel>
+              <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -101,12 +101,12 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('admin.useful_links.form.description')}</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea {...field} value={field.value || ''} />
               </FormControl>
               <FormDescription>
-                {t('admin.useful_links.form.description_help')}
+                A brief description of what this link provides.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -118,7 +118,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('admin.useful_links.form.url')}</FormLabel>
+              <FormLabel>URL</FormLabel>
               <FormControl>
                 <Input {...field} placeholder="https://" />
               </FormControl>
@@ -132,14 +132,14 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('admin.useful_links.form.category')}</FormLabel>
+              <FormLabel>Category</FormLabel>
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={t('admin.useful_links.form.select_category')} />
+                    <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categoryOptions.map((category) => (
@@ -160,14 +160,14 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="icon"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('admin.useful_links.form.icon')}</FormLabel>
+              <FormLabel>Icon</FormLabel>
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value || undefined}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={t('admin.useful_links.form.select_icon')} />
+                    <SelectValue placeholder="Select an icon" />
                   </SelectTrigger>
                   <SelectContent>
                     {iconOptions.map((icon) => (
@@ -179,7 +179,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
                 </Select>
               </FormControl>
               <FormDescription>
-                {t('admin.useful_links.form.icon_help')}
+                Choose an icon that best represents this resource.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -191,12 +191,12 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="display_order"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('admin.useful_links.form.display_order')}</FormLabel>
+              <FormLabel>Display Order</FormLabel>
               <FormControl>
                 <Input type="number" {...field} value={field.value || 0} />
               </FormControl>
               <FormDescription>
-                {t('admin.useful_links.form.display_order_help')}
+                Lower numbers will appear first in the list.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -204,7 +204,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
         />
         
         <div className="flex justify-end">
-          <Button type="submit">
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
             {submitButtonText}
           </Button>
         </div>

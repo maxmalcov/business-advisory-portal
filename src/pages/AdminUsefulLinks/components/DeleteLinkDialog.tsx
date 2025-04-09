@@ -35,7 +35,7 @@ const DeleteLinkDialog: React.FC<DeleteLinkDialogProps> = ({
     const success = await deleteLink(linkId);
     if (success) {
       onSuccess();
-      onOpenChange(false); // Fixed: Only passing one argument
+      onOpenChange(false);
     }
   };
 
