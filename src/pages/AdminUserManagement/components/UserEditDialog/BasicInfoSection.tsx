@@ -27,6 +27,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
           id="name"
           value={user.name}
           onChange={(e) => onUserChange({...user, name: e.target.value})}
+          className="w-full"
         />
       </div>
       
@@ -36,6 +37,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
           id="email"
           value={user.email}
           onChange={(e) => onUserChange({...user, email: e.target.value})}
+          className="w-full"
         />
       </div>
       
@@ -45,6 +47,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
           id="company"
           value={user.companyName || ''}
           onChange={(e) => onUserChange({...user, companyName: e.target.value})}
+          className="w-full"
         />
       </div>
       
@@ -54,7 +57,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
           value={user.userType} 
           onValueChange={handleChangeUserType}
         >
-          <SelectTrigger id="role">
+          <SelectTrigger id="role" className="w-full">
             <SelectValue placeholder="Select a role" />
           </SelectTrigger>
           <SelectContent>

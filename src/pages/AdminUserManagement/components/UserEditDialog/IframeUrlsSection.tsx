@@ -42,8 +42,8 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
       <Label>IFRAME URLs</Label>
       <div className="space-y-2">
         {user.iframeUrls?.map((url: string, index: number) => (
-          <div key={index} className="flex items-center">
-            <LinkIcon className="mr-2 h-4 w-4" />
+          <div key={index} className="flex items-center gap-2">
+            <LinkIcon className="h-4 w-4 flex-shrink-0" />
             <Input 
               value={url}
               onChange={(e) => {
@@ -57,14 +57,15 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
               variant="ghost" 
               size="icon"
               onClick={() => handleRemoveIframeUrl(index)}
+              className="flex-shrink-0"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
         ))}
         
-        <div className="flex items-center mt-2">
-          <LinkIcon className="mr-2 h-4 w-4" />
+        <div className="flex items-center gap-2 mt-2">
+          <LinkIcon className="h-4 w-4 flex-shrink-0" />
           <Input 
             placeholder="Add new URL"
             value={newIframeUrl}
@@ -75,7 +76,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
             variant="outline" 
             size="sm"
             onClick={handleAddIframeUrl}
-            className="ml-2"
+            className="flex-shrink-0 whitespace-nowrap"
           >
             <Plus className="h-4 w-4 mr-1" />
             Add
