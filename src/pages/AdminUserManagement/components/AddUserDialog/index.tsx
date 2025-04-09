@@ -22,7 +22,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     email: '',
     userType: 'Client',
     companyName: '',
-    active: true
+    isActive: true
   });
   
   const [isFormValid, setIsFormValid] = useState(false);
