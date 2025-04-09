@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -88,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: ScrollText,
     },
     {
-      name: t('nav.useful_links'),
+      name: 'Useful Links',
       path: '/useful-links',
       icon: Link2,
     },
@@ -121,7 +120,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: BarChart3,
     },
     {
-      name: t('nav.useful_links'),
+      name: 'Useful Links',
       path: '/admin/useful-links',
       icon: Link2,
     },
