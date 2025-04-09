@@ -45,14 +45,14 @@ const UsefulLinkCard: React.FC<UsefulLinkCardProps> = ({ link }) => {
         </TooltipProvider>
       </CardContent>
       <CardFooter>
-        <Button asChild variant="outline" className="w-full group">
+        <Button asChild variant="default" className="w-full group bg-blue-500 hover:bg-blue-600">
           <a 
             href={link.url} 
             target="_blank" 
             rel="noopener noreferrer" 
             className="flex items-center justify-center gap-2"
           >
-            <span>{t('useful_links.visit_website')}</span>
+            <span>Open link</span>
             <ExternalLink className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </a>
         </Button>
