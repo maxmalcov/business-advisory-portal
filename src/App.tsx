@@ -31,6 +31,8 @@ import Profile from "./pages/Profile";
 import HR from "./pages/HR";
 import Termination from "./pages/HR/Termination";
 import WorkHours from "./pages/HR/WorkHours";
+import UsefulLinks from "./pages/UsefulLinks";
+import AdminUsefulLinks from "./pages/AdminUsefulLinks";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -117,6 +119,11 @@ const App = () => (
                     <Subscriptions />
                   </ProtectedRoute>
                 } />
+                <Route path="useful-links" element={
+                  <ProtectedRoute requiredRole="client">
+                    <UsefulLinks />
+                  </ProtectedRoute>
+                } />
                 
                 <Route path="hr" element={
                   <ProtectedRoute requiredRole="client">
@@ -153,6 +160,11 @@ const App = () => (
                 <Route path="admin/services" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminServices />
+                  </ProtectedRoute>
+                } />
+                <Route path="admin/useful-links" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminUsefulLinks />
                   </ProtectedRoute>
                 } />
                 {/* New routes for service editor */}

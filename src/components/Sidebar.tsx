@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -18,6 +19,7 @@ import {
   UserPlus,
   UserMinus,
   Clock,
+  Link2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -86,6 +88,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: ScrollText,
     },
     {
+      name: t('nav.useful_links'),
+      path: '/useful-links',
+      icon: Link2,
+    },
+    {
       name: t('nav.profile'),
       path: '/profile',
       icon: UserCog,
@@ -112,6 +119,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: t('nav.reports'),
       path: '/admin/reports',
       icon: BarChart3,
+    },
+    {
+      name: t('nav.useful_links'),
+      path: '/admin/useful-links',
+      icon: Link2,
     },
     {
       name: t('nav.profile'),
