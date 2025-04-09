@@ -74,14 +74,13 @@
     --input: 217 33% 18%;
     --ring: 215 60% 45%;
     
-    /* Updated dark mode sidebar colors for better visual separation */
-    --sidebar-background: 240 10% 8%;
+    --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 215 60% 45%;
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 240 10% 14%;
+    --sidebar-accent: 217 33% 18%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 240 10% 16%;
+    --sidebar-border: 217 33% 18%;
     --sidebar-ring: 215 60% 45%;
   }
 }
