@@ -84,7 +84,7 @@ const HR: React.FC = () => {
         </Card>
       </div>
       
-      <div className="mt-8">
+      <div className="mt-12">
         <h2 className="text-xl font-semibold mb-3">Employee List</h2>
         
         <div className="flex justify-between items-center mb-3">
