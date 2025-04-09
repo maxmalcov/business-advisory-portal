@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -35,6 +35,13 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
   uploadProgress = 0
 }) => {
   const { t } = useLanguage();
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  // Modified date change handler that closes the popover
+  const handleDateSelect = (date: Date | undefined) => {
+    handleDateChange(date);
+    setIsCalendarOpen(false);
+  };
 
   return (
     <div className="space-y-4">
@@ -167,7 +174,7 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
             </TooltipContent>
           </Tooltip>
         </div>
-        <Popover>
+        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -183,7 +190,7 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
             <Calendar
               mode="single"
               selected={formData.startDate}
-              onSelect={handleDateChange}
+              onSelect={handleDateSelect}
               initialFocus
             />
           </PopoverContent>

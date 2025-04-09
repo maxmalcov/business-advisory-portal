@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Employee } from '../../types/employee';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,10 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
   handleStartDateChange,
   handleEndDateChange,
 }) => {
+  // States to manage popover open/close
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
+  
   // Safe format function that handles undefined dates
   const formatSafeDate = (dateStr: string | undefined) => {
     if (!dateStr) return null;
@@ -33,13 +37,24 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
     }
   };
 
+  // Handlers to select date and close popover
+  const handleStartDateSelect = (date: Date | undefined) => {
+    handleStartDateChange(date);
+    setStartDateOpen(false);
+  };
+
+  const handleEndDateSelect = (date: Date | undefined) => {
+    handleEndDateChange(date);
+    setEndDateOpen(false);
+  };
+
   return (
     <div className="space-y-2">
       <h3 className="text-sm font-medium text-gray-500">Employment Dates</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="startDate">Start Date</Label>
-          <Popover>
+          <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
@@ -57,7 +72,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
               <Calendar
                 mode="single"
                 selected={formData.startDate ? new Date(formData.startDate) : undefined}
-                onSelect={handleStartDateChange}
+                onSelect={handleStartDateSelect}
                 initialFocus
                 className="p-3 pointer-events-auto"
               />
@@ -70,7 +85,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
         
         <div className="space-y-2">
           <Label htmlFor="endDate">End Date</Label>
-          <Popover>
+          <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
@@ -88,7 +103,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
               <Calendar
                 mode="single"
                 selected={formData.endDate ? new Date(formData.endDate) : undefined}
-                onSelect={handleEndDateChange}
+                onSelect={handleEndDateSelect}
                 initialFocus
                 className="p-3 pointer-events-auto"
                 disabled={(date) => {
