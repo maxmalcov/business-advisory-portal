@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { usefulLinksTable, UsefulLinkDB } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import UsefulLinksList from './components/UsefulLinksList';
@@ -14,22 +14,36 @@ const UsefulLinks = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['useful-links'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('useful_links')
+      const { data, error } = await usefulLinksTable()
         .select('*')
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      return data as UsefulLink[];
+      return data as UsefulLinkDB[];
     }
   });
 
+  // Convert from database type to component type
+  const links: UsefulLink[] = React.useMemo(() => {
+    return data ? data.map(link => ({
+      id: link.id,
+      title: link.title,
+      description: link.description,
+      url: link.url,
+      category: link.category,
+      icon: link.icon,
+      display_order: link.display_order,
+      created_at: link.created_at,
+      updated_at: link.updated_at
+    })) : [];
+  }, [data]);
+
   // Get unique categories for tabs
   const categories = React.useMemo(() => {
-    if (!data) return [];
-    const uniqueCategories = [...new Set(data.map(link => link.category))];
+    if (!links.length) return [];
+    const uniqueCategories = [...new Set(links.map(link => link.category))];
     return uniqueCategories;
-  }, [data]);
+  }, [links]);
 
   return (
     <div className="space-y-6">
@@ -59,7 +73,7 @@ const UsefulLinks = () => {
             {categories.map(category => (
               <TabsContent key={category} value={category}>
                 <UsefulLinksList 
-                  links={data?.filter(link => link.category === category) || []} 
+                  links={links.filter(link => link.category === category) || []} 
                 />
               </TabsContent>
             ))}

@@ -10,7 +10,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { usefulLinksTable } from '@/integrations/supabase/client';
 import { UsefulLink } from '@/pages/UsefulLinks/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -90,8 +90,7 @@ const AddEditLinkDialog: React.FC<AddEditLinkDialogProps> = ({
   const onSubmit = async (values: FormValues) => {
     try {
       if (mode === 'add') {
-        const { error } = await supabase
-          .from('useful_links')
+        const { error } = await usefulLinksTable()
           .insert([values]);
           
         if (error) throw error;
@@ -101,10 +100,9 @@ const AddEditLinkDialog: React.FC<AddEditLinkDialogProps> = ({
           description: 'The link has been successfully added.',
         });
       } else {
-        const { error } = await supabase
-          .from('useful_links')
+        const { error } = await usefulLinksTable()
           .update(values)
-          .eq('id', initialData?.id);
+          .eq('id', initialData?.id as string);
           
         if (error) throw error;
         

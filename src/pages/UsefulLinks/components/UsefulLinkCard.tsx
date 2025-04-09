@@ -5,8 +5,7 @@ import { UsefulLink } from '../types';
 import { ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
-import { dynamicIconImports } from 'lucide-react/dynamicIconImports';
-import dynamic from 'next/dynamic';
+import * as Icons from 'lucide-react';
 
 interface UsefulLinkCardProps {
   link: UsefulLink;
@@ -15,10 +14,8 @@ interface UsefulLinkCardProps {
 const UsefulLinkCard: React.FC<UsefulLinkCardProps> = ({ link }) => {
   const { t } = useLanguage();
   
-  // Dynamically load the icon
-  const IconComponent = link.icon 
-    ? dynamic(() => import('lucide-react').then((mod) => mod[link.icon as keyof typeof dynamicIconImports] ?? mod.Link2)) 
-    : undefined;
+  // Get the icon component dynamically if specified
+  const IconComponent = link.icon ? Icons[link.icon as keyof typeof Icons] : undefined;
   
   return (
     <Card className="h-full flex flex-col transition-all hover:shadow-md">
