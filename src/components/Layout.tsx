@@ -7,6 +7,7 @@ import { Menu } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
+import HeaderThemeToggle from './HeaderThemeToggle';
 
 const Layout: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -19,7 +20,10 @@ const Layout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <div className="flex justify-between items-center px-4">
+        <Header />
+        <HeaderThemeToggle />
+      </div>
       
       {isAuthenticated && (
         <>

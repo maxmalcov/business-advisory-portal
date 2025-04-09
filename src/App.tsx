@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { ReactNode } from "react";
 import Layout from "@/components/Layout";
 import Home from "./pages/Home";
@@ -61,146 +61,148 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
-                
-                {/* Client routes */}
-                <Route path="dashboard" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Dashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="invoices" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Invoices />
-                  </ProtectedRoute>
-                } />
-                <Route path="supplier-invoices" element={
-                  <ProtectedRoute requiredRole="client">
-                    <SupplierInvoices />
-                  </ProtectedRoute>
-                } />
-                <Route path="contracts" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Contracts />
-                  </ProtectedRoute>
-                } />
-                <Route path="documents" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Documents />
-                  </ProtectedRoute>
-                } />
-                <Route path="reports" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Reports />
-                  </ProtectedRoute>
-                } />
-                <Route path="profile" element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } />
-                <Route path="services" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Services />
-                  </ProtectedRoute>
-                } />
-                <Route path="subscriptions" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Subscriptions />
-                  </ProtectedRoute>
-                } />
-                <Route path="useful-links" element={
-                  <ProtectedRoute requiredRole="client">
-                    <UsefulLinks />
-                  </ProtectedRoute>
-                } />
-                
-                <Route path="hr" element={
-                  <ProtectedRoute requiredRole="client">
-                    <HR />
-                  </ProtectedRoute>
-                } />
-                <Route path="hr/new-employee" element={
-                  <ProtectedRoute requiredRole="client">
-                    <NewEmployee />
-                  </ProtectedRoute>
-                } />
-                <Route path="hr/termination" element={
-                  <ProtectedRoute requiredRole="client">
-                    <Termination />
-                  </ProtectedRoute>
-                } />
-                <Route path="hr/work-hours" element={
-                  <ProtectedRoute requiredRole="client">
-                    <WorkHours />
-                  </ProtectedRoute>
-                } />
-                
-                {/* Admin routes */}
-                <Route path="admin" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="admin/reports" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <Reports />
-                  </ProtectedRoute>
-                } />
-                <Route path="admin/services" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminServices />
-                  </ProtectedRoute>
-                } />
-                <Route path="admin/useful-links" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminUsefulLinks />
-                  </ProtectedRoute>
-                } />
-                {/* New routes for service editor */}
-                <Route path="admin/services/create" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <ServiceEditor />
-                  </ProtectedRoute>
-                } />
-                <Route path="admin/services/edit/:serviceId" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <ServiceEditor />
-                  </ProtectedRoute>
-                } />
-                <Route path="admin/users" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminUserManagement />
-                  </ProtectedRoute>
-                } />
-                <Route path="admin/logs" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminLogs />
-                  </ProtectedRoute>
-                } />
-                <Route path="admin/subscriptions" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminSubscriptions />
-                  </ProtectedRoute>
-                } />
-                
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<Home />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                  
+                  {/* Client routes */}
+                  <Route path="dashboard" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="invoices" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Invoices />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="supplier-invoices" element={
+                    <ProtectedRoute requiredRole="client">
+                      <SupplierInvoices />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="contracts" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Contracts />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="documents" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Documents />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="reports" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Reports />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="profile" element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="services" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Services />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="subscriptions" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Subscriptions />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="useful-links" element={
+                    <ProtectedRoute requiredRole="client">
+                      <UsefulLinks />
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="hr" element={
+                    <ProtectedRoute requiredRole="client">
+                      <HR />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="hr/new-employee" element={
+                    <ProtectedRoute requiredRole="client">
+                      <NewEmployee />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="hr/termination" element={
+                    <ProtectedRoute requiredRole="client">
+                      <Termination />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="hr/work-hours" element={
+                    <ProtectedRoute requiredRole="client">
+                      <WorkHours />
+                    </ProtectedRoute>
+                  } />
+                  
+                  {/* Admin routes */}
+                  <Route path="admin" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="admin/reports" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <Reports />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="admin/services" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminServices />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="admin/useful-links" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminUsefulLinks />
+                    </ProtectedRoute>
+                  } />
+                  {/* New routes for service editor */}
+                  <Route path="admin/services/create" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <ServiceEditor />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="admin/services/edit/:serviceId" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <ServiceEditor />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="admin/users" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminUserManagement />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="admin/logs" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminLogs />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="admin/subscriptions" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminSubscriptions />
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
