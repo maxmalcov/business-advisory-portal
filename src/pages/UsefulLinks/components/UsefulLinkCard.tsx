@@ -6,6 +6,7 @@ import { ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
 import * as Icons from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface UsefulLinkCardProps {
   link: UsefulLink;
@@ -21,24 +22,38 @@ const UsefulLinkCard: React.FC<UsefulLinkCardProps> = ({ link }) => {
   }
   
   return (
-    <Card className="h-full flex flex-col transition-all hover:shadow-md">
+    <Card className="h-full flex flex-col transition-all hover:shadow-md hover:-translate-y-1 duration-300">
       <CardHeader>
         <div className="flex items-center gap-2">
           {IconComponent && <IconComponent className="h-5 w-5 text-primary" />}
-          <CardTitle>{link.title}</CardTitle>
+          <CardTitle className="text-xl">{link.title}</CardTitle>
         </div>
         {link.description && (
-          <CardDescription>{link.description}</CardDescription>
+          <CardDescription className="line-clamp-2">{link.description}</CardDescription>
         )}
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-sm text-muted-foreground truncate">{link.url}</p>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p className="text-sm text-muted-foreground truncate">{link.url}</p>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{link.url}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </CardContent>
       <CardFooter>
-        <Button asChild variant="outline" className="w-full">
-          <a href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+        <Button asChild variant="outline" className="w-full group">
+          <a 
+            href={link.url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex items-center justify-center gap-2"
+          >
             <span>{t('useful_links.visit_website')}</span>
-            <ExternalLink className="h-4 w-4" />
+            <ExternalLink className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </a>
         </Button>
       </CardFooter>

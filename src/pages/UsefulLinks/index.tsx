@@ -1,15 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { usefulLinksTable, UsefulLinkDB } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 import UsefulLinksList from './components/UsefulLinksList';
 import UsefulLinksHeader from './components/UsefulLinksHeader';
 import { UsefulLink } from './types';
+import { Separator } from '@/components/ui/separator';
 
 const UsefulLinks = () => {
   const { t } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState('');
   
   const { data, isLoading, error } = useQuery({
     queryKey: ['useful-links'],
@@ -39,6 +43,20 @@ const UsefulLinks = () => {
       updated_at: link.updated_at
     })) : [];
   }, [data]);
+  
+  // Filter links by search query
+  const filteredLinks = React.useMemo(() => {
+    if (!searchQuery.trim()) return links;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return links.filter(
+      link => 
+        link.title.toLowerCase().includes(query) || 
+        (link.description && link.description.toLowerCase().includes(query)) ||
+        link.url.toLowerCase().includes(query) ||
+        link.category.toLowerCase().includes(query)
+    );
+  }, [links, searchQuery]);
 
   // Get unique categories for tabs
   const categories = React.useMemo(() => {
@@ -46,15 +64,38 @@ const UsefulLinks = () => {
     const uniqueCategories = [...new Set(links.map(link => link.category))];
     return uniqueCategories;
   }, [links]);
+  
+  // Calculate filtered categories (only show categories that have matching links)
+  const filteredCategories = React.useMemo(() => {
+    if (!searchQuery.trim()) return categories;
+    
+    const categoriesWithMatchingLinks = filteredLinks
+      .map(link => link.category)
+      .filter((value, index, self) => self.indexOf(value) === index);
+      
+    return categoriesWithMatchingLinks;
+  }, [categories, filteredLinks, searchQuery]);
 
   return (
     <div className="space-y-6">
       <UsefulLinksHeader />
       
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <Input
+          placeholder={t('useful_links.search_placeholder') || "Search links..."}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 max-w-md"
+        />
+      </div>
+      
+      <Separator className="my-6" />
+      
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-card h-40 rounded-lg animate-pulse"></div>
+            <div key={i} className="bg-card h-48 rounded-lg animate-pulse"></div>
           ))}
         </div>
       ) : error ? (
@@ -62,28 +103,34 @@ const UsefulLinks = () => {
           {t('app.error_loading_data')}
         </div>
       ) : (
-        categories.length > 0 ? (
-          <Tabs defaultValue={categories[0]}>
-            <TabsList className="mb-4">
-              {categories.map(category => (
-                <TabsTrigger key={category} value={category}>
+        filteredCategories.length > 0 ? (
+          <Tabs defaultValue={filteredCategories[0]}>
+            <TabsList className="mb-6 flex flex-wrap h-auto p-1 gap-1">
+              {filteredCategories.map(category => (
+                <TabsTrigger key={category} value={category} className="px-4 py-2">
                   {category}
                 </TabsTrigger>
               ))}
             </TabsList>
             
-            {categories.map(category => (
+            {filteredCategories.map(category => (
               <TabsContent key={category} value={category}>
                 <UsefulLinksList 
-                  links={links.filter(link => link.category === category) || []} 
+                  links={filteredLinks.filter(link => link.category === category) || []} 
                 />
               </TabsContent>
             ))}
           </Tabs>
         ) : (
-          <div className="text-center p-8">
-            <p className="text-muted-foreground">{t('useful_links.no_links')}</p>
-          </div>
+          searchQuery ? (
+            <div className="text-center p-8">
+              <p className="text-muted-foreground">{t('useful_links.no_results')}</p>
+            </div>
+          ) : (
+            <div className="text-center p-8">
+              <p className="text-muted-foreground">{t('useful_links.no_links')}</p>
+            </div>
+          )
         )
       )}
     </div>
