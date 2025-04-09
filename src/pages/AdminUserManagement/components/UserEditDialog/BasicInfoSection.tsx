@@ -11,6 +11,16 @@ interface BasicInfoSectionProps {
 }
 
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange }) => {
+  // Log the user data to verify we're receiving correct information for this section
+  React.useEffect(() => {
+    console.log("BasicInfoSection received user data:", {
+      name: user.name,
+      email: user.email,
+      companyName: user.companyName,
+      userType: user.userType
+    });
+  }, [user]);
+
   // Handle changing user type
   const handleChangeUserType = (value: string) => {
     onUserChange({
