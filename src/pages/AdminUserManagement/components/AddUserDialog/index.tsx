@@ -9,7 +9,7 @@ import BasicInfoSection from './BasicInfoSection';
 import ContactInfoSection from './ContactInfoSection';
 import CredentialsSection from './CredentialsSection';
 import IframeUrlsSection from './IframeUrlsSection';
-import { useAddUser } from '../../hooks/useAddUser';
+import { useState } from 'react';
 
 interface AddUserDialogProps {
   onSave: (userData: Omit<User, 'id'>) => void;
@@ -17,7 +17,21 @@ interface AddUserDialogProps {
 }
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
-  const { newUser, handleUserChange, isFormValid } = useAddUser();
+  const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
+    name: '',
+    email: '',
+    userType: 'Client',
+    companyName: '',
+    active: true
+  });
+  
+  const [isFormValid, setIsFormValid] = useState(false);
+  
+  const handleUserChange = (updatedUser: Omit<User, 'id'>) => {
+    setNewUser(updatedUser);
+    // Basic validation - check if name and email are filled
+    setIsFormValid(!!updatedUser.name && !!updatedUser.email);
+  };
 
   const handleSaveClick = () => {
     if (isFormValid) {
@@ -26,7 +40,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   };
 
   return (
-    <DialogContent className="max-w-4xl p-0 h-[85vh] flex flex-col">
+    <DialogContent className="max-w-5xl p-0 h-[90vh] flex flex-col mx-auto w-[95vw]">
       <DialogHeader className="px-6 pt-6 mb-2">
         <DialogTitle className="text-xl">Add New User</DialogTitle>
         <DialogDescription className="mt-2">

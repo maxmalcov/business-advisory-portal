@@ -33,7 +33,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
   }, [user]);
 
   return (
-    <DialogContent className="max-w-4xl p-0 h-[85vh] flex flex-col">
+    <DialogContent className="max-w-5xl p-0 h-[90vh] flex flex-col mx-auto w-[95vw]">
       <DialogHeader className="px-6 pt-6 mb-2">
         <DialogTitle className="text-xl">Edit User</DialogTitle>
         <DialogDescription className="mt-2">
