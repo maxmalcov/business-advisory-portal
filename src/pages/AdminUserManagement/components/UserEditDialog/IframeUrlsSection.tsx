@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link as LinkIcon, Plus, X } from 'lucide-react';
-import type { User } from '../../hooks/useUserManagement';
+import type { User } from '../../hooks/types';
 
 interface IframeUrlsSectionProps {
   user: User;
@@ -13,6 +13,10 @@ interface IframeUrlsSectionProps {
 
 const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChange }) => {
   const [newIframeUrl, setNewIframeUrl] = useState('');
+  
+  useEffect(() => {
+    console.log("IframeUrlsSection received user data:", { iframeUrls: user.iframeUrls });
+  }, [user]);
 
   // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {

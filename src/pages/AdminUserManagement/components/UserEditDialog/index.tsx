@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
@@ -27,7 +27,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
   const { t } = useLanguage();
 
   // Log the user data to verify we're receiving correct information
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("UserEditDialog received user data:", user);
   }, [user]);
 
