@@ -11,6 +11,14 @@ interface ContactInfoSectionProps {
 }
 
 const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserChange }) => {
+  // Log the user data to verify we're receiving correct information for this section
+  React.useEffect(() => {
+    console.log("ContactInfoSection received user data:", {
+      incomingInvoiceEmail: user.incomingInvoiceEmail,
+      outgoingInvoiceEmail: user.outgoingInvoiceEmail
+    });
+  }, [user]);
+
   return (
     <>
       <div className="space-y-3">
@@ -22,6 +30,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
             value={user.incomingInvoiceEmail || ''}
             onChange={(e) => onUserChange({...user, incomingInvoiceEmail: e.target.value})}
             className="flex-grow"
+            placeholder="Enter email for incoming invoices"
           />
         </div>
       </div>
@@ -35,6 +44,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
             value={user.outgoingInvoiceEmail || ''}
             onChange={(e) => onUserChange({...user, outgoingInvoiceEmail: e.target.value})}
             className="flex-grow"
+            placeholder="Enter email for outgoing invoices"
           />
         </div>
       </div>

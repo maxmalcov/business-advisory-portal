@@ -24,6 +24,11 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 }) => {
   const { t } = useLanguage();
 
+  // Log the user data to verify we're receiving correct information
+  React.useEffect(() => {
+    console.log("UserEditDialog received user data:", user);
+  }, [user]);
+
   return (
     <DialogContent className="max-w-2xl p-6">
       <DialogHeader className="mb-6">

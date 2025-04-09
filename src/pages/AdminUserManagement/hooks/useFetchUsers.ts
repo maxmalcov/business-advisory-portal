@@ -29,7 +29,7 @@ export const useFetchUsers = () => {
       }
       
       if (profilesData) {
-        console.log("Fetched profiles:", profilesData.length);
+        console.log("Fetched profiles:", profilesData);
         
         // Transform the profiles data to match our User interface
         const transformedUsers: User[] = profilesData.map(profile => {

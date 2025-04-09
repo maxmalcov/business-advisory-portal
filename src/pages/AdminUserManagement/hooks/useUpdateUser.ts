@@ -10,11 +10,13 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
 
   // Handle user edit
   const handleEditUser = (user: User) => {
+    console.log("Setting user to edit:", user);
     setEditingUser({...user});
   };
 
   // Handle user update
   const handleUpdateUser = (updatedUser: User) => {
+    console.log("Updating user in local state:", updatedUser);
     setEditingUser(updatedUser);
   };
 
@@ -24,6 +26,7 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
     
     try {
       console.log("Updating user in Supabase:", editingUser);
+      
       // Update the user in Supabase - ensure column names match the database
       const { error } = await supabase
         .from('profiles')
@@ -38,7 +41,10 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
         })
         .eq('id', editingUser.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating user:', error);
+        throw error;
+      }
 
       // Refresh the users list
       await refreshUsers();
