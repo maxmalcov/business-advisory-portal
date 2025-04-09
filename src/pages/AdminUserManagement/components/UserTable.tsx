@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { UserCog, Trash2, Power } from 'lucide-react';
+import { Eye, Trash2, Power } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 interface User {
@@ -80,8 +80,8 @@ const UserTable: React.FC<UserTableProps> = ({
                         size="sm"
                         onClick={() => onEditUser(user)}
                       >
-                        <UserCog className="h-4 w-4 mr-1" />
-                        Edit
+                        <Eye className="h-4 w-4 mr-1" />
+                        View
                       </Button>
                     </DialogTrigger>
                   </Dialog>

@@ -8,9 +8,10 @@ import type { User } from '../../hooks/types';
 interface ContactInfoSectionProps {
   user: User;
   onUserChange: (user: User) => void;
+  isReadOnly?: boolean;
 }
 
-const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserChange }) => {
+const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
   // Log the user data to verify we're receiving correct information for this section
   React.useEffect(() => {
     console.log("ContactInfoSection received user data:", {
@@ -32,6 +33,8 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
             onChange={(e) => onUserChange({...user, incomingInvoiceEmail: e.target.value})}
             className="flex-grow"
             placeholder="email@example.com"
+            readOnly={isReadOnly}
+            disabled={isReadOnly}
           />
         </div>
       </div>
@@ -46,6 +49,8 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
             onChange={(e) => onUserChange({...user, outgoingInvoiceEmail: e.target.value})}
             className="flex-grow"
             placeholder="email@example.com"
+            readOnly={isReadOnly}
+            disabled={isReadOnly}
           />
         </div>
       </div>

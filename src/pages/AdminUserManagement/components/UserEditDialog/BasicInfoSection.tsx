@@ -8,9 +8,10 @@ import type { User } from '../../hooks/types';
 interface BasicInfoSectionProps {
   user: User;
   onUserChange: (user: User) => void;
+  isReadOnly?: boolean;
 }
 
-const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange }) => {
+const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
   // Handle changing user type
   const handleChangeUserType = (value: string) => {
     onUserChange({
@@ -38,6 +39,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
           value={user.name}
           onChange={(e) => onUserChange({...user, name: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
       
@@ -48,6 +51,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
           value={user.email}
           onChange={(e) => onUserChange({...user, email: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
       
@@ -58,6 +63,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
           value={user.companyName || ''}
           onChange={(e) => onUserChange({...user, companyName: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
       
@@ -66,6 +73,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange 
         <Select 
           value={user.userType} 
           onValueChange={handleChangeUserType}
+          disabled={isReadOnly}
         >
           <SelectTrigger id="role" className="w-full">
             <SelectValue placeholder="Select a role" />

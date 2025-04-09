@@ -9,9 +9,10 @@ import type { User } from '../../hooks/types';
 interface AccountInfoSectionProps {
   user: User;
   onUserChange: (user: User) => void;
+  isReadOnly?: boolean;
 }
 
-const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserChange }) => {
+const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
   React.useEffect(() => {
     console.log("AccountInfoSection received user data:", {
       phone: user.phone,
@@ -30,6 +31,8 @@ const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserCha
             value={user.phone || ''}
             onChange={(e) => onUserChange({...user, phone: e.target.value})}
             className="flex-grow"
+            readOnly={isReadOnly}
+            disabled={isReadOnly}
           />
         </div>
       </div>
@@ -39,6 +42,7 @@ const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserCha
         <Select 
           value={user.accountType || ''} 
           onValueChange={(value) => onUserChange({...user, accountType: value})}
+          disabled={isReadOnly}
         >
           <SelectTrigger id="account-type" className="w-full">
             <SelectValue placeholder="Select account type" />

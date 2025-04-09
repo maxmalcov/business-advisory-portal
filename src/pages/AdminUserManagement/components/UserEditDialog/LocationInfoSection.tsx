@@ -8,9 +8,10 @@ import type { User } from '../../hooks/types';
 interface LocationInfoSectionProps {
   user: User;
   onUserChange: (user: User) => void;
+  isReadOnly?: boolean;
 }
 
-const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserChange }) => {
+const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
   React.useEffect(() => {
     console.log("LocationInfoSection received user data:", {
       address: user.address,
@@ -32,6 +33,8 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
             value={user.address || ''}
             onChange={(e) => onUserChange({...user, address: e.target.value})}
             className="flex-grow"
+            readOnly={isReadOnly}
+            disabled={isReadOnly}
           />
         </div>
       </div>
@@ -43,6 +46,8 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.postalCode || ''}
           onChange={(e) => onUserChange({...user, postalCode: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
       
@@ -53,6 +58,8 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.city || ''}
           onChange={(e) => onUserChange({...user, city: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
       
@@ -63,6 +70,8 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.province || ''}
           onChange={(e) => onUserChange({...user, province: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
       
@@ -73,6 +82,8 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.country || ''}
           onChange={(e) => onUserChange({...user, country: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
       
@@ -83,6 +94,8 @@ const LocationInfoSection: React.FC<LocationInfoSectionProps> = ({ user, onUserC
           value={user.nif || ''}
           onChange={(e) => onUserChange({...user, nif: e.target.value})}
           className="w-full"
+          readOnly={isReadOnly}
+          disabled={isReadOnly}
         />
       </div>
     </div>

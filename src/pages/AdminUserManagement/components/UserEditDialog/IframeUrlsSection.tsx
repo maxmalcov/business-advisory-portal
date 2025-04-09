@@ -9,9 +9,10 @@ import type { User } from '../../hooks/types';
 interface IframeUrlsSectionProps {
   user: User;
   onUserChange: (user: User) => void;
+  isReadOnly?: boolean;
 }
 
-const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChange }) => {
+const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
   const [newIframeUrl, setNewIframeUrl] = useState('');
   
   useEffect(() => {
@@ -51,41 +52,48 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
             <Input 
               value={url}
               onChange={(e) => {
+                if (isReadOnly) return;
                 const newUrls = [...(user.iframeUrls || [])];
                 newUrls[index] = e.target.value;
                 onUserChange({...user, iframeUrls: newUrls});
               }}
               className="flex-grow border-gray-200"
+              readOnly={isReadOnly}
+              disabled={isReadOnly}
             />
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => handleRemoveIframeUrl(index)}
-              className="flex-shrink-0 hover:bg-gray-200"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            {!isReadOnly && (
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => handleRemoveIframeUrl(index)}
+                className="flex-shrink-0 hover:bg-gray-200"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         ))}
         
-        <div className="flex items-center gap-3 mt-4 p-3 border border-dashed border-gray-300 rounded-md">
-          <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
-          <Input 
-            placeholder="https://example.com/iframe"
-            value={newIframeUrl}
-            onChange={(e) => setNewIframeUrl(e.target.value)}
-            className="flex-grow border-gray-200"
-          />
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={handleAddIframeUrl}
-            className="flex-shrink-0 whitespace-nowrap"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add
-          </Button>
-        </div>
+        {!isReadOnly && (
+          <div className="flex items-center gap-3 mt-4 p-3 border border-dashed border-gray-300 rounded-md">
+            <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
+            <Input 
+              placeholder="https://example.com/iframe"
+              value={newIframeUrl}
+              onChange={(e) => setNewIframeUrl(e.target.value)}
+              className="flex-grow border-gray-200"
+            />
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleAddIframeUrl}
+              className="flex-shrink-0 whitespace-nowrap"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
