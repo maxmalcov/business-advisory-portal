@@ -5,7 +5,7 @@ import { usefulLinksTable, UsefulLinkDB } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, ListFilter } from 'lucide-react';
 import UsefulLinksList from './components/UsefulLinksList';
 import UsefulLinksHeader from './components/UsefulLinksHeader';
 import { UsefulLink } from './types';
@@ -76,6 +76,9 @@ const UsefulLinks = () => {
     return categoriesWithMatchingLinks;
   }, [categories, filteredLinks, searchQuery]);
 
+  // Add a special "all" tabId to handle showing all links
+  const allTabId = "all-categories";
+
   return (
     <div className="space-y-6">
       <UsefulLinksHeader />
@@ -104,8 +107,15 @@ const UsefulLinks = () => {
         </div>
       ) : (
         filteredCategories.length > 0 ? (
-          <Tabs defaultValue={filteredCategories[0]}>
+          <Tabs defaultValue={allTabId}>
             <TabsList className="mb-6 flex flex-wrap h-auto p-1 gap-1">
+              {/* All button - always shows first */}
+              <TabsTrigger value={allTabId} className="px-4 py-2 flex items-center gap-1">
+                <ListFilter className="h-4 w-4" />
+                All
+              </TabsTrigger>
+              
+              {/* Category buttons */}
               {filteredCategories.map(category => (
                 <TabsTrigger key={category} value={category} className="px-4 py-2">
                   {category}
@@ -113,6 +123,14 @@ const UsefulLinks = () => {
               ))}
             </TabsList>
             
+            {/* "All" tab content */}
+            <TabsContent value={allTabId}>
+              <UsefulLinksList 
+                links={filteredLinks || []} 
+              />
+            </TabsContent>
+            
+            {/* Individual category tab contents */}
             {filteredCategories.map(category => (
               <TabsContent key={category} value={category}>
                 <UsefulLinksList 
