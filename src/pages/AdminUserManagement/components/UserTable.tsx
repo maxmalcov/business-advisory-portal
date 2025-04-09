@@ -52,13 +52,13 @@ const UserTable: React.FC<UserTableProps> = ({
       <TableBody>
         {users.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center py-8">
+            <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
               No data to display
             </TableCell>
           </TableRow>
         ) : (
           users.map((user) => (
-            <TableRow key={user.id}>
+            <TableRow key={user.id} className="hover:bg-muted/50">
               <TableCell className="font-medium">{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.companyName}</TableCell>

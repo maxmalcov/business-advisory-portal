@@ -17,7 +17,7 @@ const UserSearchBar: React.FC<UserSearchBarProps> = ({
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         placeholder="Search users..."
-        className="pl-8"
+        className="pl-8 bg-background text-foreground"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />

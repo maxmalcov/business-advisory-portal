@@ -37,7 +37,7 @@ const AdminUserManagement: React.FC = () => {
     <div className="container mx-auto py-6 space-y-8">
       <UserManagementHeader onAddUser={handleAddUser} />
       
-      <div className="bg-white rounded-lg border p-6">
+      <div className="bg-card rounded-lg border p-6 shadow-sm">
         <div className="flex justify-between items-center mb-4">
           <UserSearchBar 
             searchQuery={searchQuery}
