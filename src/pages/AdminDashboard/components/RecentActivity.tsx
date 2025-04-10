@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { 
@@ -17,14 +17,17 @@ import {
   CheckCircle, 
   Package,
   UserPlus,
-  UserMinus
+  UserMinus,
+  Loader2
 } from 'lucide-react';
 import { 
   ActivityEvent, 
   formatTimestamp, 
   getActivityIcon, 
+  getRecentActivity,
   getMockRecentActivity 
 } from '@/utils/activityUtils';
+import { useToast } from '@/hooks/use-toast';
 
 const iconComponents = {
   Users,
@@ -47,28 +50,71 @@ const ActivityIcon: React.FC<{ type: string }> = ({ type }) => {
   );
 };
 
+const EmptyState: React.FC = () => (
+  <div className="py-8 text-center">
+    <Bell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+    <h3 className="text-lg font-medium">No recent activity</h3>
+    <p className="text-sm text-muted-foreground mt-2">
+      Recent events will appear here as you use the system.
+    </p>
+  </div>
+);
+
 const RecentActivity: React.FC = () => {
   const { t } = useLanguage();
-  // For admin, we'll show all activities to demonstrate the difference
-  const recentActivities = getMockRecentActivity();
+  const { toast } = useToast();
+  const [activities, setActivities] = useState<ActivityEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        setLoading(true);
+        const data = await getRecentActivity();
+        setActivities(data);
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+        toast({
+          variant: "destructive",
+          title: "Error loading activities",
+          description: "There was a problem loading your recent activities. Please try again later.",
+        });
+        // Fall back to mock data
+        setActivities(getMockRecentActivity());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivities();
+  }, [toast]);
 
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">{t('dashboard.recent_activity')}</h2>
       <Card>
         <CardContent className="p-6">
-          <div className="space-y-4">
-            {recentActivities.slice(0, 5).map((activity) => (
-              <div key={activity.id} className="flex items-start space-x-4">
-                <ActivityIcon type={activity.type} />
-                <div>
-                  <p className="font-medium">{activity.title}</p>
-                  <p className="text-sm text-muted-foreground">{activity.description}</p>
-                  <p className="text-xs text-muted-foreground">{formatTimestamp(activity.timestamp)}</p>
+          {loading ? (
+            <div className="py-8 text-center">
+              <Loader2 className="animate-spin h-8 w-8 mx-auto text-muted-foreground" />
+              <p className="mt-2 text-muted-foreground">Loading activities...</p>
+            </div>
+          ) : activities.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="space-y-4">
+              {activities.slice(0, 5).map((activity) => (
+                <div key={activity.id} className="flex items-start space-x-4">
+                  <ActivityIcon type={activity.type} />
+                  <div>
+                    <p className="font-medium">{activity.title}</p>
+                    <p className="text-sm text-muted-foreground">{activity.description}</p>
+                    <p className="text-xs text-muted-foreground">{formatTimestamp(activity.timestamp)}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
         <CardFooter>
           <Link to="/admin/logs">
