@@ -48,7 +48,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ActivityEvent, getRecentActivity, getMockRecentActivity } from '@/utils/activityUtils';
+import { ActivityEvent, getRecentActivity, getMockRecentActivity } from '@/utils/activity';
 import { supabase } from '@/integrations/supabase/client';
 
 const ReportsPage: React.FC = () => {

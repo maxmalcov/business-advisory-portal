@@ -26,7 +26,7 @@ import {
   getActivityIcon, 
   getRecentActivity,
   getMockRecentActivity 
-} from '@/utils/activityUtils';
+} from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 
 const iconComponents = {
