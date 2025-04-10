@@ -9,11 +9,13 @@ import EmployeeStatusToggle from './components/EmployeeStatusToggle';
 import EmployeeList from './components/EmployeeList';
 import { FilterInput } from './components/FilterInput';
 import { useEmployeeList } from './hooks/useEmployeeList';
+import { useIsSmallScreen } from '@/hooks/use-mobile';
 
 const HR: React.FC = () => {
   const { t } = useLanguage();
   const { employees, statusFilter, setStatusFilter, isLoading, refreshEmployees } = useEmployeeList();
   const [filterText, setFilterText] = useState('');
+  const isSmallScreen = useIsSmallScreen();
 
   return (
     <div className="space-y-6">
@@ -85,25 +87,45 @@ const HR: React.FC = () => {
       </div>
       
       <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-3">Employee List</h2>
+        <h2 className="text-xl font-semibold mb-4">Employee List</h2>
         
-        <div className="flex justify-between items-center mb-3">
-          <FilterInput 
-            value={filterText} 
-            onChange={setFilterText} 
-            placeholder="Search by name, position, or company..."
-          />
-          <EmployeeStatusToggle 
-            value={statusFilter} 
-            onChange={setStatusFilter} 
+        {isSmallScreen ? (
+          <div className="space-y-4">
+            <FilterInput 
+              value={filterText} 
+              onChange={setFilterText} 
+              placeholder="Search by name, position, or company..."
+              className="w-full"
+            />
+            
+            <div className="mt-6">
+              <EmployeeStatusToggle 
+                value={statusFilter} 
+                onChange={setStatusFilter} 
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-between items-center mb-3">
+            <FilterInput 
+              value={filterText} 
+              onChange={setFilterText} 
+              placeholder="Search by name, position, or company..."
+            />
+            <EmployeeStatusToggle 
+              value={statusFilter} 
+              onChange={setStatusFilter} 
+            />
+          </div>
+        )}
+        
+        <div className={isSmallScreen ? "mt-6" : ""}>
+          <EmployeeList 
+            employees={employees} 
+            isLoading={isLoading} 
+            filterText={filterText}
           />
         </div>
-        
-        <EmployeeList 
-          employees={employees} 
-          isLoading={isLoading} 
-          filterText={filterText}
-        />
       </div>
     </div>
   );

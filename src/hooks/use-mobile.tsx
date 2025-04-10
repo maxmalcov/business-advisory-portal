@@ -63,3 +63,29 @@ export function useBreakpoint() {
 
   return breakpoint
 }
+
+// Extra helper for smaller screens
+export function useIsSmallScreen() {
+  const [isSmall, setIsSmall] = React.useState<boolean | undefined>(undefined)
+  
+  React.useEffect(() => {
+    const checkSmallScreen = () => {
+      setIsSmall(window.innerWidth < 640)
+    }
+    
+    // Initial check
+    checkSmallScreen()
+    
+    // Update on resize
+    window.addEventListener("resize", checkSmallScreen)
+    
+    return () => window.removeEventListener("resize", checkSmallScreen)
+  }, [])
+  
+  // Fallback to desktop on server-side rendering
+  if (isSmall === undefined) {
+    return false
+  }
+  
+  return !!isSmall
+}
