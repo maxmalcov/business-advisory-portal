@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Card,
   CardHeader,
@@ -24,9 +24,11 @@ interface MonthlyInvoiceChartProps {
 }
 
 const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }) => {
-  console.log('MonthlyInvoiceChart - received data:', monthlyData);
+  useEffect(() => {
+    console.log('MonthlyInvoiceChart - received data:', monthlyData);
+  }, [monthlyData]);
 
-  // Create default data if no data is provided or if it's empty
+  // Create default mock data if no data is provided or if it's empty
   const displayData = monthlyData && monthlyData.length > 0 
     ? monthlyData 
     : [
@@ -36,6 +38,12 @@ const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }
         { name: 'Apr', sales: 2, supplier: 4 },
         { name: 'May', sales: 6, supplier: 2 },
         { name: 'Jun', sales: 3, supplier: 1 },
+        { name: 'Jul', sales: 5, supplier: 2 },
+        { name: 'Aug', sales: 4, supplier: 3 },
+        { name: 'Sep', sales: 7, supplier: 1 },
+        { name: 'Oct', sales: 2, supplier: 4 },
+        { name: 'Nov', sales: 4, supplier: 3 },
+        { name: 'Dec', sales: 3, supplier: 2 },
       ];
 
   console.log('MonthlyInvoiceChart - display data:', displayData);
