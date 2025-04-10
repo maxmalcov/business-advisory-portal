@@ -100,13 +100,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: UserCog,
     },
     {
-      name: t('nav.additional_services'),
-      path: '/services',
-      icon: Sparkles,
-      highlight: true,
-      tooltip: 'Explore available services for your company',
-    },
-    {
       name: t('nav.subscriptions'),
       path: '/subscriptions',
       icon: Layers,
@@ -115,6 +108,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: 'Useful Links',
       path: '/useful-links',
       icon: Link2,
+    },
+    {
+      name: t('nav.additional_services'),
+      path: '/services',
+      icon: Sparkles,
+      highlight: true,
+      tooltip: 'Explore available services for your company',
     },
   ];
 
@@ -135,13 +135,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: UserCog,
     },
     {
-      name: t('nav.services'),
-      path: '/admin/services',
-      icon: Sparkles,
-      highlight: true,
-      tooltip: 'Manage and configure client services',
-    },
-    {
       name: t('nav.subscriptions'),
       path: '/admin/subscriptions',
       icon: Layers,
@@ -160,6 +153,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: 'Useful Links',
       path: '/admin/useful-links',
       icon: Link2,
+    },
+    {
+      name: t('nav.services'),
+      path: '/admin/services',
+      icon: Sparkles,
+      highlight: true,
+      tooltip: 'Manage and configure client services',
     },
   ];
 
