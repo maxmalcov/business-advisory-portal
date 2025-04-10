@@ -1,45 +1,49 @@
 
 import React from 'react';
 import { 
-  Clock, 
-  UserCheck, 
+  FileText, 
   UserMinus, 
-  FileUp, 
-  CheckCircle, 
-  Package 
+  UserPlus, 
+  Calendar,
+  FileUp,
+  CheckCircle,
+  Package,
+  Clock,
+  LucideIcon
 } from 'lucide-react';
-import { ActivityEventType } from '@/utils/activity';
+import { ActivityEvent } from '@/utils/activity';
 
 interface ActivityIconProps {
-  type: ActivityEventType;
+  type: string;
+  className?: string;
 }
 
-const ActivityIcon: React.FC<ActivityIconProps> = ({ type }) => {
-  let IconComponent;
+const ActivityIcon: React.FC<ActivityIconProps> = ({ type, className }) => {
+  let Icon: LucideIcon;
   
   switch (type) {
     case 'employee-added':
-      IconComponent = UserCheck;
+      Icon = UserPlus;
       break;
     case 'employee-terminated':
-      IconComponent = UserMinus;
+      Icon = UserMinus;
       break;
     case 'invoice-uploaded':
     case 'supplier-invoice-uploaded':
-      IconComponent = FileUp;
+      Icon = FileUp;
       break;
     case 'service-completed':
-      IconComponent = CheckCircle;
+      Icon = CheckCircle;
       break;
     case 'subscription-activated':
     case 'subscription-ended':
-      IconComponent = Package;
+      Icon = Package;
       break;
     default:
-      IconComponent = Clock;
+      Icon = Calendar;
   }
-
-  return <IconComponent className="h-5 w-5" />;
+  
+  return <Icon className={className || "h-5 w-5"} />;
 };
 
 export default ActivityIcon;
