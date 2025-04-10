@@ -28,6 +28,7 @@ import {
   getMockRecentActivity 
 } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const iconComponents = {
   Users,
@@ -65,6 +66,7 @@ const RecentActivity: React.FC = () => {
   const { toast } = useToast();
   const [activities, setActivities] = useState<ActivityEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -116,9 +118,9 @@ const RecentActivity: React.FC = () => {
             </div>
           )}
         </CardContent>
-        <CardFooter>
+        <CardFooter className={isMobile ? "flex justify-center" : ""}>
           <Link to="/reports">
-            <Button variant="outline" className="w-full">View All Activity</Button>
+            <Button variant="outline" className={isMobile ? "w-auto" : "w-full"}>View All Activity</Button>
           </Link>
         </CardFooter>
       </Card>
