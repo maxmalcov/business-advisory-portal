@@ -168,7 +168,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   return (
     <aside 
       className={cn(
-        "bg-sidebar text-sidebar-foreground w-64 min-h-screen overflow-y-auto fixed top-0 left-0 z-40 pt-4 transition-transform duration-300 ease-in-out",
+        "bg-sidebar text-sidebar-foreground w-64 overflow-y-auto fixed top-[57px] left-0 z-40 pt-4 transition-transform duration-300 ease-in-out h-[calc(100vh-57px)]",
         isOpen ? "translate-x-0" : (isMobile ? "-translate-x-full" : "translate-x-0"),
         isMobile && "shadow-lg"
       )}
