@@ -16,7 +16,9 @@ const Header: React.FC = () => {
     <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          {/* Logo removed from here */}
+          <Link to="/" className="font-bold text-2xl text-ba-blue">
+            Business Advisory
+          </Link>
         </div>
 
         <div className="flex items-center space-x-4">
