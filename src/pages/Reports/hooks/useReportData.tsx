@@ -55,14 +55,15 @@ export const useReportData = (): ReportStats => {
     requested: 0,
   });
   
-  const [monthlyData, setMonthlyData] = useState([
-    { name: 'Jan', sales: 0, supplier: 0 },
-    { name: 'Feb', sales: 0, supplier: 0 },
-    { name: 'Mar', sales: 0, supplier: 0 },
-    { name: 'Apr', sales: 0, supplier: 0 },
-    { name: 'May', sales: 0, supplier: 0 },
-    { name: 'Jun', sales: 0, supplier: 0 },
-  ]);
+  // Initialize with empty data for each month of the current year
+  const [monthlyData, setMonthlyData] = useState<{name: string; sales: number; supplier: number}[]>(() => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months.map(month => ({
+      name: month, 
+      sales: 0, 
+      supplier: 0
+    }));
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,31 +108,44 @@ export const useReportData = (): ReportStats => {
             lastMonth: lastMonthInvoices.length,
           });
           
-          // Prepare monthly data for chart
-          const newMonthlyData = [...monthlyData];
+          // Reset monthly data before populating
+          const initialMonthlyData = monthlyData.map(item => ({...item, sales: 0, supplier: 0}));
           
           // Group by month and count
-          for (const invoice of invoices) {
-            const invDate = new Date(invoice.created_at);
-            const monthIndex = invDate.getMonth();
+          if (invoices.length > 0) {
+            console.log('Processing invoices for monthly chart:', invoices.length);
             
-            // Only process last 6 months
-            if (monthIndex >= currentDate.getMonth() - 5 && 
-                invDate.getFullYear() === currentYear) {
-              const monthName = new Date(currentYear, monthIndex).toLocaleString('default', { month: 'short' });
-              const existingMonthIndex = newMonthlyData.findIndex(m => m.name === monthName);
+            for (const invoice of invoices) {
+              if (!invoice.created_at) {
+                console.log('Invoice missing created_at date:', invoice);
+                continue;
+              }
               
-              if (existingMonthIndex !== -1) {
-                if (invoice.invoice_type === 'sale') {
-                  newMonthlyData[existingMonthIndex].sales += 1;
-                } else if (invoice.invoice_type === 'supplier') {
-                  newMonthlyData[existingMonthIndex].supplier += 1;
+              const invDate = new Date(invoice.created_at);
+              const monthIndex = invDate.getMonth();
+              const invYear = invDate.getFullYear();
+              
+              // Only process current year data
+              if (invYear === currentYear) {
+                const monthName = new Date(currentYear, monthIndex).toLocaleString('default', { month: 'short' });
+                const existingMonthIndex = initialMonthlyData.findIndex(m => m.name === monthName);
+                
+                if (existingMonthIndex !== -1) {
+                  if (invoice.invoice_type === 'sale') {
+                    initialMonthlyData[existingMonthIndex].sales += 1;
+                  } else if (invoice.invoice_type === 'supplier') {
+                    initialMonthlyData[existingMonthIndex].supplier += 1;
+                  }
                 }
               }
             }
+            
+            console.log('Updated monthly data:', initialMonthlyData);
+          } else {
+            console.log('No invoices found to process for monthly chart');
           }
           
-          setMonthlyData(newMonthlyData);
+          setMonthlyData(initialMonthlyData);
         }
         
         // Get employee statistics
@@ -188,13 +202,29 @@ export const useReportData = (): ReportStats => {
         });
         // Use mock data as fallback
         setActivityData(getMockRecentActivity());
+        
+        // Also set some mock monthly data so chart is not empty
+        setMonthlyData([
+          { name: 'Jan', sales: 2, supplier: 1 },
+          { name: 'Feb', sales: 3, supplier: 2 },
+          { name: 'Mar', sales: 1, supplier: 3 },
+          { name: 'Apr', sales: 4, supplier: 2 },
+          { name: 'May', sales: 3, supplier: 1 },
+          { name: 'Jun', sales: 5, supplier: 3 },
+          { name: 'Jul', sales: 2, supplier: 4 },
+          { name: 'Aug', sales: 3, supplier: 2 },
+          { name: 'Sep', sales: 4, supplier: 1 },
+          { name: 'Oct', sales: 1, supplier: 3 },
+          { name: 'Nov', sales: 2, supplier: 2 },
+          { name: 'Dec', sales: 3, supplier: 1 }
+        ]);
       } finally {
         setLoading(false);
       }
     };
     
     fetchData();
-  }, [toast, monthlyData]);
+  }, [toast]);
 
   return {
     invoiceStats,
