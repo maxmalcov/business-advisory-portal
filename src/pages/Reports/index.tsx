@@ -34,27 +34,35 @@ const ReportsPage: React.FC = () => {
       <ReportsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <div>
-        <TabsContent value="overview" className="space-y-6" forceMount={activeTab === 'overview'}>
-          <OverviewTab 
-            invoiceStats={invoiceStats}
-            employeeStats={employeeStats}
-            servicesStats={servicesStats}
-            activityData={activityData}
-            monthlyData={monthlyData}
-          />
-        </TabsContent>
+        {activeTab === 'overview' && (
+          <TabsContent value="overview" className="space-y-6" forceMount={true}>
+            <OverviewTab 
+              invoiceStats={invoiceStats}
+              employeeStats={employeeStats}
+              servicesStats={servicesStats}
+              activityData={activityData}
+              monthlyData={monthlyData}
+            />
+          </TabsContent>
+        )}
         
-        <TabsContent value="activity" className="space-y-4" forceMount={activeTab === 'activity'}>
-          <ActivityTab activityData={activityData} />
-        </TabsContent>
+        {activeTab === 'activity' && (
+          <TabsContent value="activity" className="space-y-4" forceMount={true}>
+            <ActivityTab activityData={activityData} />
+          </TabsContent>
+        )}
         
-        <TabsContent value="documents" className="space-y-4" forceMount={activeTab === 'documents'}>
-          <DocumentsTab invoiceStats={invoiceStats} />
-        </TabsContent>
+        {activeTab === 'documents' && (
+          <TabsContent value="documents" className="space-y-4" forceMount={true}>
+            <DocumentsTab invoiceStats={invoiceStats} />
+          </TabsContent>
+        )}
         
-        <TabsContent value="people" className="space-y-4" forceMount={activeTab === 'people'}>
-          <PeopleTab employeeStats={employeeStats} />
-        </TabsContent>
+        {activeTab === 'people' && (
+          <TabsContent value="people" className="space-y-4" forceMount={true}>
+            <PeopleTab employeeStats={employeeStats} />
+          </TabsContent>
+        )}
       </div>
     </div>
   );
