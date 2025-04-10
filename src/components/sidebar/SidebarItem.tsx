@@ -3,12 +3,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 type SidebarItemProps = {
   item: {
@@ -38,7 +32,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const isMobile = useIsMobile();
 
   const renderLink = () => {
-    const link = (
+    return (
       <Link
         to={item.path}
         className={cn(
@@ -57,23 +51,6 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <span>{item.name}</span>
       </Link>
     );
-
-    if (item.tooltip && !isMobile) {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {link}
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{item.tooltip}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    }
-
-    return link;
   };
 
   return (
