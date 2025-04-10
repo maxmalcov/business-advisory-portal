@@ -31,9 +31,9 @@ const ReportsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <ReportsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
-      
       <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <ReportsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+        
         <TabsContent value="overview" className="space-y-6">
           <OverviewTab 
             invoiceStats={invoiceStats}
