@@ -21,28 +21,20 @@ import {
 } from 'lucide-react';
 import { 
   ActivityEvent, 
-  formatTimestamp,
   getRecentActivity,
   getMockRecentActivity 
 } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { format } from 'date-fns';
 
-const truncateFileName = (fileName: string, maxLength: number = 40) => {
-  if (fileName.length <= maxLength) return fileName;
-  
-  // For filenames with extension, preserve the extension
-  const lastDotIndex = fileName.lastIndexOf('.');
-  if (lastDotIndex !== -1) {
-    const extension = fileName.slice(lastDotIndex);
-    const name = fileName.slice(0, lastDotIndex);
-    if (name.length <= maxLength - 5) return fileName;
-    
-    return `${name.slice(0, maxLength - 5)}...${extension}`;
-  }
-  
-  // For filenames without extension
-  return `${fileName.slice(0, maxLength)}...`;
+const truncateText = (text: string, maxLength: number = 50) => {
+  if (!text || text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength)}...`;
+};
+
+const formatDate = (date: Date) => {
+  return format(date, "MMMM d, yyyy – HH:mm");
 };
 
 const EmptyState: React.FC = () => (
@@ -123,12 +115,9 @@ const RecentActivity: React.FC = () => {
                     ActivityIcon = Bell;
                 }
                 
-                // Check if description contains a long filename
-                const needsTruncation = activity.description && 
-                  (activity.description.includes('.pdf') || activity.description.length > 40);
-                const displayDescription = needsTruncation ? 
-                  truncateFileName(activity.description, 40) : 
-                  activity.description;
+                // Truncate description if needed
+                const displayDescription = truncateText(activity.description, 50);
+                const needsTruncation = activity.description && activity.description.length > 50;
                 
                 return (
                   <div key={activity.id} className="flex items-start space-x-4 p-2 rounded-md hover:bg-muted/50">
@@ -141,7 +130,7 @@ const RecentActivity: React.FC = () => {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <p className="text-sm text-muted-foreground line-clamp-2">{displayDescription}</p>
+                              <p className="text-sm text-muted-foreground line-clamp-1">{displayDescription}</p>
                             </TooltipTrigger>
                             <TooltipContent className="max-w-sm">
                               <p>{activity.description}</p>
@@ -151,7 +140,7 @@ const RecentActivity: React.FC = () => {
                       ) : (
                         <p className="text-sm text-muted-foreground">{displayDescription}</p>
                       )}
-                      <p className="text-xs text-muted-foreground mt-1">{formatTimestamp(activity.timestamp)}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{formatDate(activity.timestamp)}</p>
                     </div>
                   </div>
                 );

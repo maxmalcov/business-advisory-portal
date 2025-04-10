@@ -1,12 +1,7 @@
 
 import React from 'react';
 import { 
-  FileText, 
-  UserMinus, 
-  UserPlus, 
-  AlertCircle, 
-  FileUp,
-  Calendar
+  AlertCircle
 } from 'lucide-react';
 import {
   Table,
@@ -22,6 +17,7 @@ import {
 } from '@/utils/activity';
 import ActivityIcon from './ActivityIcon';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { format } from 'date-fns';
 
 interface ActivityTableProps {
   activityData: ActivityEvent[];
@@ -37,21 +33,13 @@ const EmptyState: React.FC = () => (
   </div>
 );
 
-const truncateFileName = (fileName: string, maxLength: number = 40) => {
-  if (fileName.length <= maxLength) return fileName;
-  
-  // For filenames with extension, preserve the extension
-  const lastDotIndex = fileName.lastIndexOf('.');
-  if (lastDotIndex !== -1) {
-    const extension = fileName.slice(lastDotIndex);
-    const name = fileName.slice(0, lastDotIndex);
-    if (name.length <= maxLength - 5) return fileName; // If name is already short enough
-    
-    return `${name.slice(0, maxLength - 5)}...${extension}`;
-  }
-  
-  // For filenames without extension
-  return `${fileName.slice(0, maxLength)}...`;
+const truncateText = (text: string, maxLength: number = 50) => {
+  if (!text || text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength)}...`;
+};
+
+const formatDate = (date: Date) => {
+  return format(date, "MMMM d, yyyy – HH:mm");
 };
 
 const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
@@ -66,44 +54,20 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
           <TableRow className="bg-muted/50">
             <TableHead className="w-[200px]">Type</TableHead>
             <TableHead className="w-[45%]">Description</TableHead>
-            <TableHead className="text-right">Date</TableHead>
+            <TableHead className="text-right w-[220px]">Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {activityData.map((activity) => {
-            // Determine icon based on activity type
-            let ActivityIcon;
-            switch (activity.type) {
-              case 'employee-added':
-                ActivityIcon = UserPlus;
-                break;
-              case 'employee-terminated':
-                ActivityIcon = UserMinus;
-                break;
-              case 'invoice-uploaded':
-              case 'supplier-invoice-uploaded':
-                ActivityIcon = FileUp;
-                break;
-              case 'service-completed':
-                ActivityIcon = FileText;
-                break;
-              default:
-                ActivityIcon = Calendar;
-            }
-            
-            // Check if description contains a long filename
-            const needsTruncation = activity.description && 
-              (activity.description.includes('.pdf') || activity.description.length > 60);
-            const displayDescription = needsTruncation ? 
-              truncateFileName(activity.description, 60) : 
-              activity.description;
+            const displayDescription = truncateText(activity.description, 50);
+            const needsTruncation = activity.description && activity.description.length > 50;
                 
             return (
               <TableRow key={activity.id} className="hover:bg-muted/50">
                 <TableCell className="py-4">
                   <div className="flex items-center">
                     <div className="mr-3 bg-muted rounded-full p-2 flex-shrink-0">
-                      <ActivityIcon className="h-5 w-5" />
+                      <ActivityIcon type={activity.type} />
                     </div>
                     <span className="font-medium">{activity.title}</span>
                   </div>
@@ -125,7 +89,7 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
                   )}
                 </TableCell>
                 <TableCell className="text-right whitespace-nowrap text-muted-foreground">
-                  {formatTimestamp(activity.timestamp)}
+                  {formatDate(activity.timestamp)}
                 </TableCell>
               </TableRow>
             );
