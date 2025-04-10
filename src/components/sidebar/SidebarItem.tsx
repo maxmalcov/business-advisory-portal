@@ -45,24 +45,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         onClick={isMobile ? onClose : undefined}
       >
         {item.highlight ? 
-          <span className="mr-2 relative">
-            <item.icon className="h-4 w-4 text-transparent animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" 
-              style={{
-                background: 'linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                filter: 'drop-shadow(0 0 1px rgba(255,255,255,0.5))'
-              }}
-            /> 
-          </span> : 
+          <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
           <item.icon className="h-4 w-4 mr-2" />
         }
-        <span className={cn(
-          item.highlight && "animate-pulse relative",
-          item.highlight && "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent font-semibold"
-        )}>
-          {item.name}
-        </span>
+        <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
       </Link>
     );
   };

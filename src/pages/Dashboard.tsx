@@ -18,16 +18,9 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
 
-  const rainbowIconStyle = {
-    background: 'linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #008000, #0000ff, #4b0082, #ee82ee)',
-    backgroundClip: 'text',
-    WebkitBackgroundClip: 'text',
-    color: 'transparent',
-    filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.7))'
-  };
-
   return (
     <div className="space-y-6">
+      {/* Welcome Card */}
       <Card className="border-l-4 border-l-ba-blue">
         <CardHeader>
           <CardTitle className="text-2xl">{t('dashboard.welcome')}</CardTitle>
@@ -40,6 +33,7 @@ const Dashboard: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.quick_actions')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -89,13 +83,8 @@ const Dashboard: React.FC = () => {
             <Card className="h-full card-hover bg-gradient-to-br from-[#5A8BB0] to-[#3A6B9E] text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.03] animate-fade-in">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-white">
-                  <Sparkles 
-                    className="mr-2 h-5 w-5 animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110"
-                    style={rainbowIconStyle}
-                  />
-                  <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent font-semibold animate-pulse">
-                    Services
-                  </span>
+                  <Sparkles className="mr-2 h-5 w-5 animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" />
+                  Services
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -106,8 +95,10 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Recent Activity */}
       <RecentActivity />
 
+      {/* Stats Summary */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.stats')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
