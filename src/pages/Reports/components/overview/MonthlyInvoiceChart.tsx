@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   Card,
@@ -111,20 +112,22 @@ const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({
   return (
     <Card className="col-span-2">
       <CardHeader>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
           <div>
             <CardTitle>Monthly Invoice Activity</CardTitle>
             <CardDescription>
               Number of invoices processed per month
             </CardDescription>
           </div>
-          <DateRangePicker 
-            startDate={startDate}
-            endDate={endDate}
-            onStartDateChange={handleStartDateChange}
-            onEndDateChange={handleEndDateChange}
-            onRangePresetChange={handleRangePresetChange}
-          />
+          <div className="mt-4 sm:mt-0">
+            <DateRangePicker 
+              startDate={startDate}
+              endDate={endDate}
+              onStartDateChange={handleStartDateChange}
+              onEndDateChange={handleEndDateChange}
+              onRangePresetChange={handleRangePresetChange}
+            />
+          </div>
         </div>
       </CardHeader>
       <CardContent className="pl-2">

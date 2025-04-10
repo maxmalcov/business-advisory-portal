@@ -34,7 +34,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   onRangePresetChange,
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 items-center">
+    <div className="flex flex-col space-y-2">
       <Select onValueChange={onRangePresetChange}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select period" />
@@ -54,12 +54,12 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <Button
               variant="outline"
               className={cn(
-                "w-[130px] justify-start text-left font-normal",
+                "w-[88px] sm:w-[130px] justify-start text-left font-normal text-xs sm:text-sm",
                 !startDate && "text-muted-foreground"
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {startDate ? format(startDate, "MMM d, yyyy") : <span>Start date</span>}
+              <CalendarIcon className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+              {startDate ? format(startDate, "MMM d, yyyy") : <span>Start</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -79,12 +79,12 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <Button
               variant="outline"
               className={cn(
-                "w-[130px] justify-start text-left font-normal",
+                "w-[88px] sm:w-[130px] justify-start text-left font-normal text-xs sm:text-sm",
                 !endDate && "text-muted-foreground"
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {endDate ? format(endDate, "MMM d, yyyy") : <span>End date</span>}
+              <CalendarIcon className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+              {endDate ? format(endDate, "MMM d, yyyy") : <span>End</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
