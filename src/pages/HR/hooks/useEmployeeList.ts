@@ -5,7 +5,7 @@ import { employeesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 export function useEmployeeList() {
-  const [statusFilter, setStatusFilter] = useState<EmployeeStatus | 'all'>('active');
+  const [statusFilter, setStatusFilter] = useState<EmployeeStatus | 'all'>('all');
   const [employees, setEmployees] = useState<EmployeeType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);

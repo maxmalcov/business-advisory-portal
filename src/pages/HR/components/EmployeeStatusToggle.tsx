@@ -31,7 +31,7 @@ const EmployeeStatusToggle: React.FC<EmployeeStatusToggleProps> = ({
         onClick={() => onChange('active')}
       >
         <User className="h-4 w-4" />
-        <span>New Employees</span>
+        <span>Active Employees</span>
       </Button>
       <Button
         variant="ghost"
