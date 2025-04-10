@@ -30,7 +30,7 @@ const HR: React.FC = () => {
   
   // Extract unique positions for the position filter
   const positions = useMemo(() => {
-    return Array.from(new Set(employees.map(emp => emp.position)));
+    return Array.from(new Set(employees.map(emp => emp.position).filter(pos => pos && pos.trim() !== '')));
   }, [employees]);
   
   // Filter employees based on all filter criteria

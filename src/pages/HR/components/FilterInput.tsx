@@ -63,9 +63,17 @@ export const FilterInput: React.FC<FilterInputProps> = ({
           </SelectTrigger>
           <SelectContent>
             {selectOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
+              // Only render SelectItem if option.value is not an empty string
+              option.value !== '' ? (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ) : (
+                // For empty string options, create a SelectItem with a non-empty value but clear indicator
+                <SelectItem key="empty" value="all">
+                  {option.label || 'All'}
+                </SelectItem>
+              )
             ))}
           </SelectContent>
         </Select>

@@ -48,14 +48,21 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
   
-  const uniquePositions = Array.from(new Set(['', ...positions]));
+  // Create position options, making sure to handle the empty string case properly
+  const positionOptions = [
+    { value: 'all', label: 'All Positions' },
+    ...positions.filter(pos => pos.trim() !== '').map(pos => ({
+      value: pos,
+      label: pos
+    }))
+  ];
   
   const handleTextSearchChange = (value: string) => {
     onFilterChange({ ...filterOptions, textSearch: value });
   };
   
   const handlePositionChange = (value: string) => {
-    onFilterChange({ ...filterOptions, position: value });
+    onFilterChange({ ...filterOptions, position: value === 'all' ? '' : value });
   };
   
   const handleStatusChange = (value: string) => {
@@ -138,21 +145,19 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
           placeholder="Search by name, position, or company..."
           className="w-full"
           iconType="search"
+          onClear={filterOptions.textSearch ? () => handleTextSearchChange('') : undefined}
         />
 
         {/* Position filter */}
         <div className="relative">
           <FilterInput
-            value={filterOptions.position}
+            value={filterOptions.position === '' ? 'all' : filterOptions.position}
             onChange={handlePositionChange}
             placeholder="Filter by position"
             className="w-full"
             iconType="briefcase"
             as="select"
-            selectOptions={uniquePositions.map(pos => ({
-              value: pos, 
-              label: pos || 'All Positions'
-            }))}
+            selectOptions={positionOptions}
           />
         </div>
 
