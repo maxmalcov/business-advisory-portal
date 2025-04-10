@@ -15,7 +15,14 @@ import {
   BarChart3,
   UserCog,
   PackageIcon,
+  Sparkles,
 } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const AdminActions: React.FC = () => {
   const { t } = useLanguage();
@@ -38,19 +45,28 @@ const AdminActions: React.FC = () => {
           </Card>
         </Link>
 
-        <Link to="/admin/services">
-          <Card className="h-full card-hover">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center">
-                <Settings className="mr-2 h-5 w-5" />
-                Service Management
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Configure available services and subscriptions</p>
-            </CardContent>
-          </Card>
-        </Link>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/admin/services">
+                <Card className="h-full card-hover bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.03] animate-fade-in">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center text-white">
+                      <Sparkles className="mr-2 h-5 w-5 animate-pulse" />
+                      Service Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-white/90">Configure available services and subscriptions</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Manage and configure client services</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <Link to="/admin/subscriptions">
           <Card className="h-full card-hover">
