@@ -1,22 +1,112 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, UserPlus, UserMinus, Clock } from 'lucide-react';
-import EmployeeStatusToggle from './components/EmployeeStatusToggle';
 import EmployeeList from './components/EmployeeList';
 import { FilterInput } from './components/FilterInput';
+import { TableFilters, FilterOptions } from './components/TableFilters';
 import { useEmployeeList } from './hooks/useEmployeeList';
 import { useIsSmallScreen } from '@/hooks/use-mobile';
+import { Employee, EmployeeStatus } from './types/employee';
 
 const HR: React.FC = () => {
   const { t } = useLanguage();
-  const { employees, statusFilter, setStatusFilter, isLoading, refreshEmployees } = useEmployeeList();
-  const [filterText, setFilterText] = useState('');
+  const { employees, isLoading, refreshEmployees } = useEmployeeList();
   const isSmallScreen = useIsSmallScreen();
-
+  
+  // Initialize filter options
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+    textSearch: '',
+    position: '',
+    status: 'all',
+    startDateFrom: null,
+    startDateTo: null,
+    endDateFrom: null,
+    endDateTo: null,
+  });
+  
+  // Extract unique positions for the position filter
+  const positions = useMemo(() => {
+    return Array.from(new Set(employees.map(emp => emp.position)));
+  }, [employees]);
+  
+  // Filter employees based on all filter criteria
+  const filteredEmployees = useMemo(() => {
+    return employees.filter(employee => {
+      // Text search filter
+      if (filterOptions.textSearch) {
+        const searchText = filterOptions.textSearch.toLowerCase();
+        const nameMatch = employee.fullName.toLowerCase().includes(searchText);
+        const positionMatch = employee.position.toLowerCase().includes(searchText);
+        const companyMatch = employee.companyName?.toLowerCase().includes(searchText) || false;
+        
+        if (!nameMatch && !positionMatch && !companyMatch) {
+          return false;
+        }
+      }
+      
+      // Position filter
+      if (filterOptions.position && employee.position !== filterOptions.position) {
+        return false;
+      }
+      
+      // Status filter
+      if (filterOptions.status !== 'all' && employee.status !== filterOptions.status) {
+        return false;
+      }
+      
+      // Start date range filter
+      if (filterOptions.startDateFrom || filterOptions.startDateTo) {
+        const startDate = new Date(employee.startDate);
+        
+        if (filterOptions.startDateFrom && startDate < filterOptions.startDateFrom) {
+          return false;
+        }
+        
+        if (filterOptions.startDateTo) {
+          // Add one day to make the "to" date inclusive
+          const toDateInclusive = new Date(filterOptions.startDateTo);
+          toDateInclusive.setDate(toDateInclusive.getDate() + 1);
+          
+          if (startDate > toDateInclusive) {
+            return false;
+          }
+        }
+      }
+      
+      // End date range filter
+      if (filterOptions.endDateFrom || filterOptions.endDateTo) {
+        // Skip if employee has not been terminated
+        if (!employee.endDate) {
+          if (filterOptions.endDateFrom || filterOptions.endDateTo) {
+            return false;
+          }
+        } else {
+          const endDate = new Date(employee.endDate);
+          
+          if (filterOptions.endDateFrom && endDate < filterOptions.endDateFrom) {
+            return false;
+          }
+          
+          if (filterOptions.endDateTo) {
+            // Add one day to make the "to" date inclusive
+            const toDateInclusive = new Date(filterOptions.endDateTo);
+            toDateInclusive.setDate(toDateInclusive.getDate() + 1);
+            
+            if (endDate > toDateInclusive) {
+              return false;
+            }
+          }
+        }
+      }
+      
+      return true;
+    });
+  }, [employees, filterOptions]);
+  
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">{t('nav.hr')}</h1>
@@ -89,41 +179,19 @@ const HR: React.FC = () => {
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-4">Employee List</h2>
         
-        {isSmallScreen ? (
-          <div className="space-y-4">
-            <FilterInput 
-              value={filterText} 
-              onChange={setFilterText} 
-              placeholder="Search by name, position, or company..."
-              className="w-full"
-            />
-            
-            <div className="mt-6">
-              <EmployeeStatusToggle 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-between items-center mb-3">
-            <FilterInput 
-              value={filterText} 
-              onChange={setFilterText} 
-              placeholder="Search by name, position, or company..."
-            />
-            <EmployeeStatusToggle 
-              value={statusFilter} 
-              onChange={setStatusFilter} 
-            />
-          </div>
-        )}
+        {/* Advanced filters */}
+        <div className="mb-6">
+          <TableFilters
+            filterOptions={filterOptions}
+            onFilterChange={setFilterOptions}
+            positions={positions}
+          />
+        </div>
         
-        <div className={isSmallScreen ? "mt-6" : ""}>
+        <div>
           <EmployeeList 
-            employees={employees} 
-            isLoading={isLoading} 
-            filterText={filterText}
+            employees={filteredEmployees} 
+            isLoading={isLoading}
           />
         </div>
       </div>

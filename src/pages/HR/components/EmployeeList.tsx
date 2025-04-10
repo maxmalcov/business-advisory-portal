@@ -20,18 +20,15 @@ interface EmployeeListProps {
   employees: Employee[];
   isLoading?: boolean;
   onEmployeeSelect?: (employee: Employee) => void;
-  filterText?: string;
 }
 
 const EmployeeList: React.FC<EmployeeListProps> = ({ 
   employees, 
   isLoading = false,
   onEmployeeSelect,
-  filterText = ''
 }) => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-  const [localFilterText, setLocalFilterText] = useState(filterText);
 
   const formatDate = (dateStr: string) => {
     try {
@@ -50,13 +47,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
       setDetailDialogOpen(true);
     }
   };
-
-  // Filter employees based on search text
-  const filteredEmployees = employees.filter(emp => 
-    emp.fullName.toLowerCase().includes(localFilterText.toLowerCase()) ||
-    emp.position.toLowerCase().includes(localFilterText.toLowerCase()) ||
-    (emp.companyName && emp.companyName.toLowerCase().includes(localFilterText.toLowerCase()))
-  );
 
   if (isLoading) {
     return (
@@ -105,12 +95,12 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredEmployees.length === 0 ? (
+              {employees.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center h-24">No employees found</TableCell>
                 </TableRow>
               ) : (
-                filteredEmployees.map((employee) => (
+                employees.map((employee) => (
                   <TableRow 
                     key={employee.id}
                     className="cursor-pointer transition-colors hover:bg-muted/50"
@@ -164,4 +154,3 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 };
 
 export default EmployeeList;
-
