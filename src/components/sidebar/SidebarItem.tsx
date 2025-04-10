@@ -45,10 +45,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         onClick={isMobile ? onClose : undefined}
       >
         {item.highlight ? 
-          <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-pulse" /> : 
+          <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
           <item.icon className="h-4 w-4 mr-2" />
         }
-        <span>{item.name}</span>
+        <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
       </Link>
     );
   };

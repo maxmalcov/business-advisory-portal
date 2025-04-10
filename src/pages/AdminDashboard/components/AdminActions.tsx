@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -52,7 +51,7 @@ const AdminActions: React.FC = () => {
                 <Card className="h-full card-hover bg-gradient-to-br from-[#5A8BB0] to-[#3A6B9E] text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.03] animate-fade-in">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center text-white">
-                      <Sparkles className="mr-2 h-5 w-5 animate-pulse" />
+                      <Sparkles className="mr-2 h-5 w-5 animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" />
                       Service Management
                     </CardTitle>
                   </CardHeader>
