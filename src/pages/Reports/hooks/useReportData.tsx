@@ -1,9 +1,8 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ActivityEvent, getRecentActivity, getMockRecentActivity } from '@/utils/activity';
-import { format, parseISO, subMonths } from 'date-fns';
 
 export interface ReportStats {
   invoiceStats: {
@@ -29,10 +28,8 @@ export interface ReportStats {
     name: string;
     sales: number;
     supplier: number;
-    date?: Date;
   }[];
   loading: boolean;
-  filterDataByDateRange: (startDate: Date, endDate: Date) => void;
 }
 
 export const useReportData = (): ReportStats => {
@@ -58,90 +55,14 @@ export const useReportData = (): ReportStats => {
     requested: 0,
   });
   
-  const [allMonthlyData, setAllMonthlyData] = useState<{
-    name: string;
-    sales: number;
-    supplier: number;
-    date?: Date;
-  }[]>([]);
-  
-  const [monthlyData, setMonthlyData] = useState<{
-    name: string;
-    sales: number;
-    supplier: number;
-    date?: Date;
-  }[]>([]);
-
-  const prepareMonthlyData = useCallback((invoices: any[], startDate: Date, endDate: Date) => {
-    const monthMap = new Map();
-    const currentDate = new Date();
-    
-    // Initialize with empty data for all months in the range
-    let currentMonth = new Date(startDate);
-    while (currentMonth <= endDate) {
-      const monthName = format(currentMonth, 'MMM');
-      const monthYear = format(currentMonth, 'yyyy-MM');
-      
-      if (!monthMap.has(monthYear)) {
-        monthMap.set(monthYear, {
-          name: monthName,
-          sales: 0,
-          supplier: 0,
-          date: new Date(currentMonth)
-        });
-      }
-      
-      // Move to next month
-      currentMonth.setMonth(currentMonth.getMonth() + 1);
-    }
-    
-    // Fill with actual data
-    for (const invoice of invoices) {
-      try {
-        const invDate = parseISO(invoice.created_at);
-        if (invDate >= startDate && invDate <= endDate) {
-          const monthYear = format(invDate, 'yyyy-MM');
-          const monthName = format(invDate, 'MMM');
-          
-          if (!monthMap.has(monthYear)) {
-            monthMap.set(monthYear, {
-              name: monthName,
-              sales: 0,
-              supplier: 0,
-              date: new Date(invDate.getFullYear(), invDate.getMonth(), 1)
-            });
-          }
-          
-          const monthData = monthMap.get(monthYear);
-          if (invoice.invoice_type === 'sale') {
-            monthData.sales += 1;
-          } else if (invoice.invoice_type === 'supplier') {
-            monthData.supplier += 1;
-          }
-        }
-      } catch (error) {
-        console.error('Error processing invoice date:', error);
-      }
-    }
-    
-    // Convert map to array and sort by date
-    const result = Array.from(monthMap.values()).sort((a, b) => {
-      return a.date && b.date ? a.date.getTime() - b.date.getTime() : 0;
-    });
-    
-    return result;
-  }, []);
-  
-  const filterDataByDateRange = useCallback((startDate: Date, endDate: Date) => {
-    if (!allMonthlyData.length) return;
-    
-    const filtered = allMonthlyData.filter(item => {
-      if (!item.date) return false;
-      return item.date >= startDate && item.date <= endDate;
-    });
-    
-    setMonthlyData(filtered);
-  }, [allMonthlyData]);
+  const [monthlyData, setMonthlyData] = useState([
+    { name: 'Jan', sales: 0, supplier: 0 },
+    { name: 'Feb', sales: 0, supplier: 0 },
+    { name: 'Mar', sales: 0, supplier: 0 },
+    { name: 'Apr', sales: 0, supplier: 0 },
+    { name: 'May', sales: 0, supplier: 0 },
+    { name: 'Jun', sales: 0, supplier: 0 },
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -186,17 +107,31 @@ export const useReportData = (): ReportStats => {
             lastMonth: lastMonthInvoices.length,
           });
           
-          // Default date range: last 6 months
-          const defaultEndDate = new Date();
-          const defaultStartDate = subMonths(defaultEndDate, 5);
+          // Prepare monthly data for chart
+          const newMonthlyData = [...monthlyData];
           
-          // Prepare all monthly data for filtering
-          const allData = prepareMonthlyData(invoices, subMonths(currentDate, 23), currentDate);
-          setAllMonthlyData(allData);
+          // Group by month and count
+          for (const invoice of invoices) {
+            const invDate = new Date(invoice.created_at);
+            const monthIndex = invDate.getMonth();
+            
+            // Only process last 6 months
+            if (monthIndex >= currentDate.getMonth() - 5 && 
+                invDate.getFullYear() === currentYear) {
+              const monthName = new Date(currentYear, monthIndex).toLocaleString('default', { month: 'short' });
+              const existingMonthIndex = newMonthlyData.findIndex(m => m.name === monthName);
+              
+              if (existingMonthIndex !== -1) {
+                if (invoice.invoice_type === 'sale') {
+                  newMonthlyData[existingMonthIndex].sales += 1;
+                } else if (invoice.invoice_type === 'supplier') {
+                  newMonthlyData[existingMonthIndex].supplier += 1;
+                }
+              }
+            }
+          }
           
-          // Set initial filtered view
-          const initialFiltered = prepareMonthlyData(invoices, defaultStartDate, defaultEndDate);
-          setMonthlyData(initialFiltered);
+          setMonthlyData(newMonthlyData);
         }
         
         // Get employee statistics
@@ -259,7 +194,7 @@ export const useReportData = (): ReportStats => {
     };
     
     fetchData();
-  }, [toast, prepareMonthlyData]);
+  }, [toast, monthlyData]);
 
   return {
     invoiceStats,
@@ -267,7 +202,6 @@ export const useReportData = (): ReportStats => {
     servicesStats,
     activityData,
     monthlyData,
-    loading,
-    filterDataByDateRange
+    loading
   };
 };
