@@ -59,7 +59,7 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
             <TableHead className="w-[30%]">File Name</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Upload Date</TableHead>
-            <TableHead>Sent To</TableHead>
+            <TableHead className="w-[25%]">Sent To</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -106,24 +106,9 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
               </TableCell>
               <TableCell>
-                {needsTruncation(invoice.sent_to_email || 'Not sent') ? (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="truncate max-w-[150px] inline-block">
-                          {invoice.sent_to_email || 'Not sent'}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent side="top">
-                        {invoice.sent_to_email || 'Not sent'}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ) : (
-                  <span className="truncate max-w-[150px] inline-block">
-                    {invoice.sent_to_email || 'Not sent'}
-                  </span>
-                )}
+                <span className="inline-block w-full overflow-visible break-words">
+                  {invoice.sent_to_email || 'Not sent'}
+                </span>
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end space-x-2">
