@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -9,10 +8,6 @@ import {
   FileDown,
   Users,
   UserCog,
-  Briefcase,
-  FileIcon,
-  ScrollText,
-  PackageIcon,
   Layers,
   LayoutGrid,
   Activity,
@@ -21,6 +16,7 @@ import {
   Clock,
   Link2,
   Sparkles,
+  ScrollText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -78,16 +74,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           icon: Clock,
         },
       ],
-    },
-    {
-      name: t('nav.contracts'),
-      path: '/contracts',
-      icon: Briefcase,
-    },
-    {
-      name: t('nav.documents'),
-      path: '/documents',
-      icon: FileIcon,
     },
     {
       name: t('nav.reports'),
