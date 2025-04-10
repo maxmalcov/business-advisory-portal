@@ -60,7 +60,6 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
             <TableHead>Type</TableHead>
             <TableHead>Upload Date</TableHead>
             <TableHead>Sent To</TableHead>
-            <TableHead>Sent At</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -125,11 +124,6 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
                     {invoice.sent_to_email || 'Not sent'}
                   </span>
                 )}
-              </TableCell>
-              <TableCell>
-                {invoice.sent_at 
-                  ? format(new Date(invoice.sent_at), 'MMM d, yyyy') 
-                  : 'Not sent'}
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end space-x-2">
