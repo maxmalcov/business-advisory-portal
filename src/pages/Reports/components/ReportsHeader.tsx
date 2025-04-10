@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface ReportsHeaderProps {
   activeTab: string;
@@ -15,12 +15,14 @@ const ReportsHeader: React.FC<ReportsHeaderProps> = ({ activeTab, setActiveTab }
     <div className="space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">{t('nav.reports')}</h1>
       
-      <TabsList className="mb-4">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="activity">Account Activity</TabsTrigger>
-        <TabsTrigger value="documents">Documents</TabsTrigger>
-        <TabsTrigger value="people">People</TabsTrigger>
-      </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="mb-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="activity">Account Activity</TabsTrigger>
+          <TabsTrigger value="documents">Documents</TabsTrigger>
+          <TabsTrigger value="people">People</TabsTrigger>
+        </TabsList>
+      </Tabs>
     </div>
   );
 };

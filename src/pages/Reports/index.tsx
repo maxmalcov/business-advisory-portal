@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { TabsContent } from '@/components/ui/tabs';
 import ReportsHeader from './components/ReportsHeader';
 import LoadingState from './components/LoadingState';
 import OverviewTab from './components/overview/OverviewTab';
@@ -31,31 +31,29 @@ const ReportsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <ReportsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
-        
-        <TabsContent value="overview" className="space-y-6">
-          <OverviewTab 
-            invoiceStats={invoiceStats}
-            employeeStats={employeeStats}
-            servicesStats={servicesStats}
-            activityData={activityData}
-            monthlyData={monthlyData}
-          />
-        </TabsContent>
-        
-        <TabsContent value="activity" className="space-y-4">
-          <ActivityTab activityData={activityData} />
-        </TabsContent>
-        
-        <TabsContent value="documents" className="space-y-4">
-          <DocumentsTab invoiceStats={invoiceStats} />
-        </TabsContent>
-        
-        <TabsContent value="people" className="space-y-4">
-          <PeopleTab employeeStats={employeeStats} />
-        </TabsContent>
-      </Tabs>
+      <ReportsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      <TabsContent value="overview" className="space-y-6">
+        <OverviewTab 
+          invoiceStats={invoiceStats}
+          employeeStats={employeeStats}
+          servicesStats={servicesStats}
+          activityData={activityData}
+          monthlyData={monthlyData}
+        />
+      </TabsContent>
+      
+      <TabsContent value="activity" className="space-y-4">
+        <ActivityTab activityData={activityData} />
+      </TabsContent>
+      
+      <TabsContent value="documents" className="space-y-4">
+        <DocumentsTab invoiceStats={invoiceStats} />
+      </TabsContent>
+      
+      <TabsContent value="people" className="space-y-4">
+        <PeopleTab employeeStats={employeeStats} />
+      </TabsContent>
     </div>
   );
 };
