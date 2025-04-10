@@ -49,7 +49,7 @@ const AdminActions: React.FC = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link to="/admin/services">
-                <Card className="h-full card-hover bg-gradient-to-br from-[#33C3F0] to-[#1EAEDB] text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.03] animate-fade-in">
+                <Card className="h-full card-hover bg-gradient-to-br from-[#5A8BB0] to-[#3A6B9E] text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.03] animate-fade-in">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center text-white">
                       <Sparkles className="mr-2 h-5 w-5 animate-pulse" />

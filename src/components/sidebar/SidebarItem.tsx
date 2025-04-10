@@ -46,7 +46,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           isItemActive(item) 
             ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
             : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
-          item.highlight && "bg-gradient-to-br from-[#33C3F0] to-[#1EAEDB] text-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 animate-fade-in"
+          item.highlight && "bg-gradient-to-br from-[#5A8BB0] to-[#3A6B9E] text-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 animate-fade-in"
         )}
         onClick={isMobile ? onClose : undefined}
       >
