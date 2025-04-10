@@ -5,7 +5,7 @@ import { employeesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 export function useEmployeeList() {
-  const [statusFilter, setStatusFilter] = useState<EmployeeStatus>('active');
+  const [statusFilter, setStatusFilter] = useState<EmployeeStatus | 'all'>('active');
   const [employees, setEmployees] = useState<EmployeeType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -21,10 +21,17 @@ export function useEmployeeList() {
       
       try {
         console.log(`Fetching employees with status filter: ${statusFilter}`);
-        // Query the database using the employeesTable helper
-        const { data, error } = await employeesTable()
-          .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule')
-          .eq('status', statusFilter);
+        
+        // Initialize query
+        let query = employeesTable()
+          .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule');
+          
+        // Only apply status filter if not 'all'
+        if (statusFilter !== 'all') {
+          query = query.eq('status', statusFilter);
+        }
+        
+        const { data, error } = await query;
           
         if (error) {
           throw error;
