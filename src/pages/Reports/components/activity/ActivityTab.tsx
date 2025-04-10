@@ -9,21 +9,24 @@ import {
 } from '@/components/ui/card';
 import { ActivityEvent } from '@/utils/activity';
 import ActivityTable from './ActivityTable';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ActivityTabProps {
   activityData: ActivityEvent[];
 }
 
 const ActivityTab: React.FC<ActivityTabProps> = ({ activityData }) => {
+  const isMobile = useIsMobile();
+
   return (
-    <Card>
+    <Card className={isMobile ? "overflow-hidden" : ""}>
       <CardHeader>
         <CardTitle>Recent Account Activity</CardTitle>
         <CardDescription>
           Recent events and changes to your account
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className={isMobile ? "px-0 sm:px-6" : ""}>
         <ActivityTable activityData={activityData} />
       </CardContent>
     </Card>

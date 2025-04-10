@@ -12,6 +12,8 @@ import {
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
 import SubscriptionActions from './SubscriptionActions';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Card, CardContent } from '@/components/ui/card';
 
 type SubscriptionTableProps = {
   subscriptions: Subscription[];
@@ -24,8 +26,54 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   onStatusChange,
   onEdit 
 }) => {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <div className="space-y-4">
+        {subscriptions.map((subscription) => (
+          <Card key={subscription.id} className="overflow-hidden">
+            <CardContent className="p-0">
+              <div className="p-4 border-b flex items-center space-x-2">
+                <SubscriptionTypeIcon type={subscription.type} />
+                <span className="font-medium">{subscription.name}</span>
+              </div>
+              <div className="p-4 space-y-3">
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <div className="text-muted-foreground">Type</div>
+                    <div>{subscription.type}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">User</div>
+                    <div>{subscription.userName}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Status</div>
+                    <div><StatusBadge status={subscription.status} /></div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">URL</div>
+                    <div className="truncate max-w-[150px]">{subscription.url}</div>
+                  </div>
+                </div>
+                <div className="pt-2 border-t flex justify-end">
+                  <SubscriptionActions 
+                    subscription={subscription}
+                    onStatusChange={onStatusChange}
+                    onEdit={onEdit}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border rounded-lg overflow-hidden overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>

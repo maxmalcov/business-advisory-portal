@@ -7,14 +7,16 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const StatsSummary: React.FC = () => {
   const { t } = useLanguage();
+  const isMobile = useIsMobile();
 
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">{t('admin.statistics')}</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div className={`grid grid-cols-1 ${isMobile ? 'gap-3' : 'sm:grid-cols-2 md:grid-cols-4 gap-4'}`}>
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">

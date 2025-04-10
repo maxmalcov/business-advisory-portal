@@ -18,13 +18,14 @@ import {
   Legend,
 } from 'recharts';
 import { MonthlyData } from '../../hooks/types';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MonthlyInvoiceChartProps {
   monthlyData: MonthlyData[];
 }
 
 const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }) => {
-  console.log('MonthlyInvoiceChart - received data:', monthlyData);
+  const isMobile = useIsMobile();
 
   // Create default data if no data is provided or if it's empty
   const displayData = monthlyData && monthlyData.length > 0 
@@ -38,7 +39,13 @@ const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }
         { name: 'Jun', sales: 3, supplier: 1 },
       ];
 
-  console.log('MonthlyInvoiceChart - display data:', displayData);
+  // Use abbreviated month names on mobile
+  const formattedData = isMobile 
+    ? displayData.map(item => ({
+        ...item,
+        name: item.name.substring(0, 3) // Use 3-letter abbreviation
+      }))
+    : displayData;
 
   return (
     <Card className="col-span-2">
@@ -48,26 +55,30 @@ const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }
           Number of invoices processed per month
         </CardDescription>
       </CardHeader>
-      <CardContent className="pl-2">
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={displayData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="sales" name="Sales Invoices" fill="#8884d8" />
-            <Bar dataKey="supplier" name="Supplier Invoices" fill="#82ca9d" />
-          </BarChart>
-        </ResponsiveContainer>
+      <CardContent className={`pl-2 ${isMobile ? 'pr-0' : ''}`}>
+        <div className={isMobile ? "overflow-x-auto -mx-2 px-2" : ""}>
+          <div style={{ width: isMobile ? '500px' : '100%', height: '300px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={formattedData}
+                margin={{
+                  top: 5,
+                  right: isMobile ? 10 : 30,
+                  left: isMobile ? 0 : 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="sales" name="Sales Invoices" fill="#8884d8" />
+                <Bar dataKey="supplier" name="Supplier Invoices" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
