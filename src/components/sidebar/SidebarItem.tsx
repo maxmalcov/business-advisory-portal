@@ -3,12 +3,20 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type SidebarItemProps = {
   item: {
     name: string;
     path: string;
     icon: React.ElementType;
+    highlight?: boolean;
+    tooltip?: string;
     children?: Array<{
       name: string;
       path: string;
@@ -29,22 +37,49 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const location = useLocation();
   const isMobile = useIsMobile();
 
+  const renderLink = () => {
+    const link = (
+      <Link
+        to={item.path}
+        className={cn(
+          "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
+          isItemActive(item) 
+            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
+            : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
+          item.highlight && "bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] text-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 animate-fade-in"
+        )}
+        onClick={isMobile ? onClose : undefined}
+      >
+        {item.highlight ? 
+          <item.icon className="h-4 w-4 mr-2 animate-pulse" /> : 
+          <item.icon className="h-4 w-4 mr-2" />
+        }
+        <span>{item.name}</span>
+      </Link>
+    );
+
+    if (item.tooltip && !isMobile) {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              {link}
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{item.tooltip}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return link;
+  };
+
   return (
     <li key={item.path}>
       {!item.children ? (
-        <Link
-          to={item.path}
-          className={cn(
-            "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
-            isItemActive(item) 
-              ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
-              : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-          )}
-          onClick={isMobile ? onClose : undefined}
-        >
-          <item.icon className="h-4 w-4 mr-2" />
-          <span>{item.name}</span>
-        </Link>
+        renderLink()
       ) : (
         <div className="mb-2">
           <Link

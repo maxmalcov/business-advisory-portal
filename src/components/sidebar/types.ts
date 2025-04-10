@@ -6,6 +6,8 @@ export type SidebarItem = {
   path: string;
   icon: React.ElementType;
   children?: SidebarItem[];
+  highlight?: boolean;
+  tooltip?: string;
 };
 
 export type SidebarProps = {

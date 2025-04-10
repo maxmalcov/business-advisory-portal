@@ -20,12 +20,19 @@ import {
   UserMinus,
   Clock,
   Link2,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import SidebarHeader from './sidebar/SidebarHeader';
 import SidebarNav from './sidebar/SidebarNav';
 import { SidebarItem, SidebarProps } from './sidebar/types';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
@@ -95,7 +102,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     {
       name: t('nav.additional_services'),
       path: '/services',
-      icon: PackageIcon,
+      icon: Sparkles,
+      highlight: true,
+      tooltip: 'Explore available services for your company',
     },
     {
       name: t('nav.subscriptions'),
@@ -128,7 +137,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     {
       name: t('nav.services'),
       path: '/admin/services',
-      icon: PackageIcon,
+      icon: Sparkles,
+      highlight: true,
+      tooltip: 'Manage and configure client services',
     },
     {
       name: t('nav.subscriptions'),
