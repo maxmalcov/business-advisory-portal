@@ -46,12 +46,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           isItemActive(item) 
             ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
             : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
-          item.highlight && "bg-gradient-to-br from-[#5A8BB0] to-[#3A6B9E] text-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 animate-fade-in"
+          item.highlight && "text-sidebar-accent-foreground font-medium hover:text-sidebar-accent-foreground"
         )}
         onClick={isMobile ? onClose : undefined}
       >
         {item.highlight ? 
-          <item.icon className="h-4 w-4 mr-2 animate-pulse" /> : 
+          <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-pulse" /> : 
           <item.icon className="h-4 w-4 mr-2" />
         }
         <span>{item.name}</span>
