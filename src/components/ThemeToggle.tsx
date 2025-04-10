@@ -30,10 +30,11 @@ export function ThemeToggleButton() {
   
   return (
     <Button
-      variant="ghost"
+      variant="outline"
       size="icon"
       onClick={toggleTheme}
       className="w-9 h-9 p-0 rounded-full"
+      aria-label="Toggle dark mode"
     >
       {theme === 'light' ? (
         <Sun className="h-[1.2rem] w-[1.2rem]" />

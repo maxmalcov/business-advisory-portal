@@ -31,11 +31,11 @@ const Header: React.FC = () => {
             </div>
           ) : isAuthenticated ? (
             <div className="flex items-center space-x-3">
-              <Link to="/profile" className="text-sm text-gray-600 hover:text-gray-900 flex items-center">
+              <Link to="/profile" className="text-sm text-foreground hover:text-foreground/90 flex items-center">
                 <User size={18} className="mr-1" />
                 {user?.name || user?.email || 'User'}
               </Link>
-              <Button variant="ghost" size="sm" onClick={logout} className="text-gray-600 hover:text-gray-900">
+              <Button variant="ghost" size="sm" onClick={logout} className="text-foreground hover:text-foreground/90">
                 <LogOut size={18} className="mr-1" />
                 {t('app.logout')}
               </Button>
