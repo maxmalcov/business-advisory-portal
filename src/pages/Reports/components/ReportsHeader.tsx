@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface ReportsHeaderProps {
   activeTab: string;

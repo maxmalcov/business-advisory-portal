@@ -28,28 +28,6 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
   servicesPieData,
   colors,
 }) => {
-  const renderPieChart = (data: { name: string; value: number }[]) => (
-    <ResponsiveContainer width="100%" height={200}>
-      <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          outerRadius={80}
-          fill="#8884d8"
-          dataKey="value"
-          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-          ))}
-        </Pie>
-        <Tooltip />
-      </PieChart>
-    </ResponsiveContainer>
-  );
-
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <Card>
@@ -60,7 +38,25 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
-          {renderPieChart(invoicePieData)}
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={invoicePieData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              >
+                {invoicePieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
       
@@ -72,7 +68,25 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
-          {renderPieChart(employeePieData)}
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={employeePieData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              >
+                {employeePieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
       
@@ -84,7 +98,25 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
-          {renderPieChart(servicesPieData)}
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={servicesPieData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              >
+                {servicesPieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>

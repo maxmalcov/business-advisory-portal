@@ -16,10 +16,10 @@ interface ActivityTabProps {
 
 const ActivityTab: React.FC<ActivityTabProps> = ({ activityData }) => {
   return (
-    <Card className="shadow-sm">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-2xl">Recent Account Activity</CardTitle>
-        <CardDescription className="text-base">
+        <CardTitle>Recent Account Activity</CardTitle>
+        <CardDescription>
           Recent events and changes to your account
         </CardDescription>
       </CardHeader>
