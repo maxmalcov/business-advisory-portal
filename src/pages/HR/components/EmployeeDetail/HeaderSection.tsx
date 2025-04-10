@@ -38,7 +38,9 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ employee }) => {
           <span className="font-medium">Active</span>
         </div>
       ) : (
-        <Badge variant="destructive">Terminated</Badge>
+        <Badge variant="outline" className="px-2 py-0.5 bg-[#ea384c] border-[#ea384c] text-white">
+          Terminated
+        </Badge>
       )}
     </div>
   );
