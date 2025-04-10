@@ -11,7 +11,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ onClose }) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="px-4 py-6 mb-8">
+    <div className="px-4 py-2 mb-6">
       <div className="flex items-center justify-between">
         {isMobile && (
           <Button variant="ghost" size="sm" onClick={onClose} className="text-sidebar-foreground">
@@ -24,4 +24,3 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ onClose }) => {
 };
 
 export default SidebarHeader;
-
