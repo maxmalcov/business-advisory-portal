@@ -17,13 +17,10 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
+import { MonthlyData } from '../../hooks/types';
 
 interface MonthlyInvoiceChartProps {
-  monthlyData: {
-    name: string;
-    sales: number;
-    supplier: number;
-  }[];
+  monthlyData: MonthlyData[];
 }
 
 const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }) => {

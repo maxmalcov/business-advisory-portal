@@ -4,32 +4,14 @@ import StatsCards from './StatsCards';
 import MonthlyInvoiceChart from './MonthlyInvoiceChart';
 import DistributionCharts from './DistributionCharts';
 import { ActivityEvent } from '@/utils/activity';
+import { InvoiceStats, EmployeeStats, ServicesStats, MonthlyData } from '../../hooks/types';
 
 interface OverviewTabProps {
-  invoiceStats: {
-    total: number;
-    sales: number;
-    supplier: number;
-    thisMonth: number;
-    lastMonth: number;
-  };
-  employeeStats: {
-    total: number;
-    active: number;
-    terminated: number;
-    recentlyAdded: number;
-  };
-  servicesStats: {
-    completed: number;
-    pending: number;
-    requested: number;
-  };
+  invoiceStats: InvoiceStats;
+  employeeStats: EmployeeStats;
+  servicesStats: ServicesStats;
   activityData: ActivityEvent[];
-  monthlyData: {
-    name: string;
-    sales: number;
-    supplier: number;
-  }[];
+  monthlyData: MonthlyData[];
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({
