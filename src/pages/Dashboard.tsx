@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.quick_actions')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Link to="/invoices/create">
+          <Link to="/invoices?tab=upload">
             <Card className="h-full card-hover">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
