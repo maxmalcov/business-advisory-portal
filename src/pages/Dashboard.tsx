@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileUp, FileDown, Users, FileText, LayoutDashboard, Bell, FileIcon, Package } from 'lucide-react';
+import RecentActivity from '@/components/dashboard/RecentActivity';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -96,52 +97,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">{t('dashboard.recent_activity')}</h2>
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4">
-                <div className="bg-muted p-2 rounded-full">
-                  <FileText className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-medium">Invoice uploaded</p>
-                  <p className="text-sm text-muted-foreground">Sales invoice #12345 was uploaded</p>
-                  <p className="text-xs text-muted-foreground">2 hours ago</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-muted p-2 rounded-full">
-                  <Bell className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-medium">Document processed</p>
-                  <p className="text-sm text-muted-foreground">Monthly tax report was processed</p>
-                  <p className="text-xs text-muted-foreground">1 day ago</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-muted p-2 rounded-full">
-                  <FileIcon className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-medium">New document available</p>
-                  <p className="text-sm text-muted-foreground">Quarterly financial statement is available</p>
-                  <p className="text-xs text-muted-foreground">3 days ago</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Link to="/reports">
-              <Button variant="outline" className="w-full">View All Activity</Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </div>
+      <RecentActivity />
 
       {/* Stats Summary */}
       <div>

@@ -49,7 +49,6 @@ const ActivityIcon: React.FC<{ type: string }> = ({ type }) => {
 
 const RecentActivity: React.FC = () => {
   const { t } = useLanguage();
-  // For admin, we'll show all activities to demonstrate the difference
   const recentActivities = getMockRecentActivity();
 
   return (
@@ -58,7 +57,7 @@ const RecentActivity: React.FC = () => {
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
-            {recentActivities.slice(0, 5).map((activity) => (
+            {recentActivities.slice(0, 3).map((activity) => (
               <div key={activity.id} className="flex items-start space-x-4">
                 <ActivityIcon type={activity.type} />
                 <div>
@@ -71,7 +70,7 @@ const RecentActivity: React.FC = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Link to="/admin/logs">
+          <Link to="/reports">
             <Button variant="outline" className="w-full">View All Activity</Button>
           </Link>
         </CardFooter>
