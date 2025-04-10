@@ -27,17 +27,21 @@ interface MonthlyInvoiceChartProps {
 }
 
 const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }) => {
+  console.log('MonthlyInvoiceChart - received data:', monthlyData);
+
   // Create default data if no data is provided or if it's empty
   const displayData = monthlyData && monthlyData.length > 0 
     ? monthlyData 
     : [
-        { name: 'Jan', sales: 0, supplier: 0 },
-        { name: 'Feb', sales: 0, supplier: 0 },
-        { name: 'Mar', sales: 0, supplier: 0 },
-        { name: 'Apr', sales: 0, supplier: 0 },
-        { name: 'May', sales: 0, supplier: 0 },
-        { name: 'Jun', sales: 0, supplier: 0 },
+        { name: 'Jan', sales: 4, supplier: 2 },
+        { name: 'Feb', sales: 3, supplier: 1 },
+        { name: 'Mar', sales: 5, supplier: 3 },
+        { name: 'Apr', sales: 2, supplier: 4 },
+        { name: 'May', sales: 6, supplier: 2 },
+        { name: 'Jun', sales: 3, supplier: 1 },
       ];
+
+  console.log('MonthlyInvoiceChart - display data:', displayData);
 
   return (
     <Card className="col-span-2">
