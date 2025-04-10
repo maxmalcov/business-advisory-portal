@@ -17,7 +17,8 @@ const ReportsPage: React.FC = () => {
     servicesStats, 
     activityData, 
     monthlyData, 
-    loading 
+    loading,
+    filterDataByDateRange
   } = useReportData();
 
   if (loading) {
@@ -42,6 +43,7 @@ const ReportsPage: React.FC = () => {
               servicesStats={servicesStats}
               activityData={activityData}
               monthlyData={monthlyData}
+              filterDataByDateRange={filterDataByDateRange}
             />
           </TabsContent>
         )}

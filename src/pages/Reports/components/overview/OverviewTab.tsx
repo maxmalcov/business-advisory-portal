@@ -29,7 +29,9 @@ interface OverviewTabProps {
     name: string;
     sales: number;
     supplier: number;
+    date?: Date;
   }[];
+  filterDataByDateRange?: (startDate: Date, endDate: Date) => void;
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({
@@ -38,6 +40,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   servicesStats,
   activityData,
   monthlyData,
+  filterDataByDateRange
 }) => {
   // Colors for charts
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe'];
@@ -58,6 +61,12 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     { name: 'Pending', value: servicesStats.pending },
   ];
 
+  const handleDateRangeChange = (startDate: Date, endDate: Date) => {
+    if (filterDataByDateRange) {
+      filterDataByDateRange(startDate, endDate);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <StatsCards 
@@ -67,7 +76,10 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         activityData={activityData}
       />
       
-      <MonthlyInvoiceChart monthlyData={monthlyData} />
+      <MonthlyInvoiceChart 
+        monthlyData={monthlyData} 
+        onDateRangeChange={handleDateRangeChange}
+      />
       
       <DistributionCharts 
         invoicePieData={invoicePieData}
