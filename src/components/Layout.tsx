@@ -18,32 +18,30 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="flex flex-1 relative">
-        {isAuthenticated && (
-          <>
-            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            {isMobile && (
-              <Button
-                variant="outline"
-                size="icon"
-                className="fixed left-4 top-[4.5rem] z-30"
-                onClick={toggleSidebar}
-              >
-                <Menu size={20} />
-              </Button>
-            )}
-          </>
-        )}
-        
-        <main className={`flex-1 transition-all duration-300 ${isAuthenticated ? (isMobile ? 'pl-4' : 'pl-[17rem]') : ''} pr-4`}>
-          <div className="container mx-auto py-6">
-            <Outlet />
-          </div>
-        </main>
-      </div>
+      {isAuthenticated && (
+        <>
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          {isMobile && (
+            <Button
+              variant="outline"
+              size="icon"
+              className="fixed left-4 top-[4.5rem] z-30"
+              onClick={toggleSidebar}
+            >
+              <Menu size={20} />
+            </Button>
+          )}
+        </>
+      )}
+      
+      <main className={`pt-4 transition-all duration-300 ${isAuthenticated ? (isMobile ? 'pl-4' : 'pl-[17rem]') : ''} pr-4`}>
+        <div className="container mx-auto py-6">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 };
