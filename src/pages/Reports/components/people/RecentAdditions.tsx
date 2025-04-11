@@ -18,19 +18,19 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({ recentlyAdded }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Additions</CardTitle>
+        <CardTitle>Recent User Registrations</CardTitle>
         <CardDescription>
-          Employees added in the last 30 days
+          Users registered in the last 30 days
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="text-center py-4">
           <div className="text-5xl font-bold">{recentlyAdded}</div>
-          <p className="text-sm text-muted-foreground mt-2">New employees</p>
+          <p className="text-sm text-muted-foreground mt-2">New users</p>
         </div>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button variant="outline">Manage Employees</Button>
+        <Button variant="outline">Manage Users</Button>
       </CardFooter>
     </Card>
   );

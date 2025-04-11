@@ -23,9 +23,9 @@ const PeopleTab: React.FC<PeopleTabProps> = ({ employeeStats }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Employee Summary</CardTitle>
+        <CardTitle>User Summary</CardTitle>
         <CardDescription>
-          Overview of your employee information
+          Overview of registered users in the system
         </CardDescription>
       </CardHeader>
       <CardContent>
