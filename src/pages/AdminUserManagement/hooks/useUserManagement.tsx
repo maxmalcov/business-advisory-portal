@@ -16,7 +16,8 @@ export const useUserManagement = () => {
     isLoading, 
     searchQuery, 
     setSearchQuery,
-    refreshUsers
+    refreshUsers,
+    userStats
   } = useFetchUsers();
   
   // Maintain a local copy of users for status toggling
@@ -60,6 +61,7 @@ export const useUserManagement = () => {
     isAddingUser,
     showConfirmDelete,
     userToDelete,
+    userStats,
     handleEditUser,
     handleUpdateUser,
     handleSaveUser,

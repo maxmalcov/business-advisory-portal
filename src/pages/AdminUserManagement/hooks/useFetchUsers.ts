@@ -11,6 +11,11 @@ export const useFetchUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [userStats, setUserStats] = useState({
+    total: 0,
+    active: 0,
+    recentlyAdded: 0
+  });
 
   // Fetch users from profiles table
   const fetchUsers = async () => {
@@ -58,11 +63,35 @@ export const useFetchUsers = () => {
           };
         });
         
+        // Calculate user statistics
+        const activeUsers = transformedUsers.filter(user => user.isActive);
+        
+        // Calculate recently added users (within the last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const recentlyAddedUsers = profilesData.filter(profile => {
+          const createdAt = new Date(profile.created_at);
+          return createdAt >= thirtyDaysAgo;
+        });
+        
+        // Update the stats state
+        setUserStats({
+          total: transformedUsers.length,
+          active: activeUsers.length,
+          recentlyAdded: recentlyAddedUsers.length
+        });
+        
         console.log("Transformed users:", transformedUsers);
         setUsers(transformedUsers);
       } else {
         console.log("No profiles data returned from Supabase");
         setUsers([]);
+        setUserStats({
+          total: 0,
+          active: 0,
+          recentlyAdded: 0
+        });
       }
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -92,6 +121,7 @@ export const useFetchUsers = () => {
     isLoading,
     searchQuery,
     setSearchQuery,
-    refreshUsers: fetchUsers
+    refreshUsers: fetchUsers,
+    userStats
   };
 };
