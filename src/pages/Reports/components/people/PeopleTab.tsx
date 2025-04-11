@@ -1,40 +1,26 @@
 
 import React from 'react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from '@/components/ui/card';
 import EmployeeStats from './EmployeeStats';
 import RecentAdditions from './RecentAdditions';
+import { EmployeeStats as EmployeeStatsType } from '../../hooks/types';
 
 interface PeopleTabProps {
-  employeeStats: {
-    total: number;
-    active: number;
-    terminated: number;
-    recentlyAdded: number;
-  };
+  employeeStats: EmployeeStatsType;
 }
 
 const PeopleTab: React.FC<PeopleTabProps> = ({ employeeStats }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Employee Summary</CardTitle>
-        <CardDescription>
-          Overview of your employee information
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <EmployeeStats employeeStats={employeeStats} />
-          <RecentAdditions recentlyAdded={employeeStats.recentlyAdded} />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-semibold mb-4">User Statistics</h2>
+        <EmployeeStats employeeStats={employeeStats} />
+      </div>
+      
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Recently Added Users</h2>
+        <RecentAdditions />
+      </div>
+    </div>
   );
 };
 
