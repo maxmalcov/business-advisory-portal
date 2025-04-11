@@ -1,81 +1,62 @@
 
-import { ActivityEvent, ActivityEventType } from './types';
+import { ActivityEvent } from './types';
 
 export const getMockRecentActivity = (): ActivityEvent[] => {
   const now = new Date();
-  const oneDayAgo = new Date(now);
-  oneDayAgo.setDate(now.getDate() - 1);
-  
-  const twoDaysAgo = new Date(now);
-  twoDaysAgo.setDate(now.getDate() - 2);
-  
-  const threeDaysAgo = new Date(now);
-  threeDaysAgo.setDate(now.getDate() - 3);
-  
-  const oneWeekAgo = new Date(now);
-  oneWeekAgo.setDate(now.getDate() - 7);
-  
-  const twoWeeksAgo = new Date(now);
-  twoWeeksAgo.setDate(now.getDate() - 14);
-  
-  const mockActivity: ActivityEvent[] = [
+  const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+  const threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+  const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+  const fourDaysAgo = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000);
+
+  return [
     {
-      id: 'mock-1',
+      id: '1',
       type: 'employee-added',
-      timestamp: oneDayAgo,
+      timestamp: oneHourAgo,
       title: 'New employee added',
-      description: 'Employee added – John Smith',
-      metadata: { employeeId: 'emp-123' }
+      description: 'John Smith was added as a new employee.',
     },
     {
-      id: 'mock-2',
+      id: '2',
       type: 'invoice-uploaded',
-      timestamp: twoDaysAgo,
+      timestamp: threeHoursAgo,
       title: 'Sale invoice uploaded',
-      description: 'Sale invoice uploaded – "INVOICE#902635.pdf"',
-      metadata: { invoiceId: 'inv-456' }
+      description: 'A sale invoice was uploaded.',
     },
     {
-      id: 'mock-3',
-      type: 'supplier-invoice-uploaded',
-      timestamp: threeDaysAgo,
-      title: 'Supplier invoice uploaded',
-      description: 'Supplier invoice uploaded – "Referral_system_and_updates.pdf"',
-      metadata: { invoiceId: 'inv-789' }
-    },
-    {
-      id: 'mock-4',
-      type: 'service-completed',
-      timestamp: oneWeekAgo,
-      title: 'Service completed',
-      description: 'Service completed – "Monthly Accounting Report"',
-      metadata: { serviceId: 'srv-012', serviceName: 'Monthly Accounting Report' }
-    },
-    {
-      id: 'mock-5',
+      id: '3',
       type: 'employee-terminated',
-      timestamp: twoWeeksAgo,
+      timestamp: oneDayAgo,
       title: 'Employee terminated',
-      description: 'Employee terminated – Petru Hincu',
-      metadata: { employeeId: 'emp-345' }
+      description: 'Jane Doe\'s employment was terminated.',
     },
     {
-      id: 'mock-6',
+      id: '4',
       type: 'supplier-invoice-uploaded',
-      timestamp: twoWeeksAgo,
+      timestamp: twoDaysAgo,
       title: 'Supplier invoice uploaded',
-      description: 'Supplier invoice uploaded – "GOLDMEDIA SRL.pdf"',
-      metadata: { invoiceId: 'inv-678' }
+      description: 'A supplier invoice was uploaded.',
     },
     {
-      id: 'mock-7', 
-      type: 'invoice-uploaded',
-      timestamp: twoWeeksAgo,
-      title: 'Sale invoice uploaded',
-      description: 'Sale invoice uploaded – "Referral_system_and_updates_with_very_long_filename_that_exceeds_fifty_characters.pdf"',
-      metadata: { invoiceId: 'inv-910' }
+      id: '5',
+      type: 'service-completed',
+      timestamp: fourDaysAgo,
+      title: 'Service completed',
+      description: 'Service "Payroll Setup" has been completed.',
+      metadata: {
+        serviceName: 'Payroll Setup'
+      }
+    },
+    {
+      id: '6',
+      type: 'subscription-activated',
+      timestamp: fourDaysAgo,
+      title: 'Subscription activated',
+      description: 'Subscription "Premium Plan" has been activated.',
+      metadata: {
+        subscriptionName: 'Premium Plan'
+      }
     }
   ];
-  
-  return mockActivity;
 };

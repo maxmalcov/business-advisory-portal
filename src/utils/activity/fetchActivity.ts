@@ -29,7 +29,7 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
           type: 'employee-added',
           timestamp: createdDate,
           title: 'New employee added',
-          description: `Employee added – ${employee.full_name}`,
+          description: `${employee.full_name} was added as a new employee.`,
           metadata: { employeeId: employee.id }
         });
         
@@ -40,7 +40,7 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
             type: 'employee-terminated',
             timestamp: new Date(employee.end_date),
             title: 'Employee terminated',
-            description: `Employee terminated – ${employee.full_name}`,
+            description: `${employee.full_name}'s employment was terminated.`,
             metadata: { employeeId: employee.id }
           });
         }
@@ -60,14 +60,13 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
       invoices.forEach(invoice => {
         const type = invoice.invoice_type === 'sale' ? 'invoice-uploaded' : 'supplier-invoice-uploaded';
         const title = invoice.invoice_type === 'sale' ? 'Sale invoice uploaded' : 'Supplier invoice uploaded';
-        const typePrefix = invoice.invoice_type === 'sale' ? 'Sale invoice uploaded' : 'Supplier invoice uploaded';
         
         activities.push({
           id: `invoice-${invoice.id}`,
           type: type as ActivityEventType,
           timestamp: new Date(invoice.created_at),
           title: title,
-          description: `${typePrefix} – "${invoice.file_name}"`,
+          description: `A ${invoice.invoice_type} invoice "${invoice.file_name}" was uploaded.`,
           metadata: { invoiceId: invoice.id }
         });
       });
@@ -90,7 +89,7 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
           type: 'service-completed',
           timestamp: new Date(service.updated_at),
           title: 'Service completed',
-          description: `Service completed – "${service.service_name}"`,
+          description: `Service "${service.service_name}" has been completed.`,
           metadata: { serviceId: service.id, serviceName: service.service_name }
         });
       });

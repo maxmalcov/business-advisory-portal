@@ -43,21 +43,19 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
   
   // Function to add tooltips to file names in description text
   const formatDescription = (description: string) => {
-    // Check if the description contains a dash with quoted content after it (new format)
-    const dashMatch = description.match(/– "([^"]+)"/);
+    // Check if the description contains quotes (likely indicating a file name)
+    const fileNameMatch = description.match(/"([^"]+)"/);
     
-    if (dashMatch && dashMatch[1]) {
-      const fileName = dashMatch[1];
+    if (fileNameMatch && fileNameMatch[1]) {
+      const fileName = fileNameMatch[1];
       
       if (needsTruncation(fileName)) {
         const truncatedName = truncateFileName(fileName);
         const parts = description.split(`"${fileName}"`);
-        const prefix = parts[0];
-        const suffix = parts[1] || '';
         
         return (
           <>
-            {prefix}
+            {parts[0]}
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -68,7 +66,7 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            {suffix}
+            {parts[1]}
           </>
         );
       }
