@@ -4,7 +4,6 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { User } from './types';
-import { format, startOfMonth, sub } from 'date-fns';
 
 export const useFetchUsers = () => {
   const { toast } = useToast();
@@ -15,9 +14,7 @@ export const useFetchUsers = () => {
   const [userStats, setUserStats] = useState({
     total: 0,
     active: 0,
-    recentlyAdded: 0,
-    thisMonth: 0,
-    registrationData: []
+    recentlyAdded: 0
   });
 
   // Fetch users from profiles table
@@ -78,55 +75,11 @@ export const useFetchUsers = () => {
           return createdAt >= thirtyDaysAgo;
         });
         
-        // Calculate users added this month
-        const firstDayOfMonth = startOfMonth(new Date());
-        const thisMonthUsers = profilesData.filter(profile => {
-          const createdAt = new Date(profile.created_at);
-          return createdAt >= firstDayOfMonth;
-        });
-        
-        // Generate data for the registration growth chart
-        // Get data for the last 30 days
-        const registrationData = [];
-        const today = new Date();
-        
-        // Create a map to count users registered on each date
-        const dateCountMap = new Map();
-        
-        // Initialize map with zeros for the last 30 days
-        for (let i = 29; i >= 0; i--) {
-          const date = sub(today, { days: i });
-          const dateStr = format(date, 'yyyy-MM-dd');
-          dateCountMap.set(dateStr, 0);
-        }
-        
-        // Count registrations for each date
-        profilesData.forEach(profile => {
-          const createdAt = new Date(profile.created_at);
-          // Only consider if within the last 30 days
-          if (createdAt >= thirtyDaysAgo) {
-            const dateStr = format(createdAt, 'yyyy-MM-dd');
-            if (dateCountMap.has(dateStr)) {
-              dateCountMap.set(dateStr, dateCountMap.get(dateStr) + 1);
-            }
-          }
-        });
-        
-        // Convert the map to array for the chart
-        dateCountMap.forEach((count, date) => {
-          registrationData.push({ date, count });
-        });
-        
-        // Sort by date ascending
-        registrationData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        
         // Update the stats state
         setUserStats({
           total: transformedUsers.length,
           active: activeUsers.length,
-          recentlyAdded: recentlyAddedUsers.length,
-          thisMonth: thisMonthUsers.length,
-          registrationData
+          recentlyAdded: recentlyAddedUsers.length
         });
         
         console.log("Transformed users:", transformedUsers);
@@ -137,9 +90,7 @@ export const useFetchUsers = () => {
         setUserStats({
           total: 0,
           active: 0,
-          recentlyAdded: 0,
-          thisMonth: 0,
-          registrationData: []
+          recentlyAdded: 0
         });
       }
     } catch (error) {
