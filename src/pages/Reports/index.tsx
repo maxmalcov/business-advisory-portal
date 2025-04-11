@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { TabsContent } from '@/components/ui/tabs';
 import ReportsHeader from './components/ReportsHeader';
 import LoadingState from './components/LoadingState';
 import OverviewTab from './components/overview/OverviewTab';
@@ -33,29 +33,37 @@ const ReportsPage: React.FC = () => {
     <div className="space-y-6">
       <ReportsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsContent value="overview" className="space-y-6">
-          <OverviewTab 
-            invoiceStats={invoiceStats}
-            employeeStats={employeeStats}
-            servicesStats={servicesStats}
-            activityData={activityData}
-            monthlyData={monthlyData}
-          />
-        </TabsContent>
+      <div>
+        {activeTab === 'overview' && (
+          <TabsContent value="overview" className="space-y-6" forceMount={true}>
+            <OverviewTab 
+              invoiceStats={invoiceStats}
+              employeeStats={employeeStats}
+              servicesStats={servicesStats}
+              activityData={activityData}
+              monthlyData={monthlyData}
+            />
+          </TabsContent>
+        )}
         
-        <TabsContent value="activity" className="space-y-4">
-          <ActivityTab activityData={activityData} />
-        </TabsContent>
+        {activeTab === 'activity' && (
+          <TabsContent value="activity" className="space-y-4" forceMount={true}>
+            <ActivityTab activityData={activityData} />
+          </TabsContent>
+        )}
         
-        <TabsContent value="documents" className="space-y-4">
-          <DocumentsTab invoiceStats={invoiceStats} />
-        </TabsContent>
+        {activeTab === 'documents' && (
+          <TabsContent value="documents" className="space-y-4" forceMount={true}>
+            <DocumentsTab invoiceStats={invoiceStats} />
+          </TabsContent>
+        )}
         
-        <TabsContent value="people" className="space-y-4">
-          <PeopleTab employeeStats={employeeStats} />
-        </TabsContent>
-      </Tabs>
+        {activeTab === 'people' && (
+          <TabsContent value="people" className="space-y-4" forceMount={true}>
+            <PeopleTab employeeStats={employeeStats} />
+          </TabsContent>
+        )}
+      </div>
     </div>
   );
 };
