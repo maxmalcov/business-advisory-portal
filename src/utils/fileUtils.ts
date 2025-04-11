@@ -45,3 +45,23 @@ export const getFilePublicUrl = (
 export const getFileExtension = (filename: string): string => {
   return filename.split('.').pop() || '';
 };
+
+/**
+ * Truncates a file name if it exceeds the specified length
+ * @param fileName Name of the file
+ * @param maxLength Maximum length before truncation (default: 50)
+ * @returns Truncated file name with ellipsis
+ */
+export const truncateFileName = (fileName: string, maxLength: number = 50): string => {
+  return fileName.length > maxLength ? `${fileName.substring(0, maxLength - 3)}...` : fileName;
+};
+
+/**
+ * Checks if a file name needs truncation
+ * @param fileName Name of the file
+ * @param maxLength Maximum length before truncation (default: 50)
+ * @returns Boolean indicating if truncation is needed
+ */
+export const needsTruncation = (fileName: string, maxLength: number = 50): boolean => {
+  return fileName.length > maxLength;
+};

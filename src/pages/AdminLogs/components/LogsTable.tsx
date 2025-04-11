@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
 
 interface LogsTableProps {
   logs: LogEntry[];
@@ -31,17 +32,7 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
     const date = new Date(dateString);
     return date.toLocaleString();
   };
-
-  // Function to truncate text longer than 50 characters
-  const truncateText = (text: string): string => {
-    return text.length > 50 ? `${text.substring(0, 47)}...` : text;
-  };
   
-  // Function to check if text needs truncation
-  const needsTruncation = (text: string): boolean => {
-    return text.length > 50;
-  };
-
   return (
     <Card>
       <CardContent className="p-0">
@@ -71,7 +62,7 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span className="inline-block max-w-[250px] truncate">
-                            {truncateText(log.description)}
+                            {truncateFileName(log.description)}
                           </span>
                         </TooltipTrigger>
                         <TooltipContent side="top" className="max-w-[400px]">

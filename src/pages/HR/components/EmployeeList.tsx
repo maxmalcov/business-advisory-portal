@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import EmployeeDetailDialog from './EmployeeDetailDialog';
 import { Eye } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -116,7 +117,22 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                     className="cursor-pointer transition-colors hover:bg-muted/50"
                     onClick={() => handleEmployeeClick(employee)}
                   >
-                    <TableCell className="font-medium">{employee.fullName}</TableCell>
+                    <TableCell className="font-medium">
+                      {needsTruncation(employee.fullName) ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span>{truncateFileName(employee.fullName)}</span>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              {employee.fullName}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        employee.fullName
+                      )}
+                    </TableCell>
                     <TableCell>{employee.position}</TableCell>
                     <TableCell>
                       <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
@@ -164,4 +180,3 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 };
 
 export default EmployeeList;
-

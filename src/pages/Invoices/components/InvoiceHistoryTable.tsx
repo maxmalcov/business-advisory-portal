@@ -19,6 +19,7 @@ import {
   TooltipTrigger 
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
 
 interface InvoiceHistoryTableProps {
   isLoading: boolean;
@@ -43,16 +44,6 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
       </div>
     );
   }
-
-  // Function to truncate filenames longer than 50 characters
-  const truncateFileName = (fileName: string): string => {
-    return fileName.length > 50 ? `${fileName.substring(0, 47)}...` : fileName;
-  };
-  
-  // Function to check if text needs truncation
-  const needsTruncation = (text: string): boolean => {
-    return text.length > 50;
-  };
 
   // Render mobile card view for invoices
   if (isMobile) {

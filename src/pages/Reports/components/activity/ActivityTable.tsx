@@ -14,6 +14,13 @@ import {
   formatTimestamp 
 } from '@/utils/activity';
 import ActivityIcon from './ActivityIcon';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
 
 interface ActivityTableProps {
   activityData: ActivityEvent[];
@@ -33,6 +40,40 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
   if (activityData.length === 0) {
     return <EmptyState />;
   }
+  
+  // Function to add tooltips to file names in description text
+  const formatDescription = (description: string) => {
+    // Check if the description contains quotes (likely indicating a file name)
+    const fileNameMatch = description.match(/"([^"]+)"/);
+    
+    if (fileNameMatch && fileNameMatch[1]) {
+      const fileName = fileNameMatch[1];
+      
+      if (needsTruncation(fileName)) {
+        const truncatedName = truncateFileName(fileName);
+        const parts = description.split(`"${fileName}"`);
+        
+        return (
+          <>
+            {parts[0]}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="font-medium">"{truncatedName}"</span>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[400px]">
+                  {fileName}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            {parts[1]}
+          </>
+        );
+      }
+    }
+    
+    return description;
+  };
   
   return (
     <Table>
@@ -54,7 +95,7 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
                 {activity.title}
               </div>
             </TableCell>
-            <TableCell>{activity.description}</TableCell>
+            <TableCell>{formatDescription(activity.description)}</TableCell>
             <TableCell>{formatTimestamp(activity.timestamp)}</TableCell>
           </TableRow>
         ))}

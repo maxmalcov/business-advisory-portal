@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
 
 interface Invoice {
   id: string;
@@ -48,16 +49,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices }) => {
       default:
         return null;
     }
-  };
-
-  // Function to truncate filenames longer than 50 characters
-  const truncateFileName = (fileName: string): string => {
-    return fileName.length > 50 ? `${fileName.substring(0, 47)}...` : fileName;
-  };
-
-  // Function to check if text needs truncation
-  const needsTruncation = (text: string): boolean => {
-    return text.length > 50;
   };
 
   return (

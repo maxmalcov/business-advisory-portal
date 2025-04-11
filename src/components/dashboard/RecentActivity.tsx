@@ -29,6 +29,13 @@ import {
 } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
 
 const iconComponents = {
   Users,
@@ -91,6 +98,40 @@ const RecentActivity: React.FC = () => {
     fetchActivities();
   }, [toast]);
 
+  // Function to format the description with tooltips for long file names
+  const formatDescription = (description: string) => {
+    // Check if the description contains quotes (likely indicating a file name)
+    const fileNameMatch = description.match(/"([^"]+)"/);
+    
+    if (fileNameMatch && fileNameMatch[1]) {
+      const fileName = fileNameMatch[1];
+      
+      if (needsTruncation(fileName)) {
+        const truncatedName = truncateFileName(fileName);
+        const parts = description.split(`"${fileName}"`);
+        
+        return (
+          <>
+            {parts[0]}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="font-medium">"{truncatedName}"</span>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[400px]">
+                  {fileName}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            {parts[1]}
+          </>
+        );
+      }
+    }
+    
+    return description;
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">{t('dashboard.recent_activity')}</h2>
@@ -110,7 +151,7 @@ const RecentActivity: React.FC = () => {
                   <ActivityIcon type={activity.type} />
                   <div>
                     <p className="font-medium">{activity.title}</p>
-                    <p className="text-sm text-muted-foreground">{activity.description}</p>
+                    <p className="text-sm text-muted-foreground">{formatDescription(activity.description)}</p>
                     <p className="text-xs text-muted-foreground">{formatTimestamp(activity.timestamp)}</p>
                   </div>
                 </div>
