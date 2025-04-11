@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -12,7 +11,7 @@ import {
   CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileUp, FileDown, UsersRound, FileText, LayoutDashboard, Bell, FileIcon, Package, Sparkles } from 'lucide-react';
+import { FileUp, FileDown, Users, FileText, LayoutDashboard, Bell, FileIcon, Package, Sparkles } from 'lucide-react';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 
 const Dashboard: React.FC = () => {
@@ -70,7 +69,7 @@ const Dashboard: React.FC = () => {
             <Card className="h-full card-hover">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
-                  <UsersRound className="mr-2 h-5 w-5" />
+                  <Users className="mr-2 h-5 w-5" />
                   New Employee
                 </CardTitle>
               </CardHeader>
@@ -128,7 +127,7 @@ const Dashboard: React.FC = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Users
+                Active Employees
               </CardTitle>
             </CardHeader>
             <CardContent>

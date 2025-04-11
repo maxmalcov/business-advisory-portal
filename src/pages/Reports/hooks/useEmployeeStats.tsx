@@ -16,31 +16,31 @@ export const useEmployeeStats = () => {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const fetchUserStats = async () => {
+    const fetchEmployeeStats = async () => {
       try {
-        // Note: In a real application, this would query 'users' or 'profiles' instead of 'employees'
-        const { data: users, error: userError } = await supabase
-          .from('profiles')
+        const { data: employees, error: employeeError } = await supabase
+          .from('employees')
           .select('*');
         
-        if (userError) throw userError;
+        if (employeeError) throw employeeError;
         
-        if (users) {
-          const active = users.filter(user => user.usertype === 'client');
+        if (employees) {
+          const active = employees.filter(emp => emp.status === 'active');
+          const terminated = employees.filter(emp => emp.status === 'terminated');
           
-          // Users added in the last 30 days
+          // Employees added in the last 30 days
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
           
-          const recentlyAdded = users.filter(user => {
-            const userDate = new Date(user.created_at);
-            return userDate >= thirtyDaysAgo;
+          const recentlyAdded = employees.filter(emp => {
+            const empDate = new Date(emp.created_at);
+            return empDate >= thirtyDaysAgo;
           });
           
           setEmployeeStats({
-            total: users.length,
+            total: employees.length,
             active: active.length,
-            terminated: users.length - active.length,
+            terminated: terminated.length,
             recentlyAdded: recentlyAdded.length,
           });
         } else {
@@ -53,8 +53,8 @@ export const useEmployeeStats = () => {
           });
         }
       } catch (err) {
-        console.error('Error fetching user stats:', err);
-        setError(err instanceof Error ? err : new Error('Unknown error fetching user stats'));
+        console.error('Error fetching employee stats:', err);
+        setError(err instanceof Error ? err : new Error('Unknown error fetching employee stats'));
         
         // Use mock data as fallback
         setEmployeeStats({
@@ -66,15 +66,15 @@ export const useEmployeeStats = () => {
         
         toast({
           variant: "destructive",
-          title: "Error loading user data",
-          description: "There was a problem loading your user data. Using mock data instead.",
+          title: "Error loading employee data",
+          description: "There was a problem loading your employee data. Using mock data instead.",
         });
       } finally {
         setLoading(false);
       }
     };
     
-    fetchUserStats();
+    fetchEmployeeStats();
   }, [toast]);
 
   return {
