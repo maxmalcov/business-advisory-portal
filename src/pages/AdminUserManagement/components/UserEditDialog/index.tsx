@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Save, Edit, Trash2, Power, X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/context/LanguageContext';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import BasicInfoSection from './BasicInfoSection';
 import ContactInfoSection from './ContactInfoSection';
 import AccountInfoSection from './AccountInfoSection';
 import LocationInfoSection from './LocationInfoSection';
 import IframeUrlsSection from './IframeUrlsSection';
+import ActivityTabContent from './ActivityTabContent';
 import type { User } from '../../hooks/types';
 import { AlertDialog, AlertDialogContent, AlertDialogTrigger, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog';
 
@@ -32,6 +34,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 }) => {
   const { t } = useLanguage();
   const [isEditMode, setIsEditMode] = useState(false);
+  const [activeTab, setActiveTab] = useState("details");
 
   // Log the user data to verify we're receiving correct information
   useEffect(() => {
@@ -77,28 +80,43 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </div>
       </DialogHeader>
       
-      <ScrollArea className="flex-1 px-6 pb-4">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <BasicInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ContactInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
-            <AccountInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
-          </div>
-          
-          <LocationInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
-          
-          <div className="col-span-1 md:col-span-2">
-            <IframeUrlsSection 
-              user={user} 
-              onUserChange={onUserChange} 
-              isReadOnly={!isEditMode}
-            />
-          </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <div className="px-6 border-b">
+          <TabsList className="gap-4">
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="activity">Activity & Account</TabsTrigger>
+          </TabsList>
         </div>
-      </ScrollArea>
+        
+        <TabsContent value="details" className="flex-1 flex flex-col data-[state=active]:flex data-[state=inactive]:hidden">
+          <ScrollArea className="flex-1 px-6 pb-4">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <BasicInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ContactInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
+                <AccountInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
+              </div>
+              
+              <LocationInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
+              
+              <div className="col-span-1 md:col-span-2">
+                <IframeUrlsSection 
+                  user={user} 
+                  onUserChange={onUserChange} 
+                  isReadOnly={!isEditMode}
+                />
+              </div>
+            </div>
+          </ScrollArea>
+        </TabsContent>
+        
+        <TabsContent value="activity" className="flex-1 flex flex-col data-[state=active]:flex data-[state=inactive]:hidden">
+          <ActivityTabContent userId={user.id} />
+        </TabsContent>
+      </Tabs>
       
       <DialogFooter className="px-6 py-4 border-t bg-muted/20">
         <div className="flex items-center justify-between w-full">
