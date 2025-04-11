@@ -6,8 +6,8 @@ import {
   CardTitle,
   CardContent,
 } from '@/components/ui/card';
-import { UsersRound, UserPlus, UserCheck, CalendarDays } from 'lucide-react';
-import { format } from 'date-fns';
+import { UsersRound, UserPlus, UserCheck, CalendarDays, CalendarRange } from 'lucide-react';
+import { format, isWithinInterval, startOfDay, endOfDay, parseISO } from 'date-fns';
 import { 
   ChartContainer, 
   ChartTooltip, 
@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 
 interface RegistrationData {
   date: string;
@@ -32,10 +34,35 @@ interface UserStatsProps {
     thisMonth: number;
     registrationData?: RegistrationData[];
   };
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
 }
 
-const UserStats: React.FC<UserStatsProps> = ({ userStats }) => {
+const UserStats: React.FC<UserStatsProps> = ({ userStats, searchQuery, setSearchQuery }) => {
   const [date, setDate] = useState<Date | undefined>();
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined
+  });
+
+  // Calculate users in custom date range
+  const usersInDateRange = React.useMemo(() => {
+    if (!dateRange.from || !dateRange.to || !userStats.registrationData) return 0;
+    
+    return userStats.registrationData.reduce((count, data) => {
+      const registrationDate = parseISO(data.date);
+      if (isWithinInterval(registrationDate, {
+        start: startOfDay(dateRange.from),
+        end: endOfDay(dateRange.to)
+      })) {
+        return count + data.count;
+      }
+      return count;
+    }, 0);
+  }, [dateRange, userStats.registrationData]);
 
   return (
     <div className="space-y-6">
@@ -93,13 +120,13 @@ const UserStats: React.FC<UserStatsProps> = ({ userStats }) => {
       </div>
       
       {/* Custom Date Range Picker */}
-      <div className="flex items-center space-x-2 mb-4">
+      <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={cn(
-                "w-[240px] justify-start text-left font-normal",
+                "w-full md:w-auto justify-start text-left font-normal",
                 !date && "text-muted-foreground"
               )}
             >
@@ -127,11 +154,51 @@ const UserStats: React.FC<UserStatsProps> = ({ userStats }) => {
             </span>
           </div>
         )}
+        
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full md:w-auto justify-start text-left font-normal ml-0 md:ml-4",
+                !(dateRange.from && dateRange.to) && "text-muted-foreground"
+              )}
+            >
+              <CalendarRange className="mr-2 h-4 w-4" />
+              {dateRange.from && dateRange.to ? (
+                <>
+                  {format(dateRange.from, 'PP')} - {format(dateRange.to, 'PP')}
+                </>
+              ) : (
+                <span>Select date range</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="range"
+              selected={dateRange}
+              onSelect={setDateRange as any}
+              numberOfMonths={2}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
+        
+        {dateRange.from && dateRange.to && (
+          <div className="text-sm font-medium">
+            Users registered in range: 
+            <span className="ml-1 text-blue-600 font-semibold">
+              {usersInDateRange}
+            </span>
+          </div>
+        )}
       </div>
       
       {/* Registration Growth Chart */}
       {userStats.registrationData && userStats.registrationData.length > 0 && (
-        <Card className="mt-6">
+        <Card className="mb-6">
           <CardHeader>
             <CardTitle className="text-sm font-medium">User Registration Trend</CardTitle>
           </CardHeader>
@@ -194,6 +261,17 @@ const UserStats: React.FC<UserStatsProps> = ({ userStats }) => {
           </CardContent>
         </Card>
       )}
+      
+      {/* Search Bar - Moved below the chart */}
+      <div className="relative w-full max-w-md mb-4">
+        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search users..."
+          className="pl-8 bg-background text-foreground"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
     </div>
   );
 };

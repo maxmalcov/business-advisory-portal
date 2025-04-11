@@ -3,9 +3,8 @@ import React from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog';
 import UserManagementHeader from './components/UserManagementHeader';
-import UserSearchBar from './components/UserSearchBar';
-import UserTable from './components/UserTable';
 import UserStats from './components/UserStats';
+import UserTable from './components/UserTable';
 import UserEditDialog from './components/UserEditDialog/index';
 import AddUserDialog from './components/AddUserDialog/index';
 import DeleteConfirmationDialog from './components/DeleteConfirmationDialog';
@@ -40,14 +39,11 @@ const AdminUserManagement: React.FC = () => {
       <UserManagementHeader onAddUser={handleAddUser} />
       
       <div className="bg-card rounded-lg border p-6 shadow-sm">
-        <UserStats userStats={userStats} />
-        
-        <div className="flex justify-between items-center mb-4">
-          <UserSearchBar 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-        </div>
+        <UserStats 
+          userStats={userStats} 
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
         
         <div className="mt-6">
           <UserTable 
