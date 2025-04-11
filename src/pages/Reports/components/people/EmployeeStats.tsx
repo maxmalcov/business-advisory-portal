@@ -13,6 +13,7 @@ interface EmployeeStatsProps {
     total: number;
     active: number;
     terminated: number;
+    recentlyAdded: number; // Add the missing property to the interface
   };
 }
 
