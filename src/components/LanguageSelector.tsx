@@ -21,9 +21,20 @@ const LanguageSelector: React.FC = () => {
   const getFlagIcon = () => {
     switch (language) {
       case 'en':
-        return <span className="flex items-center justify-center w-6 h-4 bg-blue-600 relative overflow-hidden rounded">
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="text-white text-xs font-bold">EN</span>
+        return <span className="flex flex-col w-6 h-4 rounded overflow-hidden relative">
+          {/* USA Flag */}
+          <span className="absolute inset-0 bg-blue-700"></span>
+          <div className="absolute inset-0 flex flex-col">
+            {/* Red stripes */}
+            <div className="flex-1 flex flex-col">
+              {[...Array(7)].map((_, i) => (
+                <span key={i} className="flex-1 bg-red-600 even:bg-white"></span>
+              ))}
+            </div>
+          </div>
+          {/* Blue rectangle with stars */}
+          <span className="absolute top-0 left-0 w-3 h-2 bg-blue-800 flex items-center justify-center">
+            <span className="text-white text-[5px] font-bold">★★</span>
           </span>
         </span>;
       case 'es':
@@ -53,9 +64,20 @@ const LanguageSelector: React.FC = () => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => handleLanguageChange('en')} className="cursor-pointer">
           <span className="flex items-center gap-2">
-            <span className="flex items-center justify-center w-6 h-4 bg-blue-600 relative overflow-hidden rounded">
-              <span className="absolute inset-0 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">EN</span>
+            {/* USA Flag for menu item */}
+            <span className="flex flex-col w-6 h-4 rounded overflow-hidden relative">
+              <span className="absolute inset-0 bg-blue-700"></span>
+              <div className="absolute inset-0 flex flex-col">
+                {/* Red stripes */}
+                <div className="flex-1 flex flex-col">
+                  {[...Array(7)].map((_, i) => (
+                    <span key={i} className="flex-1 bg-red-600 even:bg-white"></span>
+                  ))}
+                </div>
+              </div>
+              {/* Blue rectangle with stars */}
+              <span className="absolute top-0 left-0 w-3 h-2 bg-blue-800 flex items-center justify-center">
+                <span className="text-white text-[5px] font-bold">★★</span>
               </span>
             </span>
             <span>English</span>
