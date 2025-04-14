@@ -42,7 +42,7 @@ const AdminUserManagement: React.FC = () => {
       <div className="bg-card rounded-lg border p-6 shadow-sm">
         <UserStats userStats={userStats} />
         
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4 w-full">
           <UserSearchBar 
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
