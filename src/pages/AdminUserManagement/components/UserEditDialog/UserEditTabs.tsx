@@ -43,11 +43,12 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
               <BasicInfoSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
               <div className="grid grid-cols-1 gap-4">
                 <AccountInfoSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
-                <InvoiceEmailsSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
               </div>
             </div>
             
             <LocationInfoSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
+            
+            <InvoiceEmailsSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
             
             <IframeUrlsSection 
               user={user} 
@@ -66,3 +67,4 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
 };
 
 export default UserEditTabs;
+
