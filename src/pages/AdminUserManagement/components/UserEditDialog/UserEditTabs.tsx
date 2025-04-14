@@ -67,4 +67,3 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
 };
 
 export default UserEditTabs;
-

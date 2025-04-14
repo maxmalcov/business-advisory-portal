@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -39,7 +39,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
   };
 
   return (
-    <div className="p-3 bg-gray-50 rounded-md">
+    <div className="p-3 bg-gray-50 rounded-md mb-6">
       <div className="flex items-center gap-2 mb-3">
         <LinkIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
         <Label className="text-sm font-medium text-gray-700">IFRAME URLs</Label>
@@ -56,7 +56,8 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
                 newUrls[index] = e.target.value;
                 onUserChange({...user, iframeUrls: newUrls});
               }}
-              className="flex-grow h-8 text-sm"
+              className="flex-grow h-8 text-sm bg-white border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              placeholder="https://example.com/iframe-path"
               readOnly={isReadOnly}
               disabled={isReadOnly}
             />
@@ -76,10 +77,10 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
         {!isReadOnly && (
           <div className="flex items-center gap-2 mt-3">
             <Input 
-              placeholder="https://example.com/iframe"
+              placeholder="https://example.com/iframe-path"
               value={newIframeUrl}
               onChange={(e) => setNewIframeUrl(e.target.value)}
-              className="flex-grow h-8 text-sm"
+              className="flex-grow h-8 text-sm bg-white border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             <Button 
               variant="outline" 
