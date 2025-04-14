@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -138,7 +137,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           phone: data.phone,
           incomingInvoiceEmail: data.incominginvoiceemail,
           outgoingInvoiceEmail: data.outgoinginvoiceemail,
-          iframeUrls: [] // You might want to add this to your database schema
+          iframeUrls: data.iframeurls // Include iframeUrls from the profile
         });
         setIsLoading(false);
       }
@@ -170,7 +169,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         id: userId,
         email: userData.user.email || '',
         name: userData.user.email?.split('@')[0] || 'New User',
-        usertype: 'client' // Match the column name in the database (lowercase)
+        usertype: 'client', // Match the column name in the database (lowercase)
+        iframeurls: [] // Initialize with empty array
       };
       
       // Insert the profile

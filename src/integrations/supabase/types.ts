@@ -187,6 +187,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          iframeurls: string[] | null
           incominginvoiceemail: string | null
           name: string | null
           nif: string | null
@@ -206,6 +207,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id: string
+          iframeurls?: string[] | null
           incominginvoiceemail?: string | null
           name?: string | null
           nif?: string | null
@@ -225,6 +227,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          iframeurls?: string[] | null
           incominginvoiceemail?: string | null
           name?: string | null
           nif?: string | null
