@@ -2,9 +2,8 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, File, Building, UserCircle } from 'lucide-react';
-import type { User as UserType, UserType as UserRoleType } from '../../hooks/types';
+import { User, File, Building } from 'lucide-react';
+import type { User as UserType } from '../../hooks/types';
 
 interface BasicInfoSectionProps {
   user: UserType;
@@ -13,14 +12,6 @@ interface BasicInfoSectionProps {
 }
 
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
-  // Handle changing user type
-  const handleChangeUserType = (value: string) => {
-    onUserChange({
-      ...user,
-      userType: value as UserRoleType
-    });
-  };
-
   return (
     <div className="space-y-3 p-3 bg-gray-50 rounded-md">
       <div className="grid grid-cols-2 gap-3">
@@ -69,29 +60,6 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
             readOnly={isReadOnly}
             disabled={isReadOnly}
           />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 gap-3">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <UserCircle className="h-4 w-4 text-gray-500 flex-shrink-0" />
-            <Label htmlFor="role" className="text-xs font-medium">Role</Label>
-          </div>
-          <Select 
-            value={user.userType} 
-            onValueChange={handleChangeUserType}
-            disabled={isReadOnly}
-          >
-            <SelectTrigger id="role" className="w-full h-9">
-              <SelectValue placeholder="Select a role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="client">Client</SelectItem>
-              <SelectItem value="admin">Administrator</SelectItem>
-              <SelectItem value="manager">Manager</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
     </div>
