@@ -55,40 +55,42 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
         />
       </div>
       
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Building className="h-4 w-4 text-gray-500 flex-shrink-0" />
-          <Label htmlFor="company" className="text-xs font-medium">Company Name</Label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Building className="h-4 w-4 text-gray-500 flex-shrink-0" />
+            <Label htmlFor="company" className="text-xs font-medium">Company Name</Label>
+          </div>
+          <Input 
+            id="company"
+            value={user.companyName || ''}
+            onChange={(e) => onUserChange({...user, companyName: e.target.value})}
+            className="w-full h-9"
+            readOnly={isReadOnly}
+            disabled={isReadOnly}
+          />
         </div>
-        <Input 
-          id="company"
-          value={user.companyName || ''}
-          onChange={(e) => onUserChange({...user, companyName: e.target.value})}
-          className="w-full h-9"
-          readOnly={isReadOnly}
-          disabled={isReadOnly}
-        />
-      </div>
-      
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <UserCircle className="h-4 w-4 text-gray-500 flex-shrink-0" />
-          <Label htmlFor="role" className="text-xs font-medium">Role</Label>
+        
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <UserCircle className="h-4 w-4 text-gray-500 flex-shrink-0" />
+            <Label htmlFor="role" className="text-xs font-medium">Role</Label>
+          </div>
+          <Select 
+            value={user.userType} 
+            onValueChange={handleChangeUserType}
+            disabled={isReadOnly}
+          >
+            <SelectTrigger id="role" className="w-full h-9">
+              <SelectValue placeholder="Select a role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="client">Client</SelectItem>
+              <SelectItem value="admin">Administrator</SelectItem>
+              <SelectItem value="manager">Manager</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select 
-          value={user.userType} 
-          onValueChange={handleChangeUserType}
-          disabled={isReadOnly}
-        >
-          <SelectTrigger id="role" className="w-full h-9">
-            <SelectValue placeholder="Select a role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="client">Client</SelectItem>
-            <SelectItem value="admin">Administrator</SelectItem>
-            <SelectItem value="manager">Manager</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
     </div>
   );
