@@ -34,8 +34,11 @@ export const useUserManagement = () => {
   } = useUpdateUser(refreshUsers);
 
   // When users change from the fetch hook, update our local state
+  // But only do this once when users are first loaded or explicitly refreshed
   useEffect(() => {
-    setLocalUsers(users);
+    if (users.length > 0) {
+      setLocalUsers(users);
+    }
   }, [users]);
   
   // Custom save handler that updates the local state without a full refresh
@@ -53,6 +56,7 @@ export const useUserManagement = () => {
     );
     
     // Also update the main users array from the fetch hook
+    // This prevents inconsistency if other components use this data
     setUsers(prev => 
       prev.map(user => 
         user.id === editingUser.id ? editingUser : user
