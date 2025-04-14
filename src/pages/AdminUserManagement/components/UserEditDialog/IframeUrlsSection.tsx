@@ -84,15 +84,17 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
           </div>
         ))}
         
-        {!isReadOnly && (
-          <div className="flex items-center space-x-2">
-            <LinkIcon className="h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Add new URL"
-              value={newIframeUrl}
-              onChange={(e) => setNewIframeUrl(e.target.value)}
-              className="flex-1"
-            />
+        {/* Show the empty URL input form always, in both edit and read-only modes */}
+        <div className="flex items-center space-x-2">
+          <LinkIcon className="h-5 w-5 text-muted-foreground" />
+          <Input
+            placeholder="Add new URL"
+            value={newIframeUrl}
+            onChange={(e) => setNewIframeUrl(e.target.value)}
+            className="flex-1"
+            disabled={isReadOnly}
+          />
+          {!isReadOnly && (
             <Button 
               variant="outline" 
               size="sm"
@@ -103,8 +105,8 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
               <Plus className="h-4 w-4" />
               Add
             </Button>
-          </div>
-        )}
+          )}
+        </div>
         
         {iframeUrls.length === 0 && (
           <div className="text-sm text-muted-foreground italic text-center">
@@ -117,4 +119,3 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
 };
 
 export default IframeUrlsSection;
-
