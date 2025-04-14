@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, File, Building, UserCircle } from 'lucide-react';
-import type { User as UserType, UserType as UserRoleType } from '../../hooks/types';
+import type { User as UserType } from '../../hooks/types';
 
 interface BasicInfoSectionProps {
   user: UserType;
@@ -17,7 +17,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
   const handleChangeUserType = (value: string) => {
     onUserChange({
       ...user,
-      userType: value as UserRoleType
+      userType: value
     });
   };
 

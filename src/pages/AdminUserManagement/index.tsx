@@ -62,7 +62,7 @@ const AdminUserManagement: React.FC = () => {
       {/* User Details/Edit Dialog */}
       <Dialog open={!!editingUser} onOpenChange={(open) => !open && handleCancelEdit()}>
         {editingUser && (
-          <DialogContent className="max-w-4xl p-0 max-h-[90vh] h-[90vh] flex flex-col overflow-hidden mx-auto w-[95vw]">
+          <DialogContent className="max-w-4xl p-0 max-h-[85vh] flex flex-col mx-auto w-[95vw]">
             <UserEditDialog
               user={editingUser}
               onUserChange={handleUpdateUser}

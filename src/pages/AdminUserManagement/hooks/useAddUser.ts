@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { User, UserType, AccountType } from './types';
+import { User } from './types';
 
 export const useAddUser = (refreshUsers?: () => Promise<void>) => {
   const { toast } = useToast();
@@ -10,8 +10,8 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
   const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     name: '',
     email: '',
-    userType: 'client' as UserType,
-    accountType: 'freelancer' as AccountType,
+    userType: 'client',
+    accountType: 'freelancer',
     iframeUrls: [],
     phone: '',
     nif: '',
@@ -20,10 +20,7 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
     city: '',
     province: '',
     country: '',
-    companyName: '',
-    isActive: true,
-    password: '',
-    adminName: '',
+    companyName: ''
   });
   
   // Check if form is valid
@@ -61,8 +58,8 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
     setNewUser({
       name: '',
       email: '',
-      userType: 'client' as UserType,
-      accountType: 'freelancer' as AccountType,
+      userType: 'client',
+      accountType: 'freelancer',
       iframeUrls: [],
       phone: '',
       nif: '',
@@ -71,10 +68,7 @@ export const useAddUser = (refreshUsers?: () => Promise<void>) => {
       city: '',
       province: '',
       country: '',
-      companyName: '',
-      isActive: true,
-      password: '',
-      adminName: '',
+      companyName: ''
     });
   };
 

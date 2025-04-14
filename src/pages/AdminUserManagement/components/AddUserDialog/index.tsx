@@ -4,7 +4,7 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescripti
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { User, UserType, AccountType } from '../../hooks/types';
+import { User } from '../../hooks/types';
 import BasicInfoSection from './BasicInfoSection';
 import ContactInfoSection from './ContactInfoSection';
 import CredentialsSection from './CredentialsSection';
@@ -21,11 +21,10 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     name: '',
     email: '',
-    userType: 'client' as UserType,
-    accountType: 'freelancer' as AccountType,
+    userType: 'client',
+    accountType: 'freelancer',
     isActive: true,
     companyName: '',
-    password: '',
   });
   
   const [isFormValid, setIsFormValid] = useState(false);

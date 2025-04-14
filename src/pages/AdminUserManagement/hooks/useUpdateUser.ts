@@ -44,8 +44,7 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
           city: editingUser.city,
           province: editingUser.province,
           country: editingUser.country,
-          nif: editingUser.nif,
-          iframeurls: editingUser.iframeUrls // Add the iframeUrls array to be saved
+          nif: editingUser.nif
         })
         .eq('id', editingUser.id);
 
