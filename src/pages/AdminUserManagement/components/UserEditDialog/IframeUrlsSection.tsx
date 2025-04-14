@@ -84,6 +84,17 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
           </div>
         ))}
         
+        {iframeUrls.length === 0 && (
+          <div className="flex items-center space-x-2">
+            <LinkIcon className="h-5 w-5 text-muted-foreground" />
+            <Input
+              placeholder="https://"
+              className="flex-1"
+              disabled={isReadOnly}
+            />
+          </div>
+        )}
+        
         {!isReadOnly && (
           <div className="flex items-center space-x-2">
             <LinkIcon className="h-5 w-5 text-muted-foreground" />
@@ -117,4 +128,3 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
 };
 
 export default IframeUrlsSection;
-
