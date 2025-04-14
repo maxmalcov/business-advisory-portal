@@ -23,15 +23,15 @@ const UserEditHeader: React.FC<UserEditHeaderProps> = ({
   onDelete
 }) => {
   return (
-    <DialogHeader className="px-6 pt-4 pb-2 flex flex-row items-center justify-between">
-      <div>
-        <DialogTitle className="text-xl">{isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
-        <DialogDescription className="mt-1">
+    <DialogHeader className="px-6 pt-4 pb-2 flex flex-row items-center justify-between space-x-4">
+      <div className="flex-1 min-w-0">
+        <DialogTitle className="text-xl truncate">{isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
+        <DialogDescription className="mt-1 truncate">
           {isEditMode ? 'Modify user information and settings' : 'View user information and settings'}
         </DialogDescription>
       </div>
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         <TooltipProvider>
           {!isEditMode ? (
             <Tooltip>
@@ -119,3 +119,4 @@ const UserEditHeader: React.FC<UserEditHeaderProps> = ({
 };
 
 export default UserEditHeader;
+
