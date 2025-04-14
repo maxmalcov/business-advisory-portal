@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,8 +56,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
                 newUrls[index] = e.target.value;
                 onUserChange({...user, iframeUrls: newUrls});
               }}
-              placeholder="https://yourdomain.com/iframe-path"
-              className="flex-grow h-10 text-sm border-2 border-gray-300 bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-200 rounded-md"
+              className="flex-grow h-8 text-sm"
               readOnly={isReadOnly}
               disabled={isReadOnly}
             />
@@ -77,16 +76,16 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
         {!isReadOnly && (
           <div className="flex items-center gap-2 mt-3">
             <Input 
-              placeholder="https://yourdomain.com/iframe-path"
+              placeholder="https://example.com/iframe"
               value={newIframeUrl}
               onChange={(e) => setNewIframeUrl(e.target.value)}
-              className="flex-grow h-10 text-sm border-2 border-gray-300 bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-200 rounded-md"
+              className="flex-grow h-8 text-sm"
             />
             <Button 
               variant="outline" 
               size="sm"
               onClick={handleAddIframeUrl}
-              className="h-10 whitespace-nowrap"
+              className="h-8 whitespace-nowrap"
             >
               <Plus className="h-3 w-3 mr-1" />
               Add
