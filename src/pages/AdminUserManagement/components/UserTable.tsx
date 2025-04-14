@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Table,
@@ -66,7 +65,10 @@ const UserTable: React.FC<UserTableProps> = ({
                 <span className="capitalize">{user.userType}</span>
               </TableCell>
               <TableCell>
-                <Badge variant={user.isActive ? "secondary" : "destructive"}>
+                <Badge 
+                  variant={user.isActive ? "secondary" : "destructive"}
+                  className={user.isActive ? "bg-green-500 text-white" : ""}
+                >
                   {user.isActive ? "Active" : "Inactive"}
                 </Badge>
               </TableCell>
