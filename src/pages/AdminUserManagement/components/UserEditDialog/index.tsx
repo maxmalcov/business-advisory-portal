@@ -45,10 +45,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
     <>
       <UserEditHeader 
         user={user}
-        isEditMode={isEditMode} 
-        onToggleEditMode={handleToggleEditMode} 
-        onToggleStatus={onToggleStatus}
-        onDelete={onDelete}
+        isEditMode={isEditMode}
       />
       
       <UserEditTabs
@@ -62,8 +59,11 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
       <UserEditFooter
         user={user}
         isEditMode={isEditMode}
+        onToggleEditMode={handleToggleEditMode}
         onSave={handleSave}
         onCancel={onCancel}
+        onDelete={onDelete}
+        onToggleStatus={onToggleStatus}
       />
     </>
   );
