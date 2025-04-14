@@ -22,6 +22,8 @@ export interface User {
   incomingInvoiceEmail?: string;
   outgoingInvoiceEmail?: string;
   iframeUrls?: string[];
+  adminName?: string;
+  password?: string; // For new user creation only
 }
 
 // Activity data for user
