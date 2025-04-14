@@ -41,6 +41,23 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
         
         <div className="space-y-2">
           <div className="flex items-center gap-2">
+            <Building className="h-4 w-4 text-gray-500 flex-shrink-0" />
+            <Label htmlFor="company" className="text-xs font-medium">Company Name</Label>
+          </div>
+          <Input 
+            id="company"
+            value={user.companyName || ''}
+            onChange={(e) => onUserChange({...user, companyName: e.target.value})}
+            className="w-full h-9"
+            readOnly={isReadOnly}
+            disabled={isReadOnly}
+          />
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 gap-3">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
             <File className="h-4 w-4 text-gray-500 flex-shrink-0" />
             <Label htmlFor="email" className="text-xs font-medium">Email</Label>
           </div>
@@ -55,22 +72,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ user, onUserChange,
         </div>
       </div>
       
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Building className="h-4 w-4 text-gray-500 flex-shrink-0" />
-            <Label htmlFor="company" className="text-xs font-medium">Company Name</Label>
-          </div>
-          <Input 
-            id="company"
-            value={user.companyName || ''}
-            onChange={(e) => onUserChange({...user, companyName: e.target.value})}
-            className="w-full h-9"
-            readOnly={isReadOnly}
-            disabled={isReadOnly}
-          />
-        </div>
-        
+      <div className="grid grid-cols-1 gap-3">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <UserCircle className="h-4 w-4 text-gray-500 flex-shrink-0" />
