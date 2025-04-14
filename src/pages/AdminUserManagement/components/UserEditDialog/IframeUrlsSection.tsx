@@ -15,10 +15,6 @@ interface IframeUrlsSectionProps {
 const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
   const [newIframeUrl, setNewIframeUrl] = useState('');
   
-  useEffect(() => {
-    console.log("IframeUrlsSection received user data:", { iframeUrls: user.iframeUrls });
-  }, [user]);
-
   // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {
     if (!newIframeUrl) return;
@@ -43,15 +39,15 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <LinkIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
-        <Label className="font-medium text-base">IFRAME URLs</Label>
+    <div className="p-3 bg-gray-50 rounded-md">
+      <div className="flex items-center gap-2 mb-3">
+        <LinkIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
+        <Label className="text-sm font-medium text-gray-700">IFRAME URLs</Label>
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-2">
         {user.iframeUrls?.map((url: string, index: number) => (
-          <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-md">
+          <div key={index} className="flex items-center gap-2">
             <Input 
               value={url}
               onChange={(e) => {
@@ -60,7 +56,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
                 newUrls[index] = e.target.value;
                 onUserChange({...user, iframeUrls: newUrls});
               }}
-              className="flex-grow border-gray-200"
+              className="flex-grow h-8 text-sm"
               readOnly={isReadOnly}
               disabled={isReadOnly}
             />
@@ -69,7 +65,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
                 variant="ghost" 
                 size="icon"
                 onClick={() => handleRemoveIframeUrl(index)}
-                className="flex-shrink-0 hover:bg-gray-200"
+                className="h-8 w-8"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -78,20 +74,20 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
         ))}
         
         {!isReadOnly && (
-          <div className="flex items-center gap-3 mt-4 p-3 border border-dashed border-gray-300 rounded-md">
+          <div className="flex items-center gap-2 mt-3">
             <Input 
               placeholder="https://example.com/iframe"
               value={newIframeUrl}
               onChange={(e) => setNewIframeUrl(e.target.value)}
-              className="flex-grow border-gray-200"
+              className="flex-grow h-8 text-sm"
             />
             <Button 
               variant="outline" 
               size="sm"
               onClick={handleAddIframeUrl}
-              className="flex-shrink-0 whitespace-nowrap"
+              className="h-8 whitespace-nowrap"
             >
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-3 w-3 mr-1" />
               Add
             </Button>
           </div>

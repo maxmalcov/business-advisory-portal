@@ -52,10 +52,10 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 
   return (
     <>
-      <DialogHeader className="px-6 pt-6 mb-2 flex flex-row items-center justify-between">
+      <DialogHeader className="px-6 pt-4 pb-2 flex flex-row items-center justify-between">
         <div>
           <DialogTitle className="text-xl">{isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
-          <DialogDescription className="mt-2">
+          <DialogDescription className="mt-1">
             {isEditMode ? 'Modify user information and settings' : 'View user information and settings'}
           </DialogDescription>
         </div>
@@ -64,6 +64,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
             <Button 
               variant="outline" 
               onClick={handleToggleEditMode}
+              size="sm"
             >
               <Edit className="h-4 w-4 mr-2" />
               Edit
@@ -72,6 +73,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
             <Button 
               variant="outline" 
               onClick={handleToggleEditMode}
+              size="sm"
             >
               <X className="h-4 w-4 mr-2" />
               Cancel Edit
@@ -89,26 +91,23 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </div>
         
         <TabsContent value="details" className="flex-1 flex flex-col data-[state=active]:flex data-[state=inactive]:hidden">
-          <ScrollArea className="flex-1 px-6 pb-4">
+          <ScrollArea className="flex-1 px-6 py-4">
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <BasicInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <ContactInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
-                <AccountInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
+                <div className="grid grid-cols-1 gap-4">
+                  <ContactInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
+                  <AccountInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
+                </div>
               </div>
               
               <LocationInfoSection user={user} onUserChange={onUserChange} isReadOnly={!isEditMode} />
               
-              <div className="col-span-1 md:col-span-2">
-                <IframeUrlsSection 
-                  user={user} 
-                  onUserChange={onUserChange} 
-                  isReadOnly={!isEditMode}
-                />
-              </div>
+              <IframeUrlsSection 
+                user={user} 
+                onUserChange={onUserChange} 
+                isReadOnly={!isEditMode}
+              />
             </div>
           </ScrollArea>
         </TabsContent>
@@ -118,13 +117,14 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </TabsContent>
       </Tabs>
       
-      <DialogFooter className="px-6 py-4 border-t bg-muted/20">
+      <DialogFooter className="px-6 py-3 border-t bg-muted/20">
         <div className="flex items-center justify-between w-full">
           <div className="flex gap-2">
             <Button 
               variant="outline" 
               className="border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
               onClick={() => onToggleStatus(user)}
+              size="sm"
             >
               <Power className="h-4 w-4 mr-2" />
               {user.isActive ? "Deactivate User" : "Activate User"}
@@ -132,7 +132,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive">
+                <Button variant="destructive" size="sm">
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete User
                 </Button>
@@ -155,10 +155,10 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 
           <div className="flex gap-2">
             <DialogClose asChild>
-              <Button variant="outline" onClick={onCancel}>Close</Button>
+              <Button variant="outline" onClick={onCancel} size="sm">Close</Button>
             </DialogClose>
             {isEditMode && (
-              <Button onClick={handleSave}>
+              <Button onClick={handleSave} size="sm">
                 <Save className="mr-2 h-4 w-4" />
                 Save Changes
               </Button>

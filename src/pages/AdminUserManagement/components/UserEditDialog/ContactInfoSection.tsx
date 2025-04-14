@@ -12,27 +12,20 @@ interface ContactInfoSectionProps {
 }
 
 const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
-  // Log the user data to verify we're receiving correct information for this section
-  React.useEffect(() => {
-    console.log("ContactInfoSection received user data:", {
-      email: user.email,
-      incomingInvoiceEmail: user.incomingInvoiceEmail,
-      outgoingInvoiceEmail: user.outgoingInvoiceEmail
-    });
-  }, [user]);
-
   return (
-    <>
+    <div className="space-y-4 p-3 bg-gray-50 rounded-md">
+      <h3 className="text-sm font-medium text-gray-700">Contact Information</h3>
+      
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <Mail className="h-5 w-5 text-gray-500 flex-shrink-0" />
-          <Label htmlFor="incoming-email" className="font-medium">Email for Incoming Invoices</Label>
+          <Mail className="h-4 w-4 text-gray-500 flex-shrink-0" />
+          <Label htmlFor="incoming-email" className="text-xs font-medium">Email for Incoming Invoices</Label>
         </div>
         <Input 
           id="incoming-email"
           value={user.incomingInvoiceEmail || ''}
           onChange={(e) => onUserChange({...user, incomingInvoiceEmail: e.target.value})}
-          className="flex-grow"
+          className="w-full h-9"
           placeholder="email@example.com"
           readOnly={isReadOnly}
           disabled={isReadOnly}
@@ -41,20 +34,20 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ user, onUserCha
       
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <Mail className="h-5 w-5 text-gray-500 flex-shrink-0" />
-          <Label htmlFor="outgoing-email" className="font-medium">Email for Outgoing Invoices</Label>
+          <Mail className="h-4 w-4 text-gray-500 flex-shrink-0" />
+          <Label htmlFor="outgoing-email" className="text-xs font-medium">Email for Outgoing Invoices</Label>
         </div>
         <Input 
           id="outgoing-email"
           value={user.outgoingInvoiceEmail || ''}
           onChange={(e) => onUserChange({...user, outgoingInvoiceEmail: e.target.value})}
-          className="flex-grow"
+          className="w-full h-9"
           placeholder="email@example.com"
           readOnly={isReadOnly}
           disabled={isReadOnly}
         />
       </div>
-    </>
+    </div>
   );
 };
 
