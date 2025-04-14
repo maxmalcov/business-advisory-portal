@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFetchUsers } from './useFetchUsers';
 import { useUpdateUser } from './useUpdateUser';
 import { useDeleteUser } from './useDeleteUser';
@@ -17,7 +17,8 @@ export const useUserManagement = () => {
     searchQuery, 
     setSearchQuery,
     refreshUsers,
-    userStats
+    userStats,
+    setUsers
   } = useFetchUsers();
   
   // Maintain a local copy of users for status toggling
@@ -28,9 +29,36 @@ export const useUserManagement = () => {
     editingUser,
     handleEditUser,
     handleUpdateUser,
-    handleSaveUser,
+    handleSaveUser: saveUserToDb,
     handleCancelEdit
   } = useUpdateUser(refreshUsers);
+
+  // When users change from the fetch hook, update our local state
+  useEffect(() => {
+    setLocalUsers(users);
+  }, [users]);
+  
+  // Custom save handler that updates the local state without a full refresh
+  const handleSaveUser = async () => {
+    if (!editingUser) return;
+    
+    // First save to the database
+    await saveUserToDb();
+    
+    // Then update the user in our local state to avoid a full refresh
+    setLocalUsers(prev => 
+      prev.map(user => 
+        user.id === editingUser.id ? editingUser : user
+      )
+    );
+    
+    // Also update the main users array from the fetch hook
+    setUsers(prev => 
+      prev.map(user => 
+        user.id === editingUser.id ? editingUser : user
+      )
+    );
+  };
   
   // Get user deletion functionality
   const {
@@ -53,7 +81,7 @@ export const useUserManagement = () => {
   const { toggleUserStatus } = useToggleUserStatus(users, setLocalUsers);
 
   return {
-    users,
+    users: localUsers, // Use our local state for the UI
     isLoading,
     searchQuery,
     setSearchQuery,
@@ -64,7 +92,7 @@ export const useUserManagement = () => {
     userStats,
     handleEditUser,
     handleUpdateUser,
-    handleSaveUser,
+    handleSaveUser, // Use our custom save handler
     handleDeleteUser,
     confirmDeleteUser,
     toggleUserStatus,

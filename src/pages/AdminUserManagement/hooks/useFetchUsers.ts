@@ -118,6 +118,7 @@ export const useFetchUsers = () => {
 
   return {
     users: filteredUsers,
+    setUsers, // Expose setUsers to allow updating without a full refresh
     isLoading,
     searchQuery,
     setSearchQuery,

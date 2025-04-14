@@ -20,7 +20,7 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
     setEditingUser(updatedUser);
   };
 
-  // Save edited user
+  // Save edited user without refreshing the entire list
   const handleSaveUser = async () => {
     if (!editingUser) return;
     
@@ -53,9 +53,9 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
         console.error('Error updating user:', error);
         throw error;
       }
-
-      // Refresh the users list
-      await refreshUsers();
+      
+      // Don't refresh the entire user list, which would reset sorting and scroll position
+      // Instead, we'll update the user in the local state in the useUserManagement hook
       
       toast({
         title: "User Updated",
