@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import BasicInfoSection from './BasicInfoSection';
 import AccountInfoSection from './AccountInfoSection';
@@ -7,7 +8,6 @@ import InvoiceEmailsSection from './InvoiceEmailsSection';
 import LocationInfoSection from './LocationInfoSection';
 import IframeUrlsSection from './IframeUrlsSection';
 import ActivityTabContent from './ActivityTabContent';
-import { useLanguage } from '@/context/LanguageContext';
 import type { User } from '../../hooks/types';
 
 interface UserEditTabsProps {
@@ -25,58 +25,44 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
   activeTab,
   setActiveTab
 }) => {
-  const { t } = useLanguage();
+  const isReadOnly = !isEditMode;
   
   return (
-    <div className="flex-1 overflow-hidden border-y">
-      <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
-        <ScrollArea className="h-full">
-          <TabsList className="w-full justify-start px-6 pt-2">
-            <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-          </TabsList>
-          
-          <div className="px-6 py-4">
-            <TabsContent value="details" className="space-y-6 mt-0">
-              <BasicInfoSection
-                user={user}
-                onUserChange={onUserChange}
-                isReadOnly={!isEditMode}
-              />
-              
-              <AccountInfoSection
-                user={user}
-                onUserChange={onUserChange}
-                isReadOnly={!isEditMode}
-              />
-              
-              <InvoiceEmailsSection
-                user={user}
-                onUserChange={onUserChange}
-                isReadOnly={!isEditMode}
-              />
-              
-              <LocationInfoSection
-                user={user}
-                onUserChange={onUserChange}
-                isReadOnly={!isEditMode}
-              />
-              
-              {/* IframeUrlsSection is always editable regardless of isEditMode */}
-              <IframeUrlsSection
-                user={user}
-                onUserChange={onUserChange}
-                isReadOnly={false}
-              />
-            </TabsContent>
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+      <div className="px-6 border-b">
+        <TabsList className="gap-4">
+          <TabsTrigger value="details">Details</TabsTrigger>
+          <TabsTrigger value="activity">Activity & Account</TabsTrigger>
+        </TabsList>
+      </div>
+      
+      <TabsContent value="details" className="flex-1 flex flex-col data-[state=active]:flex data-[state=inactive]:hidden overflow-hidden">
+        <ScrollArea className="flex-1 px-6 py-4">
+          <div className="space-y-6 pb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <BasicInfoSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
+              <div className="grid grid-cols-1 gap-4">
+                <AccountInfoSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
+              </div>
+            </div>
             
-            <TabsContent value="activity" className="mt-0">
-              <ActivityTabContent userId={user.id} />
-            </TabsContent>
+            <LocationInfoSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
+            
+            <InvoiceEmailsSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
+            
+            <IframeUrlsSection 
+              user={user} 
+              onUserChange={onUserChange} 
+              isReadOnly={isReadOnly}
+            />
           </div>
         </ScrollArea>
-      </Tabs>
-    </div>
+      </TabsContent>
+      
+      <TabsContent value="activity" className="flex-1 flex flex-col data-[state=active]:flex data-[state=inactive]:hidden overflow-hidden">
+        <ActivityTabContent userId={user.id} />
+      </TabsContent>
+    </Tabs>
   );
 };
 
