@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { DialogContent, DialogFooter } from '@/components/ui/dialog';
+import React from 'react';
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -10,6 +10,7 @@ import ContactInfoSection from './ContactInfoSection';
 import CredentialsSection from './CredentialsSection';
 import IframeUrlsSection from './IframeUrlsSection';
 import LocationInfoSection from './LocationInfoSection';
+import { useState, useEffect } from 'react';
 
 interface AddUserDialogProps {
   onSave: (userData: Omit<User, 'id'>) => void;
@@ -82,25 +83,37 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
 
   return (
     <DialogContent className="max-w-5xl p-0 h-[90vh] flex flex-col mx-auto w-[95vw]">
+      <DialogHeader className="px-6 pt-6 mb-2">
+        <DialogTitle className="text-xl">Add New User</DialogTitle>
+        <DialogDescription className="mt-2">
+          Create a new user account with all required information
+        </DialogDescription>
+      </DialogHeader>
+      
       <ScrollArea className="flex-1 px-6 pb-4">
         <div className="space-y-8">
           <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Basic Information</h3>
             <BasicInfoSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
           <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Contact Information</h3>
             <ContactInfoSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
           <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Location Details</h3>
             <LocationInfoSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
           <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Security Credentials</h3>
             <CredentialsSection newUser={newUser} onUserChange={handleUserChange} />
           </div>
           
           <div className="border rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-4">Additional Settings</h3>
             <IframeUrlsSection 
               newUser={newUser} 
               onUserChange={handleUserChange} 
