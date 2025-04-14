@@ -27,7 +27,7 @@ const UserEditFooter: React.FC<UserEditFooterProps> = ({
   onToggleStatus
 }) => {
   return (
-    <DialogFooter className="px-6 py-3 border-t bg-muted/20 flex justify-between">
+    <DialogFooter className="px-6 py-3 border-t bg-muted/20 flex justify-between items-center">
       <div className="flex items-center gap-2">
         <TooltipProvider>
           {!isEditMode ? (
