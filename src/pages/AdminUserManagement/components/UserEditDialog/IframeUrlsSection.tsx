@@ -39,7 +39,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
   };
 
   return (
-    <div className="p-3 bg-gray-50 rounded-md mb-6">
+    <div className="p-3 bg-gray-50 rounded-md mb-4">
       <div className="flex items-center gap-2 mb-3">
         <LinkIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
         <Label className="text-sm font-medium text-gray-700">IFRAME URLs</Label>
