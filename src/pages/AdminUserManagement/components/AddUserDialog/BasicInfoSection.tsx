@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { User } from '../../hooks/types';
+import type { User, UserType, AccountType } from '../../hooks/types';
 import LanguageSelector from '@/components/LanguageSelector';
 import { User as UserIcon, Briefcase, FileType } from 'lucide-react';
 
@@ -17,14 +17,14 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ newUser, onUserChan
   const handleChangeUserType = (value: string) => {
     onUserChange({
       ...newUser,
-      userType: value
+      userType: value as UserType
     });
   };
 
   const handleChangeAccountType = (value: string) => {
     onUserChange({
       ...newUser,
-      accountType: value
+      accountType: value as AccountType
     });
   };
   

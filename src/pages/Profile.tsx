@@ -15,7 +15,8 @@ import {
   Building, 
   FileText, 
   MapPin, 
-  Phone 
+  Phone,
+  Globe
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
@@ -173,6 +174,27 @@ const Profile: React.FC = () => {
                           <div className="font-medium">{user.outgoingInvoiceEmail}</div>
                         </div>
                       )}
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              {/* IFrame URLs section */}
+              {user?.iframeUrls && user.iframeUrls.length > 0 && (
+                <>
+                  <Separator className="my-4" />
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-lg flex items-center">
+                      <Globe className="h-5 w-5 mr-2" /> 
+                      IFrame URLs
+                    </h3>
+                    
+                    <div className="space-y-2">
+                      {user.iframeUrls.map((url, index) => (
+                        <div key={index} className="bg-muted p-2 rounded-md text-sm break-all">
+                          {url}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </>

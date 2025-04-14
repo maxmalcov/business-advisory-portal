@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
-import { User } from './types';
+import { User, UserType, AccountType } from './types';
 
 export const useFetchUsers = () => {
   const { toast } = useToast();
@@ -47,10 +47,10 @@ export const useFetchUsers = () => {
             name: profile.name || '',
             email: profile.email || '',
             companyName: profile.companyname || '',
-            userType: cleanUserType,
+            userType: cleanUserType as UserType,
             incomingInvoiceEmail: profile.incominginvoiceemail || '',
             outgoingInvoiceEmail: profile.outgoinginvoiceemail || '',
-            iframeUrls: [], // This may need to be added to the profiles table
+            iframeUrls: profile.iframeurls || [], 
             isActive: isUserActive,
             phone: profile.phone || '',
             address: profile.address || '',
@@ -59,7 +59,7 @@ export const useFetchUsers = () => {
             province: profile.province || '',
             country: profile.country || '',
             nif: profile.nif || '',
-            accountType: profile.accounttype || ''
+            accountType: (profile.accounttype || '') as AccountType
           };
         });
         

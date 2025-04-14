@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Phone, CreditCard } from 'lucide-react';
-import type { User } from '../../hooks/types';
+import type { User, AccountType } from '../../hooks/types';
 
 interface AccountInfoSectionProps {
   user: User;
@@ -39,16 +39,17 @@ const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserCha
         </div>
         <Select 
           value={user.accountType || ''} 
-          onValueChange={(value) => onUserChange({...user, accountType: value})}
+          onValueChange={(value) => onUserChange({...user, accountType: value as AccountType})}
           disabled={isReadOnly}
         >
           <SelectTrigger id="account-type" className="w-full h-9">
             <SelectValue placeholder="Select account type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Personal">Personal</SelectItem>
-            <SelectItem value="Business">Business</SelectItem>
-            <SelectItem value="Enterprise">Enterprise</SelectItem>
+            <SelectItem value="freelancer">Freelancer</SelectItem>
+            <SelectItem value="sl">SL (Limited Company)</SelectItem>
+            <SelectItem value="sa">SA (Corporation)</SelectItem>
+            <SelectItem value="individual">Individual</SelectItem>
           </SelectContent>
         </Select>
       </div>

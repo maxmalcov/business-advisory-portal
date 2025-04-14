@@ -1,97 +1,116 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Link as LinkIcon, Plus, X } from 'lucide-react';
+import { PlusCircle, Trash2 } from 'lucide-react';
 import type { User } from '../../hooks/types';
 
 interface IframeUrlsSectionProps {
   user: User;
   onUserChange: (user: User) => void;
-  isReadOnly?: boolean;
+  isReadOnly: boolean;
 }
 
-const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
-  const [newIframeUrl, setNewIframeUrl] = useState('');
+const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
+  user,
+  onUserChange,
+  isReadOnly,
+}) => {
+  // Initialize iframeUrls as an empty array if it's undefined
+  const iframeUrls = user.iframeUrls || [];
   
-  // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {
-    if (!newIframeUrl) return;
-    
-    onUserChange({
+    const updatedUser = {
       ...user,
-      iframeUrls: [...(user.iframeUrls || []), newIframeUrl]
-    });
-    
-    setNewIframeUrl('');
+      iframeUrls: [...iframeUrls, '']
+    };
+    onUserChange(updatedUser);
   };
 
-  // Handle removing an iframe URL
   const handleRemoveIframeUrl = (index: number) => {
-    const newUrls = [...(user.iframeUrls || [])];
-    newUrls.splice(index, 1);
+    const updatedIframeUrls = [...iframeUrls];
+    updatedIframeUrls.splice(index, 1);
     
-    onUserChange({
+    const updatedUser = {
       ...user,
-      iframeUrls: newUrls
-    });
+      iframeUrls: updatedIframeUrls
+    };
+    onUserChange(updatedUser);
+  };
+
+  const handleIframeUrlChange = (index: number, value: string) => {
+    const updatedIframeUrls = [...iframeUrls];
+    updatedIframeUrls[index] = value;
+    
+    const updatedUser = {
+      ...user,
+      iframeUrls: updatedIframeUrls
+    };
+    onUserChange(updatedUser);
   };
 
   return (
-    <div className="p-3 bg-gray-50 rounded-md">
-      <div className="flex items-center gap-2 mb-3">
-        <LinkIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
-        <Label className="text-sm font-medium text-gray-700">IFRAME URLs</Label>
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-medium">Iframe URLs</h3>
+        {!isReadOnly && (
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm" 
+            onClick={handleAddIframeUrl}
+            className="flex items-center gap-1"
+          >
+            <PlusCircle className="h-4 w-4" />
+            Add URL
+          </Button>
+        )}
       </div>
       
-      <div className="space-y-2">
-        {user.iframeUrls?.map((url: string, index: number) => (
-          <div key={index} className="flex items-center gap-2">
-            <Input 
-              value={url}
-              onChange={(e) => {
-                if (isReadOnly) return;
-                const newUrls = [...(user.iframeUrls || [])];
-                newUrls[index] = e.target.value;
-                onUserChange({...user, iframeUrls: newUrls});
-              }}
-              placeholder="https://yourdomain.com/iframe-path"
-              className="flex-grow h-10 text-sm border-2 border-gray-300 bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-200 rounded-md"
-              readOnly={isReadOnly}
-              disabled={isReadOnly}
-            />
-            {!isReadOnly && (
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => handleRemoveIframeUrl(index)}
-                className="h-8 w-8"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
+      <div className="space-y-3">
+        {iframeUrls.length === 0 ? (
+          <div className="text-sm text-muted-foreground italic">
+            No iframe URLs added.
           </div>
-        ))}
-        
-        {!isReadOnly && (
-          <div className="flex items-center gap-2 mt-3">
-            <Input 
-              placeholder="https://yourdomain.com/iframe-path"
-              value={newIframeUrl}
-              onChange={(e) => setNewIframeUrl(e.target.value)}
-              className="flex-grow h-10 text-sm border-2 border-gray-300 bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-200 rounded-md"
-            />
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={handleAddIframeUrl}
-              className="h-10 whitespace-nowrap"
-            >
-              <Plus className="h-3 w-3 mr-1" />
-              Add
-            </Button>
-          </div>
+        ) : (
+          iframeUrls.map((url, index) => (
+            <div key={index} className="flex gap-2 items-center">
+              <div className="flex-1">
+                {isReadOnly ? (
+                  <div className="border rounded-md p-2 bg-muted text-sm truncate">
+                    {url}
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <Label htmlFor={`iframe-url-${index}`} className="sr-only">
+                      Iframe URL {index + 1}
+                    </Label>
+                    <Input
+                      id={`iframe-url-${index}`}
+                      value={url}
+                      onChange={(e) => handleIframeUrlChange(index, e.target.value)}
+                      placeholder="https://example.com/iframe-content"
+                      disabled={isReadOnly}
+                    />
+                  </div>
+                )}
+              </div>
+              
+              {!isReadOnly && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleRemoveIframeUrl(index)}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Remove</span>
+                </Button>
+              )}
+            </div>
+          ))
         )}
       </div>
     </div>
@@ -99,4 +118,3 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
 };
 
 export default IframeUrlsSection;
-
