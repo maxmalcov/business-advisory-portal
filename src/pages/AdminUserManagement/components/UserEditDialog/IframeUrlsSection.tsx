@@ -19,9 +19,12 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
   const handleAddIframeUrl = () => {
     if (!newIframeUrl) return;
     
+    // Ensure we're working with an array, even if iframeUrls is undefined
+    const currentUrls = Array.isArray(user.iframeUrls) ? user.iframeUrls : [];
+    
     onUserChange({
       ...user,
-      iframeUrls: [...(user.iframeUrls || []), newIframeUrl]
+      iframeUrls: [...currentUrls, newIframeUrl]
     });
     
     setNewIframeUrl('');
@@ -29,14 +32,21 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
 
   // Handle removing an iframe URL
   const handleRemoveIframeUrl = (index: number) => {
-    const newUrls = [...(user.iframeUrls || [])];
-    newUrls.splice(index, 1);
+    // Ensure we're working with an array, even if iframeUrls is undefined
+    const currentUrls = Array.isArray(user.iframeUrls) ? [...user.iframeUrls] : [];
     
-    onUserChange({
-      ...user,
-      iframeUrls: newUrls
-    });
+    if (currentUrls.length > index) {
+      currentUrls.splice(index, 1);
+      
+      onUserChange({
+        ...user,
+        iframeUrls: currentUrls
+      });
+    }
   };
+
+  // Ensure we're always displaying an array, even if iframeUrls is undefined
+  const iframeUrls = Array.isArray(user.iframeUrls) ? user.iframeUrls : [];
 
   return (
     <div className="p-3 bg-gray-50 rounded-md mb-4">
@@ -46,13 +56,13 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ user, onUserChang
       </div>
       
       <div className="space-y-2">
-        {user.iframeUrls?.map((url: string, index: number) => (
+        {iframeUrls.map((url: string, index: number) => (
           <div key={index} className="flex items-center gap-2">
             <Input 
               value={url}
               onChange={(e) => {
                 if (isReadOnly) return;
-                const newUrls = [...(user.iframeUrls || [])];
+                const newUrls = [...iframeUrls];
                 newUrls[index] = e.target.value;
                 onUserChange({...user, iframeUrls: newUrls});
               }}
