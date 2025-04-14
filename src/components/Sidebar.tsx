@@ -1,21 +1,21 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import {
+  LayoutGrid,
+  Users,
   BarChart3,
+  Layers,
+  Link2,
+  Activity,
+  Sparkles,
   FileText,
   FileUp,
   FileDown,
-  Users,
-  UserCog,
-  Layers,
-  LayoutGrid,
-  Activity,
   UserPlus,
   UserMinus,
   Clock,
-  Link2,
-  Sparkles,
   ScrollText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -23,12 +23,6 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import SidebarHeader from './sidebar/SidebarHeader';
 import SidebarNav from './sidebar/SidebarNav';
 import { SidebarItem, SidebarProps } from './sidebar/types';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
@@ -81,11 +75,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: ScrollText,
     },
     {
-      name: t('nav.profile'),
-      path: '/profile',
-      icon: UserCog,
-    },
-    {
       name: t('nav.subscriptions'),
       path: '/subscriptions',
       icon: Layers,
@@ -104,6 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
   ];
 
+  // Updated admin menu items order according to requirements
   const adminMenuItems: SidebarItem[] = [
     {
       name: t('admin.dashboard'),
@@ -111,14 +101,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: LayoutGrid,
     },
     {
+      name: t('nav.users'),
+      path: '/admin/users',
+      icon: Users,
+    },
+    {
       name: t('nav.reports'),
       path: '/admin/reports',
       icon: BarChart3,
-    },
-    {
-      name: t('nav.profile'),
-      path: '/profile',
-      icon: UserCog,
     },
     {
       name: t('nav.subscriptions'),
@@ -126,19 +116,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: Layers,
     },
     {
-      name: t('nav.users'),
-      path: '/admin/users',
-      icon: Users,
+      name: 'Useful Links',
+      path: '/admin/useful-links',
+      icon: Link2,
     },
     {
       name: t('admin.logs'),
       path: '/admin/logs',
       icon: Activity,
-    },
-    {
-      name: 'Useful Links',
-      path: '/admin/useful-links',
-      icon: Link2,
     },
     {
       name: t('nav.services'),
