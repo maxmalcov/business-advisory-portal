@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { DialogFooter, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Save, Edit, Trash2, Power, X } from 'lucide-react';
+import { Save, Edit, Trash2, Power, X, Mail } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/context/LanguageContext';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import BasicInfoSection from './BasicInfoSection';
 import ContactInfoSection from './ContactInfoSection';
 import AccountInfoSection from './AccountInfoSection';
@@ -113,8 +115,8 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
                           onChange={(e) => onUserChange({...user, incomingInvoiceEmail: e.target.value})}
                           className="w-full h-9 border-blue-200 focus:border-blue-400"
                           placeholder="incoming@example.com"
-                          readOnly={isReadOnly}
-                          disabled={isReadOnly}
+                          readOnly={!isEditMode}
+                          disabled={!isEditMode}
                         />
                       </div>
                       
@@ -129,8 +131,8 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
                           onChange={(e) => onUserChange({...user, outgoingInvoiceEmail: e.target.value})}
                           className="w-full h-9 border-blue-200 focus:border-blue-400"
                           placeholder="outgoing@example.com"
-                          readOnly={isReadOnly}
-                          disabled={isReadOnly}
+                          readOnly={!isEditMode}
+                          disabled={!isEditMode}
                         />
                       </div>
                     </div>
