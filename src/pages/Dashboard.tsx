@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -79,9 +80,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <RecentActivity />
-
       {/* Stats Summary */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.stats')}</h2>
@@ -131,8 +129,12 @@ const Dashboard: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      {/* Recent Activity */}
+      <RecentActivity />
     </div>
   );
 };
 
 export default Dashboard;
+
