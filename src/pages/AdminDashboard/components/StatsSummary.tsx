@@ -14,7 +14,7 @@ import { useAdminStats } from '../hooks/useAdminStats';
 const StatsSummary: React.FC = () => {
   const { t } = useLanguage();
   const isMobile = useIsMobile();
-  const { totalClients, newThisMonth, pendingRequests, serviceTasks, loading } = useAdminStats();
+  const { totalClients, newThisMonth, pendingRequests, totalInvoices, loading } = useAdminStats();
 
   return (
     <div>
@@ -68,14 +68,14 @@ const StatsSummary: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Service Tasks
+              Total Invoices
             </CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
-              <div className="text-2xl font-bold">{serviceTasks}</div>
+              <div className="text-2xl font-bold">{totalInvoices}</div>
             )}
           </CardContent>
         </Card>

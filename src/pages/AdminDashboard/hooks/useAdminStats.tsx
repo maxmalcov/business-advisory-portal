@@ -7,7 +7,7 @@ interface AdminStats {
   totalClients: number;
   newThisMonth: number;
   pendingRequests: number;
-  serviceTasks: number;
+  totalInvoices: number;
   loading: boolean;
 }
 
@@ -17,7 +17,7 @@ export const useAdminStats = (): AdminStats => {
     totalClients: 0,
     newThisMonth: 0,
     pendingRequests: 0,
-    serviceTasks: 0,
+    totalInvoices: 0,
     loading: true
   });
 
@@ -50,19 +50,19 @@ export const useAdminStats = (): AdminStats => {
           
         if (pendingError) throw pendingError;
         
-        // Fetch all service tasks (all service requests)
-        const { data: allRequests, error: requestsError } = await supabase
-          .from('service_requests')
+        // Fetch total invoices
+        const { data: invoices, error: invoicesError } = await supabase
+          .from('invoice_files')
           .select('id');
           
-        if (requestsError) throw requestsError;
+        if (invoicesError) throw invoicesError;
         
         // Update the stats
         setStats({
           totalClients: clients?.length || 0,
           newThisMonth: newClients.length,
           pendingRequests: pendingRequests?.length || 0,
-          serviceTasks: allRequests?.length || 0,
+          totalInvoices: invoices?.length || 0,
           loading: false
         });
         
