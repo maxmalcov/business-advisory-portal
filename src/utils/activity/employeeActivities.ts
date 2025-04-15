@@ -22,7 +22,7 @@ export const fetchEmployeeActivities = async (
     }
     
     const { data: employees, error: employeesError } = await employeeQuery
-      .select('id, full_name, status, start_date, end_date, created_at')
+      .select('id, full_name, status, start_date, end_date, created_at, company_name')
       .order('created_at', { ascending: false })
       .limit(10);
 
@@ -39,7 +39,7 @@ export const fetchEmployeeActivities = async (
           type: 'employee-added',
           timestamp: createdDate,
           title: 'New employee added',
-          description: `${employee.full_name} was added as a new employee.`,
+          description: `${employee.full_name} was added as a new employee${employee.company_name ? ' at ' + employee.company_name : ''}.`,
           metadata: { employeeId: employee.id }
         });
         

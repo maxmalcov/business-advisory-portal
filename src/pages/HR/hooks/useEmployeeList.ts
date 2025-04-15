@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Employee as EmployeeType, EmployeeStatus } from '../types/employee';
-import { employeesTable, isUserAdmin, getUserCompanyName } from '@/integrations/supabase/client';
+import { employeesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
 
@@ -33,8 +33,8 @@ export function useEmployeeList() {
         }
         
         // If user is not an admin, filter by company name
-        const isAdmin = user?.userType === 'admin';
-        if (!isAdmin && user?.companyName) {
+        if (user && user.userType !== 'admin' && user.companyName) {
+          console.log('Filtering employees by company name:', user.companyName);
           query = query.eq('company_name', user.companyName);
         }
         

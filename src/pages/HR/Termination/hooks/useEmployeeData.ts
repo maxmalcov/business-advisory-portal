@@ -20,6 +20,7 @@ export const useEmployeeData = () => {
         
         // If not admin, filter by company name
         if (user && user.userType !== 'admin' && user.companyName) {
+          console.log('Filtering termination employees by company:', user.companyName);
           query = query.eq('company_name', user.companyName);
         }
           
