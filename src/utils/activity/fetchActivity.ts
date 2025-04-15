@@ -1,5 +1,5 @@
 
-import { supabase, isUserAdmin, employeesTable } from '@/integrations/supabase/client';
+import { supabase, isUserAdmin, getUserCompanyName } from '@/integrations/supabase/client';
 import { ActivityEvent, ActivityEventType } from './types';
 
 export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
@@ -19,25 +19,21 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
     }
     
     // Fetch employee activities - admins see all, users see only their company's
-    let employeeQuery = employeesTable();
+    let query = supabase.from('employees');
     
     if (!isAdmin) {
       // Get user's company name
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('companyname')
-        .eq('id', user!.id)
-        .single();
-        
-      if (profileData?.companyname) {
-        employeeQuery = employeeQuery.eq('company_name', profileData.companyname);
+      const companyName = await getUserCompanyName();
+      
+      if (companyName) {
+        query = query.eq('company_name', companyName);
       } else {
         // If user has no company, they shouldn't see any employees
-        employeeQuery = employeeQuery.eq('id', 'no-match');
+        query = query.eq('id', 'no-match');
       }
     }
     
-    const { data: employees, error: employeesError } = await employeeQuery
+    const { data: employees, error: employeesError } = await query
       .select('id, full_name, status, start_date, end_date, created_at')
       .order('created_at', { ascending: false })
       .limit(10);
