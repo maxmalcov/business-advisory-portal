@@ -112,15 +112,20 @@ export const useUserActivity = (userId: string) => {
           
         if (supplierInvoicesError) throw supplierInvoicesError;
         
+        console.log(`User ${userId} activity - invoices found:`, {
+          saleInvoices: saleInvoices?.length || 0,
+          supplierInvoices: supplierInvoices?.length || 0
+        });
+        
         // Process invoice data
         const allInvoices: UserInvoiceItem[] = [
-          ...saleInvoices.map(invoice => ({
+          ...(saleInvoices || []).map(invoice => ({
             id: invoice.id,
             type: 'sale' as const,
             fileName: invoice.file_name,
             date: new Date(invoice.created_at)
           })),
-          ...supplierInvoices.map(invoice => ({
+          ...(supplierInvoices || []).map(invoice => ({
             id: invoice.id,
             type: 'supplier' as const,
             fileName: invoice.file_name,
@@ -154,8 +159,8 @@ export const useUserActivity = (userId: string) => {
           },
           invoices: {
             totalCount: allInvoices.length,
-            saleInvoices: saleInvoices.length,
-            supplierInvoices: supplierInvoices.length,
+            saleInvoices: saleInvoices?.length || 0,
+            supplierInvoices: supplierInvoices?.length || 0,
             recentInvoices: allInvoices.slice(0, 3) // Get the 3 most recent invoices
           }
         };

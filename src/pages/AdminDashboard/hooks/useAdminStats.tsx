@@ -50,13 +50,15 @@ export const useAdminStats = (): AdminStats => {
           
         if (pendingError) throw pendingError;
         
-        // Fetch both invoice_files and invoice_uploads tables to get complete count
+        // Fetch all invoices from both tables
+        // 1. Get invoice files (sale invoices)
         const { data: invoiceFiles, error: invoiceFilesError } = await supabase
           .from('invoice_files')
           .select('id');
           
         if (invoiceFilesError) throw invoiceFilesError;
         
+        // 2. Get supplier invoice files
         const { data: invoiceUploads, error: invoiceUploadsError } = await supabase
           .from('invoice_uploads')
           .select('id');
@@ -64,7 +66,15 @@ export const useAdminStats = (): AdminStats => {
         if (invoiceUploadsError) throw invoiceUploadsError;
 
         // Calculate total invoices as sum of both tables
-        const totalInvoices = (invoiceFiles?.length || 0) + (invoiceUploads?.length || 0);
+        const totalInvoices = 
+          (invoiceFiles?.length || 0) + 
+          (invoiceUploads?.length || 0);
+        
+        console.log('Admin stats - invoices found:', {
+          invoiceFiles: invoiceFiles?.length || 0,
+          invoiceUploads: invoiceUploads?.length || 0,
+          total: totalInvoices
+        });
         
         // Update the stats
         setStats({
