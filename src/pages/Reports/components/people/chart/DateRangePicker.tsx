@@ -2,8 +2,10 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Calendar } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 interface DateRangePickerProps {
   dateRange: {
@@ -41,7 +43,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
           variant="outline" 
           className="h-8 px-2 flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
         >
-          <Calendar className="h-4 w-4 mr-1" />
+          <CalendarIcon className="h-4 w-4 mr-1" />
           <span className="max-w-[120px] truncate">{formatDateRange()}</span>
         </Button>
       </PopoverTrigger>
@@ -50,27 +52,27 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <div className="grid gap-2">
             <div className="grid gap-1">
               <label className="text-sm font-medium">From</label>
-              <input 
-                type="date" 
-                className="h-8 w-full rounded-md border border-input px-3 py-1 text-sm"
-                value={dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : ''}
-                onChange={(e) => {
-                  const date = e.target.value ? new Date(e.target.value) : undefined;
-                  setDateRange(prev => ({ ...prev, from: date }));
-                }}
-              />
+              <div className="border rounded-md">
+                <Calendar
+                  mode="single"
+                  selected={dateRange.from}
+                  onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </div>
             </div>
             <div className="grid gap-1">
               <label className="text-sm font-medium">To</label>
-              <input 
-                type="date" 
-                className="h-8 w-full rounded-md border border-input px-3 py-1 text-sm"
-                value={dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : ''}
-                onChange={(e) => {
-                  const date = e.target.value ? new Date(e.target.value) : undefined;
-                  setDateRange(prev => ({ ...prev, to: date }));
-                }}
-              />
+              <div className="border rounded-md">
+                <Calendar
+                  mode="single"
+                  selected={dateRange.to}
+                  onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
+                  fromDate={dateRange.from}
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </div>
             </div>
           </div>
           <Button 
