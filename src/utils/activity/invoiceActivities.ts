@@ -23,43 +23,49 @@ export const fetchInvoiceActivities = async (
     if (invoiceUploadsError) {
       console.error('Error fetching invoice uploads:', invoiceUploadsError);
     } else if (invoiceUploads && invoiceUploads.length > 0) {
-      const userIds = [...new Set(invoiceUploads.map(invoice => invoice.user_id))];
-      const { data: userProfiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, name')
-        .in('id', userIds);
-        
-      if (profilesError) {
-        console.error('Error fetching user profiles for invoices:', profilesError);
-      }
+      // Extract user IDs and ensure they are strings
+      const userIds = [...new Set(invoiceUploads.map(invoice => invoice.user_id))]
+        .filter((id): id is string => typeof id === 'string');
       
-      // Create a lookup map for user names
-      const userNameMap = new Map();
-      if (userProfiles) {
-        userProfiles.forEach(profile => {
-          userNameMap.set(profile.id, profile.name);
+      // Only fetch profiles if we have valid user IDs
+      if (userIds.length > 0) {
+        const { data: userProfiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', userIds);
+          
+        if (profilesError) {
+          console.error('Error fetching user profiles for invoices:', profilesError);
+        }
+        
+        // Create a lookup map for user names
+        const userNameMap = new Map();
+        if (userProfiles) {
+          userProfiles.forEach(profile => {
+            userNameMap.set(profile.id, profile.name);
+          });
+        }
+        
+        // Process invoice uploads
+        invoiceUploads.forEach(invoice => {
+          const type = invoice.invoice_type === 'sale' ? 'invoice-uploaded' : 'supplier-invoice-uploaded';
+          const title = invoice.invoice_type === 'sale' ? 'Sale invoice uploaded' : 'Supplier invoice uploaded';
+          const userName = userNameMap.get(invoice.user_id) || 'User';
+          
+          activities.push({
+            id: `invoice-upload-${invoice.id}`,
+            type: type as ActivityEventType,
+            timestamp: new Date(invoice.created_at),
+            title: title,
+            description: `A ${invoice.invoice_type || 'supplier'} invoice "${invoice.file_name}" was uploaded by ${userName}.`,
+            metadata: { 
+              invoiceId: invoice.id,
+              userId: invoice.user_id,
+              userName: userName
+            }
+          });
         });
       }
-      
-      // Process invoice uploads
-      invoiceUploads.forEach(invoice => {
-        const type = invoice.invoice_type === 'sale' ? 'invoice-uploaded' : 'supplier-invoice-uploaded';
-        const title = invoice.invoice_type === 'sale' ? 'Sale invoice uploaded' : 'Supplier invoice uploaded';
-        const userName = userNameMap.get(invoice.user_id) || 'User';
-        
-        activities.push({
-          id: `invoice-upload-${invoice.id}`,
-          type: type as ActivityEventType,
-          timestamp: new Date(invoice.created_at),
-          title: title,
-          description: `A ${invoice.invoice_type || 'supplier'} invoice "${invoice.file_name}" was uploaded by ${userName}.`,
-          metadata: { 
-            invoiceId: invoice.id,
-            userId: invoice.user_id,
-            userName: userName
-          }
-        });
-      });
     }
     
     // Fetch sales invoice uploads - admins see all, users see only their own
@@ -76,41 +82,47 @@ export const fetchInvoiceActivities = async (
     if (invoiceFilesError) {
       console.error('Error fetching invoice files:', invoiceFilesError);
     } else if (invoiceFiles && invoiceFiles.length > 0) {
-      const userIds = [...new Set(invoiceFiles.map(invoice => invoice.user_id))];
-      const { data: userProfiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, name')
-        .in('id', userIds);
-        
-      if (profilesError) {
-        console.error('Error fetching user profiles for invoices:', profilesError);
-      }
+      // Extract user IDs and ensure they are strings
+      const userIds = [...new Set(invoiceFiles.map(invoice => invoice.user_id))]
+        .filter((id): id is string => typeof id === 'string');
       
-      // Create a lookup map for user names
-      const userNameMap = new Map();
-      if (userProfiles) {
-        userProfiles.forEach(profile => {
-          userNameMap.set(profile.id, profile.name);
+      // Only fetch profiles if we have valid user IDs
+      if (userIds.length > 0) {
+        const { data: userProfiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', userIds);
+          
+        if (profilesError) {
+          console.error('Error fetching user profiles for invoices:', profilesError);
+        }
+        
+        // Create a lookup map for user names
+        const userNameMap = new Map();
+        if (userProfiles) {
+          userProfiles.forEach(profile => {
+            userNameMap.set(profile.id, profile.name);
+          });
+        }
+        
+        // Process invoice files as sale invoices
+        invoiceFiles.forEach(invoice => {
+          const userName = userNameMap.get(invoice.user_id) || 'User';
+          
+          activities.push({
+            id: `invoice-file-${invoice.id}`,
+            type: 'invoice-uploaded' as ActivityEventType,
+            timestamp: new Date(invoice.created_at),
+            title: 'Sale invoice uploaded',
+            description: `A sale invoice "${invoice.file_name}" was uploaded by ${userName}.`,
+            metadata: { 
+              invoiceId: invoice.id,
+              userId: invoice.user_id,
+              userName: userName
+            }
+          });
         });
       }
-      
-      // Process invoice files as sale invoices
-      invoiceFiles.forEach(invoice => {
-        const userName = userNameMap.get(invoice.user_id) || 'User';
-        
-        activities.push({
-          id: `invoice-file-${invoice.id}`,
-          type: 'invoice-uploaded' as ActivityEventType,
-          timestamp: new Date(invoice.created_at),
-          title: 'Sale invoice uploaded',
-          description: `A sale invoice "${invoice.file_name}" was uploaded by ${userName}.`,
-          metadata: { 
-            invoiceId: invoice.id,
-            userId: invoice.user_id,
-            userName: userName
-          }
-        });
-      });
     }
     
     return activities;
