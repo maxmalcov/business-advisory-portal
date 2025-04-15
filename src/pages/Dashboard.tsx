@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -6,11 +5,9 @@ import { useLanguage } from '@/context/LanguageContext';
 import { 
   Card, 
   CardContent, 
-  CardDescription, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { FileUp, FileDown, Users, Sparkles } from 'lucide-react';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 
@@ -20,19 +17,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Minimalistic Welcome Card */}
-      <Card className="border-l-4 border-l-ba-blue">
-        <CardHeader>
-          <CardTitle className="text-xl">Dashboard</CardTitle>
-          <CardDescription>
-            Welcome, {user?.name || user?.companyName}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Quick access to your essential features</p>
-        </CardContent>
-      </Card>
-
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.quick_actions')}</h2>
