@@ -34,7 +34,9 @@ const PeopleTab: React.FC<PeopleTabProps> = ({ employeeStats }) => {
         </CardContent>
       </Card>
       
-      <UserRegistrationChart registrationData={employeeStats.registrationTrends} />
+      <div className="w-full">
+        <UserRegistrationChart registrationData={employeeStats.registrationTrends} />
+      </div>
     </div>
   );
 };

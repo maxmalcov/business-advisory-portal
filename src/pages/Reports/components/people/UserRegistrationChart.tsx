@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { Calendar, CalendarDays, ChartBar, ChartLine } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useLanguage } from '@/context/LanguageContext';
@@ -35,9 +35,19 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
 
   // Filter data based on selected time range
   const filteredData = registrationData.slice(-parseInt(timeRange.replace('d', '')));
+  
+  // Process data to include only dates with registrations and recent date range
+  const processedData = filteredData.map(item => ({
+    ...item,
+    // Ensure proper formatting for display
+    displayDate: new Date(item.date).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric' 
+    })
+  }));
 
   return (
-    <Card className="col-span-3">
+    <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-base font-medium">
           User Registration Trends
@@ -75,61 +85,97 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
-          <ChartContainer
-            config={{
-              item: {
-                color: CHART_COLORS.primary,
-              },
-            }}
-          >
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
             {chartType === 'line' ? (
-              <LineChart data={filteredData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+              <LineChart data={processedData} margin={{ top: 10, right: 30, left: 0, bottom: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.muted} vertical={false} />
-                <XAxis dataKey="date" stroke={CHART_COLORS.muted} />
-                <YAxis stroke={CHART_COLORS.muted} />
-                <Tooltip content={<CustomTooltip />} />
-                <Line 
-                  type="monotone" 
-                  dataKey="count" 
-                  stroke={CHART_COLORS.primary} 
+                <XAxis 
+                  dataKey="displayDate" 
+                  stroke={CHART_COLORS.muted} 
+                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  minTickGap={15}
+                  padding={{ left: 10, right: 10 }}
+                />
+                <YAxis 
+                  stroke={CHART_COLORS.muted}
+                  allowDecimals={false}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12 }}
+                  width={30}
+                />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-background border border-border p-2 rounded shadow-sm">
+                          <p className="text-sm font-medium">{label}</p>
+                          <p className="text-sm text-primary">{`Registrations: ${payload[0].value}`}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="count"
+                  stroke={CHART_COLORS.primary}
                   strokeWidth={2}
-                  dot={{ r: 3 }}
+                  dot={{ r: 3, fill: CHART_COLORS.primary }}
+                  activeDot={{ r: 5 }}
                   name="Users"
+                  animationDuration={500}
                 />
               </LineChart>
             ) : (
-              <BarChart data={filteredData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+              <BarChart data={processedData} margin={{ top: 10, right: 30, left: 0, bottom: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.muted} vertical={false} />
-                <XAxis dataKey="date" stroke={CHART_COLORS.muted} />
-                <YAxis stroke={CHART_COLORS.muted} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar 
-                  dataKey="count" 
-                  fill={CHART_COLORS.primary} 
-                  name="Users" 
+                <XAxis 
+                  dataKey="displayDate" 
+                  stroke={CHART_COLORS.muted} 
+                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  minTickGap={15}
+                  padding={{ left: 10, right: 10 }}
+                />
+                <YAxis 
+                  stroke={CHART_COLORS.muted}
+                  allowDecimals={false}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12 }}
+                  width={30}
+                />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-background border border-border p-2 rounded shadow-sm">
+                          <p className="text-sm font-medium">{label}</p>
+                          <p className="text-sm text-primary">{`Registrations: ${payload[0].value}`}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar
+                  dataKey="count"
+                  fill={CHART_COLORS.primary}
+                  name="Users"
                   radius={[4, 4, 0, 0]}
+                  animationDuration={500}
                 />
               </BarChart>
             )}
-          </ChartContainer>
+          </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>
   );
-};
-
-// Custom tooltip component
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-background border border-border p-2 rounded shadow-sm">
-        <p className="text-sm font-medium">{`Date: ${label}`}</p>
-        <p className="text-sm text-primary">{`Registrations: ${payload[0].value}`}</p>
-      </div>
-    );
-  }
-  return null;
 };
 
 export default UserRegistrationChart;
