@@ -14,6 +14,7 @@ export interface EmployeeStats {
   active: number;
   terminated: number;
   recentlyAdded: number;
+  registrationTrends: { date: string; count: number }[];
 }
 
 export interface ServicesStats {

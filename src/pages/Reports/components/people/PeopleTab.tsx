@@ -9,32 +9,33 @@ import {
 } from '@/components/ui/card';
 import EmployeeStats from './EmployeeStats';
 import RecentAdditions from './RecentAdditions';
+import UserRegistrationChart from './UserRegistrationChart';
+import { EmployeeStats as EmployeeStatsType } from '../../hooks/types';
 
 interface PeopleTabProps {
-  employeeStats: {
-    total: number;
-    active: number;
-    terminated: number;
-    recentlyAdded: number;
-  };
+  employeeStats: EmployeeStatsType;
 }
 
 const PeopleTab: React.FC<PeopleTabProps> = ({ employeeStats }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>User Summary</CardTitle>
-        <CardDescription>
-          Overview of registered users in the system
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <EmployeeStats employeeStats={employeeStats} />
-          <RecentAdditions recentlyAdded={employeeStats.recentlyAdded} />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>User Summary</CardTitle>
+          <CardDescription>
+            Overview of registered users in the system
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <EmployeeStats employeeStats={employeeStats} />
+            <RecentAdditions recentlyAdded={employeeStats.recentlyAdded} />
+          </div>
+        </CardContent>
+      </Card>
+      
+      <UserRegistrationChart registrationData={employeeStats.registrationTrends} />
+    </div>
   );
 };
 

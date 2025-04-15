@@ -11,6 +11,7 @@ export const useEmployeeStats = () => {
     active: 0,
     terminated: 0,
     recentlyAdded: 0,
+    registrationTrends: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -37,12 +38,16 @@ export const useEmployeeStats = () => {
             const userDate = new Date(user.created_at);
             return userDate >= thirtyDaysAgo;
           });
+
+          // Generate registration trends data (last 90 days)
+          const registrationTrends = generateRegistrationTrends(users, 90);
           
           setEmployeeStats({
             total: users.length,
             active: active.length,
             terminated: 0, // Not applicable for users, keeping for compatibility
             recentlyAdded: recentlyAdded.length,
+            registrationTrends,
           });
         } else {
           // Use default values if no data returned
@@ -51,6 +56,7 @@ export const useEmployeeStats = () => {
             active: 0,
             terminated: 0,
             recentlyAdded: 0,
+            registrationTrends: [],
           });
         }
       } catch (err) {
@@ -63,6 +69,7 @@ export const useEmployeeStats = () => {
           active: 42,
           terminated: 0,
           recentlyAdded: 8,
+          registrationTrends: generateMockRegistrationTrends(90),
         });
         
         toast({
@@ -77,6 +84,69 @@ export const useEmployeeStats = () => {
     
     fetchEmployeeStats();
   }, [toast]);
+
+  // Generate registration trends from user data
+  const generateRegistrationTrends = (users: any[], days: number) => {
+    const trends: { date: string; count: number }[] = [];
+    const today = new Date();
+    const startDate = new Date();
+    startDate.setDate(today.getDate() - days);
+
+    // Create a map to hold counts per day
+    const dateMap = new Map<string, number>();
+
+    // Initialize all dates in range with 0 count
+    for (let i = 0; i < days; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      const dateStr = formatDate(date);
+      dateMap.set(dateStr, 0);
+    }
+
+    // Count registrations per day
+    users.forEach(user => {
+      const registrationDate = new Date(user.created_at);
+      if (registrationDate >= startDate && registrationDate <= today) {
+        const dateStr = formatDate(registrationDate);
+        const currentCount = dateMap.get(dateStr) || 0;
+        dateMap.set(dateStr, currentCount + 1);
+      }
+    });
+
+    // Convert map to array of objects
+    dateMap.forEach((count, date) => {
+      trends.push({ date, count });
+    });
+
+    // Sort by date
+    trends.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    return trends;
+  };
+
+  // Generate mock registration trends for fallback
+  const generateMockRegistrationTrends = (days: number) => {
+    const trends: { date: string; count: number }[] = [];
+    const today = new Date();
+    const startDate = new Date();
+    startDate.setDate(today.getDate() - days);
+
+    for (let i = 0; i < days; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      const dateStr = formatDate(date);
+      // Generate random count between 0 and 5
+      const count = Math.floor(Math.random() * 6);
+      trends.push({ date: dateStr, count });
+    }
+
+    return trends;
+  };
+
+  // Helper to format date as YYYY-MM-DD
+  const formatDate = (date: Date) => {
+    return date.toISOString().split('T')[0];
+  };
 
   return {
     employeeStats,
