@@ -93,7 +93,11 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                 <XAxis 
                   dataKey="displayDate" 
                   stroke={CHART_COLORS.muted} 
-                  tick={{ fontSize: 12 }}
+                  tick={{ 
+                    fontSize: 12, 
+                    fill: 'hsl(var(--muted-foreground))', 
+                    fontWeight: 600 
+                  }}
                   tickLine={false}
                   minTickGap={15}
                   padding={{ left: 10, right: 10 }}
@@ -103,7 +107,11 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   allowDecimals={false}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 12 }}
+                  tick={{ 
+                    fontSize: 12, 
+                    fill: 'hsl(var(--muted-foreground))', 
+                    fontWeight: 600 
+                  }}
                   width={30}
                 />
                 <Tooltip
@@ -111,8 +119,8 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                     if (active && payload && payload.length) {
                       return (
                         <div className="bg-background border border-border p-2 rounded shadow-sm">
-                          <p className="text-sm font-medium">{label}</p>
-                          <p className="text-sm text-primary">{`Registrations: ${payload[0].value}`}</p>
+                          <p className="text-sm font-medium text-foreground">{label}</p>
+                          <p className="text-sm text-primary font-semibold">{`Registrations: ${payload[0].value}`}</p>
                         </div>
                       );
                     }
@@ -136,7 +144,11 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                 <XAxis 
                   dataKey="displayDate" 
                   stroke={CHART_COLORS.muted} 
-                  tick={{ fontSize: 12 }}
+                  tick={{ 
+                    fontSize: 12, 
+                    fill: 'hsl(var(--muted-foreground))', 
+                    fontWeight: 600 
+                  }}
                   tickLine={false}
                   minTickGap={15}
                   padding={{ left: 10, right: 10 }}
@@ -146,7 +158,11 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   allowDecimals={false}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 12 }}
+                  tick={{ 
+                    fontSize: 12, 
+                    fill: 'hsl(var(--muted-foreground))', 
+                    fontWeight: 600 
+                  }}
                   width={30}
                 />
                 <Tooltip
@@ -154,8 +170,8 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                     if (active && payload && payload.length) {
                       return (
                         <div className="bg-background border border-border p-2 rounded shadow-sm">
-                          <p className="text-sm font-medium">{label}</p>
-                          <p className="text-sm text-primary">{`Registrations: ${payload[0].value}`}</p>
+                          <p className="text-sm font-medium text-foreground">{label}</p>
+                          <p className="text-sm text-primary font-semibold">{`Registrations: ${payload[0].value}`}</p>
                         </div>
                       );
                     }
@@ -179,3 +195,4 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
 };
 
 export default UserRegistrationChart;
+
