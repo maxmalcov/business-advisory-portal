@@ -8,7 +8,6 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import EmployeeStats from './EmployeeStats';
-import RecentAdditions from './RecentAdditions';
 import UserRegistrationChart from './UserRegistrationChart';
 import { EmployeeStats as EmployeeStatsType } from '../../hooks/types';
 
@@ -29,7 +28,6 @@ const PeopleTab: React.FC<PeopleTabProps> = ({ employeeStats }) => {
         <CardContent>
           <div className="space-y-6">
             <EmployeeStats employeeStats={employeeStats} />
-            <RecentAdditions recentlyAdded={employeeStats.recentlyAdded} />
           </div>
         </CardContent>
       </Card>
