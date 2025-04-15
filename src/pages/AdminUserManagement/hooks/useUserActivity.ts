@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 // Define types for user activity data
 export interface UserRegistrationInfo {
@@ -54,6 +56,7 @@ export interface UserActivityData {
 
 // Hook to fetch and manage user activity data
 export const useUserActivity = (userId: string) => {
+  const { toast } = useToast();
   const [activityData, setActivityData] = useState<UserActivityData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,43 +67,100 @@ export const useUserActivity = (userId: string) => {
       setError(null);
       
       try {
-        // In a real application, this would be an API call
-        // Here we're just using mock data for demonstration
+        // Fetch the user's profile to get registration date
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('created_at, name')
+          .eq('id', userId)
+          .single();
         
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500));
+        if (profileError) throw profileError;
         
-        // Mock data
-        const mockUserData: UserActivityData = {
+        // Fetch the user's service requests
+        const { data: servicesData, error: servicesError } = await supabase
+          .from('service_requests')
+          .select('id, service_name, status, request_date, admin_notes, updated_at')
+          .eq('client_id', userId);
+        
+        if (servicesError) throw servicesError;
+        
+        // Process services data
+        const services = servicesData?.map(service => ({
+          id: service.id,
+          name: service.service_name,
+          status: service.status as 'completed' | 'in-progress' | 'cancelled',
+          requestDate: new Date(service.request_date),
+          adminAssigned: service.admin_notes ? 
+            service.admin_notes.includes('Assigned to:') ? 
+              service.admin_notes.split('Assigned to:')[1].trim() : undefined
+            : undefined
+        })) || [];
+        
+        // Fetch invoice files (sale invoices)
+        const { data: saleInvoices, error: saleInvoicesError } = await supabase
+          .from('invoice_files')
+          .select('id, file_name, created_at')
+          .eq('user_id', userId);
+          
+        if (saleInvoicesError) throw saleInvoicesError;
+        
+        // Fetch supplier invoice files
+        const { data: supplierInvoices, error: supplierInvoicesError } = await supabase
+          .from('invoice_uploads')
+          .select('id, file_name, created_at')
+          .eq('user_id', userId);
+          
+        if (supplierInvoicesError) throw supplierInvoicesError;
+        
+        // Process invoice data
+        const allInvoices: UserInvoiceItem[] = [
+          ...saleInvoices.map(invoice => ({
+            id: invoice.id,
+            type: 'sale' as const,
+            fileName: invoice.file_name,
+            date: new Date(invoice.created_at)
+          })),
+          ...supplierInvoices.map(invoice => ({
+            id: invoice.id,
+            type: 'supplier' as const,
+            fileName: invoice.file_name,
+            date: new Date(invoice.created_at)
+          }))
+        ].sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort by date, newest first
+        
+        // Create the final activity data object
+        const userActivityData: UserActivityData = {
           registrationInfo: {
-            registrationDate: new Date(2024, 2, 15, 10, 30), // March 15, 2024, 10:30 AM
+            registrationDate: new Date(profileData.created_at)
           },
-          services: [
-            { id: '1', name: 'Payroll Setup', status: 'completed', requestDate: new Date(2024, 3, 5), adminAssigned: 'John Doe' },
-            { id: '2', name: 'Tax Filing', status: 'in-progress', requestDate: new Date(2024, 3, 10), adminAssigned: 'Jane Smith' },
-            { id: '3', name: 'Financial Reporting', status: 'cancelled', requestDate: new Date(2024, 2, 20), adminAssigned: 'Mark Johnson' },
-          ],
+          services: services,
           subscriptions: {
-            active: { name: 'Premium Plan', status: 'active', startDate: new Date(2024, 3, 1), endDate: new Date(2025, 3, 1) },
-            history: [
-              { id: '1', name: 'Basic Plan', action: 'activated', date: new Date(2024, 0, 15) },
-              { id: '2', name: 'Basic Plan', action: 'cancelled', date: new Date(2024, 2, 28) },
-              { id: '3', name: 'Premium Plan', action: 'activated', date: new Date(2024, 3, 1) },
-            ]
+            // For now, we'll use a mock subscription since we don't have this data in the database
+            // In a real implementation, we'd fetch this from a subscriptions table
+            active: services.length > 0 ? {
+              name: 'Premium Plan',
+              status: 'active',
+              startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+              endDate: new Date(Date.now() + 335 * 24 * 60 * 60 * 1000) // 335 days from now
+            } : undefined,
+            history: services.length > 0 ? [
+              {
+                id: '1',
+                name: 'Premium Plan',
+                action: 'activated',
+                date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+              }
+            ] : []
           },
           invoices: {
-            totalCount: 24,
-            saleInvoices: 18,
-            supplierInvoices: 6,
-            recentInvoices: [
-              { id: '1', type: 'sale', fileName: 'Invoice_202404_001.pdf', date: new Date(2024, 3, 8) },
-              { id: '2', type: 'supplier', fileName: 'Supplier_Invoice_Q1_2024.pdf', date: new Date(2024, 3, 5) },
-              { id: '3', type: 'sale', fileName: 'Invoice_202403_045.pdf', date: new Date(2024, 2, 30) },
-            ]
+            totalCount: allInvoices.length,
+            saleInvoices: saleInvoices.length,
+            supplierInvoices: supplierInvoices.length,
+            recentInvoices: allInvoices.slice(0, 3) // Get the 3 most recent invoices
           }
         };
         
-        setActivityData(mockUserData);
+        setActivityData(userActivityData);
       } catch (err) {
         console.error("Error fetching user activity data:", err);
         setError("Failed to load user activity data. Please try again later.");
@@ -112,7 +172,7 @@ export const useUserActivity = (userId: string) => {
     if (userId) {
       fetchUserActivity();
     }
-  }, [userId]);
+  }, [userId, toast]);
   
   return { activityData, isLoading, error };
 };
