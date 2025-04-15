@@ -7,7 +7,7 @@ import AccountInfoSection from './AccountInfoSection';
 import InvoiceEmailsSection from './InvoiceEmailsSection';
 import LocationInfoSection from './LocationInfoSection';
 import IframeUrlsSection from './IframeUrlsSection';
-import ActivityTabContent from './ActivityTabContent';
+import ActivityTabContent from './ActivityTab';
 import type { User } from '../../hooks/types';
 
 interface UserEditTabsProps {
