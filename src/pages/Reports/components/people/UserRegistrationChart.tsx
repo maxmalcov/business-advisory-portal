@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -52,6 +53,7 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
     from: undefined,
     to: undefined,
   });
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   // Filter data based on selected time range or custom date range
   const getFilteredData = () => {
@@ -79,6 +81,10 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
 
   const handleTimeRangeChange = (value: string) => {
     setTimeRange(value);
+    // If changing from custom to predefined range, close the date picker if it's open
+    if (value !== 'custom' && isDatePickerOpen) {
+      setIsDatePickerOpen(false);
+    }
   };
 
   // Format the date range for display
@@ -139,7 +145,7 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
           
           {/* Date range selector */}
           {timeRange === 'custom' ? (
-            <Popover>
+            <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
               <PopoverTrigger asChild>
                 <Button 
                   variant="outline" 
@@ -182,7 +188,7 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                     className="w-full"
                     onClick={() => {
                       // Close the popover manually
-                      document.body.click();
+                      setIsDatePickerOpen(false);
                     }}
                   >
                     Apply
@@ -190,20 +196,21 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                 </div>
               </PopoverContent>
             </Popover>
-          ) : (
-            <Select value={timeRange} onValueChange={handleTimeRangeChange}>
-              <SelectTrigger className="h-8 w-[130px]">
-                <SelectValue placeholder="Select range" />
-              </SelectTrigger>
-              <SelectContent>
-                {TIME_RANGES.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+          ) : null}
+          
+          {/* Always show the dropdown regardless of current mode */}
+          <Select value={timeRange} onValueChange={handleTimeRangeChange}>
+            <SelectTrigger className="h-8 w-[130px]">
+              <SelectValue placeholder="Select range" />
+            </SelectTrigger>
+            <SelectContent>
+              {TIME_RANGES.map(option => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </CardHeader>
       <CardContent>
