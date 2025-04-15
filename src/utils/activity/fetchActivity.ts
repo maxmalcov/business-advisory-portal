@@ -1,5 +1,5 @@
 
-import { supabase, isUserAdmin, getUserCompanyName, employeesTable } from '@/integrations/supabase/client';
+import { supabase, isUserAdmin, getUserCompanyName } from '@/integrations/supabase/client';
 import { ActivityEvent, ActivityEventType } from './types';
 
 export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
@@ -19,7 +19,7 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
     }
     
     // Fetch employee activities - admins see all, users see only their company's
-    let employeeQuery = employeesTable();
+    let employeeQuery = supabase.from('employees');
     
     if (!isAdmin) {
       // Get user's company name
