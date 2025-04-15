@@ -9,7 +9,12 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true
+  }
+});
 
 // Type definitions for service requests to avoid TypeScript errors
 // This is a workaround until the types.ts file is automatically regenerated
@@ -66,40 +71,51 @@ export type UsefulLinkDB = {
   updated_at: string;
 }
 
+// Helper function to check if the current user is an admin
+export const isUserAdmin = async (): Promise<boolean> => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+    
+    const { data } = await supabase
+      .from('profiles')
+      .select('usertype')
+      .eq('id', user.id)
+      .single();
+      
+    return data?.usertype === 'admin';
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+    return false;
+  }
+};
+
 // Helper function to safely access the service_requests table
 export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
 };
 
 // Helper function to safely access the services table
-// This is a workaround because the services table isn't in the generated types yet
 export const servicesTable = () => {
   // Force TypeScript to treat this as any to bypass type checking
-  // since we're manually defining the Service type above
   return supabase.from('services' as any);
 };
 
 // Helper function to safely access the employees table
 export const employeesTable = () => {
-  // Use a simple approach that works with the type system
-  // We'll cast the result to any to bypass TypeScript's type checking
-  // and handle the type conversion in the component code
   return supabase.from('employees' as any);
 };
 
 // Helper function to safely access the useful_links table
 export const usefulLinksTable = () => {
-  // Simplify our approach - just use 'any' to bypass TypeScript's type checking
   return supabase.from('useful_links' as any);
 };
 
 // Setup realtime subscription for the service_requests table
-// We're removing the problematic RPC call and using direct channel subscription instead
 const setupRealtimeSubscription = () => {
   try {
     console.log('Setting up realtime subscription for service_requests table');
     
-    // Instead of trying to call a DB function, we'll just subscribe to the channel directly
     const channel = supabase
       .channel('service_requests_changes')
       .on('postgres_changes', {
