@@ -1,8 +1,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Employee as EmployeeType, EmployeeStatus } from '../types/employee';
-import { employeesTable } from '@/integrations/supabase/client';
+import { employeesTable, isUserAdmin, getUserCompanyName } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 
 export function useEmployeeList() {
   const [statusFilter, setStatusFilter] = useState<EmployeeStatus | 'all'>('all');
@@ -10,6 +11,7 @@ export function useEmployeeList() {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const refreshEmployees = useCallback(() => {
     setRefreshTrigger(prev => prev + 1);
@@ -23,12 +25,17 @@ export function useEmployeeList() {
         console.log(`Fetching employees with status filter: ${statusFilter}`);
         
         // Initialize query
-        let query = employeesTable()
-          .select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule');
+        let query = employeesTable().select('id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule');
           
         // Only apply status filter if not 'all'
         if (statusFilter !== 'all') {
           query = query.eq('status', statusFilter);
+        }
+        
+        // If user is not an admin, filter by company name
+        const isAdmin = user?.userType === 'admin';
+        if (!isAdmin && user?.companyName) {
+          query = query.eq('company_name', user.companyName);
         }
         
         const { data, error } = await query;
@@ -75,7 +82,7 @@ export function useEmployeeList() {
     };
     
     fetchEmployees();
-  }, [statusFilter, refreshTrigger, toast]);
+  }, [statusFilter, refreshTrigger, toast, user]);
 
   return {
     employees,

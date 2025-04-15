@@ -1,5 +1,5 @@
 
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, isUserAdmin } from '@/integrations/supabase/client';
 import { ActivityEvent, ActivityEventType } from './types';
 
 export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
@@ -9,9 +9,35 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
   threeMonthsAgo.setMonth(now.getMonth() - 3);
   
   try {
-    // Fetch employee activities
-    const { data: employees, error: employeesError } = await supabase
-      .from('employees')
+    // Check if user is admin
+    const isAdmin = await isUserAdmin();
+    
+    // Get current user ID
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user && !isAdmin) {
+      return []; // Return empty array if not authenticated and not admin
+    }
+    
+    // Fetch employee activities - admins see all, users see only their company's
+    let employeeQuery = supabase.from('employees');
+    
+    if (!isAdmin) {
+      // Get user's company name
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('companyname')
+        .eq('id', user!.id)
+        .single();
+        
+      if (profileData?.companyname) {
+        employeeQuery = employeeQuery.eq('company_name', profileData.companyname);
+      } else {
+        // If user has no company, they shouldn't see any employees
+        employeeQuery = employeeQuery.eq('id', 'no-match');
+      }
+    }
+    
+    const { data: employees, error: employeesError } = await employeeQuery
       .select('id, full_name, status, start_date, end_date, created_at')
       .order('created_at', { ascending: false })
       .limit(10);
@@ -47,11 +73,13 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
       });
     }
 
-    // Fetch invoice uploads from both tables
+    // Fetch invoice uploads - admins see all, users see only their own
+    let invoiceUploadsQuery = supabase.from('invoice_uploads');
+    if (!isAdmin) {
+      invoiceUploadsQuery = invoiceUploadsQuery.eq('user_id', user!.id);
+    }
     
-    // 1. Direct invoice uploads
-    const { data: invoiceUploads, error: invoiceUploadsError } = await supabase
-      .from('invoice_uploads')
+    const { data: invoiceUploads, error: invoiceUploadsError } = await invoiceUploadsQuery
       .select('id, file_name, invoice_type, created_at, user_id')
       .order('created_at', { ascending: false })
       .limit(15);
@@ -99,9 +127,13 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
       });
     }
     
-    // 2. Sales invoice uploads from invoice_files
-    const { data: invoiceFiles, error: invoiceFilesError } = await supabase
-      .from('invoice_files')
+    // Fetch sales invoice uploads - admins see all, users see only their own
+    let invoiceFilesQuery = supabase.from('invoice_files');
+    if (!isAdmin) {
+      invoiceFilesQuery = invoiceFilesQuery.eq('user_id', user!.id);
+    }
+    
+    const { data: invoiceFiles, error: invoiceFilesError } = await invoiceFilesQuery
       .select('id, file_name, created_at, user_id')
       .order('created_at', { ascending: false })
       .limit(15);
@@ -147,9 +179,13 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
       });
     }
 
-    // Fetch service request completions
-    const { data: services, error: servicesError } = await supabase
-      .from('service_requests')
+    // Fetch service request completions - admins see all, users see only their own
+    let servicesQuery = supabase.from('service_requests');
+    if (!isAdmin) {
+      servicesQuery = servicesQuery.eq('client_id', user!.id);
+    }
+    
+    const { data: services, error: servicesError } = await servicesQuery
       .select('id, service_name, status, updated_at')
       .eq('status', 'completed')
       .order('updated_at', { ascending: false })
