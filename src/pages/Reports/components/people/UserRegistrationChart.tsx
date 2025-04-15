@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -90,12 +89,25 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
     return "Select dates";
   };
 
-  // Custom tooltip component that only shows count, not date
+  // Custom tooltip component that shows count and date
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
+      const registrationItem = processedData.find(
+        item => item.count === payload[0].value
+      );
+      
       return (
         <div className="bg-white border border-gray-200 shadow-md p-2 rounded-md">
           <p className="font-semibold text-sm">{`Registrations: ${payload[0].value}`}</p>
+          {registrationItem && registrationItem.date && (
+            <p className="text-xs text-gray-500 mt-1">
+              {new Date(registrationItem.date).toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+              })}
+            </p>
+          )}
         </div>
       );
     }
