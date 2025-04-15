@@ -68,14 +68,14 @@ const StatsSummary: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Service Tasks
+              Total Service Tasks
             </CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
-              <div className="text-2xl font-bold">{serviceTasks}</div>
+              <div className="text-2xl font-bold">{serviceTasks.total}</div>
             )}
           </CardContent>
         </Card>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,7 +6,12 @@ interface AdminStats {
   totalClients: number;
   newThisMonth: number;
   pendingRequests: number;
-  serviceTasks: number;
+  serviceTasks: {
+    total: number;
+    pending: number;
+    completed: number;
+    rejected: number;
+  };
   loading: boolean;
 }
 
@@ -17,7 +21,12 @@ export const useAdminStats = (): AdminStats => {
     totalClients: 0,
     newThisMonth: 0,
     pendingRequests: 0,
-    serviceTasks: 0,
+    serviceTasks: {
+      total: 0,
+      pending: 0,
+      completed: 0,
+      rejected: 0
+    },
     loading: true
   });
 
@@ -50,21 +59,27 @@ export const useAdminStats = (): AdminStats => {
           
         if (pendingError) throw pendingError;
         
-        // Fetch all service tasks (all service requests)
+        // Fetch service requests with their statuses
         const { data: allRequests, error: requestsError } = await supabase
           .from('service_requests')
-          .select('id');
+          .select('status');
           
         if (requestsError) throw requestsError;
         
+        // Calculate service tasks by status
+        const serviceTasks = {
+          total: allRequests?.length || 0,
+          pending: allRequests?.filter(req => req.status === 'pending').length || 0,
+          completed: allRequests?.filter(req => req.status === 'completed').length || 0,
+          rejected: allRequests?.filter(req => req.status === 'rejected').length || 0
+        };
+        
         // Update the stats
-        setStats({
-          totalClients: clients?.length || 0,
-          newThisMonth: newClients.length,
-          pendingRequests: pendingRequests?.length || 0,
-          serviceTasks: allRequests?.length || 0,
+        setStats(prev => ({
+          ...prev,
+          serviceTasks,
           loading: false
-        });
+        }));
         
       } catch (error) {
         console.error('Error fetching admin stats:', error);
