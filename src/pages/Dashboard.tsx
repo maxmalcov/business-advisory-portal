@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -6,12 +7,11 @@ import {
   Card, 
   CardContent, 
   CardDescription, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileUp, FileDown, Users, FileText, LayoutDashboard, Bell, FileIcon, Package, Sparkles } from 'lucide-react';
+import { FileUp, FileDown, Users, Sparkles } from 'lucide-react';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 
 const Dashboard: React.FC = () => {
@@ -20,16 +20,16 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Card */}
+      {/* Minimalistic Welcome Card */}
       <Card className="border-l-4 border-l-ba-blue">
         <CardHeader>
-          <CardTitle className="text-2xl">{t('dashboard.welcome')}</CardTitle>
+          <CardTitle className="text-xl">Dashboard</CardTitle>
           <CardDescription>
-            {user?.name || user?.companyName}{' '}
+            Welcome, {user?.name || user?.companyName}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p>Here's an overview of your account activity and quick access to essential features.</p>
+          <p className="text-sm text-muted-foreground">Quick access to your essential features</p>
         </CardContent>
       </Card>
 
