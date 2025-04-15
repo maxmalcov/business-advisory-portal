@@ -7,11 +7,14 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAdminStats } from '../hooks/useAdminStats';
 
 const StatsSummary: React.FC = () => {
   const { t } = useLanguage();
   const isMobile = useIsMobile();
+  const { totalClients, newThisMonth, pendingRequests, serviceTasks, loading } = useAdminStats();
 
   return (
     <div>
@@ -24,7 +27,11 @@ const StatsSummary: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">48</div>
+            {loading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="text-2xl font-bold">{totalClients}</div>
+            )}
           </CardContent>
         </Card>
 
@@ -35,7 +42,11 @@ const StatsSummary: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
+            {loading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="text-2xl font-bold">{newThisMonth}</div>
+            )}
           </CardContent>
         </Card>
 
@@ -46,7 +57,11 @@ const StatsSummary: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            {loading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="text-2xl font-bold">{pendingRequests}</div>
+            )}
           </CardContent>
         </Card>
 
@@ -57,7 +72,11 @@ const StatsSummary: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">27</div>
+            {loading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="text-2xl font-bold">{serviceTasks}</div>
+            )}
           </CardContent>
         </Card>
       </div>
