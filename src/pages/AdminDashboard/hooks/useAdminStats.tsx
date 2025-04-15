@@ -50,19 +50,28 @@ export const useAdminStats = (): AdminStats => {
           
         if (pendingError) throw pendingError;
         
-        // Fetch total invoices
-        const { data: invoices, error: invoicesError } = await supabase
+        // Fetch both invoice_files and invoice_uploads tables to get complete count
+        const { data: invoiceFiles, error: invoiceFilesError } = await supabase
           .from('invoice_files')
           .select('id');
           
-        if (invoicesError) throw invoicesError;
+        if (invoiceFilesError) throw invoiceFilesError;
+        
+        const { data: invoiceUploads, error: invoiceUploadsError } = await supabase
+          .from('invoice_uploads')
+          .select('id');
+          
+        if (invoiceUploadsError) throw invoiceUploadsError;
+
+        // Calculate total invoices as sum of both tables
+        const totalInvoices = (invoiceFiles?.length || 0) + (invoiceUploads?.length || 0);
         
         // Update the stats
         setStats({
           totalClients: clients?.length || 0,
           newThisMonth: newClients.length,
           pendingRequests: pendingRequests?.length || 0,
-          totalInvoices: invoices?.length || 0,
+          totalInvoices: totalInvoices,
           loading: false
         });
         
