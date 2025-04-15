@@ -1,9 +1,13 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar, CalendarDays, ChartBar, ChartLine } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useLanguage } from '@/context/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
 
 interface Registration {
   date: string;
@@ -24,14 +28,34 @@ const TimeRangeOptions = [
   { value: '7d', label: 'Last 7 days' },
   { value: '30d', label: 'Last 30 days' },
   { value: '90d', label: 'Last 90 days' },
+  { value: 'custom', label: 'Custom range' },
 ];
 
 const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrationData }) => {
   const { t } = useLanguage();
   const [timeRange, setTimeRange] = useState('30d');
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined,
+  });
 
-  const filteredData = registrationData.slice(-parseInt(timeRange.replace('d', '')));
+  // Filter data based on selected time range or custom date range
+  const getFilteredData = () => {
+    if (timeRange === 'custom' && dateRange.from && dateRange.to) {
+      return registrationData.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= dateRange.from! && itemDate <= dateRange.to!;
+      });
+    } else {
+      return registrationData.slice(-parseInt(timeRange.replace('d', '')));
+    }
+  };
+
+  const filteredData = getFilteredData();
   
   const processedData = filteredData.map(item => ({
     ...item,
@@ -40,6 +64,18 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
       day: 'numeric' 
     })
   }));
+
+  const handleTimeRangeChange = (value: string) => {
+    setTimeRange(value);
+  };
+
+  // Format the date range for display
+  const formatDateRange = () => {
+    if (dateRange.from && dateRange.to) {
+      return `${format(dateRange.from, 'MMM d')} - ${format(dateRange.to, 'MMM d, yyyy')}`;
+    }
+    return "Select dates";
+  };
 
   return (
     <Card className="w-full">
@@ -62,21 +98,75 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
               <ChartBar className="h-4 w-4" />
             </button>
           </div>
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="h-8 w-[130px]">
-              <SelectValue placeholder="Select range" />
-            </SelectTrigger>
-            <SelectContent>
-              {TimeRangeOptions.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  <div className="flex items-center">
-                    <CalendarDays className="mr-2 h-4 w-4" />
-                    <span>{option.label}</span>
+          {timeRange === 'custom' ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="h-8 px-2 flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                >
+                  <Calendar className="h-4 w-4 mr-1" />
+                  <span className="max-w-[120px] truncate">{formatDateRange()}</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <div className="p-3 space-y-3">
+                  <div className="grid gap-2">
+                    <div className="grid gap-1">
+                      <label className="text-sm font-medium">From</label>
+                      <input 
+                        type="date" 
+                        className="h-8 w-full rounded-md border border-input px-3 py-1 text-sm"
+                        value={dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : ''}
+                        onChange={(e) => {
+                          const date = e.target.value ? new Date(e.target.value) : undefined;
+                          setDateRange(prev => ({ ...prev, from: date }));
+                        }}
+                      />
+                    </div>
+                    <div className="grid gap-1">
+                      <label className="text-sm font-medium">To</label>
+                      <input 
+                        type="date" 
+                        className="h-8 w-full rounded-md border border-input px-3 py-1 text-sm"
+                        value={dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : ''}
+                        onChange={(e) => {
+                          const date = e.target.value ? new Date(e.target.value) : undefined;
+                          setDateRange(prev => ({ ...prev, to: date }));
+                        }}
+                      />
+                    </div>
                   </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => {
+                      // Close the popover manually
+                      document.body.click();
+                    }}
+                  >
+                    Apply
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Select value={timeRange} onValueChange={handleTimeRangeChange}>
+              <SelectTrigger className="h-8 w-[130px]">
+                <SelectValue placeholder="Select range" />
+              </SelectTrigger>
+              <SelectContent>
+                {TimeRangeOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    <div className="flex items-center">
+                      <CalendarDays className="mr-2 h-4 w-4" />
+                      <span>{option.label}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
       </CardHeader>
       <CardContent>
@@ -90,7 +180,7 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   stroke={CHART_COLORS.muted} 
                   tick={{ 
                     fontSize: 12, 
-                    fill: 'hsl(var(--muted-foreground))', 
+                    fill: 'hsl(var(--foreground))', 
                     fontWeight: 600 
                   }}
                   tickLine={false}
@@ -104,7 +194,7 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   axisLine={false}
                   tick={{ 
                     fontSize: 12, 
-                    fill: 'hsl(var(--muted-foreground))', 
+                    fill: 'hsl(var(--foreground))', 
                     fontWeight: 600 
                   }}
                   width={30}
@@ -140,7 +230,7 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   stroke={CHART_COLORS.muted} 
                   tick={{ 
                     fontSize: 12, 
-                    fill: 'hsl(var(--muted-foreground))', 
+                    fill: 'hsl(var(--foreground))', 
                     fontWeight: 600 
                   }}
                   tickLine={false}
@@ -154,7 +244,7 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   axisLine={false}
                   tick={{ 
                     fontSize: 12, 
-                    fill: 'hsl(var(--muted-foreground))', 
+                    fill: 'hsl(var(--foreground))', 
                     fontWeight: 600 
                   }}
                   width={30}
