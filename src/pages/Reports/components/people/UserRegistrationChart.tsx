@@ -1,8 +1,6 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { Calendar, CalendarDays, ChartBar, ChartLine } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useLanguage } from '@/context/LanguageContext';
@@ -33,13 +31,10 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
   const [timeRange, setTimeRange] = useState('30d');
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
 
-  // Filter data based on selected time range
   const filteredData = registrationData.slice(-parseInt(timeRange.replace('d', '')));
   
-  // Process data to include only dates with registrations and recent date range
   const processedData = filteredData.map(item => ({
     ...item,
-    // Ensure proper formatting for display
     displayDate: new Date(item.date).toLocaleDateString('en-US', { 
       month: 'short', 
       day: 'numeric' 
@@ -115,11 +110,10 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   width={30}
                 />
                 <Tooltip
-                  content={({ active, payload, label }) => {
+                  content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       return (
                         <div className="bg-background border border-border p-2 rounded shadow-sm">
-                          <p className="text-sm font-medium text-foreground">{label}</p>
                           <p className="text-sm text-primary font-semibold">{`Registrations: ${payload[0].value}`}</p>
                         </div>
                       );
@@ -166,11 +160,10 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
                   width={30}
                 />
                 <Tooltip
-                  content={({ active, payload, label }) => {
+                  content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       return (
                         <div className="bg-background border border-border p-2 rounded shadow-sm">
-                          <p className="text-sm font-medium text-foreground">{label}</p>
                           <p className="text-sm text-primary font-semibold">{`Registrations: ${payload[0].value}`}</p>
                         </div>
                       );
@@ -195,4 +188,3 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
 };
 
 export default UserRegistrationChart;
-
