@@ -63,6 +63,13 @@ export const useUserActivity = (userId: string) => {
 
   useEffect(() => {
     const fetchUserActivity = async () => {
+      if (!userId) {
+        console.error("No user ID provided to useUserActivity hook");
+        setError("No user ID provided");
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       
@@ -97,41 +104,60 @@ export const useUserActivity = (userId: string) => {
         })) || [];
         
         // Fetch invoice files (sale invoices)
-        const { data: saleInvoices, error: saleInvoicesError } = await supabase
+        const { data: invoiceFiles, error: invoiceFilesError } = await supabase
           .from('invoice_files')
           .select('id, file_name, created_at')
           .eq('user_id', userId);
           
-        if (saleInvoicesError) throw saleInvoicesError;
+        if (invoiceFilesError) {
+          console.error("Error fetching invoice files:", invoiceFilesError);
+          throw invoiceFilesError;
+        }
         
         // Fetch supplier invoice files
-        const { data: supplierInvoices, error: supplierInvoicesError } = await supabase
+        const { data: invoiceUploads, error: invoiceUploadsError } = await supabase
           .from('invoice_uploads')
-          .select('id, file_name, created_at')
+          .select('id, file_name, created_at, invoice_type')
           .eq('user_id', userId);
           
-        if (supplierInvoicesError) throw supplierInvoicesError;
+        if (invoiceUploadsError) {
+          console.error("Error fetching invoice uploads:", invoiceUploadsError);
+          throw invoiceUploadsError;
+        }
         
         console.log(`User ${userId} activity - invoices found:`, {
-          saleInvoices: saleInvoices?.length || 0,
-          supplierInvoices: supplierInvoices?.length || 0
+          invoiceFiles: invoiceFiles?.length || 0,
+          invoiceUploads: invoiceUploads?.length || 0
         });
         
         // Process invoice data
-        const allInvoices: UserInvoiceItem[] = [
-          ...(saleInvoices || []).map(invoice => ({
+        const saleInvoices = [
+          ...(invoiceFiles || []).map(invoice => ({
             id: invoice.id,
             type: 'sale' as const,
             fileName: invoice.file_name,
             date: new Date(invoice.created_at)
           })),
-          ...(supplierInvoices || []).map(invoice => ({
+          ...(invoiceUploads || []).filter(invoice => invoice.invoice_type === 'sale').map(invoice => ({
+            id: invoice.id,
+            type: 'sale' as const,
+            fileName: invoice.file_name,
+            date: new Date(invoice.created_at)
+          }))
+        ];
+        
+        const supplierInvoices = (invoiceUploads || [])
+          .filter(invoice => invoice.invoice_type === 'supplier' || !invoice.invoice_type)
+          .map(invoice => ({
             id: invoice.id,
             type: 'supplier' as const,
             fileName: invoice.file_name,
             date: new Date(invoice.created_at)
-          }))
-        ].sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort by date, newest first
+          }));
+        
+        // Combined and sorted invoice list
+        const allInvoices = [...saleInvoices, ...supplierInvoices]
+          .sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort by date, newest first
         
         // Create the final activity data object
         const userActivityData: UserActivityData = {
@@ -159,11 +185,17 @@ export const useUserActivity = (userId: string) => {
           },
           invoices: {
             totalCount: allInvoices.length,
-            saleInvoices: saleInvoices?.length || 0,
-            supplierInvoices: supplierInvoices?.length || 0,
+            saleInvoices: saleInvoices.length,
+            supplierInvoices: supplierInvoices.length,
             recentInvoices: allInvoices.slice(0, 3) // Get the 3 most recent invoices
           }
         };
+        
+        console.log("User activity data prepared:", {
+          userId: userId,
+          invoiceSummary: userActivityData.invoices,
+          recentInvoices: userActivityData.invoices.recentInvoices
+        });
         
         setActivityData(userActivityData);
       } catch (err) {

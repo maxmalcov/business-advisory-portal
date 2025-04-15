@@ -47,27 +47,102 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
       });
     }
 
-    // Fetch invoice uploads
-    const { data: invoices, error: invoicesError } = await supabase
+    // Fetch invoice uploads from both tables
+    
+    // 1. Direct invoice uploads
+    const { data: invoiceUploads, error: invoiceUploadsError } = await supabase
       .from('invoice_uploads')
-      .select('id, file_name, invoice_type, created_at')
+      .select('id, file_name, invoice_type, created_at, user_id')
       .order('created_at', { ascending: false })
-      .limit(10);
+      .limit(15);
 
-    if (invoicesError) {
-      console.error('Error fetching invoices:', invoicesError);
-    } else if (invoices) {
-      invoices.forEach(invoice => {
+    if (invoiceUploadsError) {
+      console.error('Error fetching invoice uploads:', invoiceUploadsError);
+    } else if (invoiceUploads && invoiceUploads.length > 0) {
+      // Get user information for each invoice
+      const userIds = [...new Set(invoiceUploads.map(invoice => invoice.user_id))];
+      const { data: userProfiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', userIds);
+        
+      if (profilesError) {
+        console.error('Error fetching user profiles for invoices:', profilesError);
+      }
+      
+      // Create a lookup map for user names
+      const userNameMap = new Map();
+      if (userProfiles) {
+        userProfiles.forEach(profile => {
+          userNameMap.set(profile.id, profile.name);
+        });
+      }
+      
+      // Process invoice uploads
+      invoiceUploads.forEach(invoice => {
         const type = invoice.invoice_type === 'sale' ? 'invoice-uploaded' : 'supplier-invoice-uploaded';
         const title = invoice.invoice_type === 'sale' ? 'Sale invoice uploaded' : 'Supplier invoice uploaded';
+        const userName = userNameMap.get(invoice.user_id) || 'User';
         
         activities.push({
-          id: `invoice-${invoice.id}`,
+          id: `invoice-upload-${invoice.id}`,
           type: type as ActivityEventType,
           timestamp: new Date(invoice.created_at),
           title: title,
-          description: `A ${invoice.invoice_type} invoice "${invoice.file_name}" was uploaded.`,
-          metadata: { invoiceId: invoice.id }
+          description: `A ${invoice.invoice_type || 'supplier'} invoice "${invoice.file_name}" was uploaded by ${userName}.`,
+          metadata: { 
+            invoiceId: invoice.id,
+            userId: invoice.user_id,
+            userName: userName
+          }
+        });
+      });
+    }
+    
+    // 2. Sales invoice uploads from invoice_files
+    const { data: invoiceFiles, error: invoiceFilesError } = await supabase
+      .from('invoice_files')
+      .select('id, file_name, created_at, user_id')
+      .order('created_at', { ascending: false })
+      .limit(15);
+      
+    if (invoiceFilesError) {
+      console.error('Error fetching invoice files:', invoiceFilesError);
+    } else if (invoiceFiles && invoiceFiles.length > 0) {
+      // Get user information for each invoice
+      const userIds = [...new Set(invoiceFiles.map(invoice => invoice.user_id))];
+      const { data: userProfiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', userIds);
+        
+      if (profilesError) {
+        console.error('Error fetching user profiles for invoices:', profilesError);
+      }
+      
+      // Create a lookup map for user names
+      const userNameMap = new Map();
+      if (userProfiles) {
+        userProfiles.forEach(profile => {
+          userNameMap.set(profile.id, profile.name);
+        });
+      }
+      
+      // Process invoice files as sale invoices
+      invoiceFiles.forEach(invoice => {
+        const userName = userNameMap.get(invoice.user_id) || 'User';
+        
+        activities.push({
+          id: `invoice-file-${invoice.id}`,
+          type: 'invoice-uploaded' as ActivityEventType,
+          timestamp: new Date(invoice.created_at),
+          title: 'Sale invoice uploaded',
+          description: `A sale invoice "${invoice.file_name}" was uploaded by ${userName}.`,
+          metadata: { 
+            invoiceId: invoice.id,
+            userId: invoice.user_id,
+            userName: userName
+          }
         });
       });
     }
@@ -94,6 +169,8 @@ export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
         });
       });
     }
+
+    console.log("Generated activity events:", activities.length);
 
     // Sort activities by timestamp (most recent first)
     return activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());

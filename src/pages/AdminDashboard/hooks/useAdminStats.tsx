@@ -51,28 +51,34 @@ export const useAdminStats = (): AdminStats => {
         if (pendingError) throw pendingError;
         
         // Fetch all invoices from both tables
-        // 1. Get invoice files (sale invoices)
+        // 1. Get invoice files (sale invoices from invoice_files table)
         const { data: invoiceFiles, error: invoiceFilesError } = await supabase
           .from('invoice_files')
           .select('id');
           
-        if (invoiceFilesError) throw invoiceFilesError;
+        if (invoiceFilesError) {
+          console.error('Error fetching invoice files:', invoiceFilesError);
+          throw invoiceFilesError;
+        }
         
-        // 2. Get supplier invoice files
+        // 2. Get invoice uploads from invoice_uploads table
         const { data: invoiceUploads, error: invoiceUploadsError } = await supabase
           .from('invoice_uploads')
           .select('id');
           
-        if (invoiceUploadsError) throw invoiceUploadsError;
+        if (invoiceUploadsError) {
+          console.error('Error fetching invoice uploads:', invoiceUploadsError);
+          throw invoiceUploadsError;
+        }
 
         // Calculate total invoices as sum of both tables
-        const totalInvoices = 
-          (invoiceFiles?.length || 0) + 
-          (invoiceUploads?.length || 0);
+        const invoiceFilesCount = invoiceFiles?.length || 0;
+        const invoiceUploadsCount = invoiceUploads?.length || 0;
+        const totalInvoices = invoiceFilesCount + invoiceUploadsCount;
         
         console.log('Admin stats - invoices found:', {
-          invoiceFiles: invoiceFiles?.length || 0,
-          invoiceUploads: invoiceUploads?.length || 0,
+          invoiceFiles: invoiceFilesCount,
+          invoiceUploads: invoiceUploadsCount,
           total: totalInvoices
         });
         

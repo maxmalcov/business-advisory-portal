@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -83,6 +83,14 @@ interface ActivityTabContentProps {
 const ActivityTabContent: React.FC<ActivityTabContentProps> = ({ userId }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const { activityData, isLoading, error } = useUserActivity(userId);
+  
+  useEffect(() => {
+    console.log("Activity Tab Content for user:", userId);
+    console.log("Activity data loaded:", activityData !== null);
+    if (activityData) {
+      console.log("Invoices count:", activityData.invoices.totalCount);
+    }
+  }, [userId, activityData]);
   
   if (isLoading) {
     return (
