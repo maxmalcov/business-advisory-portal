@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -6,67 +5,39 @@ import {
   Card, 
   CardContent, 
   CardFooter,
-  CardHeader, 
-  CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
-  Users, 
-  FileText, 
   Bell, 
-  CheckCircle, 
-  Package,
-  UserPlus,
-  UserMinus,
   Loader2
 } from 'lucide-react';
 import { 
   ActivityEvent, 
   formatTimestamp, 
-  getActivityIcon, 
   getRecentActivity,
   getMockRecentActivity 
 } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
+  Tooltip,
   TooltipTrigger,
+  TooltipContent,
 } from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
 
 const iconComponents = {
-  Users,
-  FileText,
   Bell,
-  CheckCircle,
-  Package,
-  UserPlus,
-  UserMinus
 };
 
 const ActivityIcon: React.FC<{ type: string }> = ({ type }) => {
-  const iconName = getActivityIcon(type as any);
-  const IconComponent = iconComponents[iconName as keyof typeof iconComponents] || Bell;
-  
   return (
     <div className="bg-muted p-2 rounded-full">
-      <IconComponent className="h-5 w-5" />
+      <Bell className="h-5 w-5" />
     </div>
   );
 };
-
-const EmptyState: React.FC = () => (
-  <div className="py-8 text-center">
-    <Bell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-    <h3 className="text-lg font-medium">No recent activity</h3>
-    <p className="text-sm text-muted-foreground mt-2">
-      Recent events will appear here as you use the system.
-    </p>
-  </div>
-);
 
 const RecentActivity: React.FC = () => {
   const { t } = useLanguage();
@@ -143,7 +114,13 @@ const RecentActivity: React.FC = () => {
               <p className="mt-2 text-muted-foreground">Loading activities...</p>
             </div>
           ) : activities.length === 0 ? (
-            <EmptyState />
+            <div className="py-8 text-center">
+              <Bell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium">No recent activity</h3>
+              <p className="text-sm text-muted-foreground mt-2">
+                Recent events will appear here as you use the system.
+              </p>
+            </div>
           ) : (
             <div className="space-y-4">
               {activities.slice(0, 3).map((activity) => (
@@ -159,9 +136,9 @@ const RecentActivity: React.FC = () => {
             </div>
           )}
         </CardContent>
-        <CardFooter className={isMobile ? "flex justify-center" : ""}>
+        <CardFooter className="flex justify-center">
           <Link to="/reports">
-            <Button variant="outline" className={isMobile ? "w-auto" : "w-full"}>View All Activity</Button>
+            <Button variant="outline">View All Activity</Button>
           </Link>
         </CardFooter>
       </Card>
