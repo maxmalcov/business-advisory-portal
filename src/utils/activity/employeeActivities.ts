@@ -10,19 +10,19 @@ export const fetchEmployeeActivities = async (
   
   try {
     // Build the query based on user role
-    let employeeQuery = employeesTable();
+    let query = employeesTable()
+      .select('id, full_name, status, start_date, end_date, created_at, company_name');
     
     if (!isAdmin) {
       if (companyName) {
-        employeeQuery = employeeQuery.eq('company_name', companyName);
+        query = query.eq('company_name', companyName);
       } else {
         // If user has no company, they shouldn't see any employees
-        employeeQuery = employeeQuery.eq('id', 'no-match');
+        query = query.eq('id', 'no-match');
       }
     }
     
-    const { data: employees, error: employeesError } = await employeeQuery
-      .select('id, full_name, status, start_date, end_date, created_at, company_name')
+    const { data: employees, error: employeesError } = await query
       .order('created_at', { ascending: false })
       .limit(10);
 
