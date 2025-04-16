@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Employee } from '../../types/employee';
 import { Input } from '@/components/ui/input';
@@ -54,8 +53,13 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
     try {
       // Create a unique file path with timestamp
       const timestamp = new Date().getTime();
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${timestamp}_${file.name}`;
+      // Sanitize filename: keep only alphanumeric characters, hyphens, and underscores
+      const sanitizedName = file.name
+        .replace(/[^\w.-]/g, '-')
+        .replace(/\s+/g, '-')
+        .toLowerCase();
+      
+      const filePath = `${timestamp}_${sanitizedName}`;
       
       // Set initial progress for better UX
       setUploadProgress(10);

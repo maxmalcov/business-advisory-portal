@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,7 +11,15 @@ export const uploadDocumentToStorage = async (
     
     const timestamp = new Date().getTime();
     const fileExt = file.name.split('.').pop();
-    const filePath = `${timestamp}_${file.name}`;
+    
+    // Sanitize filename: keep only alphanumeric characters, hyphens, and underscores
+    // Replace invalid characters with hyphens and avoid spaces
+    const sanitizedName = file.name
+      .replace(/[^\w.-]/g, '-')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+    
+    const filePath = `${timestamp}_${sanitizedName}`;
     
     console.log('Uploading document to storage:', filePath);
     
