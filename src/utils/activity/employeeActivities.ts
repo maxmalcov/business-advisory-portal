@@ -10,19 +10,18 @@ export const fetchEmployeeActivities = async (
   
   try {
     // Build the query based on user role
-    let employeeQuery = supabase.from('employees');
+    let query = supabase.from('employees').select('id, full_name, status, start_date, end_date, created_at, company_name');
     
     if (!isAdmin) {
       if (companyName) {
-        employeeQuery = employeeQuery.eq('company_name', companyName);
+        query = query.filter('company_name', 'eq', companyName);
       } else {
         // If user has no company, they shouldn't see any employees
-        employeeQuery = employeeQuery.eq('id', 'no-match');
+        return [];
       }
     }
     
-    const { data: employees, error: employeesError } = await employeeQuery
-      .select('id, full_name, status, start_date, end_date, created_at, company_name')
+    const { data: employees, error: employeesError } = await query
       .order('created_at', { ascending: false })
       .limit(10);
 
