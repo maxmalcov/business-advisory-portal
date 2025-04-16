@@ -29,7 +29,7 @@ export function useEmployeeList() {
           
         // Only apply status filter if not 'all'
         if (statusFilter !== 'all') {
-          query = query.eq('status', statusFilter);
+          query = query.filter('status', 'eq', statusFilter);
         }
         
         // If user is not an admin, strictly filter by company name
@@ -38,10 +38,10 @@ export function useEmployeeList() {
           
           // Only show employees from user's company, if companyName is null/undefined, show no employees
           if (user.companyName) {
-            query = query.eq('company_name', user.companyName);
+            query = query.filter('company_name', 'eq', user.companyName);
           } else {
             // Use a non-existent ID to return no results when user has no company
-            query = query.eq('id', 'no-company-assigned');
+            query = query.filter('id', 'eq', 'no-company-assigned');
             console.warn('User has no company assigned, showing no employees');
           }
         }
