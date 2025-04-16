@@ -1,5 +1,5 @@
 
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, employeesTable } from '@/integrations/supabase/client';
 import { ActivityEvent } from './types';
 
 export const fetchEmployeeActivities = async (
@@ -10,7 +10,7 @@ export const fetchEmployeeActivities = async (
   
   try {
     // Build the query based on user role
-    let employeeQuery = supabase.from('employees');
+    let employeeQuery = employeesTable();
     
     if (!isAdmin) {
       if (companyName) {
