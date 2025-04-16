@@ -90,25 +90,6 @@ export const isUserAdmin = async (): Promise<boolean> => {
   }
 };
 
-// Helper function to get the current user's company name
-export const getUserCompanyName = async (): Promise<string | null> => {
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-    
-    const { data } = await supabase
-      .from('profiles')
-      .select('companyname')
-      .eq('id', user.id)
-      .single();
-      
-    return data?.companyname || null;
-  } catch (error) {
-    console.error('Error getting user company name:', error);
-    return null;
-  }
-};
-
 // Helper function to safely access the service_requests table
 export const serviceRequestsTable = () => {
   return supabase.from('service_requests');

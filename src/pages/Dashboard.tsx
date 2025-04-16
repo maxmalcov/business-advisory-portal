@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -6,10 +5,13 @@ import { useLanguage } from '@/context/LanguageContext';
 import { 
   Card, 
   CardContent, 
+  CardDescription, 
+  CardFooter, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { FileUp, FileDown, Users, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileUp, FileDown, Users, FileText, LayoutDashboard, Bell, FileIcon, Package, Sparkles } from 'lucide-react';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 
 const Dashboard: React.FC = () => {
@@ -18,6 +20,19 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Welcome Card */}
+      <Card className="border-l-4 border-l-ba-blue">
+        <CardHeader>
+          <CardTitle className="text-2xl">{t('dashboard.welcome')}</CardTitle>
+          <CardDescription>
+            {user?.name || user?.companyName}{' '}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Here's an overview of your account activity and quick access to essential features.</p>
+        </CardContent>
+      </Card>
+
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.quick_actions')}</h2>
@@ -80,6 +95,9 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Recent Activity */}
+      <RecentActivity />
+
       {/* Stats Summary */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.stats')}</h2>
@@ -129,12 +147,8 @@ const Dashboard: React.FC = () => {
           </Card>
         </div>
       </div>
-
-      {/* Recent Activity */}
-      <RecentActivity />
     </div>
   );
 };
 
 export default Dashboard;
-

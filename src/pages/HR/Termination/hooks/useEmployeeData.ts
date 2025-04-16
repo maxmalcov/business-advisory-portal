@@ -3,28 +3,18 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
 import { EmployeeData } from '../types';
-import { useAuth } from '@/context/AuthContext';
 
 export const useEmployeeData = () => {
   const [employees, setEmployees] = useState<EmployeeData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const { user } = useAuth();
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        let query = employeesTable()
+        const { data, error } = await employeesTable()
           .select('id, full_name, position, start_date')
           .eq('status', 'active');
-        
-        // If not admin, filter by company name
-        if (user && user.userType !== 'admin' && user.companyName) {
-          console.log('Filtering termination employees by company:', user.companyName);
-          query = query.eq('company_name', user.companyName);
-        }
-          
-        const { data, error } = await query;
           
         if (error) throw error;
         
@@ -56,7 +46,7 @@ export const useEmployeeData = () => {
     };
     
     fetchEmployees();
-  }, [toast, user]);
+  }, [toast]);
 
   return {
     employees,
