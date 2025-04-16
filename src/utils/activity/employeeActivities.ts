@@ -10,7 +10,7 @@ export const fetchEmployeeActivities = async (
   
   try {
     // Build the query based on user role
-    let employeeQuery = supabase.from('employees') as any;
+    let employeeQuery = supabase.from('employees');
     
     if (!isAdmin) {
       if (companyName) {
