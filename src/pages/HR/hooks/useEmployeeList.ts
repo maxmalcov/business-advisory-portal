@@ -41,8 +41,10 @@ export function useEmployeeList() {
             query = query.filter('company_name', 'eq', user.companyName);
           } else {
             // Use a non-existent ID to return no results when user has no company
-            query = query.filter('id', 'eq', 'no-company-assigned');
             console.warn('User has no company assigned, showing no employees');
+            setEmployees([]);
+            setIsLoading(false);
+            return;
           }
         }
         

@@ -27,9 +27,11 @@ export const useEmployeeData = () => {
           if (user.companyName) {
             query = query.filter('company_name', 'eq', user.companyName);
           } else {
-            // Use a non-existent ID to return no results when user has no company
-            query = query.filter('id', 'eq', 'no-company-assigned');
+            // Set employees to empty array when user has no company
+            setEmployees([]);
             console.warn('User has no company assigned, showing no employees');
+            setIsLoading(false);
+            return;
           }
         }
           

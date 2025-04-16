@@ -14,6 +14,7 @@ export const fetchEmployeeActivities = async (
     
     if (!isAdmin) {
       if (companyName) {
+        // Use filter instead of eq for consistency
         query = query.filter('company_name', 'eq', companyName);
       } else {
         // If user has no company, they shouldn't see any employees
