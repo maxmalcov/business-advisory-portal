@@ -24,36 +24,21 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   status = 'available',
   onRequestService
 }) => {
-  const getStatusButton = (status: ServiceStatus) => {
+  const getStatusColor = (status: ServiceStatus) => {
     switch(status) {
-      case 'pending':
-        return (
-          <div className="w-full h-10 flex items-center justify-center rounded-md bg-[#FFF7DB] text-[#9B7D00]">
-            Pending
-          </div>
-        );
-      case 'completed':
-        return (
-          <div className="w-full h-10 flex items-center justify-center rounded-md bg-[#E7F9ED] text-[#3B9252]">
-            Completed
-          </div>
-        );
-      case 'rejected':
-        return (
-          <div className="w-full h-10 flex items-center justify-center rounded-md bg-[#FFE8E8] text-[#D14343]">
-            Rejected
-          </div>
-        );
-      default:
-        return (
-          <Button 
-            variant={popular ? "default" : "outline"}
-            onClick={() => status === 'available' && onRequestService(id)}
-            className="w-full"
-          >
-            Request Service
-          </Button>
-        );
+      case 'pending': return 'bg-yellow-500';
+      case 'completed': return 'bg-green-500';
+      case 'rejected': return 'bg-red-500';
+      default: return '';
+    }
+  };
+
+  const getStatusText = (status: ServiceStatus) => {
+    switch(status) {
+      case 'pending': return 'Pending';
+      case 'completed': return 'Completed';
+      case 'rejected': return 'Rejected';
+      default: return 'Request Service';
     }
   };
 
@@ -67,7 +52,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             </div>
             <CardTitle>{title}</CardTitle>
           </div>
-          {popular && <Badge className="bg-primary">Popular</Badge>}
+          <div className="flex gap-2">
+            {popular && <Badge className="bg-primary">Popular</Badge>}
+            {status !== 'available' && (
+              <Badge className={getStatusColor(status)}>
+                {getStatusText(status)}
+              </Badge>
+            )}
+          </div>
         </div>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
@@ -90,8 +82,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           <div>
             <span className="font-semibold">${parseFloat(price).toFixed(2)}</span>
           </div>
+          <Button 
+            variant={popular ? "default" : "outline"}
+            disabled={status !== 'available'} 
+            onClick={() => status === 'available' && onRequestService(id)}
+          >
+            {getStatusText(status)}
+          </Button>
         </div>
-        {getStatusButton(status)}
       </CardFooter>
     </Card>
   );

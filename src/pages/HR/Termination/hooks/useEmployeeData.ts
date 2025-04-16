@@ -14,34 +14,19 @@ export const useEmployeeData = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        // Create query with active status filter
         let query = employeesTable()
           .select('id, full_name, position, start_date')
-          .filter('status', 'eq', 'active');
+          .eq('status', 'active');
         
-        // If not admin, strictly filter by company name
-        if (user && user.userType !== 'admin') {
+        // If not admin, filter by company name
+        if (user && user.userType !== 'admin' && user.companyName) {
           console.log('Filtering termination employees by company:', user.companyName);
-          
-          // Only show employees from user's company, if companyName is null/undefined, show no employees
-          if (user.companyName) {
-            // Use case-insensitive match
-            query = query.ilike('company_name', `%${user.companyName}%`);
-            console.log('Using case-insensitive filter for company name');
-          } else {
-            // Set employees to empty array when user has no company
-            setEmployees([]);
-            console.warn('User has no company assigned, showing no employees');
-            setIsLoading(false);
-            return;
-          }
+          query = query.eq('company_name', user.companyName);
         }
           
         const { data, error } = await query;
           
         if (error) throw error;
-        
-        console.log('Raw termination employee data:', data);
         
         if (data && Array.isArray(data)) {
           const transformedData: EmployeeData[] = data.map((emp: any) => ({
@@ -53,7 +38,6 @@ export const useEmployeeData = () => {
             vacationDaysUsed: Math.floor(Math.random() * 20)
           }));
           
-          console.log('Transformed employee data for termination:', transformedData);
           setEmployees(transformedData);
         } else {
           setEmployees([]);

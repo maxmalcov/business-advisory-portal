@@ -29,25 +29,13 @@ export function useEmployeeList() {
           
         // Only apply status filter if not 'all'
         if (statusFilter !== 'all') {
-          query = query.filter('status', 'eq', statusFilter);
+          query = query.eq('status', statusFilter);
         }
         
-        // If user is not an admin, strictly filter by company name
-        if (user && user.userType !== 'admin') {
+        // If user is not an admin, filter by company name
+        if (user && user.userType !== 'admin' && user.companyName) {
           console.log('Filtering employees by company name:', user.companyName);
-          
-          // Only show employees from user's company, if companyName is null/undefined, show no employees
-          if (user.companyName) {
-            // Use case-insensitive match
-            query = query.ilike('company_name', `%${user.companyName}%`);
-            console.log('Using case-insensitive filter for company name');
-          } else {
-            // User has no company, show no employees
-            console.warn('User has no company assigned, showing no employees');
-            setEmployees([]);
-            setIsLoading(false);
-            return;
-          }
+          query = query.eq('company_name', user.companyName);
         }
         
         const { data, error } = await query;

@@ -10,19 +10,19 @@ export const fetchEmployeeActivities = async (
   
   try {
     // Build the query based on user role
-    let query = supabase.from('employees').select('id, full_name, status, start_date, end_date, created_at, company_name');
+    let employeeQuery = supabase.from('employees') as any;
     
     if (!isAdmin) {
       if (companyName) {
-        // Try case-insensitive match with ILIKE filter
-        query = query.ilike('company_name', `%${companyName}%`);
+        employeeQuery = employeeQuery.eq('company_name', companyName);
       } else {
         // If user has no company, they shouldn't see any employees
-        return [];
+        employeeQuery = employeeQuery.eq('id', 'no-match');
       }
     }
     
-    const { data: employees, error: employeesError } = await query
+    const { data: employees, error: employeesError } = await employeeQuery
+      .select('id, full_name, status, start_date, end_date, created_at, company_name')
       .order('created_at', { ascending: false })
       .limit(10);
 
