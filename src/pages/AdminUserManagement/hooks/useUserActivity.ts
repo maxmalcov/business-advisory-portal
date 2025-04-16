@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/context/AuthContext';
 
 // Define types for user activity data
 export interface UserRegistrationInfo {
@@ -58,23 +57,15 @@ export interface UserActivityData {
 // Hook to fetch and manage user activity data
 export const useUserActivity = (userId: string) => {
   const { toast } = useToast();
-  const { user: currentUser } = useAuth();
   const [activityData, setActivityData] = useState<UserActivityData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   useEffect(() => {
     const fetchUserActivity = async () => {
       if (!userId) {
         console.error("No user ID provided to useUserActivity hook");
         setError("No user ID provided");
-        setIsLoading(false);
-        return;
-      }
-
-      // If the current user is not an admin and trying to view someone else's data
-      if (currentUser && currentUser.userType !== 'admin' && currentUser.id !== userId) {
-        setError("You do not have permission to view this user's activity data");
         setIsLoading(false);
         return;
       }
@@ -90,14 +81,7 @@ export const useUserActivity = (userId: string) => {
           .eq('id', userId)
           .single();
         
-        if (profileError) {
-          console.error("Error fetching profile data:", profileError);
-          throw new Error(profileError.message);
-        }
-        
-        if (!profileData) {
-          throw new Error("User profile not found");
-        }
+        if (profileError) throw profileError;
         
         // Fetch the user's service requests
         const { data: servicesData, error: servicesError } = await supabase
@@ -105,10 +89,7 @@ export const useUserActivity = (userId: string) => {
           .select('id, service_name, status, request_date, admin_notes, updated_at')
           .eq('client_id', userId);
         
-        if (servicesError) {
-          console.error("Error fetching service requests:", servicesError);
-          throw servicesError;
-        }
+        if (servicesError) throw servicesError;
         
         // Process services data
         const services = servicesData?.map(service => ({
@@ -228,7 +209,7 @@ export const useUserActivity = (userId: string) => {
     if (userId) {
       fetchUserActivity();
     }
-  }, [userId, toast, currentUser]);
+  }, [userId, toast]);
   
   return { activityData, isLoading, error };
 };
