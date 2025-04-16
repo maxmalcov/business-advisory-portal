@@ -14,8 +14,8 @@ export const fetchEmployeeActivities = async (
     
     if (!isAdmin) {
       if (companyName) {
-        // Use filter instead of eq for consistency
-        query = query.filter('company_name', 'eq', companyName);
+        // Try case-insensitive match with ILIKE filter
+        query = query.ilike('company_name', `%${companyName}%`);
       } else {
         // If user has no company, they shouldn't see any employees
         return [];

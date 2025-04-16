@@ -25,7 +25,9 @@ export const useEmployeeData = () => {
           
           // Only show employees from user's company, if companyName is null/undefined, show no employees
           if (user.companyName) {
-            query = query.filter('company_name', 'eq', user.companyName);
+            // Use case-insensitive match
+            query = query.ilike('company_name', `%${user.companyName}%`);
+            console.log('Using case-insensitive filter for company name');
           } else {
             // Set employees to empty array when user has no company
             setEmployees([]);
@@ -38,6 +40,8 @@ export const useEmployeeData = () => {
         const { data, error } = await query;
           
         if (error) throw error;
+        
+        console.log('Raw termination employee data:', data);
         
         if (data && Array.isArray(data)) {
           const transformedData: EmployeeData[] = data.map((emp: any) => ({

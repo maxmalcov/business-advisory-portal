@@ -38,9 +38,11 @@ export function useEmployeeList() {
           
           // Only show employees from user's company, if companyName is null/undefined, show no employees
           if (user.companyName) {
-            query = query.filter('company_name', 'eq', user.companyName);
+            // Use case-insensitive match
+            query = query.ilike('company_name', `%${user.companyName}%`);
+            console.log('Using case-insensitive filter for company name');
           } else {
-            // Use a non-existent ID to return no results when user has no company
+            // User has no company, show no employees
             console.warn('User has no company assigned, showing no employees');
             setEmployees([]);
             setIsLoading(false);
