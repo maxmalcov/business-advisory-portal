@@ -42,8 +42,11 @@ export const useEmployeeWorkHours = (selectedMonth: Date, isSubmitted: boolean) 
       
       if (error) throw error;
       
+      // Explicitly cast data to any first to avoid TypeScript errors
+      const recordsArray = data as any[] || [];
+      
       // Map database records to frontend format
-      const mappedData: WorkHoursData[] = (data || []).map(record => ({
+      const mappedData: WorkHoursData[] = recordsArray.map(record => ({
         id: record.id,
         employeeId: record.employee_id,
         employeeName: record.employee_name,
@@ -85,8 +88,11 @@ export const useEmployeeWorkHours = (selectedMonth: Date, isSubmitted: boolean) 
       
       if (error) throw error;
       
+      // Explicitly cast data to any first to avoid TypeScript errors
+      const recordsArray = data as any[] || [];
+      
       // Map database records to frontend format
-      const mappedData: WorkHoursData[] = (data || []).map(record => ({
+      const mappedData: WorkHoursData[] = recordsArray.map(record => ({
         employeeId: record.employee_id,
         employeeName: record.employee_name,
         companyName: record.company_name,

@@ -49,8 +49,9 @@ export const useMonthlySubmissions = (monthCount: number = 6) => {
       
       if (error) throw error;
 
-      // Type assertion to ensure data is of the expected type
-      const typedData = (data || []) as WorkHoursSubmission[];
+      // Use a double assertion to safely cast the data
+      // First to unknown, then to the expected type
+      const typedData = (data as unknown as WorkHoursSubmission[]) || [];
       setSubmissions(typedData);
     } catch (error) {
       console.error('Error fetching submissions:', error);
