@@ -20,19 +20,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Card */}
-      <Card className="border-l-4 border-l-ba-blue">
-        <CardHeader>
-          <CardTitle className="text-2xl">{t('dashboard.welcome')}</CardTitle>
-          <CardDescription>
-            {user?.name || user?.companyName}{' '}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>Here's an overview of your account activity and quick access to essential features.</p>
-        </CardContent>
-      </Card>
-
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.quick_actions')}</h2>
