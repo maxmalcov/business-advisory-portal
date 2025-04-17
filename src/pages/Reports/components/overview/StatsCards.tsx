@@ -25,6 +25,7 @@ interface StatsCardsProps {
     pending: number;
   };
   activityData: ActivityEvent[];
+  onCardClick: (tab: string) => void;
 }
 
 const StatsCards: React.FC<StatsCardsProps> = ({
@@ -32,10 +33,14 @@ const StatsCards: React.FC<StatsCardsProps> = ({
   employeeStats,
   servicesStats,
   activityData,
+  onCardClick,
 }) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card>
+      <Card 
+        className="cursor-pointer transition-all hover:shadow-md"
+        onClick={() => onCardClick('documents')}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
           <FileText className="h-4 w-4 text-muted-foreground" />
@@ -48,7 +53,10 @@ const StatsCards: React.FC<StatsCardsProps> = ({
         </CardContent>
       </Card>
       
-      <Card>
+      <Card 
+        className="cursor-pointer transition-all hover:shadow-md"
+        onClick={() => onCardClick('people')}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Active Employees</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
@@ -61,7 +69,10 @@ const StatsCards: React.FC<StatsCardsProps> = ({
         </CardContent>
       </Card>
       
-      <Card>
+      <Card 
+        className="cursor-pointer transition-all hover:shadow-md"
+        onClick={() => onCardClick('activity')}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Service Requests</CardTitle>
           <Package className="h-4 w-4 text-muted-foreground" />
@@ -74,7 +85,10 @@ const StatsCards: React.FC<StatsCardsProps> = ({
         </CardContent>
       </Card>
       
-      <Card>
+      <Card 
+        className="cursor-pointer transition-all hover:shadow-md"
+        onClick={() => onCardClick('activity')}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Activity</CardTitle>
           <Clock className="h-4 w-4 text-muted-foreground" />

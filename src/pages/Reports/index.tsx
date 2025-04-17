@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import ReportsHeader from './components/ReportsHeader';
 import LoadingState from './components/LoadingState';
 import OverviewTab from './components/overview/OverviewTab';
@@ -12,6 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 
 const ReportsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const { toast } = useToast();
   const { 
     invoiceStats, 
     employeeStats, 
@@ -28,8 +30,25 @@ const ReportsPage: React.FC = () => {
   useEffect(() => {
     if (!isAdmin && (activeTab === 'documents' || activeTab === 'people')) {
       setActiveTab('overview');
+      toast({
+        title: "Access Restricted",
+        description: "You don't have permission to view this section.",
+        variant: "destructive"
+      });
     }
-  }, [activeTab, isAdmin]);
+  }, [activeTab, isAdmin, toast]);
+
+  const handleCardClick = (tab: string) => {
+    if (!isAdmin && (tab === 'documents' || tab === 'people')) {
+      toast({
+        title: "Access Restricted",
+        description: "You don't have permission to view this section.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setActiveTab(tab);
+  };
 
   if (loading) {
     return (
@@ -52,6 +71,7 @@ const ReportsPage: React.FC = () => {
             servicesStats={servicesStats}
             activityData={activityData}
             monthlyData={monthlyData}
+            onCardClick={handleCardClick}
           />
         </TabsContent>
         
