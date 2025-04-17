@@ -32,7 +32,10 @@ export function useActiveEmployees() {
         }
         
         if (data && Array.isArray(data)) {
-          const transformedData: Employee[] = data.map((emp: EmployeeData) => ({
+          // Use type assertion to tell TypeScript that data is an array of EmployeeData
+          const employeeData = data as EmployeeData[];
+          
+          const transformedData: Employee[] = employeeData.map((emp) => ({
             id: emp.id,
             fullName: emp.full_name,
             position: emp.position,
