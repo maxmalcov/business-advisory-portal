@@ -1,35 +1,36 @@
 
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Layout from '@/components/Layout';
-import { ProtectedRoute } from './ProtectedRoute';  // Changed to named import
-import Home from '@/pages/Home';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import Dashboard from '@/pages/Dashboard';
-import Invoices from '@/pages/Invoices';
-import SupplierInvoices from '@/pages/SupplierInvoices';
-import InvoiceHistory from '@/pages/InvoiceHistory';
-import NotFound from '@/pages/NotFound';
-import Profile from '@/pages/Profile';
-import AdminDashboard from '@/pages/AdminDashboard';
-import AdminUserManagement from '@/pages/AdminUserManagement';
-import AdminLogs from '@/pages/AdminLogs';
-import AdminServices from '@/pages/AdminServices';
-import AdminSubscriptions from '@/pages/AdminSubscriptions';
-import AdminUsefulLinks from '@/pages/AdminUsefulLinks';
-import Services from '@/pages/Services';
-import ServiceRequests from '@/pages/ServiceRequests';
-import Subscriptions from '@/pages/Subscriptions';
-import UsefulLinks from '@/pages/UsefulLinks';
-import UserActivityLog from '@/pages/UserActivityLog';
-import HR from '@/pages/HR';
-import NewEmployee from '@/pages/HR/NewEmployee';
-import Termination from '@/pages/HR/Termination';
-import WorkHours from '@/pages/HR/WorkHours';
-import Reports from '@/pages/Reports';
+import { Routes, Route } from "react-router-dom";
+import Layout from "@/components/Layout";
+import Home from "@/pages/Home";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import NotFound from "@/pages/NotFound";
+import Profile from "@/pages/Profile";
+import Dashboard from "@/pages/Dashboard";
+import UserActivityLog from "@/pages/UserActivityLog";
+import ServiceRequests from "@/pages/ServiceRequests";
+import Invoices from "@/pages/Invoices";
+import SupplierInvoices from "@/pages/SupplierInvoices";
+import Contracts from "@/pages/Contracts";
+import Documents from "@/pages/Documents";
+import Reports from "@/pages/Reports";
+import Services from "@/pages/Services";
+import Subscriptions from "@/pages/Subscriptions";
+import UsefulLinks from "@/pages/UsefulLinks";
+import HR from "@/pages/HR";
+import NewEmployee from "@/pages/HR/NewEmployee";
+import Termination from "@/pages/HR/Termination";
+import WorkHours from "@/pages/HR/WorkHours";
+import AdminDashboard from "@/pages/AdminDashboard";
+import AdminServices from "@/pages/AdminServices";
+import AdminUsefulLinks from "@/pages/AdminUsefulLinks";
+import ServiceEditor from "@/pages/AdminServices/components/ServiceEditor";
+import AdminUserManagement from "@/pages/AdminUserManagement";
+import AdminLogs from "@/pages/AdminLogs";
+import AdminSubscriptions from "@/pages/AdminSubscriptions";
+import { ProtectedRoute } from "./ProtectedRoute";
 
-const AppRoutes: React.FC = () => {
+const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -37,40 +38,136 @@ const AppRoutes: React.FC = () => {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-
-        {/* Protected Client Routes */}
-        <Route element={<ProtectedRoute allowedRoles={['client']} />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="invoices" element={<Invoices />} />
-          <Route path="supplier-invoices" element={<SupplierInvoices />} />
-          <Route path="invoice-history" element={<InvoiceHistory />} />
-          <Route path="activity-log" element={<UserActivityLog />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="subscriptions" element={<Subscriptions />} />
-          <Route path="services" element={<Services />} />
-          <Route path="service-requests" element={<ServiceRequests />} />
-          <Route path="useful-links" element={<UsefulLinks />} />
-          
-          {/* HR Routes */}
-          <Route path="hr" element={<HR />} />
-          <Route path="hr/new-employee" element={<NewEmployee />} />
-          <Route path="hr/termination" element={<Termination />} />
-          <Route path="hr/work-hours" element={<WorkHours />} />
-        </Route>
-
-        {/* Protected Admin Routes */}
-        <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-          <Route path="admin" element={<AdminDashboard />} />
-          <Route path="admin/users" element={<AdminUserManagement />} />
-          <Route path="admin/logs" element={<AdminLogs />} />
-          <Route path="admin/services" element={<AdminServices />} />
-          <Route path="admin/subscriptions" element={<AdminSubscriptions />} />
-          <Route path="admin/useful-links" element={<AdminUsefulLinks />} />
-          <Route path="admin/reports" element={<Reports />} />
-        </Route>
-
-        {/* Catch All */}
+        <Route path="profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
         <Route path="*" element={<NotFound />} />
+        
+        {/* Client Routes */}
+        <Route path="dashboard" element={
+          <ProtectedRoute requiredRole="client">
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="user/activity-log" element={
+          <ProtectedRoute requiredRole="client">
+            <UserActivityLog />
+          </ProtectedRoute>
+        } />
+        <Route path="user/service-requests" element={
+          <ProtectedRoute requiredRole="client">
+            <ServiceRequests />
+          </ProtectedRoute>
+        } />
+        <Route path="invoices" element={
+          <ProtectedRoute requiredRole="client">
+            <Invoices />
+          </ProtectedRoute>
+        } />
+        <Route path="supplier-invoices" element={
+          <ProtectedRoute requiredRole="client">
+            <SupplierInvoices />
+          </ProtectedRoute>
+        } />
+        <Route path="contracts" element={
+          <ProtectedRoute requiredRole="client">
+            <Contracts />
+          </ProtectedRoute>
+        } />
+        <Route path="documents" element={
+          <ProtectedRoute requiredRole="client">
+            <Documents />
+          </ProtectedRoute>
+        } />
+        <Route path="reports" element={
+          <ProtectedRoute requiredRole="client">
+            <Reports />
+          </ProtectedRoute>
+        } />
+        <Route path="services" element={
+          <ProtectedRoute requiredRole="client">
+            <Services />
+          </ProtectedRoute>
+        } />
+        <Route path="subscriptions" element={
+          <ProtectedRoute requiredRole="client">
+            <Subscriptions />
+          </ProtectedRoute>
+        } />
+        <Route path="useful-links" element={
+          <ProtectedRoute requiredRole="client">
+            <UsefulLinks />
+          </ProtectedRoute>
+        } />
+        <Route path="hr" element={
+          <ProtectedRoute requiredRole="client">
+            <HR />
+          </ProtectedRoute>
+        } />
+        <Route path="hr/new-employee" element={
+          <ProtectedRoute requiredRole="client">
+            <NewEmployee />
+          </ProtectedRoute>
+        } />
+        <Route path="hr/termination" element={
+          <ProtectedRoute requiredRole="client">
+            <Termination />
+          </ProtectedRoute>
+        } />
+        <Route path="hr/work-hours" element={
+          <ProtectedRoute requiredRole="client">
+            <WorkHours />
+          </ProtectedRoute>
+        } />
+
+        {/* Admin Routes */}
+        <Route path="admin" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/reports" element={
+          <ProtectedRoute requiredRole="admin">
+            <Reports />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/services" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminServices />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/useful-links" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminUsefulLinks />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/services/create" element={
+          <ProtectedRoute requiredRole="admin">
+            <ServiceEditor />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/services/edit/:serviceId" element={
+          <ProtectedRoute requiredRole="admin">
+            <ServiceEditor />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/users" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminUserManagement />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/logs" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminLogs />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/subscriptions" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminSubscriptions />
+          </ProtectedRoute>
+        } />
       </Route>
     </Routes>
   );

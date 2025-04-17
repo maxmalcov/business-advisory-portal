@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import { Menu, X } from 'lucide-react';
@@ -11,10 +11,9 @@ import { Drawer, DrawerContent, DrawerOverlay, DrawerTrigger } from '@/component
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 const Layout: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
 
   // Close sidebar when route changes on mobile
   useEffect(() => {
@@ -22,16 +21,6 @@ const Layout: React.FC = () => {
       setSidebarOpen(false);
     }
   }, [window.location.pathname, isMobile]);
-
-  // Redirect unauthenticated users to login
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated && window.location.pathname !== '/' && 
-        !window.location.pathname.includes('/login') && 
-        !window.location.pathname.includes('/register')) {
-      console.log('User not authenticated, redirecting to login');
-      navigate('/login');
-    }
-  }, [isAuthenticated, isLoading, navigate]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -53,17 +42,6 @@ const Layout: React.FC = () => {
     
     return <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />;
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-lg">Loading application...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
