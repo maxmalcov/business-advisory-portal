@@ -27,7 +27,7 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
   onSubmitForm,
   onSubmitMonth,
 }) => {
-  const { handleEditEmployee } = useMonthlySubmissions();
+  const { handleEditEmployee, handleAddEmployee } = useMonthlySubmissions();
 
   return (
     <Card>
@@ -41,6 +41,7 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
           employeeData={workHours} 
           onEdit={!isSubmitted ? handleEditEmployee : undefined}
           onDelete={!isSubmitted ? onDeleteEmployee : undefined}
+          onAddEmployee={!isSubmitted ? handleAddEmployee : undefined}
           loading={loading}
         />
         

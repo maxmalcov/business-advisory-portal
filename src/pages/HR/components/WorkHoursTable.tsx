@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { formatDate } from '@/utils/dates';
-import { Edit, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Edit, MoreHorizontal, Trash2, UserPlus } from 'lucide-react';
 import { WorkHoursData } from '../hooks/useEmployeeWorkHours';
 import { FilterInput } from './FilterInput';
 
@@ -30,6 +30,7 @@ interface WorkHoursTableProps {
   employeeData: EmployeeRecord[];
   onEdit?: (employee: EmployeeRecord) => void;
   onDelete?: (id: string) => void;
+  onAddEmployee?: () => void;
   loading?: boolean;
 }
 
@@ -37,6 +38,7 @@ const WorkHoursTable: React.FC<WorkHoursTableProps> = ({
   employeeData,
   onEdit,
   onDelete,
+  onAddEmployee,
   loading = false,
 }) => {
   const [filterText, setFilterText] = useState('');
@@ -92,8 +94,19 @@ const WorkHoursTable: React.FC<WorkHoursTableProps> = ({
               </TableRow>
             ) : filteredData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={onEdit ? 6 : 5} className="h-24 text-center">
-                  No employee data found
+                <TableCell colSpan={onEdit ? 6 : 5} className="h-24">
+                  <div className="flex flex-col items-center justify-center gap-4">
+                    <div className="text-center">No employee data found</div>
+                    {onAddEmployee && (
+                      <Button 
+                        onClick={onAddEmployee} 
+                        className="flex items-center gap-2"
+                      >
+                        <UserPlus className="h-4 w-4" />
+                        Add Employee
+                      </Button>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
