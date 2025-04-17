@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -114,7 +115,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         description: `Employee ${values.id ? 'updated' : 'added'} successfully.`,
       });
       setEditingEmployee(null);
-      setActiveTab('view');
       setIsAddingNew(false);
     } else {
       toast({
