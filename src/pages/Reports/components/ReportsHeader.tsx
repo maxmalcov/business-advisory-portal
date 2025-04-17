@@ -4,7 +4,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsMobile, useIsSmallScreen } from '@/hooks/use-mobile';
 import { useAuth } from '@/context/AuthContext';
-import { FileText, Users, Package, Clock } from 'lucide-react';
 
 interface ReportsHeaderProps {
   activeTab: string;
@@ -28,33 +27,13 @@ const ReportsHeader: React.FC<ReportsHeaderProps> = ({
       
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className={`mb-4 ${isMobile ? 'w-full grid grid-cols-2 gap-1' : ''} ${isSmallScreen ? 'flex flex-wrap' : ''}`}>
-          <TabsTrigger value="overview" className={`${isMobile ? "w-full" : ""} ${activeTab === 'overview' ? 'bg-primary text-primary-foreground' : ''}`}>
-            <span className="flex items-center">
-              <FileText className="h-4 w-4 mr-2" />
-              Overview
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value="activity" className={`${isMobile ? "w-full" : ""} ${activeTab === 'activity' ? 'bg-primary text-primary-foreground' : ''}`}>
-            <span className="flex items-center">
-              <Clock className="h-4 w-4 mr-2" />
-              Activity
-            </span>
-          </TabsTrigger>
+          <TabsTrigger value="overview" className={isMobile ? "w-full" : ""}>Overview</TabsTrigger>
+          <TabsTrigger value="activity" className={isMobile ? "w-full" : ""}>Activity</TabsTrigger>
           
           {isAdmin && (
             <>
-              <TabsTrigger value="documents" className={`${isMobile ? "w-full" : ""} ${activeTab === 'documents' ? 'bg-primary text-primary-foreground' : ''}`}>
-                <span className="flex items-center">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Documents
-                </span>
-              </TabsTrigger>
-              <TabsTrigger value="people" className={`${isMobile ? "w-full" : ""} ${activeTab === 'people' ? 'bg-primary text-primary-foreground' : ''}`}>
-                <span className="flex items-center">
-                  <Users className="h-4 w-4 mr-2" />
-                  Users
-                </span>
-              </TabsTrigger>
+              <TabsTrigger value="documents" className={isMobile ? "w-full" : ""}>Documents</TabsTrigger>
+              <TabsTrigger value="people" className={isMobile ? "w-full" : ""}>Users</TabsTrigger>
             </>
           )}
         </TabsList>

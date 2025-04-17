@@ -12,7 +12,6 @@ interface OverviewTabProps {
   servicesStats: ServicesStats;
   activityData: ActivityEvent[];
   monthlyData: MonthlyData[];
-  onCardClick: (tab: string) => void;
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({
@@ -21,7 +20,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   servicesStats,
   activityData,
   monthlyData,
-  onCardClick,
 }) => {
   // Colors for charts
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe'];
@@ -49,7 +47,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         employeeStats={employeeStats}
         servicesStats={servicesStats}
         activityData={activityData}
-        onCardClick={onCardClick}
       />
       
       <MonthlyInvoiceChart monthlyData={monthlyData} />
