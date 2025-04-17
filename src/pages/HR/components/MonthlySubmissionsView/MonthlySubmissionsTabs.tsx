@@ -49,14 +49,20 @@ const MonthlySubmissionsTabs: React.FC<MonthlySubmissionsTabsProps> = ({
             loading={loading}
           />
           
-          {!isSubmitted && workHours.length > 0 && (
-            <div className="mt-6 flex justify-end">
-              <Button onClick={onSubmitMonth} disabled={loading}>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-between">
+            {!isSubmitted && (
+              <Button onClick={onAddEmployee} disabled={loading}>
+                Add Employee
+              </Button>
+            )}
+            
+            {!isSubmitted && workHours.length > 0 && (
+              <Button onClick={onSubmitMonth} className="sm:ml-auto" disabled={loading}>
                 <Send className="mr-2 h-4 w-4" />
                 Submit {formatMonthYear(selectedMonth)}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
       
