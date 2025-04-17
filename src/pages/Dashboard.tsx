@@ -14,7 +14,6 @@ import RecentActivity from '@/components/dashboard/RecentActivity';
 import { useReportData } from './Reports/hooks/useReportData';
 import StatsCards from './Reports/components/overview/StatsCards';
 import MonthlyInvoiceChart from './Reports/components/overview/MonthlyInvoiceChart';
-import DistributionCharts from './Reports/components/overview/DistributionCharts';
 import LoadingState from './Reports/components/LoadingState';
 
 const Dashboard: React.FC = () => {
@@ -29,25 +28,6 @@ const Dashboard: React.FC = () => {
     loading 
   } = useReportData();
   
-  // Colors for charts (same as in Reports)
-  const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe'];
-  
-  // Prepare data for pie charts (same as in Reports)
-  const invoicePieData = [
-    { name: 'Sales', value: invoiceStats.sales },
-    { name: 'Supplier', value: invoiceStats.supplier },
-  ];
-  
-  const employeePieData = [
-    { name: 'Active', value: employeeStats.active },
-    { name: 'Terminated', value: employeeStats.terminated },
-  ];
-  
-  const servicesPieData = [
-    { name: 'Completed', value: servicesStats.completed },
-    { name: 'Pending', value: servicesStats.pending },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Quick Actions */}
@@ -128,13 +108,6 @@ const Dashboard: React.FC = () => {
             />
             
             <MonthlyInvoiceChart monthlyData={monthlyData} />
-            
-            <DistributionCharts 
-              invoicePieData={invoicePieData}
-              employeePieData={employeePieData}
-              servicesPieData={servicesPieData}
-              colors={COLORS}
-            />
           </div>
         )}
       </div>
