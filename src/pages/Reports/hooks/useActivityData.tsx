@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { ActivityEvent, getRecentActivity, getMockRecentActivity } from '@/utils/activity';
+import { ActivityEvent, getMockRecentActivity, getRecentActivity } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 
 export const useActivityData = () => {

@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { 
   employeeWorkHoursTable, 
-  workHoursSubmissionsTable, 
-  WorkHoursSubmission 
+  workHoursSubmissionsTable
 } from '@/integrations/supabase/client';
 import { getMonthYearForStorage, getCurrentMonthYear, getLastMonths } from '@/utils/dates';
 import { useToast } from '@/hooks/use-toast';
@@ -15,7 +14,17 @@ export type MonthSubmission = {
   date: Date;
   status: SubmissionStatus;
   isCurrentMonth: boolean;
-  submission?: WorkHoursSubmission;
+  submission?: any;
+};
+
+// Define a simpler type for WorkHoursSubmission
+export type WorkHoursSubmission = {
+  id: string;
+  client_id: string;
+  month_year: string;
+  submitted_at: string;
+  hr_email: string | null;
+  is_locked: boolean;
 };
 
 export const useMonthlySubmissions = (monthCount: number = 6) => {
@@ -40,7 +49,7 @@ export const useMonthlySubmissions = (monthCount: number = 6) => {
       
       if (error) throw error;
       
-      setSubmissions(data || []);
+      setSubmissions(data as WorkHoursSubmission[] || []);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast({

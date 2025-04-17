@@ -5,6 +5,8 @@ import {
   workHoursSubmissionsTable,
   supabase
 } from '@/integrations/supabase/client';
+import { ActivityEvent, ActivityEventType } from './types';
+import { getMockRecentActivity } from './mockActivity';
 
 // Function to fetch work hours submissions
 export const fetchWorkHoursSubmissions = async (userId: string) => {
@@ -57,5 +59,23 @@ export const submitWorkHoursMonth = async (userId: string, monthYear: string, hr
   } catch (error) {
     console.error('Error submitting work hours month:', error);
     throw error;
+  }
+};
+
+// Implement the missing getRecentActivity function that was imported but not exported
+export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
+  try {
+    console.log("Fetching recent activity...");
+    // In a real implementation, this would fetch from a database
+    // For now, we're using the mock data as a placeholder
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Return mock data
+    return getMockRecentActivity();
+  } catch (error) {
+    console.error("Error fetching activity:", error);
+    return [];
   }
 };

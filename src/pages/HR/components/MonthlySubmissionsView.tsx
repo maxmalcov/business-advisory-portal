@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import MonthSelector from './MonthSelector';
 import { useMonthlySubmissions } from '../hooks/useMonthlySubmissions';
 import { useEmployeeWorkHours, WorkHoursData } from '../hooks/useEmployeeWorkHours';
-import { EmailRecipientInput } from './EmailRecipientInput';
+import EmailRecipientInput from './EmailRecipientInput';
 import WorkHoursTable from './WorkHoursTable';
 import WorkHoursForm from './WorkHoursForm';
 
@@ -30,7 +29,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
   const [activeTab, setActiveTab] = useState<string>('view');
   const [editingEmployee, setEditingEmployee] = useState<WorkHoursData | null>(null);
   
-  // Initialize hooks for monthly submissions and work hours
   const { 
     months, 
     selectedMonth, 
@@ -48,20 +46,17 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     hasDataFromPreviousMonth
   } = useEmployeeWorkHours(selectedMonth, isSubmitted);
 
-  // Handle month selection
   const handleSelectMonth = (month: Date) => {
     setSelectedMonth(month);
     setEditingEmployee(null);
     setActiveTab('view');
   };
 
-  // Handle employee editing
   const handleEditEmployee = (employee: WorkHoursData) => {
     setEditingEmployee(employee);
     setActiveTab('edit');
   };
 
-  // Add a new employee
   const handleAddEmployee = () => {
     setEditingEmployee({
       employeeName: '',
@@ -70,7 +65,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     setActiveTab('edit');
   };
 
-  // Handle form submission
   const handleSubmitForm = async (values: WorkHoursData) => {
     const success = await saveEmployee(values);
     if (success) {
@@ -89,7 +83,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     }
   };
 
-  // Handle employee deletion
   const handleDeleteEmployee = async (id: string) => {
     if (!id) return;
     
@@ -108,7 +101,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     }
   };
 
-  // Handle month submission
   const handleSubmitMonth = async () => {
     if (!isValidEmail) {
       toast({
@@ -128,7 +120,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     }
   };
   
-  // Handle submission without changes
   const handleSubmitWithoutChanges = async () => {
     if (!hasDataFromPreviousMonth) {
       toast({
@@ -195,7 +186,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         </CardHeader>
         
         <CardContent>
-          {/* HR Email Recipient Configuration */}
           <EmailRecipientInput 
             emailRecipient={emailRecipient}
             setEmailRecipient={setEmailRecipient}

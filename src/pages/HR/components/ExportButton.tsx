@@ -6,12 +6,12 @@ import { EmployeeRecord } from './WorkHoursTable';
 
 interface ExportButtonProps {
   data: EmployeeRecord[];
-  filename?: string;
+  fileName?: string;
 }
 
 const ExportButton: React.FC<ExportButtonProps> = ({ 
   data, 
-  filename = 'work-hours-data'
+  fileName = 'work-hours-data'
 }) => {
   const exportToCSV = () => {
     // Define the column headers
@@ -26,12 +26,12 @@ const ExportButton: React.FC<ExportButtonProps> = ({
     
     // Map the data to a CSV-friendly format
     const csvData = data.map(item => [
-      item.companyName,
+      item.companyName || '',
       item.employeeName,
       item.grossSalary.toString(),
-      item.absenceDays.toString(),
+      (item.absenceDays || 0).toString(),
       item.medicalLeaveDate || 'N/A',
-      item.notes.replace(/,/g, ';') // Replace any commas in notes with semicolons to avoid CSV issues
+      (item.notes || '').replace(/,/g, ';') // Replace any commas in notes with semicolons to avoid CSV issues
     ]);
     
     // Combine headers with data
@@ -48,7 +48,7 @@ const ExportButton: React.FC<ExportButtonProps> = ({
     const url = URL.createObjectURL(blob);
     
     link.setAttribute('href', url);
-    link.setAttribute('download', `${filename}-${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `${fileName}-${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     
     document.body.appendChild(link);

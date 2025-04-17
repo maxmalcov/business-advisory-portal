@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { FileDown, FileUp, Plus } from 'lucide-react';
 import { EmployeeRecord } from './WorkHoursTable';
-import { ExportButton } from './ExportButton';
+import ExportButton from './ExportButton';
 
 interface WorkHoursHeaderProps {
   isAddingNew: boolean;
