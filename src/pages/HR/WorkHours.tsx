@@ -6,6 +6,7 @@ import { WorkHoursHeader } from './components';
 import MonthlySubmissionsView from './components/MonthlySubmissionsView';
 import { useAuth } from '@/context/AuthContext';
 import { useMonthlySubmissions } from './hooks/useMonthlySubmissions';
+import { useEmployeeWorkHours } from './hooks/useEmployeeWorkHours';
 
 const WorkHours: React.FC = () => {
   const { t } = useLanguage();
@@ -17,6 +18,8 @@ const WorkHours: React.FC = () => {
     isSubmitted,
     submitMonth
   } = useMonthlySubmissions();
+
+  const { workHours } = useEmployeeWorkHours(selectedMonth, isSubmitted);
   
   // Get the HR email from the user's outgoing invoice email
   const hrEmail = user?.outgoingInvoiceEmail || '';
@@ -35,7 +38,8 @@ const WorkHours: React.FC = () => {
             isAddingNew={isAddingNew} 
             setIsAddingNew={setIsAddingNew}
             submitToHR={handleSubmitToHR}
-            employeeData={[]}
+            employeeData={workHours}
+            selectedMonth={selectedMonth}
           />
         </CardHeader>
         <CardContent>

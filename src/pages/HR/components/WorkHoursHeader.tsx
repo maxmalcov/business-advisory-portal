@@ -1,62 +1,45 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { FileDown, FileUp, Plus } from 'lucide-react';
-import { EmployeeRecord } from './WorkHoursTable';
-import ExportButton from './ExportButton';
+import { Download, Plus } from 'lucide-react';
+import { WorkHoursData } from '../hooks/useEmployeeWorkHours';
+import { exportWorkHoursToCsv } from '@/utils/csvExport';
 
 interface WorkHoursHeaderProps {
   isAddingNew: boolean;
-  setIsAddingNew: (value: boolean) => void;
-  submitToHR: () => void;
-  employeeData: EmployeeRecord[];
+  setIsAddingNew: (isAdding: boolean) => void;
+  submitToHR: () => Promise<void>;
+  employeeData: WorkHoursData[];
+  selectedMonth: Date;
 }
 
-const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
+export const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
   isAddingNew,
   setIsAddingNew,
   submitToHR,
-  employeeData
+  employeeData,
+  selectedMonth,
 }) => {
+  const handleExportCsv = () => {
+    exportWorkHoursToCsv(employeeData, selectedMonth);
+  };
+
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
-      <div>
-        <h2 className="text-lg font-semibold">Employee Work Hours</h2>
-        <p className="text-sm text-muted-foreground">
-          Manage monthly work hours for your employees
-        </p>
-      </div>
-      
-      <div className="flex gap-2">
-        <ExportButton
-          data={employeeData}
-          fileName="employee-work-hours"
-        />
-        
-        {employeeData.length > 0 && (
-          <Button 
-            variant="default" 
-            onClick={submitToHR}
-            className="flex items-center gap-1"
-          >
-            <FileUp size={16} />
-            Submit to HR
-          </Button>
-        )}
-        
-        {!isAddingNew && (
-          <Button 
-            variant="outline" 
-            onClick={() => setIsAddingNew(true)}
-            className="flex items-center gap-1"
-          >
-            <Plus size={16} />
-            Add Employee
-          </Button>
-        )}
+    <div className="flex justify-between items-center p-4">
+      <div className="flex gap-4">
+        <Button 
+          variant="outline" 
+          onClick={handleExportCsv}
+          disabled={employeeData.length === 0}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Export CSV
+        </Button>
+        <Button onClick={() => setIsAddingNew(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Employee
+        </Button>
       </div>
     </div>
   );
 };
-
-export default WorkHoursHeader;
