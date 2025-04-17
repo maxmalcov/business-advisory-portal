@@ -31,23 +31,21 @@ export function useActiveEmployees() {
           throw error;
         }
         
-        if (data && Array.isArray(data)) {
-          // First cast to unknown, then to the desired type to satisfy TypeScript
-          const employeeData = data as unknown as EmployeeData[];
+        // Check if data exists and is an array, otherwise use empty array
+        const employeeData = (data && Array.isArray(data)) 
+          ? (data as unknown as EmployeeData[])
+          : [];
           
-          const transformedData: Employee[] = employeeData.map((emp) => ({
-            id: emp.id,
-            fullName: emp.full_name,
-            position: emp.position,
-            status: 'active',
-            startDate: '', // These fields are not needed for the dropdown
-            companyName: emp.company_name || '',
-          }));
+        const transformedData: Employee[] = employeeData.map((emp) => ({
+          id: emp.id,
+          fullName: emp.full_name,
+          position: emp.position,
+          status: 'active',
+          startDate: '', // These fields are not needed for the dropdown
+          companyName: emp.company_name || '',
+        }));
           
-          setActiveEmployees(transformedData);
-        } else {
-          setActiveEmployees([]);
-        }
+        setActiveEmployees(transformedData);
       } catch (error) {
         console.error('Error fetching active employees:', error);
         toast({
@@ -55,7 +53,7 @@ export function useActiveEmployees() {
           description: 'Could not load the employee list.',
           variant: 'destructive'
         });
-        setActiveEmployees([]);
+        setActiveEmployees([]); // Always set as empty array on error
       } finally {
         setIsLoading(false);
       }

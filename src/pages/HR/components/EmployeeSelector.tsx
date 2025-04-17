@@ -34,14 +34,20 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
   const { activeEmployees, isLoading } = useActiveEmployees();
   const { toast } = useToast();
 
+  // Ensure existingEmployees is always an array
+  const safeExistingEmployees = Array.isArray(existingEmployees) ? existingEmployees : [];
+  
+  // Ensure activeEmployees is always an array
+  const safeActiveEmployees = Array.isArray(activeEmployees) ? activeEmployees : [];
+
   // Filter out employees that have already been added
-  const availableEmployees = activeEmployees.filter(emp => 
-    !existingEmployees.some(existing => existing.employeeId === emp.id)
+  const availableEmployees = safeActiveEmployees.filter(emp => 
+    !safeExistingEmployees.some(existing => existing.employeeId === emp.id)
   );
 
   const handleSelectEmployee = (employee: Employee) => {
     // Check if this employee has already been added
-    if (existingEmployees.some(existing => existing.employeeId === employee.id)) {
+    if (safeExistingEmployees.some(existing => existing.employeeId === employee.id)) {
       toast({
         title: "Employee already added",
         description: `${employee.fullName} is already on the list for this month.`,
@@ -86,21 +92,27 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
             <>
               <CommandEmpty>No employee found.</CommandEmpty>
               <CommandGroup heading="Active Employees">
-                {availableEmployees.map((employee) => (
-                  <CommandItem
-                    key={employee.id}
-                    value={employee.fullName}
-                    onSelect={() => handleSelectEmployee(employee)}
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    <span className="font-medium">{employee.fullName}</span>
-                    {employee.position && (
-                      <span className="ml-2 text-muted-foreground">
-                        - {employee.position}
-                      </span>
-                    )}
-                  </CommandItem>
-                ))}
+                {availableEmployees.length > 0 ? (
+                  availableEmployees.map((employee) => (
+                    <CommandItem
+                      key={employee.id}
+                      value={employee.fullName}
+                      onSelect={() => handleSelectEmployee(employee)}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      <span className="font-medium">{employee.fullName}</span>
+                      {employee.position && (
+                        <span className="ml-2 text-muted-foreground">
+                          - {employee.position}
+                        </span>
+                      )}
+                    </CommandItem>
+                  ))
+                ) : (
+                  <div className="py-2 px-2 text-sm text-muted-foreground">
+                    No available employees found.
+                  </div>
+                )}
               </CommandGroup>
               <div className="border-t p-2">
                 <Button 
