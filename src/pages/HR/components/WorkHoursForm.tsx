@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -18,6 +18,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import EmployeeSelector from './EmployeeSelector';
+import { Employee } from '../types/employee';
 
 export interface FormValues {
   id?: string;
@@ -35,6 +37,7 @@ interface WorkHoursFormProps {
   onCancel: () => void;
   initialValues?: FormValues;
   editingId?: string;
+  existingEmployees: FormValues[];
 }
 
 const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
@@ -42,7 +45,10 @@ const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
   onCancel,
   initialValues,
   editingId,
+  existingEmployees = [],
 }) => {
+  const [useEmployeeSelector, setUseEmployeeSelector] = useState(!editingId);
+  
   // Initialize form with default values or provided initial values
   const form = useForm<FormValues>({
     defaultValues: {
@@ -68,155 +74,191 @@ const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
     });
   };
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Employee Name */}
-          <FormField
-            control={form.control}
-            name="employeeName"
-            rules={{ required: 'Employee name is required' }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Employee Name*</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter employee name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+  const handleSelectEmployee = (employee: Employee | null) => {
+    if (employee) {
+      // Pre-fill form with employee data
+      form.setValue('employeeId', employee.id);
+      form.setValue('employeeName', employee.fullName);
+      form.setValue('companyName', employee.companyName || '');
+    }
+    
+    // After selecting or choosing manual entry, hide the selector
+    setUseEmployeeSelector(false);
+  };
 
-          {/* Company Name */}
-          <FormField
-            control={form.control}
-            name="companyName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Company Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter company name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+  // If we're editing, don't show the selector initially
+  if (!useEmployeeSelector) {
+    return (
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Employee Name */}
+            <FormField
+              control={form.control}
+              name="employeeName"
+              rules={{ required: 'Employee name is required' }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Employee Name*</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter employee name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Gross Salary */}
-          <FormField
-            control={form.control}
-            name="grossSalary"
-            rules={{ required: 'Gross salary is required' }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gross Salary*</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="0.00" 
-                    min="0" 
-                    step="0.01" 
-                    {...field}
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            {/* Company Name */}
+            <FormField
+              control={form.control}
+              name="companyName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter company name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Absence Days */}
-          <FormField
-            control={form.control}
-            name="absenceDays"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Absence Days</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="0" 
-                    min="0" 
-                    {...field}
-                    onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Medical Leave Date */}
-          <FormField
-            control={form.control}
-            name="medicalLeaveDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Medical Leave Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(new Date(field.value), "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={field.onChange}
-                      initialFocus
+            {/* Gross Salary */}
+            <FormField
+              control={form.control}
+              name="grossSalary"
+              rules={{ required: 'Gross salary is required' }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gross Salary*</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="0.00" 
+                      min="0" 
+                      step="0.01" 
+                      {...field}
+                      onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                     />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Notes */}
-          <FormField
-            control={form.control}
-            name="notes"
-            render={({ field }) => (
-              <FormItem className="md:col-span-2">
-                <FormLabel>Notes</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Add any additional notes here..." 
-                    className="resize-none h-20"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+            {/* Absence Days */}
+            <FormField
+              control={form.control}
+              name="absenceDays"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Absence Days</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="0" 
+                      min="0" 
+                      {...field}
+                      onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="flex justify-end space-x-4 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit">
-            {editingId ? 'Update' : 'Add'} Employee
-          </Button>
-        </div>
-      </form>
-    </Form>
+            {/* Medical Leave Date */}
+            <FormField
+              control={form.control}
+              name="medicalLeaveDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Medical Leave Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(new Date(field.value), "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ? new Date(field.value) : undefined}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Notes */}
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Add any additional notes here..." 
+                      className="resize-none h-20"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="flex justify-end space-x-4 pt-4">
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              {editingId ? 'Update' : 'Add'} Employee
+            </Button>
+          </div>
+        </form>
+      </Form>
+    );
+  }
+
+  // Show employee selector first
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-medium">Select an Employee</h3>
+      <p className="text-sm text-muted-foreground">
+        Choose an employee from the list or add a new one manually.
+      </p>
+      
+      <EmployeeSelector 
+        existingEmployees={existingEmployees}
+        onSelectEmployee={handleSelectEmployee}
+      />
+      
+      <div className="flex justify-end space-x-4 pt-4">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </div>
   );
 };
 

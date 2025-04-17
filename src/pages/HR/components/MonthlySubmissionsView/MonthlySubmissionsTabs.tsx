@@ -82,6 +82,7 @@ const MonthlySubmissionsTabs: React.FC<MonthlySubmissionsTabsProps> = ({
               editingId={editingEmployee.id}
               initialValues={editingEmployee}
               onCancel={onCancelEdit}
+              existingEmployees={workHours}
             />
           )}
         </TabsContent>
