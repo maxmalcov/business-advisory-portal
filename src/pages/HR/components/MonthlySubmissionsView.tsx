@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { formatMonthYear } from '@/utils/dates';
-import { CalendarCheck, Copy, Send, SendHorizontal } from 'lucide-react';
+import { CalendarCheck, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
 
@@ -43,7 +43,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     loading: workHoursLoading,
     saveEmployee,
     deleteEmployee,
-    hasDataFromPreviousMonth
   } = useEmployeeWorkHours(selectedMonth, isSubmitted);
 
   const handleSelectMonth = (month: Date) => {
@@ -115,27 +114,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     }
   };
   
-  const handleSubmitWithoutChanges = async () => {
-    if (!hasDataFromPreviousMonth) {
-      toast({
-        title: 'No data available',
-        description: 'There is no previous month data to use.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    const hrEmail = user?.outgoingInvoiceEmail || '';
-    
-    const success = await submitMonth(hrEmail);
-    if (success) {
-      toast({
-        title: 'Success',
-        description: 'Month submitted with previous data.',
-      });
-    }
-  };
-
   const loading = submissionsLoading || workHoursLoading;
 
   return (
@@ -158,19 +136,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
               </Badge>
             )}
           </CardTitle>
-          
-          {!isSubmitted && hasDataFromPreviousMonth && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="text-sm"
-              onClick={handleSubmitWithoutChanges}
-              disabled={loading}
-            >
-              <SendHorizontal className="mr-1 h-4 w-4" />
-              Send Without Changes
-            </Button>
-          )}
         </CardHeader>
         
         <CardContent>
