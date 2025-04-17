@@ -20,6 +20,16 @@
   },
   "nav": {
     "dashboard": "Dashboard",
-    "activity_log": "Activity Log"
+    "activity_log": "Activity Log",
+    "service_requests": "Service Requests"
+  },
+  "services": {
+    "title": "Service Requests",
+    "service_name": "Service",
+    "status": "Status",
+    "requested_date": "Requested",
+    "completion_date": "Completed",
+    "no_results": "No service requests found",
+    "search_placeholder": "Search service requests..."
   }
 }

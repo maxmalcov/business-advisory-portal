@@ -34,6 +34,7 @@ import WorkHours from "./pages/HR/WorkHours";
 import UsefulLinks from "./pages/UsefulLinks";
 import AdminUsefulLinks from "./pages/AdminUsefulLinks";
 import UserActivityLog from "./pages/UserActivityLog";
+import ServiceRequests from "./pages/ServiceRequests";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -75,17 +76,21 @@ const App = () => (
                   <Route path="login" element={<Login />} />
                   <Route path="register" element={<Register />} />
                   
-                  {/* Client routes */}
                   <Route path="dashboard" element={
                     <ProtectedRoute requiredRole="client">
                       <Dashboard />
                     </ProtectedRoute>
                   } />
                   
-                  {/* New Activity Log route */}
                   <Route path="user/activity-log" element={
                     <ProtectedRoute requiredRole="client">
                       <UserActivityLog />
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="user/service-requests" element={
+                    <ProtectedRoute requiredRole="client">
+                      <ServiceRequests />
                     </ProtectedRoute>
                   } />
                   
@@ -156,7 +161,6 @@ const App = () => (
                     </ProtectedRoute>
                   } />
                   
-                  {/* Admin routes */}
                   <Route path="admin" element={
                     <ProtectedRoute requiredRole="admin">
                       <AdminDashboard />
@@ -177,7 +181,6 @@ const App = () => (
                       <AdminUsefulLinks />
                     </ProtectedRoute>
                   } />
-                  {/* New routes for service editor */}
                   <Route path="admin/services/create" element={
                     <ProtectedRoute requiredRole="admin">
                       <ServiceEditor />
