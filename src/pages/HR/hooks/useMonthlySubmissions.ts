@@ -28,7 +28,14 @@ export const useMonthlySubmissions = (monthCount: number = 6) => {
   const { submissions, loading, refreshSubmissions } = useSubmissionsFetcher();
   
   // Process months based on submissions
-  const { months, selectedMonth, setSelectedMonth } = useMonthsProcessor(submissions, monthCount);
+  const { 
+    months, 
+    selectedMonth, 
+    setSelectedMonth,
+    selectedYear,
+    handleYearChange,
+    handleNavigateMonth 
+  } = useMonthsProcessor(submissions, monthCount);
   
   // Check if current month is submitted
   const { isSubmitted } = useSubmissionStatus(selectedMonth, submissions);
@@ -40,6 +47,9 @@ export const useMonthlySubmissions = (monthCount: number = 6) => {
     months,
     selectedMonth,
     setSelectedMonth,
+    selectedYear,
+    onYearChange: handleYearChange,
+    onNavigateMonth: handleNavigateMonth,
     isSubmitted,
     loading,
     submitMonth,

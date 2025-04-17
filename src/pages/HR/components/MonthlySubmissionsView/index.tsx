@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +27,9 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     months, 
     selectedMonth, 
     setSelectedMonth,
+    selectedYear,
+    onYearChange,
+    onNavigateMonth,
     isSubmitted,
     loading: submissionsLoading,
     submitMonth 
@@ -124,6 +126,9 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         selectedMonth={selectedMonth}
         onSelectMonth={handleSelectMonth}
         loading={submissionsLoading}
+        onYearChange={onYearChange}
+        selectedYear={selectedYear}
+        onNavigateMonth={onNavigateMonth}
       />
       
       <Card>
