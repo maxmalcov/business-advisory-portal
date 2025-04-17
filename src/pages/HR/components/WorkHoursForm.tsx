@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -85,6 +84,9 @@ const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
     // After selecting or choosing manual entry, hide the selector
     setUseEmployeeSelector(false);
   };
+
+  // Ensure existingEmployees is always an array
+  const safeExistingEmployees = Array.isArray(existingEmployees) ? existingEmployees : [];
 
   // If we're editing, don't show the selector initially
   if (!useEmployeeSelector) {
@@ -249,7 +251,7 @@ const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
       </p>
       
       <EmployeeSelector 
-        existingEmployees={existingEmployees}
+        existingEmployees={safeExistingEmployees}
         onSelectEmployee={handleSelectEmployee}
       />
       
