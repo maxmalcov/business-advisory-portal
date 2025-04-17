@@ -11,10 +11,42 @@ import {
 } from '@/components/ui/card';
 import { FileUp, FileDown, Users, Sparkles } from 'lucide-react';
 import RecentActivity from '@/components/dashboard/RecentActivity';
+import { useReportData } from './Reports/hooks/useReportData';
+import StatsCards from './Reports/components/overview/StatsCards';
+import MonthlyInvoiceChart from './Reports/components/overview/MonthlyInvoiceChart';
+import DistributionCharts from './Reports/components/overview/DistributionCharts';
+import LoadingState from './Reports/components/LoadingState';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { 
+    invoiceStats, 
+    employeeStats, 
+    servicesStats, 
+    activityData, 
+    monthlyData, 
+    loading 
+  } = useReportData();
+  
+  // Colors for charts (same as in Reports)
+  const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe'];
+  
+  // Prepare data for pie charts (same as in Reports)
+  const invoicePieData = [
+    { name: 'Sales', value: invoiceStats.sales },
+    { name: 'Supplier', value: invoiceStats.supplier },
+  ];
+  
+  const employeePieData = [
+    { name: 'Active', value: employeeStats.active },
+    { name: 'Terminated', value: employeeStats.terminated },
+  ];
+  
+  const servicesPieData = [
+    { name: 'Completed', value: servicesStats.completed },
+    { name: 'Pending', value: servicesStats.pending },
+  ];
 
   return (
     <div className="space-y-6">
@@ -78,6 +110,33 @@ const Dashboard: React.FC = () => {
             </Card>
           </Link>
         </div>
+      </div>
+
+      {/* Reports Data */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Account Summary</h2>
+        
+        {loading ? (
+          <LoadingState />
+        ) : (
+          <div className="space-y-6">
+            <StatsCards 
+              invoiceStats={invoiceStats}
+              employeeStats={employeeStats}
+              servicesStats={servicesStats}
+              activityData={activityData}
+            />
+            
+            <MonthlyInvoiceChart monthlyData={monthlyData} />
+            
+            <DistributionCharts 
+              invoicePieData={invoicePieData}
+              employeePieData={employeePieData}
+              servicesPieData={servicesPieData}
+              colors={COLORS}
+            />
+          </div>
+        )}
       </div>
 
       {/* Recent Activity */}

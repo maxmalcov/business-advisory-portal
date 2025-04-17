@@ -9,6 +9,7 @@ import DocumentsTab from './components/documents/DocumentsTab';
 import PeopleTab from './components/people/PeopleTab';
 import { useReportData } from './hooks/useReportData';
 import { useAuth } from '@/context/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const ReportsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -23,6 +24,11 @@ const ReportsPage: React.FC = () => {
   const { user } = useAuth();
   
   const isAdmin = user?.userType === 'admin';
+  
+  // If not admin, redirect to dashboard as reports content is now there
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" />;
+  }
   
   // Reset to overview tab if user is not admin and tries to access restricted tabs
   useEffect(() => {

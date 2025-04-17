@@ -23,7 +23,7 @@ const ReportsHeader: React.FC<ReportsHeaderProps> = ({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">{t('nav.reports')}</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t('nav.reports')} {isAdmin && "(Admin)"}</h1>
       
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className={`mb-4 ${isMobile ? 'w-full grid grid-cols-2 gap-1' : ''} ${isSmallScreen ? 'flex flex-wrap' : ''}`}>
