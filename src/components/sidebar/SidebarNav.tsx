@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import SidebarItem from './SidebarItem';
 import { SidebarItem as SidebarItemType } from './types';
@@ -26,26 +26,32 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
   };
 
   // Set initial expanded state based on current route
-  React.useEffect(() => {
+  useEffect(() => {
     const initialExpanded = menuItems
       .filter(item => item.children && item.children.some(child => location.pathname === child.path))
       .map(item => item.path);
     
     if (initialExpanded.length > 0) {
-      setExpandedItems(prev => {
-        // Only update if the items aren't already in the array
-        const newItems = initialExpanded.filter(item => !prev.includes(item));
-        return [...prev, ...newItems];
-      });
+      setExpandedItems(initialExpanded);
     }
   }, [location.pathname, menuItems]);
 
-  const toggleExpanded = (path: string) => {
-    setExpandedItems(prev => 
-      prev.includes(path)
-        ? prev.filter(item => item !== path)
-        : [...prev, path]
-    );
+  const toggleExpanded = (path: string, hasChildren: boolean) => {
+    if (!hasChildren) {
+      // If clicking an item without children, collapse all expanded items
+      setExpandedItems([]);
+      return;
+    }
+
+    setExpandedItems(prev => {
+      if (prev.includes(path)) {
+        // If already expanded, collapse only this item
+        return prev.filter(item => item !== path);
+      } else {
+        // If expanding this item, collapse all others and expand only this one
+        return [path];
+      }
+    });
   };
 
   return (
