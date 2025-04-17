@@ -36,12 +36,18 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
 
   // Filter out employees that have already been added
   const availableEmployees = safeActiveEmployees.filter(emp => 
-    !safeExistingEmployees.some(existing => existing.employeeId === emp.id)
+    !safeExistingEmployees.some(existing => 
+      existing.employeeId === emp.id || 
+      existing.employeeName === emp.fullName
+    )
   );
 
   const handleSelectEmployee = (employee: Employee) => {
     // Check if this employee has already been added
-    if (safeExistingEmployees.some(existing => existing.employeeId === employee.id)) {
+    if (safeExistingEmployees.some(existing => 
+      existing.employeeId === employee.id || 
+      existing.employeeName === employee.fullName
+    )) {
       toast({
         title: "Employee already added",
         description: `${employee.fullName} is already on the list for this month.`,
@@ -86,7 +92,7 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
             <>
               <CommandEmpty>No employee found.</CommandEmpty>
               <CommandGroup heading="Active Employees">
-                {availableEmployees.length > 0 ? (
+                {availableEmployees && availableEmployees.length > 0 ? (
                   availableEmployees.map((employee) => (
                     <EmployeeListItem 
                       key={employee.id}

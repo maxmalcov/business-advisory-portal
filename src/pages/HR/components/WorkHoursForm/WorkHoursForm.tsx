@@ -28,7 +28,7 @@ const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
   // Initialize form with default values or provided initial values
   const form = useForm<FormValues>({
     defaultValues: {
-      id: editingId,
+      id: editingId || undefined,
       employeeId: initialValues?.employeeId || undefined,
       employeeName: initialValues?.employeeName || '',
       companyName: initialValues?.companyName || '',
@@ -54,7 +54,7 @@ const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
     if (employee) {
       // Pre-fill form with employee data
       form.setValue('employeeId', employee.id);
-      form.setValue('employeeName', employee.fullName);
+      form.setValue('employeeName', employee.fullName || '');
       form.setValue('companyName', employee.companyName || '');
     }
     
