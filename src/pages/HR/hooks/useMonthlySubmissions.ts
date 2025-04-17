@@ -48,8 +48,10 @@ export const useMonthlySubmissions = (monthCount: number = 6) => {
         .order('month_year', { ascending: false });
       
       if (error) throw error;
-      
-      setSubmissions(data as WorkHoursSubmission[] || []);
+
+      // Type assertion to ensure data is of the expected type
+      const typedData = (data || []) as WorkHoursSubmission[];
+      setSubmissions(typedData);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast({

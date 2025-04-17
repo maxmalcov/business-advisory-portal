@@ -32,6 +32,28 @@ const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
           data={employeeData}
           fileName="employee-work-hours"
         />
+        
+        {employeeData.length > 0 && (
+          <Button 
+            variant="default" 
+            onClick={submitToHR}
+            className="flex items-center gap-1"
+          >
+            <FileUp size={16} />
+            Submit to HR
+          </Button>
+        )}
+        
+        {!isAddingNew && (
+          <Button 
+            variant="outline" 
+            onClick={() => setIsAddingNew(true)}
+            className="flex items-center gap-1"
+          >
+            <Plus size={16} />
+            Add Employee
+          </Button>
+        )}
       </div>
     </div>
   );
