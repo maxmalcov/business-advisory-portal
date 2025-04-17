@@ -21,7 +21,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
 }) => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<string>('view');
   const [editingEmployee, setEditingEmployee] = useState<WorkHoursData | null>(null);
   
   const { 
@@ -73,12 +72,10 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     
     setSelectedMonth(month);
     setEditingEmployee(null);
-    setActiveTab('view');
   };
 
   const handleEditEmployee = (employee: WorkHoursData) => {
     setEditingEmployee(employee);
-    setActiveTab('edit');
   };
 
   const handleAddEmployee = () => {
@@ -96,7 +93,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
       employeeName: '',
       grossSalary: 0,
     });
-    setActiveTab('edit');
     setIsAddingNew(true);
   };
 
@@ -161,7 +157,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
 
   const handleCancelEdit = () => {
     setEditingEmployee(null);
-    setActiveTab('view');
     setIsAddingNew(false);
   };
   
@@ -187,8 +182,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         
         <CardContent>
           <MonthlySubmissionsTabs
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
             editingEmployee={editingEmployee}
             workHours={workHours}
             isSubmitted={isSubmitted}
