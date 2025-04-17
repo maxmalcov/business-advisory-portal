@@ -1,29 +1,25 @@
 
 import React, { useState } from 'react';
-import { Check, ChevronsUpDown, UserPlus, User } from 'lucide-react';
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { ChevronsUpDown } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
 } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useActiveEmployees } from '../hooks/useActiveEmployees';
-import { Employee } from '../types/employee';
-import { FormValues } from './WorkHoursForm';
+import { Button } from "@/components/ui/button";
+import { useActiveEmployees } from '../../hooks/useActiveEmployees';
 import { useToast } from '@/hooks/use-toast';
-
-interface EmployeeSelectorProps {
-  existingEmployees: FormValues[];
-  onSelectEmployee: (employee: Employee | null) => void;
-}
+import { Employee } from '../../types/employee';
+import { EmployeeSelectorProps } from './types';
+import EmployeeListItem from './EmployeeListItem';
+import EmptyState from './EmptyState';
+import ManualEntryOption from './ManualEntryOption';
 
 const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
   existingEmployees,
@@ -85,43 +81,24 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
             onValueChange={setSearch}
           />
           {isLoading ? (
-            <div className="py-6 text-center text-sm">Loading employees...</div>
+            <EmptyState isLoading={true} />
           ) : (
             <>
               <CommandEmpty>No employee found.</CommandEmpty>
               <CommandGroup heading="Active Employees">
                 {availableEmployees.length > 0 ? (
                   availableEmployees.map((employee) => (
-                    <CommandItem
+                    <EmployeeListItem 
                       key={employee.id}
-                      value={employee.fullName}
-                      onSelect={() => handleSelectEmployee(employee)}
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      <span className="font-medium">{employee.fullName}</span>
-                      {employee.position && (
-                        <span className="ml-2 text-muted-foreground">
-                          - {employee.position}
-                        </span>
-                      )}
-                    </CommandItem>
+                      employee={employee}
+                      onSelect={handleSelectEmployee}
+                    />
                   ))
                 ) : (
-                  <div className="py-2 px-2 text-sm text-muted-foreground">
-                    No available employees found.
-                  </div>
+                  <EmptyState isLoading={false} />
                 )}
               </CommandGroup>
-              <div className="border-t p-2">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start" 
-                  onClick={handleAddManually}
-                >
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Add Manually
-                </Button>
-              </div>
+              <ManualEntryOption onAddManually={handleAddManually} />
             </>
           )}
         </Command>
