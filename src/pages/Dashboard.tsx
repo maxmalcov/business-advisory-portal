@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -5,13 +6,10 @@ import { useLanguage } from '@/context/LanguageContext';
 import { 
   Card, 
   CardContent, 
-  CardDescription, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { FileUp, FileDown, Users, FileText, LayoutDashboard, Bell, FileIcon, Package, Sparkles } from 'lucide-react';
+import { FileUp, FileDown, Users, Sparkles } from 'lucide-react';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 
 const Dashboard: React.FC = () => {
@@ -84,56 +82,6 @@ const Dashboard: React.FC = () => {
 
       {/* Recent Activity */}
       <RecentActivity />
-
-      {/* Stats Summary */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">{t('dashboard.stats')}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Pending Invoices
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">3</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Uploaded This Month
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Employees
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">5</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Service Requests
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">2</div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
     </div>
   );
 };
