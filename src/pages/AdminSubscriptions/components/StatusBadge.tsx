@@ -7,17 +7,19 @@ type StatusBadgeProps = {
 };
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+  const baseClasses = "w-24 justify-center"; // Fixed width and center-aligned text
+
   switch(status) {
     case 'active':
-      return <Badge className="bg-green-500">Active</Badge>;
+      return <Badge className={`${baseClasses} bg-green-500`}>Active</Badge>;
     case 'pending':
-      return <Badge className="bg-yellow-500">Pending</Badge>;
+      return <Badge className={`${baseClasses} bg-yellow-500`}>Pending</Badge>;
     case 'rejected':
-      return <Badge className="bg-red-500">Rejected</Badge>;
+      return <Badge className={`${baseClasses} bg-red-500`}>Rejected</Badge>;
     case 'inactive':
-      return <Badge className="bg-gray-500">Inactive</Badge>;
+      return <Badge className={`${baseClasses} bg-gray-500`}>Inactive</Badge>;
     default:
-      return <Badge>{status}</Badge>;
+      return <Badge className={baseClasses}>{status}</Badge>;
   }
 };
 
