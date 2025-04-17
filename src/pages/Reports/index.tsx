@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import ReportsHeader from './components/ReportsHeader';
 import LoadingState from './components/LoadingState';
@@ -8,6 +8,7 @@ import ActivityTab from './components/activity/ActivityTab';
 import DocumentsTab from './components/documents/DocumentsTab';
 import PeopleTab from './components/people/PeopleTab';
 import { useReportData } from './hooks/useReportData';
+import { useAuth } from '@/context/AuthContext';
 
 const ReportsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -19,6 +20,16 @@ const ReportsPage: React.FC = () => {
     monthlyData, 
     loading 
   } = useReportData();
+  const { user } = useAuth();
+  
+  const isAdmin = user?.userType === 'admin';
+  
+  // Reset to overview tab if user is not admin and tries to access restricted tabs
+  useEffect(() => {
+    if (!isAdmin && (activeTab === 'documents' || activeTab === 'people')) {
+      setActiveTab('overview');
+    }
+  }, [activeTab, isAdmin]);
 
   if (loading) {
     return (
@@ -48,13 +59,17 @@ const ReportsPage: React.FC = () => {
           <ActivityTab activityData={activityData} />
         </TabsContent>
         
-        <TabsContent value="documents" className="space-y-4">
-          <DocumentsTab invoiceStats={invoiceStats} />
-        </TabsContent>
-        
-        <TabsContent value="people" className="space-y-4">
-          <PeopleTab employeeStats={employeeStats} />
-        </TabsContent>
+        {isAdmin && (
+          <>
+            <TabsContent value="documents" className="space-y-4">
+              <DocumentsTab invoiceStats={invoiceStats} />
+            </TabsContent>
+            
+            <TabsContent value="people" className="space-y-4">
+              <PeopleTab employeeStats={employeeStats} />
+            </TabsContent>
+          </>
+        )}
       </Tabs>
     </div>
   );
