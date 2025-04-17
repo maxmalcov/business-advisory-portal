@@ -36,16 +36,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: LayoutGrid,
     },
     {
-      name: t('nav.activity_log'),
-      path: '/user/activity-log',
-      icon: Activity,
-    },
-    {
-      name: t('nav.service_requests'),
-      path: '/user/service-requests',
-      icon: Sparkles,
-    },
-    {
       name: t('nav.sale_invoices'),
       path: '/invoices',
       icon: FileUp,

@@ -13,39 +13,31 @@ import { ActivityEvent, formatTimestamp, getActivityIcon } from '@/utils/activit
 import { Users, FileText, Bell, CheckCircle, Package, UserPlus, UserMinus, Loader2 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ActivityLogItem from './ActivityLogItem';
-import { useLanguage } from '@/context/LanguageContext';
 
 interface ActivityLogTableProps {
   activities: ActivityEvent[];
   loading: boolean;
 }
 
-const EmptyState: React.FC = () => {
-  const { t } = useLanguage();
-  return (
-    <div className="py-16 text-center">
-      <Bell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-      <h3 className="text-lg font-medium">{t('activity.no_results')}</h3>
-      <p className="text-sm text-muted-foreground mt-2">
-        {t('common.empty')}
-      </p>
-    </div>
-  );
-};
+const EmptyState: React.FC = () => (
+  <div className="py-16 text-center">
+    <Bell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+    <h3 className="text-lg font-medium">No activity found</h3>
+    <p className="text-sm text-muted-foreground mt-2">
+      Try adjusting your search criteria or check back later.
+    </p>
+  </div>
+);
 
-const LoadingState: React.FC = () => {
-  const { t } = useLanguage();
-  return (
-    <div className="py-12 text-center">
-      <Loader2 className="animate-spin h-8 w-8 mx-auto text-muted-foreground" />
-      <p className="mt-2 text-muted-foreground">{t('common.loading')}</p>
-    </div>
-  );
-};
+const LoadingState: React.FC = () => (
+  <div className="py-12 text-center">
+    <Loader2 className="animate-spin h-8 w-8 mx-auto text-muted-foreground" />
+    <p className="mt-2 text-muted-foreground">Loading activities...</p>
+  </div>
+);
 
 const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ activities, loading }) => {
   const isMobile = useIsMobile();
-  const { t } = useLanguage();
 
   if (loading) {
     return <LoadingState />;
@@ -76,10 +68,10 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ activities, loading
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">{t('activity.type')}</TableHead>
-              <TableHead>{t('activity.title')}</TableHead>
-              <TableHead>{t('activity.description')}</TableHead>
-              <TableHead className="w-[180px] text-right">{t('activity.date')}</TableHead>
+              <TableHead className="w-[100px]">Type</TableHead>
+              <TableHead>Activity</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead className="w-[180px] text-right">Date & Time</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
