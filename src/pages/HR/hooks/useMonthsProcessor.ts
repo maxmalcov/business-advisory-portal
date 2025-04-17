@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { getMonthYearForStorage, getCurrentMonthYear, getLastMonths, getMonthsInYear } from '@/utils/dates';
-import { MonthSubmission, WorkHoursSubmission } from './useMonthlySubmissions';
+import { MonthSubmission, WorkHoursSubmission, SubmissionStatus } from './useMonthlySubmissions';
 import { addMonths, subMonths } from 'date-fns';
 
 export const useMonthsProcessor = (
@@ -36,9 +36,12 @@ export const useMonthsProcessor = (
         const isCurrentMonthDate = date.getMonth() === currentMonth.getMonth() && 
                                    date.getFullYear() === currentMonth.getFullYear();
         
+        // Explicitly type the status as SubmissionStatus
+        const status: SubmissionStatus = submission ? 'submitted' : 'pending';
+        
         return {
           date,
-          status: submission ? 'submitted' : 'pending',
+          status,
           isCurrentMonth: isCurrentMonthDate,
           submission,
         };
