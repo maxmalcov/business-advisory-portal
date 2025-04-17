@@ -31,10 +31,8 @@ export function useActiveEmployees() {
           throw error;
         }
         
-        // Check if data exists and is an array, otherwise use empty array
-        const employeeData = (data && Array.isArray(data)) 
-          ? (data as unknown as EmployeeData[])
-          : [];
+        // Make sure data is always an array (even if undefined or null)
+        const employeeData = Array.isArray(data) ? (data as unknown as EmployeeData[]) : [];
           
         const transformedData: Employee[] = employeeData.map((emp) => ({
           id: emp.id,

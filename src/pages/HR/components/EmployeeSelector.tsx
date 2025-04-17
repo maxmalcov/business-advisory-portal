@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Check, ChevronsUpDown, UserPlus, User } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -31,13 +31,11 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const { activeEmployees, isLoading } = useActiveEmployees();
+  const { activeEmployees = [], isLoading } = useActiveEmployees();
   const { toast } = useToast();
 
-  // Ensure existingEmployees is always an array
+  // Ensure existingEmployees and activeEmployees are always arrays
   const safeExistingEmployees = Array.isArray(existingEmployees) ? existingEmployees : [];
-  
-  // Ensure activeEmployees is always an array
   const safeActiveEmployees = Array.isArray(activeEmployees) ? activeEmployees : [];
 
   // Filter out employees that have already been added
