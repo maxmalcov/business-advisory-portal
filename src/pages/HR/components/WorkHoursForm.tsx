@@ -1,156 +1,222 @@
 
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { format } from 'date-fns';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { CalendarIcon } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
-// Form schema for adding/editing records
-const formSchema = z.object({
-  companyName: z.string().min(1, "Company name is required"),
-  employeeName: z.string().min(1, "Employee name is required"),
-  grossSalary: z.coerce.number().positive("Salary must be positive"),
-  notes: z.string().optional(),
-  absenceDays: z.coerce.number().min(0, "Absence days cannot be negative").optional(),
-  medicalLeaveDate: z.date().nullable().optional(),
-});
-
-export type FormValues = z.infer<typeof formSchema>;
+export interface FormValues {
+  id?: string;
+  employeeId?: string;
+  employeeName: string;
+  companyName?: string;
+  grossSalary: number;
+  absenceDays?: number;
+  medicalLeaveDate?: Date | string | null;
+  notes?: string;
+}
 
 interface WorkHoursFormProps {
   onSubmit: (values: FormValues) => void;
-  editingId: string | null;
-  initialValues?: FormValues;
   onCancel: () => void;
+  initialValues?: FormValues;
+  editingId?: string;
 }
 
 const WorkHoursForm: React.FC<WorkHoursFormProps> = ({
   onSubmit,
-  editingId,
+  onCancel,
   initialValues,
-  onCancel
+  editingId,
 }) => {
+  // Initialize form with default values or provided initial values
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialValues || {
-      companyName: "",
-      employeeName: "",
-      grossSalary: 0,
-      notes: "",
-      absenceDays: 0,
-      medicalLeaveDate: null,
+    defaultValues: {
+      id: editingId,
+      employeeId: initialValues?.employeeId || undefined,
+      employeeName: initialValues?.employeeName || '',
+      companyName: initialValues?.companyName || '',
+      grossSalary: initialValues?.grossSalary || 0,
+      absenceDays: initialValues?.absenceDays || 0,
+      medicalLeaveDate: initialValues?.medicalLeaveDate || null,
+      notes: initialValues?.notes || '',
     },
   });
 
-  const handleSubmit = (values: FormValues) => {
-    onSubmit(values);
+  // Convert form values and submit
+  const handleSubmit = (data: FormValues) => {
+    onSubmit({
+      ...data,
+      id: editingId,
+      // Ensure numbers are proper numbers
+      grossSalary: Number(data.grossSalary),
+      absenceDays: data.absenceDays ? Number(data.absenceDays) : 0,
+    });
   };
 
   return (
-    <div className="mb-6 p-4 border rounded-md shadow-sm">
-      <h3 className="text-lg font-medium mb-4">
-        {editingId ? 'Edit Record' : 'Add New Record'}
-      </h3>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="companyName">Company Name</Label>
-            <Input 
-              id="companyName"
-              {...form.register("companyName")}
-            />
-            {form.formState.errors.companyName && (
-              <p className="text-sm text-red-500 mt-1">{form.formState.errors.companyName.message}</p>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Employee Name */}
+          <FormField
+            control={form.control}
+            name="employeeName"
+            rules={{ required: 'Employee name is required' }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Employee Name*</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter employee name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
-          
-          <div>
-            <Label htmlFor="employeeName">Employee Name</Label>
-            <Input 
-              id="employeeName"
-              {...form.register("employeeName")}
-            />
-            {form.formState.errors.employeeName && (
-              <p className="text-sm text-red-500 mt-1">{form.formState.errors.employeeName.message}</p>
+          />
+
+          {/* Company Name */}
+          <FormField
+            control={form.control}
+            name="companyName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter company name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
-          
-          <div>
-            <Label htmlFor="grossSalary">Gross Salary/Month</Label>
-            <Input 
-              id="grossSalary"
-              type="number"
-              {...form.register("grossSalary", {valueAsNumber: true})}
-            />
-            {form.formState.errors.grossSalary && (
-              <p className="text-sm text-red-500 mt-1">{form.formState.errors.grossSalary.message}</p>
-            )}
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="absenceDays">Absence Days (Optional)</Label>
-            <Input 
-              id="absenceDays"
-              type="number"
-              {...form.register("absenceDays", {valueAsNumber: true})}
-            />
-            {form.formState.errors.absenceDays && (
-              <p className="text-sm text-red-500 mt-1">{form.formState.errors.absenceDays.message}</p>
-            )}
-          </div>
-          
-          <div>
-            <Label htmlFor="medicalLeaveDate">Medical Leave Date (Optional)</Label>
-            <div>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {form.watch("medicalLeaveDate") ? format(form.watch("medicalLeaveDate"), "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={form.watch("medicalLeaveDate")}
-                    onSelect={(date) => form.setValue("medicalLeaveDate", date)}
-                    initialFocus
+          />
+
+          {/* Gross Salary */}
+          <FormField
+            control={form.control}
+            name="grossSalary"
+            rules={{ required: 'Gross salary is required' }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gross Salary*</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="0.00" 
+                    min="0" 
+                    step="0.01" 
+                    {...field}
+                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                   />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-        </div>
-        
-        <div>
-          <Label htmlFor="notes">Notes</Label>
-          <Input 
-            id="notes"
-            {...form.register("notes")}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Absence Days */}
+          <FormField
+            control={form.control}
+            name="absenceDays"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Absence Days</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="0" 
+                    min="0" 
+                    {...field}
+                    onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Medical Leave Date */}
+          <FormField
+            control={form.control}
+            name="medicalLeaveDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Medical Leave Date</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(new Date(field.value), "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ? new Date(field.value) : undefined}
+                      onSelect={field.onChange}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Notes */}
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                <FormLabel>Notes</FormLabel>
+                <FormControl>
+                  <Textarea 
+                    placeholder="Add any additional notes here..." 
+                    className="resize-none h-20"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
-        
-        <div className="flex justify-end gap-2">
+
+        <div className="flex justify-end space-x-4 pt-4">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
           <Button type="submit">
-            {editingId ? 'Save Changes' : 'Add Record'}
+            {editingId ? 'Update' : 'Add'} Employee
           </Button>
         </div>
       </form>
-    </div>
+    </Form>
   );
 };
 

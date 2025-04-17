@@ -1,42 +1,30 @@
 
 import { useState } from 'react';
 import { FormValues } from '../components/WorkHoursForm';
-import { EmployeeRecord } from '../components/WorkHoursTable';
 
-export function useFormState() {
+export const useFormState = () => {
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [currentFormValues, setCurrentFormValues] = useState<FormValues | undefined>(undefined);
+  const [editingId, setEditingId] = useState<string | undefined>(undefined);
+  const [currentFormValues, setCurrentFormValues] = useState<FormValues | null>(null);
 
-  // Start editing a row
-  const startEdit = (employee: EmployeeRecord) => {
+  const startEdit = (employee: FormValues) => {
+    setIsAddingNew(false);
     setEditingId(employee.id);
-    setIsAddingNew(true);
-    setCurrentFormValues({
-      companyName: employee.companyName,
-      employeeName: employee.employeeName,
-      grossSalary: employee.grossSalary,
-      notes: employee.notes,
-      absenceDays: employee.absenceDays,
-      medicalLeaveDate: employee.medicalLeaveDate ? new Date(employee.medicalLeaveDate) : null,
-    });
+    setCurrentFormValues(employee);
   };
 
-  // Cancel form
   const cancelForm = () => {
     setIsAddingNew(false);
-    setEditingId(null);
-    setCurrentFormValues(undefined);
+    setEditingId(undefined);
+    setCurrentFormValues(null);
   };
 
   return {
     isAddingNew,
     setIsAddingNew,
     editingId,
-    setEditingId,
     currentFormValues,
-    setCurrentFormValues,
     startEdit,
     cancelForm
   };
-}
+};

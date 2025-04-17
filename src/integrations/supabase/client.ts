@@ -66,6 +66,32 @@ export type UsefulLinkDB = {
   updated_at: string;
 }
 
+// Type definition for employee work hours
+export type EmployeeWorkHours = {
+  id: string;
+  client_id: string;
+  month_year: string;
+  employee_id?: string | null;
+  employee_name: string;
+  company_name?: string | null;
+  gross_salary: number;
+  absence_days?: number | null;
+  medical_leave_date?: string | null;
+  notes?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Type definition for work hours submissions
+export type WorkHoursSubmission = {
+  id: string;
+  client_id: string;
+  month_year: string;
+  submitted_at: string;
+  hr_email?: string | null;
+  is_locked: boolean;
+}
+
 // Helper function to safely access the service_requests table
 export const serviceRequestsTable = () => {
   return supabase.from('service_requests');
@@ -91,6 +117,16 @@ export const employeesTable = () => {
 export const usefulLinksTable = () => {
   // Simplify our approach - just use 'any' to bypass TypeScript's type checking
   return supabase.from('useful_links' as any);
+};
+
+// Helper function to safely access the employee_work_hours table
+export const employeeWorkHoursTable = () => {
+  return supabase.from('employee_work_hours' as any);
+};
+
+// Helper function to safely access the work_hours_submissions table
+export const workHoursSubmissionsTable = () => {
+  return supabase.from('work_hours_submissions' as any);
 };
 
 // Setup realtime subscription for the service_requests table

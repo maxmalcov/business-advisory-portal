@@ -1,50 +1,30 @@
 
-import { useState } from 'react';
-import { toast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
 
-export function useEmailRecipient() {
-  const [emailRecipient, setEmailRecipient] = useState('hr@pba.test');
-  const [isValidEmail, setIsValidEmail] = useState(true);
+export const useEmailRecipient = () => {
+  const [emailRecipient, setEmailRecipient] = useState<string>('');
+  const [isValidEmail, setIsValidEmail] = useState<boolean>(false);
 
-  // Validate email format
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  useEffect(() => {
+    // Email validation regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    setIsValidEmail(emailRegex.test(emailRecipient));
+  }, [emailRecipient]);
 
-  // Handle email change with validation
-  const handleEmailChange = (newEmail: string) => {
-    setEmailRecipient(newEmail);
-    setIsValidEmail(validateEmail(newEmail));
-  };
-
-  // Submit data to HR email
-  const submitToHR = () => {
-    // Validate email before submission
-    if (!validateEmail(emailRecipient)) {
-      setIsValidEmail(false);
-      toast({
-        title: "Invalid email address",
-        description: "Please enter a valid email address before submitting.",
-        variant: "destructive",
-      });
+  const submitToHR = async () => {
+    if (!isValidEmail) {
       return false;
     }
     
-    // In a real application, this would send data to a backend service
-    // For now we'll just simulate the email being sent
-    toast({
-      title: "Data submitted",
-      description: `Work hours data sent to ${emailRecipient}`,
-    });
-    
+    // This is a placeholder for future email sending functionality
+    console.log(`Would send email to HR at: ${emailRecipient}`);
     return true;
   };
 
   return {
     emailRecipient,
-    setEmailRecipient: handleEmailChange,
+    setEmailRecipient,
     isValidEmail,
     submitToHR
   };
-}
+};

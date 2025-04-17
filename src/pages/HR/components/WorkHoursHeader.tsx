@@ -1,11 +1,9 @@
 
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
-import { CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { ExportButton } from './index';
+import { FileDown, FileUp, Plus } from 'lucide-react';
 import { EmployeeRecord } from './WorkHoursTable';
+import { ExportButton } from './ExportButton';
 
 interface WorkHoursHeaderProps {
   isAddingNew: boolean;
@@ -20,22 +18,20 @@ const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
   submitToHR,
   employeeData
 }) => {
-  const { t } = useLanguage();
-
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
       <div>
-        <CardTitle>{t('hr.work_hours.title')}</CardTitle>
-        <CardDescription>{t('hr.work_hours.description')}</CardDescription>
+        <h2 className="text-lg font-semibold">Employee Work Hours</h2>
+        <p className="text-sm text-muted-foreground">
+          Manage monthly work hours for your employees
+        </p>
       </div>
+      
       <div className="flex gap-2">
-        <Button onClick={() => setIsAddingNew(!isAddingNew)}>
-          {isAddingNew ? 'Cancel' : <><Plus size={16} /> Add Record</>}
-        </Button>
-        <ExportButton data={employeeData} />
-        <Button onClick={submitToHR} variant="outline">
-          Send to HR
-        </Button>
+        <ExportButton
+          data={employeeData}
+          fileName="employee-work-hours"
+        />
       </div>
     </div>
   );

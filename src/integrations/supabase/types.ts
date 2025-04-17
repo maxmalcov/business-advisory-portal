@@ -9,6 +9,59 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      employee_work_hours: {
+        Row: {
+          absence_days: number | null
+          client_id: string
+          company_name: string | null
+          created_at: string
+          employee_id: string | null
+          employee_name: string
+          gross_salary: number
+          id: string
+          medical_leave_date: string | null
+          month_year: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          absence_days?: number | null
+          client_id: string
+          company_name?: string | null
+          created_at?: string
+          employee_id?: string | null
+          employee_name: string
+          gross_salary: number
+          id?: string
+          medical_leave_date?: string | null
+          month_year: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          absence_days?: number | null
+          client_id?: string
+          company_name?: string | null
+          created_at?: string
+          employee_id?: string | null
+          employee_name?: string
+          gross_salary?: number
+          id?: string
+          medical_leave_date?: string | null
+          month_year?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_work_hours_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employees: {
         Row: {
           address: string | null
@@ -351,6 +404,33 @@ export type Database = {
           title?: string
           updated_at?: string
           url?: string
+        }
+        Relationships: []
+      }
+      work_hours_submissions: {
+        Row: {
+          client_id: string
+          hr_email: string | null
+          id: string
+          is_locked: boolean
+          month_year: string
+          submitted_at: string
+        }
+        Insert: {
+          client_id: string
+          hr_email?: string | null
+          id?: string
+          is_locked?: boolean
+          month_year: string
+          submitted_at?: string
+        }
+        Update: {
+          client_id?: string
+          hr_email?: string | null
+          id?: string
+          is_locked?: boolean
+          month_year?: string
+          submitted_at?: string
         }
         Relationships: []
       }
