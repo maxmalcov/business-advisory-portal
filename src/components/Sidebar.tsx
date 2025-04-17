@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -16,6 +15,7 @@ import {
   BarChart3,
   Activity,
   FileText,
+  Archive
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -51,6 +51,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           path: '/supplier-invoices',
           icon: FileDown,
         },
+        {
+          name: t('nav.invoice_history'),
+          path: '/invoice-history',
+          icon: Archive,
+        }
       ],
     },
     {
