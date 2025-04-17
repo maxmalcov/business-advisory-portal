@@ -1,12 +1,18 @@
 
 import React from 'react';
-import { format, isSameMonth } from 'date-fns';
+import { format, isSameMonth, isAfter, startOfMonth, addMonths } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Check, Clock, ChevronLeft, ChevronRight, Lock } from 'lucide-react';
+import { Calendar, Check, Clock, ChevronLeft, ChevronRight, LockIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MonthSubmission } from '../hooks/useMonthlySubmissions';
 import YearSelector from './YearSelector';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger 
+} from '@/components/ui/tooltip';
 
 interface MonthSelectorProps {
   months: MonthSubmission[];
@@ -28,8 +34,14 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({
   onNavigateMonth
 }) => {
   const currentDate = new Date();
+  const today = startOfMonth(currentDate);
   const isCurrentYear = selectedYear === currentDate.getFullYear();
   const filteredMonths = months.filter(month => month.date.getFullYear() === selectedYear);
+  
+  const canNavigateNext = !isAfter(
+    startOfMonth(addMonths(selectedMonth, 1)), 
+    today
+  );
   
   return (
     <div className="space-y-4 mb-6">
@@ -52,7 +64,7 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({
             variant="outline" 
             size="icon"
             onClick={() => onNavigateMonth('next')}
-            disabled={loading}
+            disabled={loading || !canNavigateNext}
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -69,6 +81,33 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({
           {filteredMonths.map((month) => {
             const isSelected = isSameMonth(month.date, selectedMonth);
             const isCurrentMonth = month.isCurrentMonth && isCurrentYear;
+            const isFutureMonth = month.isFutureMonth;
+            
+            if (isFutureMonth) {
+              return (
+                <TooltipProvider key={month.date.toISOString()}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "relative h-auto py-2 px-3 w-full justify-start border rounded-md opacity-50 cursor-not-allowed",
+                          "bg-muted text-muted-foreground"
+                        )}
+                      >
+                        <div className="flex items-center w-full">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          <span className="truncate">{format(month.date, 'MMMM')}</span>
+                          <LockIcon className="ml-auto h-3 w-3" />
+                        </div>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>You can only submit current or past months</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              );
+            }
             
             return (
               <Button

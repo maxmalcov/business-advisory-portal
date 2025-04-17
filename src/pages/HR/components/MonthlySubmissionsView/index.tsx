@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
+import { isAfter, startOfMonth } from 'date-fns';
 
 import MonthSelector from '../MonthSelector';
 import MonthlySubmissionsHeader from './MonthlySubmissionsHeader';
@@ -42,7 +43,34 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     deleteEmployee,
   } = useEmployeeWorkHours(selectedMonth, isSubmitted);
 
+  useEffect(() => {
+    const today = new Date();
+    if (selectedMonth && isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
+      const availableMonths = months
+        .filter(month => !month.isFutureMonth)
+        .sort((a, b) => b.date.getTime() - a.date.getTime());
+      
+      if (availableMonths.length > 0) {
+        setSelectedMonth(availableMonths[0].date);
+        toast({
+          title: "Future month not allowed",
+          description: "You can only view and edit current or past months.",
+        });
+      }
+    }
+  }, [selectedMonth, months, setSelectedMonth]);
+
   const handleSelectMonth = (month: Date) => {
+    const today = new Date();
+    if (isAfter(startOfMonth(month), startOfMonth(today))) {
+      toast({
+        title: "Future month not allowed",
+        description: "You can only view and edit current or past months.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setSelectedMonth(month);
     setEditingEmployee(null);
     setActiveTab('view');
@@ -54,6 +82,16 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
   };
 
   const handleAddEmployee = () => {
+    const today = new Date();
+    if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
+      toast({
+        title: "Future month not allowed",
+        description: "You cannot add employees to future months.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setEditingEmployee({
       employeeName: '',
       grossSalary: 0,
@@ -63,6 +101,16 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
   };
 
   const handleSubmitForm = async (values: WorkHoursData) => {
+    const today = new Date();
+    if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
+      toast({
+        title: "Future month not allowed",
+        description: "You cannot save data for future months.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const success = await saveEmployee(values);
     if (success) {
       toast({

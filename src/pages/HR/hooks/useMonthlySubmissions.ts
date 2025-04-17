@@ -10,6 +10,7 @@ export type MonthSubmission = {
   date: Date;
   status: SubmissionStatus;
   isCurrentMonth: boolean;
+  isFutureMonth?: boolean;
   submission?: any;
 };
 

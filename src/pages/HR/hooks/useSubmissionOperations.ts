@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { workHoursSubmissionsTable } from '@/integrations/supabase/client';
 import { getMonthYearForStorage } from '@/utils/dates';
 import { useToast } from '@/hooks/use-toast';
+import { isAfter, startOfMonth } from 'date-fns';
 
 export const useSubmissionOperations = (
   selectedMonth: Date,
@@ -16,6 +17,17 @@ export const useSubmissionOperations = (
     if (!user?.id) return false;
     
     try {
+      // Prevent submissions for future months
+      const today = new Date();
+      if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
+        toast({
+          title: 'Submission blocked',
+          description: 'You cannot submit data for future months.',
+          variant: 'destructive',
+        });
+        return false;
+      }
+      
       const formattedMonth = getMonthYearForStorage(selectedMonth);
       
       const { data, error } = await workHoursSubmissionsTable().insert({
