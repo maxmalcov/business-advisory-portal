@@ -160,8 +160,10 @@ const RecentActivity: React.FC = () => {
           )}
         </CardContent>
         <CardFooter className={isMobile ? "flex justify-center" : ""}>
-          <Link to="/reports">
-            <Button variant="outline" className={isMobile ? "w-auto" : "w-full"}>View All Activity</Button>
+          <Link to="/user/activity-log">
+            <Button variant="outline" className={isMobile ? "w-auto" : "w-full"}>
+              View All Activity
+            </Button>
           </Link>
         </CardFooter>
       </Card>

@@ -1,0 +1,25 @@
+
+{
+  "common": {
+    "loading": "Loading...",
+    "empty": "No data available",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back"
+  },
+  "activity": {
+    "all_activity": "All Activity",
+    "search": "Search",
+    "search_placeholder": "Search activities...",
+    "no_results": "No activities found",
+    "type": "Type",
+    "title": "Title",
+    "description": "Description",
+    "date": "Date & Time",
+    "view_all": "View All Activity"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "activity_log": "Activity Log"
+  }
+}

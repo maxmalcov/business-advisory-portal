@@ -33,6 +33,7 @@ import Termination from "./pages/HR/Termination";
 import WorkHours from "./pages/HR/WorkHours";
 import UsefulLinks from "./pages/UsefulLinks";
 import AdminUsefulLinks from "./pages/AdminUsefulLinks";
+import UserActivityLog from "./pages/UserActivityLog";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -80,6 +81,14 @@ const App = () => (
                       <Dashboard />
                     </ProtectedRoute>
                   } />
+                  
+                  {/* New Activity Log route */}
+                  <Route path="user/activity-log" element={
+                    <ProtectedRoute requiredRole="client">
+                      <UserActivityLog />
+                    </ProtectedRoute>
+                  } />
+                  
                   <Route path="invoices" element={
                     <ProtectedRoute requiredRole="client">
                       <Invoices />
