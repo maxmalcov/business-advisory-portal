@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 import { formatMonthYear } from '@/utils/dates';
@@ -39,43 +40,54 @@ const MonthlySubmissionsTabs: React.FC<MonthlySubmissionsTabsProps> = ({
   onCancelEdit
 }) => {
   return (
-    <div className="mt-6">
-      {activeTab === 'view' && (
-        <div>
-          <WorkHoursTable 
-            employeeData={workHours} 
-            onEdit={!isSubmitted ? onEditEmployee : undefined}
-            onDelete={!isSubmitted ? onDeleteEmployee : undefined}
-            loading={loading}
-          />
-          
-          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-between">
-            {!isSubmitted && (
-              <Button onClick={onAddEmployee} disabled={loading}>
-                Add Employee
-              </Button>
-            )}
-            
-            {!isSubmitted && workHours.length > 0 && (
-              <Button onClick={onSubmitMonth} className="sm:ml-auto" disabled={loading}>
-                <Send className="mr-2 h-4 w-4" />
-                Submit {formatMonthYear(selectedMonth)}
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
+      <TabsList className="mb-4">
+        <TabsTrigger value="view">View Hours</TabsTrigger>
+        {!isSubmitted && (
+          <TabsTrigger value="edit" disabled={isSubmitted}>
+            {editingEmployee ? (editingEmployee.id ? 'Edit Employee' : 'Add Employee') : 'Edit Form'}
+          </TabsTrigger>
+        )}
+      </TabsList>
       
-      {activeTab === 'edit' && !isSubmitted && editingEmployee && (
-        <WorkHoursForm 
-          onSubmit={onSubmitForm}
-          editingId={editingEmployee.id}
-          initialValues={editingEmployee}
-          onCancel={onCancelEdit}
-          existingEmployees={workHours}
+      <TabsContent value="view">
+        <WorkHoursTable 
+          employeeData={workHours} 
+          onEdit={!isSubmitted ? onEditEmployee : undefined}
+          onDelete={!isSubmitted ? onDeleteEmployee : undefined}
+          loading={loading}
         />
+        
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-between">
+          {!isSubmitted && (
+            <Button onClick={onAddEmployee} disabled={loading}>
+              Add Employee
+            </Button>
+          )}
+          
+          {!isSubmitted && workHours.length > 0 && (
+            <Button onClick={onSubmitMonth} className="sm:ml-auto" disabled={loading}>
+              <Send className="mr-2 h-4 w-4" />
+              Submit {formatMonthYear(selectedMonth)}
+            </Button>
+          )}
+        </div>
+      </TabsContent>
+      
+      {!isSubmitted && (
+        <TabsContent value="edit">
+          {editingEmployee && (
+            <WorkHoursForm 
+              onSubmit={onSubmitForm}
+              editingId={editingEmployee.id}
+              initialValues={editingEmployee}
+              onCancel={onCancelEdit}
+              existingEmployees={workHours}
+            />
+          )}
+        </TabsContent>
       )}
-    </div>
+    </Tabs>
   );
 };
 
