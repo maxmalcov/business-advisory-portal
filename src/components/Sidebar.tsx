@@ -15,6 +15,7 @@ import {
   Layers,
   BarChart3,
   Activity,
+  FileText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -36,14 +37,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: LayoutGrid,
     },
     {
-      name: t('nav.sale_invoices'),
+      name: t('nav.invoices'),
       path: '/invoices',
-      icon: FileUp,
-    },
-    {
-      name: t('nav.supplier_invoices'),
-      path: '/supplier-invoices',
-      icon: FileDown,
+      icon: FileText,
+      children: [
+        {
+          name: t('nav.sale_invoices'),
+          path: '/invoices',
+          icon: FileUp,
+        },
+        {
+          name: t('nav.supplier_invoices'),
+          path: '/supplier-invoices',
+          icon: FileDown,
+        },
+      ],
     },
     {
       name: t('nav.hr'),
