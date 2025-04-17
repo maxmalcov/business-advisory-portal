@@ -1,15 +1,14 @@
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import { isAfter, startOfMonth } from 'date-fns';
 
 import MonthSelector from '../MonthSelector';
-import MonthlySubmissionsHeader from './MonthlySubmissionsHeader';
-import MonthlySubmissionsTabs from './MonthlySubmissionsTabs';
-import { useMonthlySubmissions } from '../../hooks/useMonthlySubmissions';
-import { useEmployeeWorkHours, WorkHoursData } from '../../hooks/useEmployeeWorkHours';
+import { useMonthlySubmissions as useMonthlySubmissionsData } from '../../hooks/useMonthlySubmissions';
+import { useEmployeeWorkHours } from '../../hooks/useEmployeeWorkHours';
+import { MonthlySubmissionsProvider } from './MonthlySubmissionsContext';
+import MonthlySubmissionsContent from './MonthlySubmissionsContent';
 
 interface MonthlySubmissionsViewProps {
   isAddingNew: boolean;
@@ -22,7 +21,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
 }) => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const [editingEmployee, setEditingEmployee] = useState<WorkHoursData | null>(null);
   
   const { 
     months, 
@@ -34,7 +32,7 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     isSubmitted,
     loading: submissionsLoading,
     submitMonth 
-  } = useMonthlySubmissions();
+  } = useMonthlySubmissionsData();
   
   const {
     workHours,
@@ -42,23 +40,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     saveEmployee,
     deleteEmployee,
   } = useEmployeeWorkHours(selectedMonth, isSubmitted);
-
-  useEffect(() => {
-    const today = new Date();
-    if (selectedMonth && isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
-      const availableMonths = months
-        .filter(month => !month.isFutureMonth)
-        .sort((a, b) => b.date.getTime() - a.date.getTime());
-      
-      if (availableMonths.length > 0) {
-        setSelectedMonth(availableMonths[0].date);
-        toast({
-          title: "Future month not allowed",
-          description: "You can only view and edit current or past months.",
-        });
-      }
-    }
-  }, [selectedMonth, months, setSelectedMonth]);
 
   const handleSelectMonth = (month: Date) => {
     const today = new Date();
@@ -72,32 +53,9 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     }
     
     setSelectedMonth(month);
-    setEditingEmployee(null);
   };
 
-  const handleEditEmployee = (employee: WorkHoursData) => {
-    setEditingEmployee(employee);
-  };
-
-  const handleAddEmployee = () => {
-    const today = new Date();
-    if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
-      toast({
-        title: "Future month not allowed",
-        description: "You cannot add employees to future months.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    setEditingEmployee({
-      employeeName: '',
-      grossSalary: 0,
-    });
-    setIsAddingNew(true);
-  };
-
-  const handleSubmitForm = async (values: WorkHoursData) => {
+  const handleSubmitForm = async (values: any) => {
     const today = new Date();
     if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
       toast({
@@ -114,7 +72,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         title: 'Success',
         description: `Employee ${values.id ? 'updated' : 'added'} successfully.`,
       });
-      setEditingEmployee(null);
       setIsAddingNew(false);
     } else {
       toast({
@@ -154,11 +111,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
       });
     }
   };
-
-  const handleCancelEdit = () => {
-    setEditingEmployee(null);
-    setIsAddingNew(false);
-  };
   
   const loading = submissionsLoading || workHoursLoading;
 
@@ -174,28 +126,17 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         onNavigateMonth={onNavigateMonth}
       />
       
-      <Card>
-        <MonthlySubmissionsHeader 
+      <MonthlySubmissionsProvider isAddingNew={isAddingNew} setIsAddingNew={setIsAddingNew}>
+        <MonthlySubmissionsContent
           selectedMonth={selectedMonth}
           isSubmitted={isSubmitted}
+          workHours={workHours}
+          loading={loading}
+          onDeleteEmployee={handleDeleteEmployee}
+          onSubmitForm={handleSubmitForm}
+          onSubmitMonth={handleSubmitMonth}
         />
-        
-        <CardContent>
-          <MonthlySubmissionsTabs
-            editingEmployee={editingEmployee}
-            workHours={workHours}
-            isSubmitted={isSubmitted}
-            loading={loading}
-            selectedMonth={selectedMonth}
-            onAddEmployee={handleAddEmployee}
-            onEditEmployee={handleEditEmployee}
-            onDeleteEmployee={handleDeleteEmployee}
-            onSubmitForm={handleSubmitForm}
-            onSubmitMonth={handleSubmitMonth}
-            onCancelEdit={handleCancelEdit}
-          />
-        </CardContent>
-      </Card>
+      </MonthlySubmissionsProvider>
     </div>
   );
 };
