@@ -1,22 +1,17 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import {
   LayoutGrid,
   Users,
-  BarChart3,
-  Layers,
-  Link2,
-  Activity,
-  Sparkles,
-  FileText,
   FileUp,
   FileDown,
   UserPlus,
   UserMinus,
   Clock,
-  ScrollText,
+  Link2,
+  Sparkles,
+  Layers,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -70,11 +65,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       ],
     },
     {
-      name: t('nav.reports'),
-      path: '/reports',
-      icon: ScrollText,
-    },
-    {
       name: t('nav.subscriptions'),
       path: '/subscriptions',
       icon: Layers,
@@ -93,7 +83,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
   ];
 
-  // Updated admin menu items order according to requirements
   const adminMenuItems: SidebarItem[] = [
     {
       name: t('admin.dashboard'),
