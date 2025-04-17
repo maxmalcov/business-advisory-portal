@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,26 +7,25 @@ import { Badge } from '@/components/ui/badge';
 import { formatMonthYear } from '@/utils/dates';
 import { CalendarCheck, Copy, Send, SendHorizontal } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 
 import MonthSelector from './MonthSelector';
 import { useMonthlySubmissions } from '../hooks/useMonthlySubmissions';
 import { useEmployeeWorkHours, WorkHoursData } from '../hooks/useEmployeeWorkHours';
-import EmailRecipientInput from './EmailRecipientInput';
 import WorkHoursTable from './WorkHoursTable';
 import WorkHoursForm from './WorkHoursForm';
 
 interface MonthlySubmissionsViewProps {
-  emailRecipient: string;
-  setEmailRecipient: (email: string) => void;
-  isValidEmail: boolean;
+  isAddingNew: boolean;
+  setIsAddingNew: (isAdding: boolean) => void;
 }
 
 const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
-  emailRecipient,
-  setEmailRecipient,
-  isValidEmail,
+  isAddingNew,
+  setIsAddingNew,
 }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('view');
   const [editingEmployee, setEditingEmployee] = useState<WorkHoursData | null>(null);
   
@@ -63,6 +63,7 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
       grossSalary: 0,
     });
     setActiveTab('edit');
+    setIsAddingNew(true);
   };
 
   const handleSubmitForm = async (values: WorkHoursData) => {
@@ -74,6 +75,7 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
       });
       setEditingEmployee(null);
       setActiveTab('view');
+      setIsAddingNew(false);
     } else {
       toast({
         title: 'Error',
@@ -102,16 +104,9 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
   };
 
   const handleSubmitMonth = async () => {
-    if (!isValidEmail) {
-      toast({
-        title: 'Invalid email',
-        description: 'Please enter a valid HR email address before submitting.',
-        variant: 'destructive',
-      });
-      return;
-    }
+    const hrEmail = user?.outgoingInvoiceEmail || '';
     
-    const success = await submitMonth(emailRecipient);
+    const success = await submitMonth(hrEmail);
     if (success) {
       toast({
         title: 'Success',
@@ -130,16 +125,9 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
       return;
     }
     
-    if (!isValidEmail) {
-      toast({
-        title: 'Invalid email',
-        description: 'Please enter a valid HR email address before submitting.',
-        variant: 'destructive',
-      });
-      return;
-    }
+    const hrEmail = user?.outgoingInvoiceEmail || '';
     
-    const success = await submitMonth(emailRecipient);
+    const success = await submitMonth(hrEmail);
     if (success) {
       toast({
         title: 'Success',
@@ -186,12 +174,6 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         </CardHeader>
         
         <CardContent>
-          <EmailRecipientInput 
-            emailRecipient={emailRecipient}
-            setEmailRecipient={setEmailRecipient}
-            isValidEmail={isValidEmail}
-          />
-          
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
             <TabsList className="mb-4">
               <TabsTrigger value="view">View Hours</TabsTrigger>
@@ -236,6 +218,7 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
                     onCancel={() => {
                       setEditingEmployee(null);
                       setActiveTab('view');
+                      setIsAddingNew(false);
                     }}
                   />
                 )}

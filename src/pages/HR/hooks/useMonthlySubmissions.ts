@@ -136,28 +136,6 @@ export const useMonthlySubmissions = (monthCount: number = 6) => {
     }
   };
 
-  const updateHrEmail = async (email: string) => {
-    if (!user?.id || !selectedMonth) return false;
-    
-    try {
-      const formattedMonth = getMonthYearForStorage(selectedMonth);
-      const submission = submissions.find(s => s.month_year.startsWith(formattedMonth));
-      
-      if (submission) {
-        await workHoursSubmissionsTable()
-          .update({ hr_email: email })
-          .eq('id', submission.id);
-      }
-      
-      // Refresh the submissions data
-      await fetchSubmissions();
-      return true;
-    } catch (error) {
-      console.error('Error updating HR email:', error);
-      return false;
-    }
-  };
-
   return {
     months,
     selectedMonth,
@@ -165,7 +143,6 @@ export const useMonthlySubmissions = (monthCount: number = 6) => {
     isSubmitted,
     loading,
     submitMonth,
-    updateHrEmail,
     refreshSubmissions: fetchSubmissions,
   };
 };

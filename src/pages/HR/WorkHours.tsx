@@ -4,29 +4,25 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { WorkHoursHeader } from './components';
 import MonthlySubmissionsView from './components/MonthlySubmissionsView';
-import { useEmailRecipient } from './hooks/useEmailRecipient';
+import { useAuth } from '@/context/AuthContext';
 import { useMonthlySubmissions } from './hooks/useMonthlySubmissions';
 
 const WorkHours: React.FC = () => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [isAddingNew, setIsAddingNew] = useState(false);
   
-  const {
-    emailRecipient,
-    setEmailRecipient,
-    isValidEmail
-  } = useEmailRecipient();
-
   const { 
     selectedMonth,
     isSubmitted,
     submitMonth
   } = useMonthlySubmissions();
   
+  // Get the HR email from the user's outgoing invoice email
+  const hrEmail = user?.outgoingInvoiceEmail || '';
+  
   const handleSubmitToHR = async () => {
-    if (isValidEmail) {
-      await submitMonth(emailRecipient);
-    }
+    await submitMonth(hrEmail);
   };
   
   return (
@@ -44,9 +40,8 @@ const WorkHours: React.FC = () => {
         </CardHeader>
         <CardContent>
           <MonthlySubmissionsView
-            emailRecipient={emailRecipient}
-            setEmailRecipient={setEmailRecipient}
-            isValidEmail={isValidEmail}
+            isAddingNew={isAddingNew}
+            setIsAddingNew={setIsAddingNew}
           />
         </CardContent>
       </Card>
