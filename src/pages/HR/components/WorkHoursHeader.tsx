@@ -13,7 +13,7 @@ interface WorkHoursHeaderProps {
   selectedMonth: Date;
 }
 
-const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
+export const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
   isAddingNew,
   setIsAddingNew,
   submitToHR,
@@ -43,5 +43,3 @@ const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
     </div>
   );
 };
-
-export default WorkHoursHeader;
