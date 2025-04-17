@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -9,12 +9,14 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { FileUp, FileDown, Users, Sparkles } from 'lucide-react';
+import { FileUp, FileDown, Users, Sparkles, AlertCircle } from 'lucide-react';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import { useReportData } from './Reports/hooks/useReportData';
 import StatsCards from './Reports/components/overview/StatsCards';
 import MonthlyInvoiceChart from './Reports/components/overview/MonthlyInvoiceChart';
 import LoadingState from './Reports/components/LoadingState';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -25,11 +27,74 @@ const Dashboard: React.FC = () => {
     servicesStats, 
     activityData, 
     monthlyData, 
-    loading 
+    loading,
+    error
   } = useReportData();
+  
+  const [dataChecked, setDataChecked] = useState(false);
+  const [hasInvoices, setHasInvoices] = useState(false);
+  const [hasEmployees, setHasEmployees] = useState(false);
+  const [hasActivity, setHasActivity] = useState(false);
+  const [checkingData, setCheckingData] = useState(true);
+
+  // Check if user has any data at all
+  useEffect(() => {
+    const checkUserData = async () => {
+      try {
+        console.log('Checking user data for', user?.id);
+        setCheckingData(true);
+        
+        // Check invoices
+        const { data: invoiceUploads, error: invoiceError } = await supabase
+          .from('invoice_uploads')
+          .select('id')
+          .eq('user_id', user?.id)
+          .limit(1);
+          
+        if (invoiceError) console.error('Error checking invoices:', invoiceError);
+        
+        // Check employees
+        const { data: employees, error: employeeError } = await supabase
+          .from('employees')
+          .select('id')
+          .limit(1);
+          
+        if (employeeError) console.error('Error checking employees:', employeeError);
+        
+        // Check activity logs (for demo we'll just set this based on other data)
+        
+        setHasInvoices(invoiceUploads && invoiceUploads.length > 0);
+        setHasEmployees(employees && employees.length > 0);
+        setHasActivity(invoiceUploads && invoiceUploads.length > 0);
+        setDataChecked(true);
+      } catch (err) {
+        console.error('Error checking user data:', err);
+      } finally {
+        setCheckingData(false);
+      }
+    };
+    
+    if (user?.id) {
+      checkUserData();
+    }
+  }, [user]);
+  
+  if (checkingData || loading) {
+    return <LoadingState />;
+  }
   
   return (
     <div className="space-y-6">
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {error}
+          </AlertDescription>
+        </Alert>
+      )}
+      
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('dashboard.quick_actions')}</h2>
@@ -96,10 +161,17 @@ const Dashboard: React.FC = () => {
       <div>
         <h2 className="text-xl font-semibold mb-4">Account Summary</h2>
         
-        {loading ? (
-          <LoadingState />
+        {dataChecked && !hasInvoices && !hasEmployees && !hasActivity ? (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>No data available yet</AlertTitle>
+            <AlertDescription>
+              Welcome to your dashboard! It looks like you're just getting started. 
+              Try uploading your first invoice or adding an employee to see your data here.
+            </AlertDescription>
+          </Alert>
         ) : (
-          <div className="space-y-6">
+          <>
             <StatsCards 
               invoiceStats={invoiceStats}
               employeeStats={employeeStats}
@@ -108,7 +180,7 @@ const Dashboard: React.FC = () => {
             />
             
             <MonthlyInvoiceChart monthlyData={monthlyData} />
-          </div>
+          </>
         )}
       </div>
 
