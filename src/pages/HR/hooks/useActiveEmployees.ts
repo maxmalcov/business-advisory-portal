@@ -4,6 +4,14 @@ import { employeesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Employee } from '../types/employee';
 
+// Define the type for raw employee data from Supabase
+interface EmployeeData {
+  id: string;
+  full_name: string;
+  position: string;
+  company_name: string | null;
+}
+
 export function useActiveEmployees() {
   const [activeEmployees, setActiveEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +32,7 @@ export function useActiveEmployees() {
         }
         
         if (data && Array.isArray(data)) {
-          const transformedData: Employee[] = data.map((emp) => ({
+          const transformedData: Employee[] = data.map((emp: EmployeeData) => ({
             id: emp.id,
             fullName: emp.full_name,
             position: emp.position,
