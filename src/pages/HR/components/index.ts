@@ -9,4 +9,4 @@ export { default as EmployeeList } from './EmployeeList';
 export { default as MonthSelector } from './MonthSelector';
 export { default as MonthlySubmissionsView } from './MonthlySubmissionsView';
 export type { EmployeeRecord } from './WorkHoursTable';
-export type { FormValues } from './WorkHoursForm';
+export type { FormValues } from './WorkHoursForm/types';
