@@ -48,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         },
         {
           name: t('invoices.history'),
-          path: '/invoices?tab=history',
+          path: '/invoice-history',
           icon: History,
         },
         {

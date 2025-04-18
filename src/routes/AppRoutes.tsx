@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
@@ -29,6 +28,7 @@ import AdminUserManagement from "@/pages/AdminUserManagement";
 import AdminLogs from "@/pages/AdminLogs";
 import AdminSubscriptions from "@/pages/AdminSubscriptions";
 import { ProtectedRoute } from "./ProtectedRoute";
+import InvoiceHistory from "@/pages/InvoiceHistory";
 
 const AppRoutes = () => {
   return (
@@ -64,6 +64,11 @@ const AppRoutes = () => {
         <Route path="invoices" element={
           <ProtectedRoute requiredRole="client">
             <Invoices />
+          </ProtectedRoute>
+        } />
+        <Route path="invoice-history" element={
+          <ProtectedRoute requiredRole="client">
+            <InvoiceHistory />
           </ProtectedRoute>
         } />
         <Route path="supplier-invoices" element={
