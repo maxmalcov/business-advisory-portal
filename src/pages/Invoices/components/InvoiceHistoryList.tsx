@@ -3,7 +3,7 @@ import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useInvoiceHistory } from '../hooks/useInvoiceHistory';
 import InvoiceHistoryFilter from './InvoiceHistoryFilter';
-import InvoiceHistoryTable from './InvoiceHistoryTable';
+import InvoiceHistoryTable from './invoice-history/InvoiceHistoryTable';
 import InvoiceHistoryEmptyState from './InvoiceHistoryEmptyState';
 
 export interface InvoiceUpload {
