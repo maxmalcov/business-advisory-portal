@@ -1,14 +1,12 @@
-
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
+
 import { useSupplierFileUpload } from '../hooks/useSupplierFileUpload';
 import { useSupplierInvoiceEmail } from '../hooks/useSupplierInvoiceEmail';
 import UploadGuidelines from './UploadGuidelines';
@@ -134,20 +132,16 @@ const SupplierInvoiceUpload: React.FC = () => {
   const fileLimit = hasReachedFileLimit?.() || false;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Upload Supplier Invoices</CardTitle>
-        <CardDescription>
-          Upload invoices received from your suppliers
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Upload guidelines */}
-        <UploadGuidelines
-          emailAddress={user?.incomingInvoiceEmail}
-        />
+    <Card className="transition-all duration-200 hover:shadow-md border-primary/10">
+      <CardHeader className="space-y-1" />
+      <CardContent className="space-y-8">
+        <div className="bg-muted/50 rounded-lg p-6">
+          <UploadGuidelines 
+            emailAddress={user?.incomingInvoiceEmail}
+            emailType="incoming"
+          />
+        </div>
         
-        {/* File upload section */}
         <SupplierFileUploadSection
           selectedFiles={selectedFiles}
           uploadedFiles={uploadedFiles}
@@ -158,15 +152,15 @@ const SupplierInvoiceUpload: React.FC = () => {
           uploadComplete={uploadComplete}
           uploadSuccess={uploadSuccess}
           uploadError={uploadError}
-          onDragOver={handleDragOverAppend}
+          onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
-          onDrop={handleDropAppend}
+          onDrop={handleDrop}
           onFileSelect={handleFileSelect}
           onRemoveFile={handleRemoveFile}
           onSendEmail={handleSendEmail}
           onResetUpload={handleResetUpload}
           onAddMoreFiles={handleAddMoreFiles}
-          onFileChange={handleFileChangeWithMode}
+          onFileChange={handleFileChange}
           remainingFilesCount={remainingFilesCount}
           hasReachedFileLimit={fileLimit}
         />
