@@ -50,17 +50,19 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
   hasReachedFileLimit
 }) => {
   return (
-    <>
+    <div className="space-y-6">
       {/* Only show file upload area if not currently uploading and file limit not reached */}
       {!isLoading && !uploadComplete && !hasReachedFileLimit && (
-        <FileUploadArea 
-          isDragging={isDragging}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onDrop={onDrop}
-          onFileSelect={onFileSelect}
-          isLoading={isLoading || isSending}
-        />
+        <div className="transition-all duration-300 transform hover:scale-[1.01]">
+          <FileUploadArea 
+            isDragging={isDragging}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+            onFileSelect={onFileSelect}
+            isLoading={isLoading || isSending}
+          />
+        </div>
       )}
       
       {/* Hidden file input */}
@@ -74,26 +76,28 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
         disabled={hasReachedFileLimit}
       />
       
-      {/* Selected files list */}
+      {/* Selected files list with enhanced styling */}
       {selectedFiles.length > 0 && (
-        <FileList 
-          files={selectedFiles}
-          uploadedFiles={uploadedFiles}
-          onRemoveFile={onRemoveFile}
-          onSendEmail={onSendEmail}
-          onResetUpload={onResetUpload}
-          onAddMoreFiles={onAddMoreFiles}
-          isLoading={isLoading}
-          isSending={isSending}
-          uploadProgress={uploadProgress}
-          uploadComplete={uploadComplete}
-          uploadSuccess={uploadSuccess}
-          uploadError={uploadError}
-          remainingFilesCount={remainingFilesCount}
-          hasReachedFileLimit={hasReachedFileLimit}
-        />
+        <div className="bg-card rounded-lg border shadow-sm">
+          <FileList 
+            files={selectedFiles}
+            uploadedFiles={uploadedFiles}
+            onRemoveFile={onRemoveFile}
+            onSendEmail={onSendEmail}
+            onResetUpload={onResetUpload}
+            onAddMoreFiles={onAddMoreFiles}
+            isLoading={isLoading}
+            isSending={isSending}
+            uploadProgress={uploadProgress}
+            uploadComplete={uploadComplete}
+            uploadSuccess={uploadSuccess}
+            uploadError={uploadError}
+            remainingFilesCount={remainingFilesCount}
+            hasReachedFileLimit={hasReachedFileLimit}
+          />
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

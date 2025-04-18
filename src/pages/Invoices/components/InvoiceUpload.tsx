@@ -5,9 +5,9 @@ import { useAuth } from '@/context/AuthContext';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from '@/components/ui/card';
 
 import { useInvoiceFileUpload } from '../hooks/useInvoiceFileUpload';
@@ -136,21 +136,23 @@ const InvoiceUpload: React.FC = () => {
   const fileLimit = hasReachedFileLimit?.() || false;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Upload</CardTitle>
-        <CardDescription>
+    <Card className="transition-all duration-200 hover:shadow-md border-primary/10">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl">Upload Invoices</CardTitle>
+        <CardDescription className="text-base">
           Upload your sales invoices for processing
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Upload guidelines */}
-        <UploadGuidelines 
-          emailAddress={user?.outgoingInvoiceEmail}
-          emailType="outgoing"
-        />
+      <CardContent className="space-y-8">
+        {/* Upload guidelines with enhanced styling */}
+        <div className="bg-muted/50 rounded-lg p-6">
+          <UploadGuidelines 
+            emailAddress={user?.outgoingInvoiceEmail}
+            emailType="outgoing"
+          />
+        </div>
         
-        {/* File upload section */}
+        {/* File upload section with enhanced styling */}
         <FileUploadSection
           selectedFiles={selectedFiles}
           uploadedFiles={uploadedFiles}
