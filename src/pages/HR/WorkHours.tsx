@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { WorkHoursHeader } from './components';
+import MonthlySubmissionsView from './components/MonthlySubmissionsView';
 import { useAuth } from '@/context/AuthContext';
 import { useMonthlySubmissions } from './hooks/useMonthlySubmissions';
-import MonthlySubmissionsView from './components/MonthlySubmissionsView';
 
 const WorkHours: React.FC = () => {
   const { t } = useLanguage();
@@ -14,7 +15,7 @@ const WorkHours: React.FC = () => {
   const { 
     selectedMonth,
     isSubmitted,
-    submitMonth 
+    submitMonth
   } = useMonthlySubmissions();
   
   // Get the HR email from the user's outgoing invoice email
@@ -29,10 +30,18 @@ const WorkHours: React.FC = () => {
       <h1 className="text-2xl font-bold tracking-tight">{t('nav.hr.work_hours')}</h1>
       
       <Card>
-        <CardContent className="pt-6">
-          <MonthlySubmissionsView 
+        <CardHeader>
+          <WorkHoursHeader 
             isAddingNew={isAddingNew} 
-            setIsAddingNew={setIsAddingNew} 
+            setIsAddingNew={setIsAddingNew}
+            submitToHR={handleSubmitToHR}
+            employeeData={[]}
+          />
+        </CardHeader>
+        <CardContent>
+          <MonthlySubmissionsView
+            isAddingNew={isAddingNew}
+            setIsAddingNew={setIsAddingNew}
           />
         </CardContent>
       </Card>

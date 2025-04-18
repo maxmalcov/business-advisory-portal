@@ -2,9 +2,11 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import MonthlySubmissionsHeader from './MonthlySubmissionsHeader';
-import { InlineWorkHoursTable } from '../InlineWorkHoursTable';
+import WorkHoursTable from '../WorkHoursTable';
 import ActionSection from './ActionSection';
+import FormSection from './FormSection';
 import { WorkHoursData } from '../../hooks/useEmployeeWorkHours';
+import { useMonthlySubmissions } from './MonthlySubmissionsContext';
 
 interface MonthlySubmissionsContentProps {
   selectedMonth: Date;
@@ -25,6 +27,8 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
   onSubmitForm,
   onSubmitMonth,
 }) => {
+  const { handleEditEmployee } = useMonthlySubmissions();
+
   return (
     <Card>
       <MonthlySubmissionsHeader
@@ -33,12 +37,11 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
       />
       
       <CardContent>
-        <InlineWorkHoursTable 
+        <WorkHoursTable 
           employeeData={workHours} 
-          onSave={onSubmitForm}
-          onDelete={onDeleteEmployee}
+          onEdit={!isSubmitted ? handleEditEmployee : undefined}
+          onDelete={!isSubmitted ? onDeleteEmployee : undefined}
           loading={loading}
-          isSubmitted={isSubmitted}
         />
         
         <ActionSection
@@ -47,6 +50,12 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
           selectedMonth={selectedMonth}
           loading={loading}
           onSubmitMonth={onSubmitMonth}
+        />
+        
+        <FormSection
+          isSubmitted={isSubmitted}
+          workHours={workHours}
+          onSubmitForm={onSubmitForm}
         />
       </CardContent>
     </Card>
