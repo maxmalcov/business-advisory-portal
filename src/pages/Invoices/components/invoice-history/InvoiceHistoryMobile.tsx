@@ -74,3 +74,4 @@ export const InvoiceHistoryMobile: React.FC<InvoiceHistoryTableProps> = ({
     </div>
   );
 };
+

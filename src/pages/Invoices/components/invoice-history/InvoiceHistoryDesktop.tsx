@@ -31,10 +31,10 @@ export const InvoiceHistoryDesktop: React.FC<InvoiceHistoryTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[40%]">File Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Upload Date</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="w-[50%]">File Name</TableHead>
+            <TableHead className="w-[15%]">Type</TableHead>
+            <TableHead className="w-[20%]">Upload Date</TableHead>
+            <TableHead className="w-[15%] text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -87,3 +87,4 @@ export const InvoiceHistoryDesktop: React.FC<InvoiceHistoryTableProps> = ({
     </div>
   );
 };
+
