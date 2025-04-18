@@ -77,8 +77,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Invoices
     'invoices.title': 'Sale Invoices',
-    'invoices.upload': 'Upload Invoice',
-    'invoices.history': 'Upload History',
+    'invoices.upload': 'Upload',
+    'invoices.history': 'History',
     'invoices.date': 'Date',
     'invoices.amount': 'Amount',
     'invoices.client': 'Client',
@@ -233,8 +233,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Invoices
     'invoices.title': 'Facturas de Venta',
-    'invoices.upload': 'Subir factura',
-    'invoices.history': 'Historial de subidas',
+    'invoices.upload': 'Subir',
+    'invoices.history': 'Historial',
     'invoices.date': 'Fecha',
     'invoices.amount': 'Importe',
     'invoices.client': 'Cliente',
@@ -389,8 +389,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Invoices
     'invoices.title': 'Счета Продаж',
-    'invoices.upload': 'Загрузить счет',
-    'invoices.history': 'История загрузок',
+    'invoices.upload': 'Загрузить',
+    'invoices.history': 'История',
     'invoices.date': 'Дата',
     'invoices.amount': 'Сумма',
     'invoices.client': 'Клиент',
