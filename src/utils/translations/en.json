@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Loading...",
@@ -34,5 +33,18 @@
     "completion_date": "Completed",
     "no_results": "No service requests found",
     "search_placeholder": "Search service requests..."
+  },
+  "invoices": {
+    "title": "Sale Invoices",
+    "upload": "Upload",
+    "history": "History",
+    "date": "Date",
+    "amount": "Amount",
+    "client": "Client",
+    "status": "Status",
+    "upload_success": "Invoices uploaded successfully",
+    "max_size": "Maximum file size per upload: 25MB",
+    "max_files": "Upload up to 15 files at once",
+    "allowed_types": "Allowed file types: PDF or JPG"
   }
 }
