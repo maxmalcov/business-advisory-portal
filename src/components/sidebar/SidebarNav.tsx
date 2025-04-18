@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarItem from './SidebarItem';
 import { SidebarItem as SidebarItemType } from './types';
 
@@ -11,6 +11,7 @@ type SidebarNavProps = {
 
 const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
   const isItemActive = (item: SidebarItemType): boolean => {
@@ -25,7 +26,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
     return location.pathname.startsWith(path) && path !== '/';
   };
 
-  // Set initial expanded state based on current route
   useEffect(() => {
     const initialExpanded = menuItems
       .filter(item => item.children && item.children.some(child => location.pathname === child.path))
@@ -38,20 +38,30 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
 
   const toggleExpanded = (path: string, hasChildren: boolean) => {
     if (!hasChildren) {
-      // If clicking an item without children, collapse all expanded items
       setExpandedItems([]);
       return;
     }
 
     setExpandedItems(prev => {
       if (prev.includes(path)) {
-        // If already expanded, collapse only this item
         return prev.filter(item => item !== path);
       } else {
-        // If expanding this item, collapse all others and expand only this one
         return [path];
       }
     });
+  };
+
+  const handleItemClick = (path: string, hasChildren: boolean) => {
+    // Navigate to the path
+    navigate(path);
+    
+    // Toggle submenu
+    toggleExpanded(path, hasChildren);
+    
+    // Close sidebar on mobile if it's not a parent item
+    if (!hasChildren) {
+      onClose();
+    }
   };
 
   return (
@@ -66,6 +76,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
             onClose={onClose}
             isExpanded={expandedItems.includes(item.path)}
             toggleExpanded={toggleExpanded}
+            onClick={handleItemClick}
           />
         ))}
       </ul>
