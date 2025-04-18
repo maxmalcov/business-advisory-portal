@@ -119,7 +119,7 @@ const SupplierInvoiceUpload: React.FC = () => {
   const remainingFilesCount = getRemainingFilesCount?.() || 0;
   const fileLimit = hasReachedFileLimit?.() || false;
   return <Card className="transition-all duration-200 hover:shadow-md border-primary/10">
-      <CardHeader className="space-y-1 py-[5px]" />
+      <CardHeader className="space-y-1 py-[10px]" />
       <CardContent className="space-y-8">
         <div className="bg-muted/50 rounded-lg p-6">
           <UploadGuidelines emailAddress={user?.incomingInvoiceEmail} emailType="incoming" />
