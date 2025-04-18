@@ -47,14 +47,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           icon: FileUp,
         },
         {
-          name: t('invoices.history'),
-          path: '/invoice-history',
-          icon: History,
-        },
-        {
           name: t('nav.supplier_invoices'),
           path: '/supplier-invoices',
           icon: FileDown,
+        },
+        {
+          name: t('invoices.history'),
+          path: '/invoice-history',
+          icon: History,
         },
       ],
     },
