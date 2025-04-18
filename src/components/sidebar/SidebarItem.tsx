@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { useLocation } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { ChevronDown } from 'lucide-react';
+import SidebarButton from './SidebarButton';
+import SidebarSubmenu from './SidebarSubmenu';
 
 type SidebarItemProps = {
   item: {
@@ -52,56 +52,23 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   return (
     <li key={item.path}>
-      <button
+      <SidebarButton
+        name={item.name}
+        icon={item.icon}
+        highlight={item.highlight}
+        isActive={isActive || childIsActive}
+        hasChildren={hasChildren}
+        isExpanded={isExpanded}
         onClick={handleParentClick}
-        className={cn(
-          "flex w-full items-center justify-between px-3 py-2 rounded-md text-sm transition-colors",
-          (isActive || childIsActive) 
-            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
-            : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
-          item.highlight && "text-sidebar-accent-foreground font-medium hover:text-sidebar-accent-foreground"
-        )}
-      >
-        <div className="flex items-center">
-          {item.highlight ? 
-            <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
-            <item.icon className="h-4 w-4 mr-2" />
-          }
-          <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
-        </div>
-        {hasChildren && (
-          <ChevronDown
-            className={cn(
-              "h-4 w-4 transition-transform duration-200",
-              isExpanded && "transform rotate-180"
-            )}
-          />
-        )}
-      </button>
+      />
       
-      {hasChildren && isExpanded && (
-        <ul className={cn(
-          "pl-6 mt-1 space-y-1 overflow-hidden transition-all duration-200 ease-in-out",
-          "animate-accordion-down"
-        )}>
-          {item.children.map((child) => (
-            <li key={child.path}>
-              <Link
-                to={child.path}
-                className={cn(
-                  "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
-                  location.pathname === child.path
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                    : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-                )}
-                onClick={handleChildClick}
-              >
-                <child.icon className="h-4 w-4 mr-2" />
-                <span>{child.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      {hasChildren && (
+        <SidebarSubmenu
+          children={item.children}
+          isExpanded={isExpanded}
+          onChildClick={handleChildClick}
+          currentPath={location.pathname}
+        />
       )}
     </li>
   );
