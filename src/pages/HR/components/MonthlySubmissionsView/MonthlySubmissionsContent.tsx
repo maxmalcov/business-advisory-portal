@@ -36,7 +36,7 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
         <InlineWorkHoursTable 
           employeeData={workHours} 
           onSave={onSubmitForm}
-          onDelete={onDelete}
+          onDelete={onDeleteEmployee}
           loading={loading}
           isSubmitted={isSubmitted}
         />

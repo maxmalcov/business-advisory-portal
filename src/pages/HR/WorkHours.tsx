@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
@@ -9,6 +9,7 @@ import MonthlySubmissionsView from './components/MonthlySubmissionsView';
 const WorkHours: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const [isAddingNew, setIsAddingNew] = useState(false);
   
   const { 
     selectedMonth,
@@ -29,7 +30,10 @@ const WorkHours: React.FC = () => {
       
       <Card>
         <CardContent className="pt-6">
-          <MonthlySubmissionsView />
+          <MonthlySubmissionsView 
+            isAddingNew={isAddingNew} 
+            setIsAddingNew={setIsAddingNew} 
+          />
         </CardContent>
       </Card>
     </div>
