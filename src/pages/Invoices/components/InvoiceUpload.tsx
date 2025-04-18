@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -7,7 +6,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 
 import { useInvoiceFileUpload } from '../hooks/useInvoiceFileUpload';
@@ -139,9 +137,6 @@ const InvoiceUpload: React.FC = () => {
     <Card className="transition-all duration-200 hover:shadow-md border-primary/10">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Upload Invoices</CardTitle>
-        <CardDescription className="text-base">
-          Upload your sales invoices for processing
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
         {/* Upload guidelines with enhanced styling */}
