@@ -29,6 +29,7 @@ const SupplierFileUploadArea: React.FC<SupplierFileUploadAreaProps> = ({
           ? 'border-primary bg-primary/5' 
           : 'border-muted-foreground/20 hover:border-primary/50 hover:bg-muted/50'
         }
+        transition-transform duration-300 transform hover:scale-[1.01]
       `}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
