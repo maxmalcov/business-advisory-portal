@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import SidebarItem from './SidebarItem';
 import { SidebarItem as SidebarItemType } from './types';
 
@@ -11,33 +11,8 @@ type SidebarNavProps = {
 
 const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
-  // Load expanded state from localStorage on mount
-  useEffect(() => {
-    const savedExpanded = localStorage.getItem('sidebarExpanded');
-    if (savedExpanded) {
-      setExpandedItems(JSON.parse(savedExpanded));
-    }
-  }, []);
-
-  // Save expanded state to localStorage
-  useEffect(() => {
-    localStorage.setItem('sidebarExpanded', JSON.stringify(expandedItems));
-  }, [expandedItems]);
-
-  // Set initial expanded state based on current route
-  useEffect(() => {
-    const matchingParent = menuItems.find(item => 
-      item.children?.some(child => location.pathname === child.path)
-    );
-    
-    if (matchingParent && !expandedItems.includes(matchingParent.path)) {
-      setExpandedItems(prev => [...prev, matchingParent.path]);
-    }
-  }, [location.pathname, menuItems]);
-
   const isItemActive = (item: SidebarItemType): boolean => {
     if (location.pathname === item.path) return true;
     if (item.children) {
@@ -50,21 +25,33 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
     return location.pathname.startsWith(path) && path !== '/';
   };
 
-  const handleItemClick = (item: SidebarItemType) => {
-    if (item.children) {
-      setExpandedItems(prev => {
-        if (prev.includes(item.path)) {
-          return prev;
-        } else {
-          return [item.path];
-        }
-      });
-    }
+  // Set initial expanded state based on current route
+  useEffect(() => {
+    const initialExpanded = menuItems
+      .filter(item => item.children && item.children.some(child => location.pathname === child.path))
+      .map(item => item.path);
     
-    // Navigate to the parent path
-    if (item.path) {
-      navigate(item.path);
+    if (initialExpanded.length > 0) {
+      setExpandedItems(initialExpanded);
     }
+  }, [location.pathname, menuItems]);
+
+  const toggleExpanded = (path: string, hasChildren: boolean) => {
+    if (!hasChildren) {
+      // If clicking an item without children, collapse all expanded items
+      setExpandedItems([]);
+      return;
+    }
+
+    setExpandedItems(prev => {
+      if (prev.includes(path)) {
+        // If already expanded, collapse only this item
+        return prev.filter(item => item !== path);
+      } else {
+        // If expanding this item, collapse all others and expand only this one
+        return [path];
+      }
+    });
   };
 
   return (
@@ -78,7 +65,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
             isItemActive={isItemActive}
             onClose={onClose}
             isExpanded={expandedItems.includes(item.path)}
-            toggleExpanded={handleItemClick}
+            toggleExpanded={toggleExpanded}
           />
         ))}
       </ul>
