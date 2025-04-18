@@ -31,10 +31,9 @@ export const InvoiceHistoryDesktop: React.FC<InvoiceHistoryTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[30%]">File Name</TableHead>
+            <TableHead className="w-[40%]">File Name</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Upload Date</TableHead>
-            <TableHead className="w-[25%]">Sent To</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -73,11 +72,6 @@ export const InvoiceHistoryDesktop: React.FC<InvoiceHistoryTableProps> = ({
               </TableCell>
               <TableCell title={invoice.created_at}>
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
-              </TableCell>
-              <TableCell>
-                <span className="inline-block w-full overflow-visible break-words">
-                  {invoice.sent_to_email || 'Not sent'}
-                </span>
               </TableCell>
               <TableCell className="text-right">
                 <InvoiceActions

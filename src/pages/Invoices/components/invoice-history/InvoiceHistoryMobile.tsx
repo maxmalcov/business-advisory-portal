@@ -60,13 +60,6 @@ export const InvoiceHistoryMobile: React.FC<InvoiceHistoryTableProps> = ({
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
               </span>
             </div>
-            
-            <div className="col-span-2">
-              <span className="text-muted-foreground">Sent to:</span>
-              <span className="ml-2 break-words">
-                {invoice.sent_to_email || 'Not sent'}
-              </span>
-            </div>
           </div>
           
           <div className="flex justify-end space-x-2 border-t pt-3 mt-3">
