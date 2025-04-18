@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Loading...",
@@ -24,7 +23,14 @@
     "service_requests": "Service Requests",
     "invoices": "Invoices",
     "sale_invoices": "Sale Invoices",
-    "supplier_invoices": "Supplier Invoices"
+    "supplier_invoices": "Supplier Invoices",
+    "hr": {
+      "title": "HR & Payroll",
+      "main": "Overview",
+      "new_employee": "New Employee",
+      "termination": "Termination",
+      "work_hours": "Work Hours"
+    }
   },
   "services": {
     "title": "Service Requests",

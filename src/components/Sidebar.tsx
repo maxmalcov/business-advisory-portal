@@ -59,10 +59,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       ],
     },
     {
-      name: t('nav.hr'),
+      name: t('nav.hr.title'),
       path: '/hr',
       icon: Users,
       children: [
+        {
+          name: t('nav.hr.main'),
+          path: '/hr',
+          icon: Users,
+        },
         {
           name: t('nav.hr.new_employee'),
           path: '/hr/new-employee',
