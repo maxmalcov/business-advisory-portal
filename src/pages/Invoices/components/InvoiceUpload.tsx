@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 
 import { useInvoiceFileUpload } from '../hooks/useInvoiceFileUpload';
@@ -136,7 +135,7 @@ const InvoiceUpload: React.FC = () => {
   return (
     <Card className="transition-all duration-200 hover:shadow-md border-primary/10">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Upload Invoices</CardTitle>
+        {/* Removed CardTitle */}
       </CardHeader>
       <CardContent className="space-y-8">
         {/* Upload guidelines with enhanced styling */}
