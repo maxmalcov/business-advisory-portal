@@ -72,9 +72,10 @@ export const useInvoiceEmail = () => {
         return false;
       }
 
+      // Updated toast message - simplified and generic
       toast({
-        title: 'Email Sent',
-        description: `Invoice${files.length > 1 ? 's' : ''} successfully sent to ${emailField}.`,
+        title: 'Invoice Sent',
+        description: 'Your invoice was sent successfully.',
       });
 
       return true;
@@ -96,3 +97,4 @@ export const useInvoiceEmail = () => {
     isSending
   };
 };
+
