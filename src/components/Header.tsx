@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/LanguageSelector';
@@ -20,10 +20,19 @@ const Header: React.FC = () => {
   const { t } = useLanguage();
   const isMobile = useIsMobile();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     setMenuOpen(false);
     logout();
+  };
+
+  const handleLogoClick = () => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    } else {
+      navigate('/');
+    }
   };
 
   // Content for the authenticated user menu
@@ -56,9 +65,12 @@ const Header: React.FC = () => {
     <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Link to="/" className="font-bold text-xl md:text-2xl text-ba-blue">
+          <div 
+            onClick={handleLogoClick} 
+            className="font-bold text-xl md:text-2xl text-ba-blue cursor-pointer"
+          >
             Business Advisory
-          </Link>
+          </div>
         </div>
 
         {isMobile && isAuthenticated ? (
@@ -109,3 +121,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+
