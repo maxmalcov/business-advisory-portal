@@ -8,15 +8,7 @@ const InvoiceTabs: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <Tabs defaultValue="upload" className="w-full">
-      <TabsList className="grid w-full md:w-[400px] grid-cols-1">
-        <TabsTrigger value="upload">{t('invoices.upload')}</TabsTrigger>
-      </TabsList>
-      
-      <TabsContent value="upload">
-        <InvoiceUpload />
-      </TabsContent>
-    </Tabs>
+    <InvoiceUpload />
   );
 };
 
