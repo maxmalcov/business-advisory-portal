@@ -84,15 +84,21 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
               <span>{item.name}</span>
             </div>
             <span className="ml-auto">
-              {isExpanded ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
+              <ChevronDown 
+                className={cn(
+                  "h-4 w-4 transition-transform duration-200",
+                  isExpanded ? "rotate-0" : "-rotate-90"
+                )} 
+              />
             </span>
           </div>
           
-          {isExpanded && (
+          <div
+            className={cn(
+              "overflow-hidden transition-all duration-200 ease-in-out",
+              isExpanded ? "max-h-96" : "max-h-0"
+            )}
+          >
             <ul className="pl-6 mt-1 space-y-1">
               {item.children?.map((child) => (
                 <li key={child.path}>
@@ -112,7 +118,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 </li>
               ))}
             </ul>
-          )}
+          </div>
         </div>
       )}
     </li>
