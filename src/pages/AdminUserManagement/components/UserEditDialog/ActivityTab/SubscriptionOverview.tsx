@@ -9,15 +9,13 @@ interface SubscriptionOverviewProps {
 
 const SubscriptionOverview: React.FC<SubscriptionOverviewProps> = ({ subscriptions }) => {
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="space-y-2">
       {subscriptions.map((subscription) => (
         <div 
           key={subscription.id} 
-          className="flex items-center justify-between p-2 rounded-lg border-none bg-transparent"
+          className="flex items-center justify-between py-2"
         >
-          <div className="space-y-1">
-            <h3 className="font-medium text-sm">{subscription.name}</h3>
-          </div>
+          <h3 className="font-medium text-sm">{subscription.name}</h3>
           <Badge 
             variant="outline" 
             className={
