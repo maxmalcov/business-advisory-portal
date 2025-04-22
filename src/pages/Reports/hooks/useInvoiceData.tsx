@@ -43,11 +43,23 @@ export const useInvoiceData = () => {
       const [salesResponse, supplierResponse] = await Promise.all([
         supabase
           .from('invoice_uploads')
-          .select('*, profiles:user_id(name, email)')
+          .select(`
+            *,
+            profiles:user_id (
+              name, 
+              email
+            )
+          `)
           .eq('invoice_type', 'sales'),
         supabase
           .from('invoice_uploads')
-          .select('*, profiles:user_id(name, email)')
+          .select(`
+            *,
+            profiles:user_id (
+              name, 
+              email
+            )
+          `)
           .eq('invoice_type', 'supplier')
       ]);
 

@@ -68,7 +68,7 @@ const ReportsPage: React.FC = () => {
         {isAdmin && (
           <>
             <TabsContent value="documents" className="space-y-4">
-              <DocumentsTab invoiceStats={invoiceStats} />
+              <DocumentsTab />
             </TabsContent>
             
             <TabsContent value="people" className="space-y-4">
