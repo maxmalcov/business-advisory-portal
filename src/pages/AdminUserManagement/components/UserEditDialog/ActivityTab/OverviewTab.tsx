@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Package, RefreshCw, FileText, Calendar, Clock } from 'lucide-react';
+import { User, Package, FileText, Calendar, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { UserActivityData } from '../../../hooks/useUserActivity';
+import SubscriptionOverview from './SubscriptionOverview';
 
 export interface OverviewTabProps {
   data: UserActivityData;
@@ -12,7 +12,7 @@ export interface OverviewTabProps {
 
 const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
   const formatDate = (date: Date): string => {
-    return format(date, 'PPP'); // e.g., "April 10, 2024"
+    return format(date, 'PPP');
   };
 
   return (
@@ -73,42 +73,9 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
         </Card>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Current Subscription */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <RefreshCw className="h-5 w-5 mr-2 text-primary" />
-              Current Subscription
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {data.subscriptions.active ? (
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Plan:</span>
-                  <span className="font-medium">{data.subscriptions.active.name}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Status:</span>
-                  <Badge variant="outline" className="bg-green-50 text-green-600 hover:bg-green-100">
-                    Active
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Period:</span>
-                  <span className="font-medium text-sm">
-                    {formatDate(data.subscriptions.active.startDate)} - {formatDate(data.subscriptions.active.endDate)}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-2">
-                <span className="text-muted-foreground">No active subscription</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 gap-4">
+        {/* Subscriptions Overview - New Component */}
+        <SubscriptionOverview subscriptions={data.subscriptions.active ? [data.subscriptions.active] : []} />
 
         {/* Invoice Summary */}
         <Card>

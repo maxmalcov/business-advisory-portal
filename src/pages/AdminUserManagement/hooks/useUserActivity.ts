@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -48,7 +47,7 @@ export interface UserActivityData {
   registrationInfo: UserRegistrationInfo;
   services: UserService[];
   subscriptions: {
-    active?: UserSubscription;
+    active: IframeSubscription[];
     history: UserSubscriptionHistoryItem[];
   };
   invoices: UserInvoiceSummary;
@@ -166,14 +165,26 @@ export const useUserActivity = (userId: string) => {
           },
           services: services,
           subscriptions: {
-            // For now, we'll use a mock subscription since we don't have this data in the database
-            // In a real implementation, we'd fetch this from a subscriptions table
-            active: services.length > 0 ? {
-              name: 'Premium Plan',
-              status: 'active',
-              startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
-              endDate: new Date(Date.now() + 335 * 24 * 60 * 60 * 1000) // 335 days from now
-            } : undefined,
+            active: services.length > 0 ? [
+              {
+                id: 'calendar',
+                name: 'Calendar Tool',
+                status: 'active',
+                url: user.iframeUrls?.[0] || '',
+                startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+                endDate: new Date(Date.now() + 335 * 24 * 60 * 60 * 1000),
+                isLifetime: false
+              },
+              {
+                id: 'reporting',
+                name: 'Reporting Dashboard',
+                status: user.iframeUrls?.[1] ? 'active' : 'inactive',
+                url: user.iframeUrls?.[1] || '',
+                startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+                endDate: undefined,
+                isLifetime: true
+              }
+            ] : [],
             history: services.length > 0 ? [
               {
                 id: '1',
