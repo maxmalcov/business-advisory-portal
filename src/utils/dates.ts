@@ -1,5 +1,4 @@
-
-import { format, isValid, parse, startOfMonth, addMonths } from "date-fns";
+import { format, isValid, parse, startOfMonth, addMonths, isWithinInterval, parseISO } from "date-fns";
 
 export const formatDate = (date: Date | string | null | undefined): string => {
   if (!date) return '';
@@ -19,13 +18,11 @@ export const formatMonthYearCompact = (date: Date | string): string => {
 };
 
 export const parseMonthYear = (monthYearString: string): Date => {
-  // Parse string like "January 2023" to a Date object
   const date = parse(monthYearString, 'MMMM yyyy', new Date());
   return startOfMonth(date);
 };
 
 export const getMonthYearForStorage = (date: Date): string => {
-  // Format a date to yyyy-MM-01 format for storage
   return format(startOfMonth(date), 'yyyy-MM-dd');
 };
 
@@ -53,4 +50,19 @@ export const getMonthsInYear = (year: number): Date[] => {
   }
   
   return months;
+};
+
+export const isWithinDateRange = (
+  date: Date | string, 
+  startDate: Date | string, 
+  endDate: Date | string
+): boolean => {
+  const parsedDate = typeof date === 'string' ? parseISO(date) : date;
+  const parsedStartDate = typeof startDate === 'string' ? parseISO(startDate) : startDate;
+  const parsedEndDate = typeof endDate === 'string' ? parseISO(endDate) : endDate;
+
+  return isWithinInterval(parsedDate, { 
+    start: parsedStartDate, 
+    end: parsedEndDate 
+  });
 };
