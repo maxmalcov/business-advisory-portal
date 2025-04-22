@@ -1,6 +1,8 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { IframeSubscription } from './types';
 
 // Define types for user activity data
 export interface UserRegistrationInfo {
@@ -76,7 +78,7 @@ export const useUserActivity = (userId: string) => {
         // Fetch the user's profile to get registration date
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('created_at, name')
+          .select('created_at, name, iframeurls')
           .eq('id', userId)
           .single();
         
@@ -158,6 +160,41 @@ export const useUserActivity = (userId: string) => {
         const allInvoices = [...saleInvoices, ...supplierInvoices]
           .sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort by date, newest first
         
+        // Generate subscription data based on iframeUrls
+        const today = new Date();
+        const nextYear = new Date();
+        nextYear.setFullYear(today.getFullYear() + 1);
+        
+        // Create active subscriptions based on iframe URLs
+        const activeSubscriptions: IframeSubscription[] = [];
+        
+        // Add subscriptions based on the profile's iframe URLs
+        if (profileData?.iframeurls && profileData.iframeurls.length > 0) {
+          const subscriptionTypes = [
+            { id: 'calendar', name: 'Calendar Tool' },
+            { id: 'reporting', name: 'Reporting Dashboard' },
+            { id: 'crm', name: 'CRM Integration' },
+            { id: 'timetracking', name: 'Time Tracking' }
+          ];
+          
+          // Create subscription objects for each type based on iframe URLs
+          subscriptionTypes.forEach((type, index) => {
+            const url = profileData.iframeurls && index < profileData.iframeurls.length 
+              ? profileData.iframeurls[index] 
+              : '';
+            
+            activeSubscriptions.push({
+              id: type.id,
+              name: type.name,
+              url: url,
+              status: url ? 'active' : 'inactive',
+              startDate: url ? today : new Date(),
+              endDate: url ? nextYear : undefined,
+              isLifetime: url ? false : true
+            });
+          });
+        }
+        
         // Create the final activity data object
         const userActivityData: UserActivityData = {
           registrationInfo: {
@@ -165,26 +202,7 @@ export const useUserActivity = (userId: string) => {
           },
           services: services,
           subscriptions: {
-            active: services.length > 0 ? [
-              {
-                id: 'calendar',
-                name: 'Calendar Tool',
-                status: 'active',
-                url: user.iframeUrls?.[0] || '',
-                startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 335 * 24 * 60 * 60 * 1000),
-                isLifetime: false
-              },
-              {
-                id: 'reporting',
-                name: 'Reporting Dashboard',
-                status: user.iframeUrls?.[1] ? 'active' : 'inactive',
-                url: user.iframeUrls?.[1] || '',
-                startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
-                endDate: undefined,
-                isLifetime: true
-              }
-            ] : [],
+            active: activeSubscriptions,
             history: services.length > 0 ? [
               {
                 id: '1',

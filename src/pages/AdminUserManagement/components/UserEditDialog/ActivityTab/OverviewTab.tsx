@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -74,8 +75,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
       </div>
       
       <div className="grid grid-cols-1 gap-4">
-        {/* Subscriptions Overview - New Component */}
-        <SubscriptionOverview subscriptions={data.subscriptions.active ? [data.subscriptions.active] : []} />
+        {/* Subscriptions Overview - Pass the correct type */}
+        <SubscriptionOverview subscriptions={data.subscriptions.active} />
 
         {/* Invoice Summary */}
         <Card>
