@@ -1,6 +1,5 @@
 
 import React from 'react';
-import WelcomeCard from './components/WelcomeCard';
 import StatsSummary from './components/StatsSummary';
 import AdminActions from './components/AdminActions';
 import RecentActivity from './components/RecentActivity';
@@ -9,7 +8,6 @@ import ActivityChart from './components/ActivityChart';
 const AdminDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
-      <WelcomeCard />
       <StatsSummary />
       <AdminActions />
       <RecentActivity />
@@ -19,3 +17,4 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
+
