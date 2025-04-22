@@ -8,9 +8,13 @@ interface SubscriptionOverviewProps {
 }
 
 const SubscriptionOverview: React.FC<SubscriptionOverviewProps> = ({ subscriptions }) => {
+  const activeSubscriptions = subscriptions.filter(
+    (subscription) => subscription.status === 'active'
+  );
+
   return (
     <div className="space-y-2">
-      {subscriptions.map((subscription) => (
+      {activeSubscriptions.map((subscription) => (
         <div 
           key={subscription.id} 
           className="flex items-center justify-between py-2"
@@ -18,13 +22,9 @@ const SubscriptionOverview: React.FC<SubscriptionOverviewProps> = ({ subscriptio
           <h3 className="font-medium text-sm">{subscription.name}</h3>
           <Badge 
             variant="outline" 
-            className={
-              subscription.status === 'active'
-                ? 'bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700'
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-700'
-            }
+            className="bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700"
           >
-            {subscription.status === 'active' ? 'Active' : 'Inactive'}
+            Active
           </Badge>
         </div>
       ))}
