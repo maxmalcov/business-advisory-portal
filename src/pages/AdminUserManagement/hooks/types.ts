@@ -1,4 +1,3 @@
-
 // Basic user types
 export type UserType = 'admin' | 'client' | 'manager';
 export type AccountType = 'freelancer' | 'sl' | 'sa' | 'individual';
@@ -60,4 +59,11 @@ export interface SubscriptionHistoryEntry {
     oldIsLifetime?: boolean;
     newIsLifetime?: boolean;
   };
+}
+
+export type DateFilterOption = '7days' | '30days' | 'custom' | 'all';
+
+export interface DateRange {
+  from: Date | undefined;
+  to: Date | undefined;
 }

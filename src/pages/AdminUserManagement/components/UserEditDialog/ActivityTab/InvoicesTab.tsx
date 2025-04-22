@@ -1,19 +1,40 @@
 
 import React from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { FileText } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { UserInvoiceSummary } from '../../../hooks/useUserActivity';
+import { DateFilter } from './DateFilter';
+import { useDateFilter } from '../../../hooks/useDateFilter';
+import { exportToCSV } from '../../../utils/csvExport';
 
 interface InvoicesTabProps {
   invoices: UserInvoiceSummary;
 }
 
 const InvoicesTab: React.FC<InvoicesTabProps> = ({ invoices }) => {
+  const {
+    filterOption,
+    setFilterOption,
+    customDateRange,
+    setCustomDateRange,
+    currentDateRange,
+    isWithinDateRange
+  } = useDateFilter('30days');
+
   const formatDate = (date: Date): string => {
-    return format(date, 'PPP'); // e.g., "April 10, 2024"
+    return format(date, 'PPP');
+  };
+
+  const filteredInvoices = invoices.recentInvoices.filter(
+    invoice => isWithinDateRange(invoice.date)
+  );
+
+  const handleExportCSV = () => {
+    exportToCSV(filteredInvoices, 'user-id', currentDateRange);
   };
 
   return (
@@ -44,12 +65,28 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ invoices }) => {
           <Separator className="my-6" />
           
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h4 className="font-medium">Recent Invoices</h4>
-              <Badge variant="outline">Last 30 days</Badge>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center space-x-2">
+                <h4 className="font-medium">Recent Invoices</h4>
+                <DateFilter
+                  filterOption={filterOption}
+                  onFilterChange={setFilterOption}
+                  customDateRange={customDateRange}
+                  onCustomDateChange={setCustomDateRange}
+                />
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full sm:w-auto"
+                onClick={handleExportCSV}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </Button>
             </div>
             
-            {invoices.recentInvoices.length > 0 ? (
+            {filteredInvoices.length > 0 ? (
               <div className="border rounded-md">
                 <div className="grid grid-cols-12 gap-4 px-4 py-3 font-medium bg-muted text-sm">
                   <div className="col-span-2">Type</div>
@@ -57,7 +94,7 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ invoices }) => {
                   <div className="col-span-3">Date</div>
                 </div>
                 <div className="divide-y">
-                  {invoices.recentInvoices.map(invoice => (
+                  {filteredInvoices.map(invoice => (
                     <div key={invoice.id} className="grid grid-cols-12 gap-4 px-4 py-3 text-sm">
                       <div className="col-span-2">
                         <Badge 
