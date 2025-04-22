@@ -34,3 +34,30 @@ export interface UserActivity {
   date: string;
   status?: string;
 }
+
+// Iframe subscription types
+export interface IframeSubscription {
+  id: string;
+  name: string;
+  url: string;
+  status: 'active' | 'inactive';
+  startDate: Date;
+  endDate?: Date; // Optional end date for unlimited subscriptions
+  isLifetime: boolean;
+}
+
+export interface SubscriptionHistoryEntry {
+  id: string;
+  subscriptionId: string;
+  date: Date;
+  action: 'activated' | 'deactivated' | 'period_updated';
+  adminName?: string;
+  periodChanges?: {
+    oldStartDate?: Date;
+    newStartDate?: Date;
+    oldEndDate?: Date;
+    newEndDate?: Date;
+    oldIsLifetime?: boolean;
+    newIsLifetime?: boolean;
+  };
+}

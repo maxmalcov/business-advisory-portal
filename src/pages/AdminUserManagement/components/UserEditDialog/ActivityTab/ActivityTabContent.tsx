@@ -1,84 +1,67 @@
 
-import React, { useState, useEffect } from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Card, CardContent } from '@/components/ui/card';
-import { XCircle } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useUserActivity } from '../../../hooks/useUserActivity';
 import OverviewTab from './OverviewTab';
 import ServicesTab from './ServicesTab';
 import SubscriptionsTab from './SubscriptionsTab';
 import InvoicesTab from './InvoicesTab';
 import ActivitySkeleton from './ActivitySkeleton';
+import { useUserManagement } from '../../../hooks/useUserManagement';
 
 interface ActivityTabContentProps {
   userId: string;
 }
 
 const ActivityTabContent: React.FC<ActivityTabContentProps> = ({ userId }) => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const { users } = useUserManagement();
   const { activityData, isLoading, error } = useUserActivity(userId);
+  const [activeTab, setActiveTab] = useState('overview');
   
-  useEffect(() => {
-    console.log("Activity Tab Content for user:", userId);
-    console.log("Activity data loaded:", activityData !== null);
-    if (activityData) {
-      console.log("Invoices count:", activityData.invoices.totalCount);
-    }
-  }, [userId, activityData]);
+  // Find the user in the users array
+  const user = users.find(u => u.id === userId);
   
   if (isLoading) {
-    return (
-      <ScrollArea className="flex-1 px-6 pb-4 pt-4">
-        <ActivitySkeleton />
-      </ScrollArea>
-    );
+    return <ActivitySkeleton />;
   }
   
   if (error || !activityData) {
     return (
-      <ScrollArea className="flex-1 px-6 pb-4 pt-4">
-        <Card>
-          <CardContent className="pt-6 pb-6 text-center">
-            <XCircle className="h-8 w-8 text-destructive mx-auto mb-2" />
-            <p>{error || "Failed to load activity data"}</p>
-            <p className="text-sm text-muted-foreground mt-1">Please try again later</p>
-          </CardContent>
-        </Card>
-      </ScrollArea>
+      <div className="p-6 text-center">
+        <p className="text-destructive">Error loading user activity data.</p>
+        <p className="text-muted-foreground text-sm mt-2">{error}</p>
+      </div>
     );
   }
-  
+
   return (
-    <ScrollArea className="flex-1 px-6 pb-4">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-        <TabsList>
+    <ScrollArea className="flex-1 p-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid grid-cols-4 mb-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
         </TabsList>
         
-        {/* Overview Tab */}
-        <TabsContent value="overview">
-          <OverviewTab data={activityData} />
+        <TabsContent value="overview" className="space-y-4">
+          <OverviewTab activityData={activityData} />
         </TabsContent>
         
-        {/* Services Tab */}
-        <TabsContent value="services">
+        <TabsContent value="services" className="space-y-4">
           <ServicesTab services={activityData.services} />
         </TabsContent>
         
-        {/* Subscriptions Tab */}
-        <TabsContent value="subscriptions">
-          <SubscriptionsTab 
-            activeSubscription={activityData.subscriptions.active} 
-            subscriptionHistory={activityData.subscriptions.history} 
-          />
+        <TabsContent value="subscriptions" className="space-y-4">
+          {user ? (
+            <SubscriptionsTab user={user} />
+          ) : (
+            <p className="text-muted-foreground text-center py-8">User data not available.</p>
+          )}
         </TabsContent>
         
-        {/* Invoices Tab */}
-        <TabsContent value="invoices">
+        <TabsContent value="invoices" className="space-y-4">
           <InvoicesTab invoices={activityData.invoices} />
         </TabsContent>
       </Tabs>
