@@ -40,9 +40,19 @@ export const useDateFilter = (defaultFilter: DateFilterOption = '30days') => {
 
   const isWithinDateRange = useCallback((date: Date) => {
     if (filterOption === 'all') return true;
-    if (!currentDateRange.from || !currentDateRange.to) return true;
+    if (!currentDateRange.from) return true;
     
-    return date >= currentDateRange.from && date <= currentDateRange.to;
+    // If we have a from date but no to date, check if the date is after from
+    if (currentDateRange.from && !currentDateRange.to) {
+      return date >= currentDateRange.from;
+    }
+    
+    // If we have both from and to dates, check if the date is between them
+    if (currentDateRange.from && currentDateRange.to) {
+      return date >= currentDateRange.from && date <= currentDateRange.to;
+    }
+    
+    return true;
   }, [filterOption, currentDateRange]);
 
   return {

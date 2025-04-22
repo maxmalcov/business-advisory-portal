@@ -1,3 +1,4 @@
+
 // Basic user types
 export type UserType = 'admin' | 'client' | 'manager';
 export type AccountType = 'freelancer' | 'sl' | 'sa' | 'individual';
@@ -63,6 +64,7 @@ export interface SubscriptionHistoryEntry {
 
 export type DateFilterOption = '7days' | '30days' | 'custom' | 'all';
 
+// Updated DateRange to make 'to' optional to match react-day-picker's DateRange type
 export interface DateRange {
   from: Date | undefined;
   to: Date | undefined;

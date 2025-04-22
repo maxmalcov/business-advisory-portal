@@ -73,7 +73,13 @@ export const DateFilter: React.FC<DateFilterProps> = ({
                 from: customDateRange.from,
                 to: customDateRange.to,
               }}
-              onSelect={(range) => onCustomDateChange(range || { from: undefined, to: undefined })}
+              onSelect={(range) => 
+                // Convert the react-day-picker DateRange to our DateRange type
+                onCustomDateChange({
+                  from: range?.from,
+                  to: range?.to
+                })
+              }
               numberOfMonths={2}
               className="pointer-events-auto"
             />
