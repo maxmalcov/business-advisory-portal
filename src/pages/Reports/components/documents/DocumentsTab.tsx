@@ -7,36 +7,64 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card';
-import DocumentStats from './DocumentStats';
-import MonthlyComparison from './MonthlyComparison';
+import { useInvoiceData } from '../../hooks/useInvoiceData';
+import InvoiceFilters from './InvoiceFilters';
+import InvoiceTable from './InvoiceTable';
+import InvoicePagination from './InvoicePagination';
 
-interface DocumentsTabProps {
-  invoiceStats: {
-    total: number;
-    sales: number;
-    supplier: number;
-    thisMonth: number;
-    lastMonth: number;
-  };
-}
+const DocumentsTab: React.FC = () => {
+  const {
+    invoices,
+    allInvoices,
+    loading,
+    filterOption,
+    setFilterOption,
+    customDateRange,
+    setCustomDateRange,
+    userFilter,
+    setUserFilter,
+    typeFilter,
+    setTypeFilter,
+    users,
+    exportToCSV,
+    currentPage,
+    totalPages,
+    setCurrentPage
+  } = useInvoiceData();
 
-const DocumentsTab: React.FC<DocumentsTabProps> = ({ invoiceStats }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Document Summary</CardTitle>
+        <CardTitle>Invoice Management</CardTitle>
         <CardDescription>
-          Overview of your documents and invoices
+          View and manage all invoices from your users
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <DocumentStats invoiceStats={invoiceStats} />
-          <MonthlyComparison 
-            thisMonth={invoiceStats.thisMonth} 
-            lastMonth={invoiceStats.lastMonth} 
-          />
-        </div>
+      <CardContent className="space-y-6">
+        <InvoiceFilters
+          filterOption={filterOption}
+          onFilterChange={setFilterOption}
+          customDateRange={customDateRange}
+          onCustomDateChange={setCustomDateRange}
+          userFilter={userFilter}
+          onUserFilterChange={setUserFilter}
+          typeFilter={typeFilter}
+          onTypeFilterChange={setTypeFilter}
+          users={users}
+          onExport={exportToCSV}
+          totalItems={allInvoices.length}
+        />
+        
+        <InvoiceTable 
+          invoices={invoices}
+          loading={loading}
+        />
+        
+        <InvoicePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </CardContent>
     </Card>
   );
