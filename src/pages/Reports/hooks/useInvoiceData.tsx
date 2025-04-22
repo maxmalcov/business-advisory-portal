@@ -44,55 +44,81 @@ export const useInvoiceData = () => {
         supabase
           .from('invoice_uploads')
           .select(`
-            *,
-            profiles:user_id (
-              name, 
-              email
-            )
+            id,
+            file_name,
+            file_size,
+            created_at,
+            storage_path,
+            invoice_type,
+            user_id
           `)
           .eq('invoice_type', 'sales'),
         supabase
           .from('invoice_uploads')
           .select(`
-            *,
-            profiles:user_id (
-              name, 
-              email
-            )
+            id,
+            file_name,
+            file_size,
+            created_at,
+            storage_path,
+            invoice_type,
+            user_id
           `)
           .eq('invoice_type', 'supplier')
       ]);
+
+      // Fetch all users to map their information to invoices
+      const { data: userData } = await supabase
+        .from('profiles')
+        .select('id, name, email');
+        
+      const userMap = new Map();
+      if (userData) {
+        userData.forEach(user => {
+          userMap.set(user.id, {
+            name: user.name || 'Unknown',
+            email: user.email || 'Unknown'
+          });
+        });
+        setUsers(userData);
+      }
 
       // Process and format the data
       const allInvoices: InvoiceItem[] = [];
       
       if (salesResponse.data) {
-        const salesInvoices = salesResponse.data.map(invoice => ({
-          id: invoice.id,
-          fileName: invoice.file_name,
-          type: 'sales' as const,
-          date: new Date(invoice.created_at),
-          size: invoice.file_size,
-          path: invoice.storage_path,
-          userName: invoice.profiles?.name || 'Unknown',
-          userEmail: invoice.profiles?.email || 'Unknown',
-          userId: invoice.user_id
-        }));
+        const salesInvoices = salesResponse.data.map(invoice => {
+          const userInfo = userMap.get(invoice.user_id) || { name: 'Unknown', email: 'Unknown' };
+          return {
+            id: invoice.id,
+            fileName: invoice.file_name,
+            type: 'sales' as const,
+            date: new Date(invoice.created_at),
+            size: invoice.file_size,
+            path: invoice.storage_path,
+            userName: userInfo.name,
+            userEmail: userInfo.email,
+            userId: invoice.user_id
+          };
+        });
         allInvoices.push(...salesInvoices);
       }
       
       if (supplierResponse.data) {
-        const supplierInvoices = supplierResponse.data.map(invoice => ({
-          id: invoice.id,
-          fileName: invoice.file_name,
-          type: 'supplier' as const,
-          date: new Date(invoice.created_at),
-          size: invoice.file_size,
-          path: invoice.storage_path,
-          userName: invoice.profiles?.name || 'Unknown',
-          userEmail: invoice.profiles?.email || 'Unknown',
-          userId: invoice.user_id
-        }));
+        const supplierInvoices = supplierResponse.data.map(invoice => {
+          const userInfo = userMap.get(invoice.user_id) || { name: 'Unknown', email: 'Unknown' };
+          return {
+            id: invoice.id,
+            fileName: invoice.file_name,
+            type: 'supplier' as const,
+            date: new Date(invoice.created_at),
+            size: invoice.file_size,
+            path: invoice.storage_path,
+            userName: userInfo.name,
+            userEmail: userInfo.email,
+            userId: invoice.user_id
+          };
+        });
         allInvoices.push(...supplierInvoices);
       }
       
@@ -100,16 +126,6 @@ export const useInvoiceData = () => {
       allInvoices.sort((a, b) => b.date.getTime() - a.date.getTime());
       
       setInvoices(allInvoices);
-      
-      // Fetch all users for the user filter dropdown
-      const { data: userData } = await supabase
-        .from('profiles')
-        .select('id, name, email');
-        
-      if (userData) {
-        setUsers(userData);
-      }
-      
     } catch (error) {
       console.error("Error fetching invoices:", error);
     } finally {
