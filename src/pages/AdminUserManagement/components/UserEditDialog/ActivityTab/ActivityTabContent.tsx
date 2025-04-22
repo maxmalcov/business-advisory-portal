@@ -46,7 +46,7 @@ const ActivityTabContent: React.FC<ActivityTabContentProps> = ({ userId }) => {
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">
-          <OverviewTab activityData={activityData} />
+          <OverviewTab data={activityData} />
         </TabsContent>
         
         <TabsContent value="services" className="space-y-4">

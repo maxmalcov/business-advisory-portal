@@ -6,7 +6,7 @@ import { User, Package, RefreshCw, FileText, Calendar, Clock } from 'lucide-reac
 import { format } from 'date-fns';
 import { UserActivityData } from '../../../hooks/useUserActivity';
 
-interface OverviewTabProps {
+export interface OverviewTabProps {
   data: UserActivityData;
 }
 
