@@ -17,15 +17,6 @@ const SubscriptionOverview: React.FC<SubscriptionOverviewProps> = ({ subscriptio
         >
           <div className="space-y-1">
             <h3 className="font-medium text-sm">{subscription.name}</h3>
-            {subscription.endDate && !subscription.isLifetime && (
-              <p className="text-xs text-muted-foreground">
-                Valid until: {new Date(subscription.endDate).toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                })}
-              </p>
-            )}
           </div>
           <Badge 
             variant="outline" 
