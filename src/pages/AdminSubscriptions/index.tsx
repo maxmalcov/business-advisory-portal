@@ -7,6 +7,7 @@ import SubscriptionDialog from './components/SubscriptionDialog';
 import SubscriptionTypeDialog from './components/SubscriptionTypeDialog';
 import { Subscription } from './types';
 import { toast } from '@/components/ui/use-toast';
+import { AssignSubscriptionDialog } from './components/subscription-assign/AssignSubscriptionDialog';
 
 const AdminSubscriptions = () => {
   const { 
@@ -115,12 +116,10 @@ const AdminSubscriptions = () => {
         onEdit={handleEditSubscription}
       />
 
-      <SubscriptionDialog
+      <AssignSubscriptionDialog
         isOpen={isDialogOpen}
-        isEditMode={isEditMode}
-        selectedSubscription={selectedSubscription}
         onOpenChange={setIsDialogOpen}
-        onSubmit={handleSubscriptionSubmit}
+        onSuccess={fetchSubscriptions}
       />
 
       <SubscriptionTypeDialog

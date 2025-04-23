@@ -22,7 +22,7 @@ const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAdd
         </Button>
         <Button onClick={onAddNew}>
           <Plus className="h-4 w-4 mr-1" />
-          Add New Subscription
+          Assign a New Subscription
         </Button>
       </div>
     </div>
