@@ -410,12 +410,15 @@ export type Database = {
       user_tool_subscriptions: {
         Row: {
           activated_at: string | null
+          client_can_request_again: boolean | null
           demo_video_url: string
           expires_at: string | null
           id: string
           iframe_url: string | null
+          last_request_date: string | null
           requested_at: string
           status: string
+          stopped_by_admin: boolean | null
           tool_id: string
           tool_name: string
           updated_at: string
@@ -424,12 +427,15 @@ export type Database = {
         }
         Insert: {
           activated_at?: string | null
+          client_can_request_again?: boolean | null
           demo_video_url: string
           expires_at?: string | null
           id?: string
           iframe_url?: string | null
+          last_request_date?: string | null
           requested_at?: string
           status?: string
+          stopped_by_admin?: boolean | null
           tool_id: string
           tool_name: string
           updated_at?: string
@@ -438,12 +444,15 @@ export type Database = {
         }
         Update: {
           activated_at?: string | null
+          client_can_request_again?: boolean | null
           demo_video_url?: string
           expires_at?: string | null
           id?: string
           iframe_url?: string | null
+          last_request_date?: string | null
           requested_at?: string
           status?: string
+          stopped_by_admin?: boolean | null
           tool_id?: string
           tool_name?: string
           updated_at?: string

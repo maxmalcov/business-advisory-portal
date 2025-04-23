@@ -12,7 +12,6 @@ export const useSubscriptions = () => {
     try {
       setLoading(true);
       
-      // First fetch all subscriptions
       const { data: subscriptionsData, error: subscriptionsError } = await supabase
         .from('user_tool_subscriptions')
         .select('*')
@@ -20,22 +19,15 @@ export const useSubscriptions = () => {
 
       if (subscriptionsError) throw subscriptionsError;
 
-      // Then fetch user profiles in a separate query
-      const userIds = subscriptionsData.map(sub => sub.user_id);
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('id, name')
-        .in('id', userIds);
+        .in('id', subscriptionsData.map(sub => sub.user_id));
 
       if (profilesError) throw profilesError;
 
-      // Create a map of user_id to name for easy lookup
-      const userNameMap = new Map();
-      profilesData?.forEach(profile => {
-        userNameMap.set(profile.id, profile.name || 'Unknown User');
-      });
+      const userNameMap = new Map(profilesData?.map(profile => [profile.id, profile.name || 'Unknown User']));
 
-      // Combine the data
       const formattedData: Subscription[] = subscriptionsData.map(sub => ({
         id: sub.id,
         name: sub.tool_name,
@@ -45,7 +37,10 @@ export const useSubscriptions = () => {
         status: sub.status as Subscription['status'],
         url: sub.iframe_url || '',
         demoVideoUrl: sub.demo_video_url,
-        createdAt: sub.requested_at
+        createdAt: sub.requested_at,
+        stoppedByAdmin: sub.stopped_by_admin,
+        clientCanRequestAgain: sub.client_can_request_again,
+        lastRequestDate: sub.last_request_date
       }));
 
       setSubscriptions(formattedData);
@@ -69,6 +64,8 @@ export const useSubscriptions = () => {
     try {
       const updates = {
         status: newStatus,
+        stopped_by_admin: newStatus === 'inactive' ? true : false,
+        client_can_request_again: ['rejected', 'inactive'].includes(newStatus),
         ...(newStatus === 'active' ? {
           activated_at: new Date().toISOString(),
           iframe_url: iframeUrl

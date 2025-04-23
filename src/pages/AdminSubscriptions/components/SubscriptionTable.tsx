@@ -2,12 +2,13 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Check, X, Edit } from 'lucide-react';
+import { Check, X, Edit, Stop } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
 import { Card } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Subscription } from '../types';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface SubscriptionTableProps {
   subscriptions: Subscription[];
@@ -40,35 +41,88 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
     await onStatusChange(subscription.id, 'rejected');
   };
 
+  const handleStop = async (subscription: Subscription) => {
+    await onStatusChange(subscription.id, 'inactive');
+  };
+
   const renderActions = (subscription: Subscription) => (
     <div className="flex justify-end gap-2">
-      {subscription.status !== 'active' && (
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => handleApprove(subscription)}
-        >
-          <Check className="h-4 w-4 mr-1" />
-          Approve
-        </Button>
+      {subscription.status !== 'active' && subscription.status !== 'inactive' && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleApprove(subscription)}
+              >
+                <Check className="h-4 w-4 mr-1" />
+                Approve
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Approve this subscription request
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
-      {subscription.status !== 'rejected' && (
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => handleReject(subscription)}
-        >
-          <X className="h-4 w-4 mr-1" />
-          Reject
-        </Button>
+
+      {subscription.status === 'active' && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleStop(subscription)}
+              >
+                <Stop className="h-4 w-4 mr-1" />
+                Stop
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Stop this subscription and disable access
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
-      <Button 
-        variant="outline" 
-        size="sm"
-      >
-        <Edit className="h-4 w-4 mr-1" />
-        Edit
-      </Button>
+
+      {subscription.status !== 'rejected' && subscription.status !== 'inactive' && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleReject(subscription)}
+              >
+                <X className="h-4 w-4 mr-1" />
+                Reject
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Reject this subscription request
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button 
+              variant="outline" 
+              size="sm"
+            >
+              <Edit className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            Edit subscription details
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 

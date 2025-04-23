@@ -9,4 +9,7 @@ export type Subscription = {
   url: string;
   demoVideoUrl?: string;
   createdAt: string;
+  stoppedByAdmin: boolean;
+  clientCanRequestAgain: boolean;
+  lastRequestDate?: string;
 };
