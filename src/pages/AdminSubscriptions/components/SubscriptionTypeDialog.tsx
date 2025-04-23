@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -25,6 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
+import { SubscriptionTypeFormData } from '../hooks/useSubscriptionTypes';
 
 // Schema for form validation
 const formSchema = z.object({
@@ -43,7 +43,7 @@ type SubscriptionTypeFormValues = z.infer<typeof formSchema>;
 interface SubscriptionTypeDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: SubscriptionTypeFormValues) => Promise<void>;
+  onSubmit: (data: SubscriptionTypeFormData) => Promise<void>;
 }
 
 const SubscriptionTypeDialog: React.FC<SubscriptionTypeDialogProps> = ({
@@ -65,11 +65,18 @@ const SubscriptionTypeDialog: React.FC<SubscriptionTypeDialogProps> = ({
 
   const handleSubmit = async (values: SubscriptionTypeFormValues) => {
     try {
-      await onSubmit(values);
+      const data: SubscriptionTypeFormData = {
+        name: values.name,
+        description: values.description,
+        type_id: values.type,
+        icon_type: values.iconType as 'iframe' | 'calendar' | 'crm' | 'timetracking',
+      };
+      
+      console.log('Prepared data for submission:', data);
+      await onSubmit(data);
       form.reset();
-      onOpenChange(false);
     } catch (error) {
-      console.error('Error creating subscription type:', error);
+      console.error('Error in handleSubmit:', error);
       toast({
         variant: "destructive",
         title: "Error",

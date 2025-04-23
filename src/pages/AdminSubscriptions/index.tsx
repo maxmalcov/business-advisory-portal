@@ -66,8 +66,13 @@ const AdminSubscriptions = () => {
 
   const handleSubscriptionTypeSubmit = async (data: any) => {
     try {
+      console.log('Submitting subscription type data:', data);
       await createSubscriptionType(data);
       setIsTypeDialogOpen(false);
+      toast({
+        title: "Subscription Type Created",
+        description: `Successfully created ${data.name} subscription type.`
+      });
     } catch (error) {
       console.error('Error creating subscription type:', error);
     }
