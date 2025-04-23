@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Check, X, Edit, Square } from 'lucide-react';
+import { Edit, Square } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
 import { Card } from '@/components/ui/card';
@@ -50,7 +49,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
             onClick={onClick}
           >
             {icon}
-            {label}
+            <span>{label}</span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -63,7 +62,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   const renderActions = (subscription: Subscription) => {
     const actions = [];
 
-    // Active subscription actions
+    // Active subscription actions - only Stop and Edit
     if (subscription.status === 'active') {
       actions.push(
         renderActionButton(
@@ -73,10 +72,10 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
           'Stop this subscription and disable access'
         ),
         renderActionButton(
-          <X className="h-4 w-4 mr-1" />,
-          'Reject',
-          () => onStatusChange(subscription.id, 'rejected'),
-          'Reject this subscription'
+          <Edit className="h-4 w-4 mr-1" />,
+          'Edit',
+          () => onEdit(subscription),
+          'Edit subscription details'
         )
       );
     }
@@ -110,16 +109,6 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
         )
       );
     }
-
-    // Edit button for all states
-    actions.push(
-      renderActionButton(
-        <Edit className="h-4 w-4 mr-1" />,
-        'Edit',
-        () => onEdit(subscription),
-        'Edit subscription details'
-      )
-    );
 
     return (
       <div className="flex justify-end gap-2">
