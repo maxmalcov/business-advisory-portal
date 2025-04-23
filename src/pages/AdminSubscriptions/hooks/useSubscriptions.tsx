@@ -11,21 +11,36 @@ export const useSubscriptions = () => {
   const fetchSubscriptions = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // First fetch all subscriptions
+      const { data: subscriptionsData, error: subscriptionsError } = await supabase
         .from('user_tool_subscriptions')
-        .select(`
-          *,
-          profiles:user_id(name)
-        `)
+        .select('*')
         .order('requested_at', { ascending: false });
 
-      if (error) throw error;
+      if (subscriptionsError) throw subscriptionsError;
 
-      const formattedData: Subscription[] = data.map(sub => ({
+      // Then fetch user profiles in a separate query
+      const userIds = subscriptionsData.map(sub => sub.user_id);
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Create a map of user_id to name for easy lookup
+      const userNameMap = new Map();
+      profilesData?.forEach(profile => {
+        userNameMap.set(profile.id, profile.name || 'Unknown User');
+      });
+
+      // Combine the data
+      const formattedData: Subscription[] = subscriptionsData.map(sub => ({
         id: sub.id,
         name: sub.tool_name,
         type: sub.tool_id as 'iframe' | 'calendar' | 'crm' | 'timetracking',
-        userName: sub.profiles?.name || 'Unknown User',
+        userName: userNameMap.get(sub.user_id) || 'Unknown User',
         userId: sub.user_id,
         status: sub.status as Subscription['status'],
         url: sub.iframe_url || '',
