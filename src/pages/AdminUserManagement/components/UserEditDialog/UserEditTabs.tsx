@@ -14,6 +14,7 @@ interface UserEditTabsProps {
   user: User;
   onUserChange: (user: User) => void;
   isEditMode: boolean;
+  setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
@@ -22,6 +23,7 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
   user,
   onUserChange,
   isEditMode,
+  setIsEditMode,
   activeTab,
   setActiveTab
 }) => {
