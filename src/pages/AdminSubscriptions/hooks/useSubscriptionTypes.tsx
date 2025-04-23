@@ -6,8 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 export type SubscriptionTypeFormData = {
   name: string;
   description: string;
-  type: string;
-  iconType: 'iframe' | 'calendar' | 'crm' | 'timetracking';
+  type_id: string;
+  icon_type: 'iframe' | 'calendar' | 'crm' | 'timetracking';
 };
 
 export const useSubscriptionTypes = () => {
@@ -17,16 +17,13 @@ export const useSubscriptionTypes = () => {
     try {
       setLoading(true);
       
-      // Create a new subscription type in the database
-      const { error } = await supabase
-        .from('subscription_types')
-        .insert({
-          name: data.name,
-          description: data.description,
-          type_id: data.type,
-          icon_type: data.iconType,
-          status: 'active', // Default to active so it appears for clients
-        });
+      // Create a new subscription type in the database using a raw query
+      const { error } = await supabase.rpc('create_subscription_type', {
+        p_name: data.name,
+        p_description: data.description,
+        p_type_id: data.type_id,
+        p_icon_type: data.icon_type,
+      });
 
       if (error) throw error;
       

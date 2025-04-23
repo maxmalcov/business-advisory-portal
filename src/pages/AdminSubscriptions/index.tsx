@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { useSubscriptionTypes } from './hooks/useSubscriptionTypes';
@@ -48,7 +47,6 @@ const AdminSubscriptions = () => {
 
   const handleSubscriptionSubmit = async (subscription: Subscription) => {
     try {
-      // This will be implemented later
       console.log('Subscription submitted:', subscription);
       setIsDialogOpen(false);
       toast({
@@ -69,8 +67,7 @@ const AdminSubscriptions = () => {
   const handleSubscriptionTypeSubmit = async (data: any) => {
     try {
       await createSubscriptionType(data);
-      // No need to refresh subscriptions since this only creates a type
-      // Clients would see this new type in their dashboard
+      setIsTypeDialogOpen(false);
     } catch (error) {
       console.error('Error creating subscription type:', error);
     }

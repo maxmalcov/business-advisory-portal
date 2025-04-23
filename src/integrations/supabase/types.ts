@@ -371,6 +371,39 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_types: {
+        Row: {
+          created_at: string
+          description: string
+          icon_type: string
+          id: string
+          name: string
+          status: string
+          type_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon_type: string
+          id?: string
+          name: string
+          status?: string
+          type_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon_type?: string
+          id?: string
+          name?: string
+          status?: string
+          type_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       useful_links: {
         Row: {
           category: string
