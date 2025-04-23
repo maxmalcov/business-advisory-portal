@@ -6,10 +6,14 @@ import { cn } from '@/lib/utils';
 
 type StatusBadgeProps = {
   status: string;
+  onClick?: () => void;
 };
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  const baseClasses = "w-24 justify-center"; // Fixed width and center-aligned text
+const StatusBadge: React.FC<StatusBadgeProps> = ({ status, onClick }) => {
+  const baseClasses = cn(
+    "w-24 justify-center cursor-default",
+    onClick && "cursor-pointer hover:opacity-90"
+  );
 
   const getStatusConfig = (status: string) => {
     switch(status) {
@@ -29,13 +33,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
         return {
           class: 'bg-red-500',
           label: 'Rejected',
-          tooltip: 'Subscription request was rejected'
+          tooltip: onClick ? 'Click to request again' : 'Subscription request was rejected'
         };
       case 'inactive':
         return {
           class: 'bg-gray-500',
           label: 'Inactive',
-          tooltip: 'Subscription has been stopped by admin'
+          tooltip: onClick ? 'Click to request again' : 'Subscription has been stopped by admin'
         };
       default:
         return {
@@ -48,13 +52,20 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
 
   const config = getStatusConfig(status);
 
+  const badge = (
+    <Badge 
+      className={cn(baseClasses, config.class)}
+      onClick={onClick}
+    >
+      {config.label}
+    </Badge>
+  );
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Badge className={cn(baseClasses, config.class)}>
-            {config.label}
-          </Badge>
+          {badge}
         </TooltipTrigger>
         <TooltipContent>
           {config.tooltip}

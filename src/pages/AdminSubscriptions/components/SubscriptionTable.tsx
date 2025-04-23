@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -13,12 +14,14 @@ interface SubscriptionTableProps {
   subscriptions: Subscription[];
   loading: boolean;
   onStatusChange: (subscriptionId: string, newStatus: Subscription['status'], iframeUrl?: string) => Promise<void>;
+  onEdit: (subscription: Subscription) => void;
 }
 
 const SubscriptionTable: React.FC<SubscriptionTableProps> = ({ 
   subscriptions,
   loading,
-  onStatusChange
+  onStatusChange,
+  onEdit
 }) => {
   const isMobile = useIsMobile();
 
@@ -32,98 +35,98 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
     );
   }
 
-  const handleApprove = async (subscription: Subscription) => {
-    await onStatusChange(subscription.id, 'active', subscription.url || 'https://example.com/iframe');
-  };
-
-  const handleReject = async (subscription: Subscription) => {
-    await onStatusChange(subscription.id, 'rejected');
-  };
-
-  const handleStop = async (subscription: Subscription) => {
-    await onStatusChange(subscription.id, 'inactive');
-  };
-
-  const renderActions = (subscription: Subscription) => (
-    <div className="flex justify-end gap-2">
-      {subscription.status !== 'active' && subscription.status !== 'inactive' && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => handleApprove(subscription)}
-              >
-                <Check className="h-4 w-4 mr-1" />
-                Approve
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Approve this subscription request
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-
-      {subscription.status === 'active' && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => handleStop(subscription)}
-              >
-                <Square className="h-4 w-4 mr-1" />
-                Stop
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Stop this subscription and disable access
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-
-      {subscription.status !== 'rejected' && subscription.status !== 'inactive' && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => handleReject(subscription)}
-              >
-                <X className="h-4 w-4 mr-1" />
-                Reject
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Reject this subscription request
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button 
-              variant="outline" 
-              size="sm"
-            >
-              <Edit className="h-4 w-4 mr-1" />
-              Edit
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            Edit subscription details
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
+  const renderActionButton = (
+    icon: React.ReactNode,
+    label: string,
+    onClick: () => void,
+    tooltipText: string
+  ) => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={onClick}
+          >
+            {icon}
+            {label}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          {tooltipText}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
+
+  const renderActions = (subscription: Subscription) => {
+    const actions = [];
+
+    // Active subscription actions
+    if (subscription.status === 'active') {
+      actions.push(
+        renderActionButton(
+          <Square className="h-4 w-4 mr-1" />,
+          'Stop',
+          () => onStatusChange(subscription.id, 'inactive'),
+          'Stop this subscription and disable access'
+        ),
+        renderActionButton(
+          <X className="h-4 w-4 mr-1" />,
+          'Reject',
+          () => onStatusChange(subscription.id, 'rejected'),
+          'Reject this subscription'
+        )
+      );
+    }
+
+    // Pending subscription actions
+    if (subscription.status === 'pending') {
+      actions.push(
+        renderActionButton(
+          <Check className="h-4 w-4 mr-1" />,
+          'Approve',
+          () => onStatusChange(subscription.id, 'active', subscription.url),
+          'Approve this subscription request'
+        ),
+        renderActionButton(
+          <X className="h-4 w-4 mr-1" />,
+          'Reject',
+          () => onStatusChange(subscription.id, 'rejected'),
+          'Reject this subscription request'
+        )
+      );
+    }
+
+    // Rejected or Inactive subscription actions
+    if (subscription.status === 'rejected' || subscription.status === 'inactive') {
+      actions.push(
+        renderActionButton(
+          <Check className="h-4 w-4 mr-1" />,
+          'Approve',
+          () => onStatusChange(subscription.id, 'active', subscription.url),
+          'Approve this subscription request'
+        )
+      );
+    }
+
+    // Edit button for all states
+    actions.push(
+      renderActionButton(
+        <Edit className="h-4 w-4 mr-1" />,
+        'Edit',
+        () => onEdit(subscription),
+        'Edit subscription details'
+      )
+    );
+
+    return (
+      <div className="flex justify-end gap-2">
+        {actions}
+      </div>
+    );
+  };
 
   if (isMobile) {
     return (
