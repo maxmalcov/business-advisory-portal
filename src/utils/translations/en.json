@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Loading...",
@@ -24,7 +23,8 @@
     "service_requests": "Service Requests",
     "invoices": "Invoices",
     "sale_invoices": "Sale Invoices",
-    "supplier_invoices": "Supplier Invoices"
+    "supplier_invoices": "Supplier Invoices",
+    "subscriptions": "Subscription Management"
   },
   "services": {
     "title": "Service Requests",
