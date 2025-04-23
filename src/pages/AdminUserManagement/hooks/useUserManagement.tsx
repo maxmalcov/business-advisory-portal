@@ -17,12 +17,19 @@ export const useUserManagement = () => {
     searchQuery, 
     setSearchQuery,
     refreshUsers,
-    userStats,
     setUsers
   } = useFetchUsers();
   
   // Maintain a local copy of users for status toggling
   const [localUsers, setLocalUsers] = useState<User[]>([]);
+  
+  // When users change from the fetch hook, update our local state
+  // But only do this once when users are first loaded or explicitly refreshed
+  useEffect(() => {
+    if (users.length > 0) {
+      setLocalUsers(users);
+    }
+  }, [users]);
   
   // Get user updating functionality
   const {
@@ -33,14 +40,6 @@ export const useUserManagement = () => {
     handleCancelEdit
   } = useUpdateUser(refreshUsers);
 
-  // When users change from the fetch hook, update our local state
-  // But only do this once when users are first loaded or explicitly refreshed
-  useEffect(() => {
-    if (users.length > 0) {
-      setLocalUsers(users);
-    }
-  }, [users]);
-  
   // Custom save handler that updates the local state without a full refresh
   const handleSaveUser = async () => {
     if (!editingUser) return;
@@ -93,7 +92,6 @@ export const useUserManagement = () => {
     isAddingUser,
     showConfirmDelete,
     userToDelete,
-    userStats,
     handleEditUser,
     handleUpdateUser,
     handleSaveUser, // Use our custom save handler
@@ -107,3 +105,4 @@ export const useUserManagement = () => {
     setShowConfirmDelete,
   };
 };
+

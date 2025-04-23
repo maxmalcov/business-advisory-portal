@@ -5,7 +5,6 @@ import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, A
 import UserManagementHeader from './components/UserManagementHeader';
 import UserSearchBar from './components/UserSearchBar';
 import UserTable from './components/UserTable';
-import UserStats from './components/UserStats';
 import UserEditDialog from './components/UserEditDialog/index';
 import AddUserDialog from './components/AddUserDialog/index';
 import DeleteConfirmationDialog from './components/DeleteConfirmationDialog';
@@ -21,7 +20,6 @@ const AdminUserManagement: React.FC = () => {
     isAddingUser,
     showConfirmDelete,
     userToDelete,
-    userStats,
     handleEditUser,
     handleUpdateUser,
     handleSaveUser,
@@ -40,8 +38,6 @@ const AdminUserManagement: React.FC = () => {
       <UserManagementHeader onAddUser={handleAddUser} />
       
       <div className="bg-card rounded-lg border p-6 shadow-sm">
-        <UserStats userStats={userStats} />
-        
         <div className="mb-4 w-full">
           <UserSearchBar 
             searchQuery={searchQuery}
@@ -108,3 +104,4 @@ const AdminUserManagement: React.FC = () => {
 };
 
 export default AdminUserManagement;
+
