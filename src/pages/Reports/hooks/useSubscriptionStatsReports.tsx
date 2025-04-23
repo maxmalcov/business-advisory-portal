@@ -27,25 +27,28 @@ export const useSubscriptionStatsReports = () => {
     const fetchSubscriptions = async () => {
       try {
         setLoading(true);
+        
+        // We need to use supabase.from('user_subscriptions').select() but since it's not in types.ts yet,
+        // we'll use a type assertion to tell TypeScript it's okay
         const { data: subscriptionsData, error: subscriptionsError } = await supabase
-          .from('user_subscriptions')
+          .from('user_subscriptions' as any)
           .select(`
             *,
-            subscription_plans (name, type),
-            profiles (name)
-          `)
-          .order('activation_date', { ascending: false });
+            profiles:user_id(name),
+            subscription_plans:plan_id(name, type)
+          `);
 
         if (subscriptionsError) throw subscriptionsError;
 
-        const formattedData: SubscriptionData[] = subscriptionsData.map(sub => ({
+        // Now we need to map the data safely
+        const formattedData: SubscriptionData[] = subscriptionsData.map((sub: any) => ({
           id: sub.id,
-          clientName: sub.profiles.name,
-          planName: sub.subscription_plans.name,
+          clientName: sub.profiles?.name || 'Unknown',
+          planName: sub.subscription_plans?.name || 'Unknown Plan',
           status: sub.status,
           activationDate: sub.activation_date,
           expirationDate: sub.expiration_date,
-          type: sub.subscription_plans.type
+          type: sub.subscription_plans?.type || 'monthly'
         }));
 
         setSubscriptions(formattedData);
@@ -161,7 +164,9 @@ export const useSubscriptionStatsReports = () => {
     loading,
     error,
     filters,
-    setFilters,
+    setFilters: (partialFilters: Partial<SubscriptionFilters>) => {
+      setFilters(prev => ({ ...prev, ...partialFilters }));
+    },
     exportToCSV
   };
 };

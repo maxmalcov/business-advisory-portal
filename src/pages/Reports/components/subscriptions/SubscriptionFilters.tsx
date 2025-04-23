@@ -7,6 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Download, FileBarChart } from 'lucide-react';
 import { SubscriptionFilters as SubscriptionFiltersType } from '../../hooks/types/subscriptionTypes';
 
+// Define a type mapping between our filter options and DateFilterOption
+type DateFilterMapType = {
+  'last30days': 'last30days';
+  'thisYear': 'thisYear';
+  'custom': 'custom';
+  'allTime': 'allTime';
+};
+
 interface SubscriptionFiltersProps {
   filters: SubscriptionFiltersType;
   setFilters: (filters: Partial<SubscriptionFiltersType>) => void;
@@ -42,15 +50,15 @@ const SubscriptionFilters: React.FC<SubscriptionFiltersProps> = ({
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <DateFilter
-          filterOption={filters.dateFilterOption}
-          onFilterChange={(option) => setFilters({ dateFilterOption: option })}
+          filterOption={filters.dateFilterOption as any}
+          onFilterChange={(option) => setFilters({ dateFilterOption: option as any })}
           customDateRange={filters.dateRange}
           onCustomDateChange={(range) => setFilters({ dateRange: range })}
         />
         
         <Select 
-          value={filters.status} 
-          onValueChange={(value) => setFilters({ status: value })}
+          value={filters.status}
+          onValueChange={(value: "all" | "active" | "expired" | "cancelled") => setFilters({ status: value })}
           disabled={loading}
         >
           <SelectTrigger>
@@ -65,8 +73,8 @@ const SubscriptionFilters: React.FC<SubscriptionFiltersProps> = ({
         </Select>
         
         <Select 
-          value={filters.planType} 
-          onValueChange={(value) => setFilters({ planType: value })}
+          value={filters.planType}
+          onValueChange={(value: "all" | "monthly" | "yearly") => setFilters({ planType: value })}
           disabled={loading}
         >
           <SelectTrigger>

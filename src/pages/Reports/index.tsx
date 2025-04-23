@@ -8,6 +8,7 @@ import ActivityTab from './components/activity/ActivityTab';
 import DocumentsTab from './components/documents/DocumentsTab';
 import PeopleTab from './components/people/PeopleTab';
 import ServicesTab from './components/services/ServicesTab';
+import SubscriptionsTab from './components/subscriptions/SubscriptionsTab';
 import { useReportData } from './hooks/useReportData';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate } from 'react-router-dom';
