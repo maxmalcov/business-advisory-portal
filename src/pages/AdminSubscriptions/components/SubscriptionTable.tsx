@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Square } from 'lucide-react';
+import { Edit, Square, Check, X } from 'lucide-react';  // Added Check and X icons
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
 import { Card } from '@/components/ui/card';
