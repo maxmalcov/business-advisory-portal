@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 import { ServiceChartData } from '../../hooks/types/serviceTypes';
 
@@ -43,7 +43,10 @@ const ServiceChartView: React.FC<ServiceChartViewProps> = ({ data, loading }) =>
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
-                <RechartsBarChart data={data}>
+                <RechartsBarChart 
+                  data={data}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="month" />
                   <YAxis allowDecimals={false} />

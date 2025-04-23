@@ -27,7 +27,7 @@ const ServicesTab: React.FC = () => {
   }, [serviceRequests]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <ServiceFilters 
         filters={filters}
         setFilters={setFilters}
@@ -39,9 +39,11 @@ const ServicesTab: React.FC = () => {
 
       <ServiceStatsCards stats={serviceStats} loading={loading} />
       
-      <ServiceChartView data={chartData} loading={loading} />
+      <div className="mb-8">
+        <ServiceChartView data={chartData} loading={loading} />
+      </div>
       
-      <div className="mt-6">
+      <div>
         <h3 className="text-lg font-medium mb-4">Service Request Details</h3>
         <ServiceTable services={serviceRequests} loading={loading} />
       </div>
