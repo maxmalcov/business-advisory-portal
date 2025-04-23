@@ -45,6 +45,7 @@ export function AssignSubscriptionDialog({
 
       if (typeError) throw typeError;
 
+      // Insert new subscription with properly mapped column names
       const { error: subscriptionError } = await supabase
         .from('user_tool_subscriptions')
         .insert({
@@ -52,9 +53,10 @@ export function AssignSubscriptionDialog({
           tool_id: subscriptionType.type_id,
           tool_name: subscriptionType.name,
           status: 'active',
+          activated_at: new Date().toISOString(),
+          demo_video_url: '', // Provide a default empty string for the required field
           start_date: data.startDate.toISOString(),
           end_date: data.endDate?.toISOString() || null,
-          activated_at: new Date().toISOString(),
         });
 
       if (subscriptionError) throw subscriptionError;
