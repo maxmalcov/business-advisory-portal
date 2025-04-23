@@ -37,11 +37,11 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h3 className="text-lg font-medium text-purple-800 dark:text-purple-200">Invoice Records</h3>
+        <h3 className="text-lg font-medium">Invoice Records</h3>
         <Button 
           onClick={onExport} 
           variant="outline" 
-          className="flex items-center gap-2 border-purple-300 text-purple-700 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-300"
+          className="flex items-center gap-2"
           disabled={totalItems === 0}
         >
           <Download className="h-4 w-4" />
@@ -61,22 +61,22 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
           value={userFilter}
           onChange={onUserFilterChange}
           placeholder="Search by user name or email"
-          className="w-full border-purple-300 focus:border-purple-500 focus:ring-purple-500"
+          className="w-full"
         />
         
         <Select value={typeFilter} onValueChange={(value) => onTypeFilterChange(value as 'all' | 'sales' | 'supplier')}>
-          <SelectTrigger className="w-full border-purple-300 text-purple-700 focus:border-purple-500 focus:ring-purple-500">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Select invoice type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="hover:bg-purple-50">All Types</SelectItem>
-            <SelectItem value="sales" className="hover:bg-purple-50">Sales Invoices</SelectItem>
-            <SelectItem value="supplier" className="hover:bg-purple-50">Supplier Invoices</SelectItem>
+            <SelectItem value="all">All Types</SelectItem>
+            <SelectItem value="sales">Sales Invoices</SelectItem>
+            <SelectItem value="supplier">Supplier Invoices</SelectItem>
           </SelectContent>
         </Select>
       </div>
       
-      <div className="text-sm text-purple-600 dark:text-purple-300">
+      <div className="text-sm text-muted-foreground">
         Showing {totalItems} {totalItems === 1 ? 'invoice' : 'invoices'} {userFilter && 'matching filter'}
       </div>
     </div>
@@ -84,4 +84,3 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
 };
 
 export default InvoiceFilters;
-
