@@ -116,7 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: BarChart3,
     },
     {
-      name: 'Subscription Management',
+      name: t('nav.subscriptions'),
       path: '/admin/subscriptions',
       icon: Layers,
     },
