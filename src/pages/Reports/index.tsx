@@ -79,6 +79,10 @@ const ReportsPage: React.FC = () => {
             <TabsContent value="services" className="space-y-4">
               <ServicesTab />
             </TabsContent>
+
+            <TabsContent value="subscriptions" className="space-y-4">
+              <SubscriptionsTab />
+            </TabsContent>
           </>
         )}
       </Tabs>
