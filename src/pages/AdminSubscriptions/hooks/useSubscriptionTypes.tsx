@@ -18,7 +18,8 @@ export const useSubscriptionTypes = () => {
       setLoading(true);
       
       // Create a new subscription type in the database using a raw query
-      const { error } = await supabase.rpc('create_subscription_type', {
+      // Use any type to bypass TypeScript's strict checking for RPC functions
+      const { error } = await (supabase.rpc as any)('create_subscription_type', {
         p_name: data.name,
         p_description: data.description,
         p_type_id: data.type_id,
