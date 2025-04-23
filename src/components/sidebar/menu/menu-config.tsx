@@ -1,4 +1,3 @@
-
 import { 
   LayoutGrid,
   Users,
@@ -125,4 +124,3 @@ export const createAdminMenuItems = (t: (key: string) => string): MenuItem[] => 
     tooltip: 'Manage and configure client services',
   },
 ];
-
