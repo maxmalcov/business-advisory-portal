@@ -7,6 +7,7 @@ import OverviewTab from './components/overview/OverviewTab';
 import ActivityTab from './components/activity/ActivityTab';
 import DocumentsTab from './components/documents/DocumentsTab';
 import PeopleTab from './components/people/PeopleTab';
+import ServicesTab from './components/services/ServicesTab';
 import { useReportData } from './hooks/useReportData';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -32,7 +33,7 @@ const ReportsPage: React.FC = () => {
   
   // Reset to overview tab if user is not admin and tries to access restricted tabs
   useEffect(() => {
-    if (!isAdmin && (activeTab === 'invoices' || activeTab === 'people')) {
+    if (!isAdmin && (activeTab === 'invoices' || activeTab === 'people' || activeTab === 'services')) {
       setActiveTab('overview');
     }
   }, [activeTab, isAdmin]);
@@ -73,6 +74,10 @@ const ReportsPage: React.FC = () => {
             
             <TabsContent value="people" className="space-y-4">
               <PeopleTab employeeStats={employeeStats} />
+            </TabsContent>
+
+            <TabsContent value="services" className="space-y-4">
+              <ServicesTab />
             </TabsContent>
           </>
         )}

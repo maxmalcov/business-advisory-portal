@@ -34,6 +34,7 @@ const ReportsHeader: React.FC<ReportsHeaderProps> = ({
             <>
               <TabsTrigger value="invoices" className={isMobile ? "w-full" : ""}>Invoices</TabsTrigger>
               <TabsTrigger value="people" className={isMobile ? "w-full" : ""}>Users</TabsTrigger>
+              <TabsTrigger value="services" className={isMobile ? "w-full" : ""}>Services</TabsTrigger>
             </>
           )}
         </TabsList>
