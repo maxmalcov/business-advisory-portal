@@ -1,71 +1,68 @@
 
 import React from 'react';
-import { Subscription } from '../types';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Check } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
-import SubscriptionActions from './SubscriptionActions';
+import { Card } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Card, CardContent } from '@/components/ui/card';
+import { Subscription } from '../types';
 
-type SubscriptionTableProps = {
+interface SubscriptionTableProps {
   subscriptions: Subscription[];
-  onStatusChange: (subscriptionId: string, newStatus: 'active' | 'pending' | 'rejected' | 'inactive') => void;
-  onEdit: (subscription: Subscription) => void;
-};
+  loading: boolean;
+  onStatusChange: (subscriptionId: string, newStatus: Subscription['status'], iframeUrl?: string) => Promise<void>;
+}
 
 const SubscriptionTable: React.FC<SubscriptionTableProps> = ({ 
-  subscriptions, 
-  onStatusChange,
-  onEdit 
+  subscriptions,
+  loading,
+  onStatusChange
 }) => {
   const isMobile = useIsMobile();
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="h-16 bg-muted animate-pulse rounded-lg" />
+        ))}
+      </div>
+    );
+  }
+
+  const handleApprove = async (subscription: Subscription) => {
+    await onStatusChange(subscription.id, 'active', subscription.url || 'https://example.com/iframe');
+  };
 
   if (isMobile) {
     return (
       <div className="space-y-4">
         {subscriptions.map((subscription) => (
-          <Card key={subscription.id} className="overflow-hidden">
-            <CardContent className="p-0">
-              <div className="p-4 border-b flex items-center space-x-2">
+          <Card key={subscription.id} className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-2">
                 <SubscriptionTypeIcon type={subscription.type} />
                 <span className="font-medium">{subscription.name}</span>
               </div>
-              <div className="p-4 space-y-3">
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div>
-                    <div className="text-muted-foreground">Type</div>
-                    <div>{subscription.type}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">User</div>
-                    <div>{subscription.userName}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Status</div>
-                    <div><StatusBadge status={subscription.status} /></div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">URL</div>
-                    <div className="truncate max-w-[150px]">{subscription.url}</div>
-                  </div>
-                </div>
-                <div className="pt-2 border-t flex justify-end">
-                  <SubscriptionActions 
-                    subscription={subscription}
-                    onStatusChange={onStatusChange}
-                    onEdit={onEdit}
-                  />
-                </div>
-              </div>
-            </CardContent>
+              <StatusBadge status={subscription.status} />
+            </div>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <div>User: {subscription.userName}</div>
+              <div className="truncate">URL: {subscription.url}</div>
+            </div>
+            {subscription.status === 'pending' && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="mt-2"
+                onClick={() => handleApprove(subscription)}
+              >
+                <Check className="h-4 w-4 mr-1" />
+                Approve
+              </Button>
+            )}
           </Card>
         ))}
       </div>
@@ -73,7 +70,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden overflow-x-auto">
+    <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
@@ -88,7 +85,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
         <TableBody>
           {subscriptions.map((subscription) => (
             <TableRow key={subscription.id}>
-              <TableCell className="font-medium">
+              <TableCell>
                 <div className="flex items-center space-x-2">
                   <SubscriptionTypeIcon type={subscription.type} />
                   <span>{subscription.name}</span>
@@ -101,11 +98,16 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
               </TableCell>
               <TableCell className="max-w-xs truncate">{subscription.url}</TableCell>
               <TableCell className="text-right">
-                <SubscriptionActions 
-                  subscription={subscription}
-                  onStatusChange={onStatusChange}
-                  onEdit={onEdit}
-                />
+                {subscription.status === 'pending' && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleApprove(subscription)}
+                  >
+                    <Check className="h-4 w-4 mr-1" />
+                    Approve
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           ))}

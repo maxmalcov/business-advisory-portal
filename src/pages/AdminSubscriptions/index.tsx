@@ -1,82 +1,36 @@
 
-import React, { useState } from 'react';
-import { toast } from 'sonner';
-import { initialSubscriptions } from './mockData';
-import { Subscription } from './types';
+import React, { useEffect } from 'react';
+import { useSubscriptions } from './hooks/useSubscriptions';
+import SubscriptionHeader from './components/SubscriptionHeader';
 import SubscriptionTable from './components/SubscriptionTable';
 import SubscriptionDialog from './components/SubscriptionDialog';
-import SubscriptionHeader from './components/SubscriptionHeader';
 
-const AdminSubscriptions: React.FC = () => {
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>(initialSubscriptions);
-  const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+const AdminSubscriptions = () => {
+  const { 
+    subscriptions, 
+    loading, 
+    fetchSubscriptions,
+    updateSubscriptionStatus
+  } = useSubscriptions();
 
-  const handleStatusChange = (subscriptionId: string, newStatus: 'active' | 'pending' | 'rejected' | 'inactive') => {
-    setSubscriptions(prevSubscriptions => 
-      prevSubscriptions.map(subscription => 
-        subscription.id === subscriptionId 
-          ? { ...subscription, status: newStatus } 
-          : subscription
-      )
-    );
-
-    toast.success(`Subscription status updated to ${newStatus}`);
-  };
-
-  const handleEdit = (subscription: Subscription) => {
-    setSelectedSubscription(subscription);
-    setIsEditMode(true);
-    setIsDialogOpen(true);
-  };
-
-  const handleAdd = () => {
-    setSelectedSubscription(null);
-    setIsEditMode(false);
-    setIsDialogOpen(true);
-  };
-
-  const handleFormSubmit = (subscription: Subscription) => {
-    if (isEditMode) {
-      // Update existing subscription
-      setSubscriptions(prevSubscriptions => 
-        prevSubscriptions.map(item => 
-          item.id === subscription.id 
-            ? subscription 
-            : item
-        )
-      );
-      toast.success('Subscription updated successfully');
-    } else {
-      // Add new subscription
-      const newSubscription = {
-        ...subscription,
-        id: `subscription-${Date.now()}`, // Generate a temporary ID
-      };
-      setSubscriptions(prevSubscriptions => [...prevSubscriptions, newSubscription]);
-      toast.success('New subscription added successfully');
-    }
-
-    setIsDialogOpen(false);
-  };
+  useEffect(() => {
+    fetchSubscriptions();
+  }, []);
 
   return (
     <div className="space-y-6">
-      <SubscriptionHeader onAddNew={handleAdd} />
+      <SubscriptionHeader onAddNew={() => {}} />
       
       <SubscriptionTable 
         subscriptions={subscriptions}
-        onStatusChange={handleStatusChange}
-        onEdit={handleEdit}
+        loading={loading}
+        onStatusChange={updateSubscriptionStatus}
       />
 
       <SubscriptionDialog
-        isOpen={isDialogOpen}
-        isEditMode={isEditMode}
-        selectedSubscription={selectedSubscription}
-        onOpenChange={setIsDialogOpen}
-        onSubmit={handleFormSubmit}
+        isOpen={false}
+        onOpenChange={() => {}}
+        onSubmit={() => {}}
       />
     </div>
   );
