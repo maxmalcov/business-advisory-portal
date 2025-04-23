@@ -52,6 +52,9 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
       url: data.url,
       demoVideoUrl: data.demoVideoUrl,
       createdAt: subscription?.createdAt || new Date().toISOString(),
+      stoppedByAdmin: subscription?.stoppedByAdmin || false,
+      clientCanRequestAgain: subscription?.clientCanRequestAgain || false,
+      lastRequestDate: subscription?.lastRequestDate || undefined,
     };
     
     onSubmit(subscriptionData);

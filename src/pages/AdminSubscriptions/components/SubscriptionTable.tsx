@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Check, X, Edit, Stop } from 'lucide-react';
+import { Check, X, Edit, Square } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
 import { Card } from '@/components/ui/card';
@@ -76,7 +75,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
                 size="sm"
                 onClick={() => handleStop(subscription)}
               >
-                <Stop className="h-4 w-4 mr-1" />
+                <Square className="h-4 w-4 mr-1" />
                 Stop
               </Button>
             </TooltipTrigger>

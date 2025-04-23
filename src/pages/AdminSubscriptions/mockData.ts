@@ -12,6 +12,9 @@ export const initialSubscriptions: Subscription[] = [
     url: 'https://example.com/iframe1',
     demoVideoUrl: 'https://pbaholding-my.sharepoint.com/...',
     createdAt: '2023-04-01T10:30:00Z',
+    stoppedByAdmin: false,
+    clientCanRequestAgain: false,
+    lastRequestDate: '2023-03-28T08:00:00Z',
   },
   {
     id: 'sub2',
@@ -23,6 +26,9 @@ export const initialSubscriptions: Subscription[] = [
     url: 'https://example.com/iframe2',
     demoVideoUrl: 'https://pbaholding-my.sharepoint.com/...',
     createdAt: '2023-04-02T14:15:00Z',
+    stoppedByAdmin: false,
+    clientCanRequestAgain: false,
+    lastRequestDate: '2023-04-01T09:30:00Z',
   },
   {
     id: 'sub3',
@@ -34,6 +40,9 @@ export const initialSubscriptions: Subscription[] = [
     url: 'https://example.com/crm',
     demoVideoUrl: 'https://start.exactonline.es/...',
     createdAt: '2023-04-03T09:45:00Z',
+    stoppedByAdmin: false,
+    clientCanRequestAgain: true,
+    lastRequestDate: '2023-03-15T11:20:00Z',
   },
   {
     id: 'sub4',
@@ -45,5 +54,8 @@ export const initialSubscriptions: Subscription[] = [
     url: 'https://example.com/timetracking',
     demoVideoUrl: 'https://www.youtube.com/embed/MuNyfqxAO6Y',
     createdAt: '2023-04-04T16:20:00Z',
+    stoppedByAdmin: true,
+    clientCanRequestAgain: true,
+    lastRequestDate: '2023-02-20T14:05:00Z',
   }
 ];
