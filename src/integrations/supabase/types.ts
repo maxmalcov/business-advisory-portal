@@ -407,6 +407,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_tool_subscriptions: {
+        Row: {
+          activated_at: string | null
+          demo_video_url: string
+          expires_at: string | null
+          id: string
+          iframe_url: string | null
+          requested_at: string
+          status: string
+          tool_id: string
+          tool_name: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          activated_at?: string | null
+          demo_video_url: string
+          expires_at?: string | null
+          id?: string
+          iframe_url?: string | null
+          requested_at?: string
+          status?: string
+          tool_id: string
+          tool_name: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          activated_at?: string | null
+          demo_video_url?: string
+          expires_at?: string | null
+          id?: string
+          iframe_url?: string | null
+          requested_at?: string
+          status?: string
+          tool_id?: string
+          tool_name?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       work_hours_submissions: {
         Row: {
           client_id: string

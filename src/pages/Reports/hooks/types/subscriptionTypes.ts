@@ -21,7 +21,7 @@ export interface SubscriptionData {
   id: string;
   clientName: string;
   planName: string;
-  status: 'active' | 'expired' | 'cancelled';
+  status: 'active' | 'pending' | 'rejected' | 'inactive' | 'expired' | 'cancelled';
   activationDate: string;
   expirationDate: string;
   type: 'monthly' | 'yearly';

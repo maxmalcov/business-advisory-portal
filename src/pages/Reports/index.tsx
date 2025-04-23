@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import ReportsHeader from './components/ReportsHeader';
@@ -27,12 +26,10 @@ const ReportsPage: React.FC = () => {
   
   const isAdmin = user?.userType === 'admin';
   
-  // If not admin, redirect to dashboard as reports content is now there
   if (!isAdmin) {
     return <Navigate to="/dashboard" />;
   }
   
-  // Reset to overview tab if user is not admin and tries to access restricted tabs
   useEffect(() => {
     if (!isAdmin && (activeTab === 'invoices' || activeTab === 'people' || activeTab === 'services')) {
       setActiveTab('overview');

@@ -1,9 +1,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
-import { format, parseISO, startOfMonth, subMonths } from 'date-fns';
+import { format, parseISO, subMonths } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { SubscriptionFilters, SubscriptionStats, SubscriptionData, SubscriptionChartData } from './types/subscriptionTypes';
+import { 
+  SubscriptionStats, 
+  SubscriptionData, 
+  SubscriptionChartData,
+  SubscriptionFilters 
+} from './types/subscriptionTypes';
 
 const defaultFilters: SubscriptionFilters = {
   dateRange: {
@@ -28,30 +33,27 @@ export const useSubscriptionStatsReports = () => {
       try {
         setLoading(true);
         
-        // We need to use supabase.from('user_subscriptions').select() but since it's not in types.ts yet,
-        // we'll use a type assertion to tell TypeScript it's okay
         const { data: subscriptionsData, error: subscriptionsError } = await supabase
-          .from('user_subscriptions' as any)
+          .from('user_tool_subscriptions')
           .select(`
             *,
-            profiles:user_id(name),
-            subscription_plans:plan_id(name, type)
+            profiles:user_id(name)
           `);
 
         if (subscriptionsError) throw subscriptionsError;
 
-        // Now we need to map the data safely
         const formattedData: SubscriptionData[] = subscriptionsData.map((sub: any) => ({
           id: sub.id,
           clientName: sub.profiles?.name || 'Unknown',
-          planName: sub.subscription_plans?.name || 'Unknown Plan',
-          status: sub.status,
-          activationDate: sub.activation_date,
-          expirationDate: sub.expiration_date,
-          type: sub.subscription_plans?.type || 'monthly'
+          planName: sub.tool_name || 'Unknown Plan',
+          status: sub.status as SubscriptionData['status'],
+          activationDate: sub.activated_at || sub.requested_at,
+          expirationDate: sub.expires_at || '',
+          type: 'monthly' // Default to monthly, update as needed
         }));
 
         setSubscriptions(formattedData);
+        setLoading(false);
       } catch (err) {
         console.error('Error fetching subscriptions:', err);
         setError(err instanceof Error ? err : new Error('Failed to fetch subscriptions'));
@@ -60,7 +62,6 @@ export const useSubscriptionStatsReports = () => {
           title: "Error loading subscription data",
           description: "There was a problem loading the subscription data.",
         });
-      } finally {
         setLoading(false);
       }
     };
@@ -70,9 +71,15 @@ export const useSubscriptionStatsReports = () => {
 
   const filteredSubscriptions = useMemo(() => {
     return subscriptions.filter(sub => {
+      // Filter by status
       if (filters.status !== 'all' && sub.status !== filters.status) return false;
-      if (filters.planType !== 'all' && sub.type !== filters.planType) return false;
-      if (filters.search && !sub.clientName.toLowerCase().includes(filters.search.toLowerCase())) return false;
+      
+      // Filter by search
+      if (filters.search && 
+          !sub.clientName.toLowerCase().includes(filters.search.toLowerCase())) {
+        return false;
+      }
+      
       return true;
     });
   }, [subscriptions, filters]);
@@ -124,7 +131,7 @@ export const useSubscriptionStatsReports = () => {
         sub.planName,
         sub.status,
         format(new Date(sub.activationDate), 'yyyy-MM-dd'),
-        format(new Date(sub.expirationDate), 'yyyy-MM-dd'),
+        sub.expirationDate ? format(new Date(sub.expirationDate), 'yyyy-MM-dd') : 'N/A',
         sub.type
       ]);
       
