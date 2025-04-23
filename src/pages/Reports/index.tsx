@@ -32,7 +32,7 @@ const ReportsPage: React.FC = () => {
   
   // Reset to overview tab if user is not admin and tries to access restricted tabs
   useEffect(() => {
-    if (!isAdmin && (activeTab === 'documents' || activeTab === 'people')) {
+    if (!isAdmin && (activeTab === 'invoices' || activeTab === 'people')) {
       setActiveTab('overview');
     }
   }, [activeTab, isAdmin]);
@@ -67,7 +67,7 @@ const ReportsPage: React.FC = () => {
         
         {isAdmin && (
           <>
-            <TabsContent value="documents" className="space-y-4">
+            <TabsContent value="invoices" className="space-y-4">
               <DocumentsTab />
             </TabsContent>
             

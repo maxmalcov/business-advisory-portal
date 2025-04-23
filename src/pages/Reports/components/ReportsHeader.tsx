@@ -32,7 +32,7 @@ const ReportsHeader: React.FC<ReportsHeaderProps> = ({
           
           {isAdmin && (
             <>
-              <TabsTrigger value="documents" className={isMobile ? "w-full" : ""}>Documents</TabsTrigger>
+              <TabsTrigger value="invoices" className={isMobile ? "w-full" : ""}>Invoices</TabsTrigger>
               <TabsTrigger value="people" className={isMobile ? "w-full" : ""}>Users</TabsTrigger>
             </>
           )}
