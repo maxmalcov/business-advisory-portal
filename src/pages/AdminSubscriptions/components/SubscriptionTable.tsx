@@ -2,7 +2,7 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { Check, X, Edit } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
 import { Card } from '@/components/ui/card';
@@ -36,6 +36,42 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
     await onStatusChange(subscription.id, 'active', subscription.url || 'https://example.com/iframe');
   };
 
+  const handleReject = async (subscription: Subscription) => {
+    await onStatusChange(subscription.id, 'rejected');
+  };
+
+  const renderActions = (subscription: Subscription) => (
+    <div className="flex justify-end gap-2">
+      {subscription.status !== 'active' && (
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => handleApprove(subscription)}
+        >
+          <Check className="h-4 w-4 mr-1" />
+          Approve
+        </Button>
+      )}
+      {subscription.status !== 'rejected' && (
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => handleReject(subscription)}
+        >
+          <X className="h-4 w-4 mr-1" />
+          Reject
+        </Button>
+      )}
+      <Button 
+        variant="outline" 
+        size="sm"
+      >
+        <Edit className="h-4 w-4 mr-1" />
+        Edit
+      </Button>
+    </div>
+  );
+
   if (isMobile) {
     return (
       <div className="space-y-4">
@@ -52,17 +88,9 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
               <div>User: {subscription.userName}</div>
               <div className="truncate">URL: {subscription.url}</div>
             </div>
-            {subscription.status === 'pending' && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="mt-2"
-                onClick={() => handleApprove(subscription)}
-              >
-                <Check className="h-4 w-4 mr-1" />
-                Approve
-              </Button>
-            )}
+            <div className="mt-4">
+              {renderActions(subscription)}
+            </div>
           </Card>
         ))}
       </div>
@@ -97,17 +125,8 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
                 <StatusBadge status={subscription.status} />
               </TableCell>
               <TableCell className="max-w-xs truncate">{subscription.url}</TableCell>
-              <TableCell className="text-right">
-                {subscription.status === 'pending' && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleApprove(subscription)}
-                  >
-                    <Check className="h-4 w-4 mr-1" />
-                    Approve
-                  </Button>
-                )}
+              <TableCell>
+                {renderActions(subscription)}
               </TableCell>
             </TableRow>
           ))}
