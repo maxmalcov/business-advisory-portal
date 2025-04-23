@@ -2,18 +2,29 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 type SubscriptionHeaderProps = {
   onAddNew: () => void;
+  onAddNewType: () => void;
 };
 
-const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew }) => {
+const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAddNewType }) => {
   const { t } = useLanguage();
   
   return (
     <div className="flex justify-between items-center">
       <h1 className="text-2xl font-bold tracking-tight">{t('admin.subscriptions.title')}</h1>
-      <Button onClick={onAddNew}>Add New Subscription</Button>
+      <div className="flex space-x-2">
+        <Button variant="outline" onClick={onAddNewType}>
+          <Plus className="h-4 w-4 mr-1" />
+          Add New Subscription Type
+        </Button>
+        <Button onClick={onAddNew}>
+          <Plus className="h-4 w-4 mr-1" />
+          Add New Subscription
+        </Button>
+      </div>
     </div>
   );
 };

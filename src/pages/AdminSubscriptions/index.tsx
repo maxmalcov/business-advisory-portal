@@ -1,9 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSubscriptions } from './hooks/useSubscriptions';
+import { useSubscriptionTypes } from './hooks/useSubscriptionTypes';
 import SubscriptionHeader from './components/SubscriptionHeader';
 import SubscriptionTable from './components/SubscriptionTable';
 import SubscriptionDialog from './components/SubscriptionDialog';
+import SubscriptionTypeDialog from './components/SubscriptionTypeDialog';
 import { Subscription } from './types';
 import { toast } from '@/components/ui/use-toast';
 
@@ -15,7 +17,12 @@ const AdminSubscriptions = () => {
     updateSubscriptionStatus
   } = useSubscriptions();
   
+  const {
+    createSubscriptionType
+  } = useSubscriptionTypes();
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
 
@@ -27,6 +34,10 @@ const AdminSubscriptions = () => {
     setIsEditMode(false);
     setSelectedSubscription(null);
     setIsDialogOpen(true);
+  };
+
+  const handleAddNewTypeClick = () => {
+    setIsTypeDialogOpen(true);
   };
 
   const handleEditSubscription = (subscription: Subscription) => {
@@ -55,6 +66,16 @@ const AdminSubscriptions = () => {
     }
   };
 
+  const handleSubscriptionTypeSubmit = async (data: any) => {
+    try {
+      await createSubscriptionType(data);
+      // No need to refresh subscriptions since this only creates a type
+      // Clients would see this new type in their dashboard
+    } catch (error) {
+      console.error('Error creating subscription type:', error);
+    }
+  };
+
   const handleStatusChange = async (subscriptionId: string, newStatus: Subscription['status'], iframeUrl?: string) => {
     try {
       await updateSubscriptionStatus(subscriptionId, newStatus, iframeUrl);
@@ -80,7 +101,10 @@ const AdminSubscriptions = () => {
 
   return (
     <div className="space-y-6">
-      <SubscriptionHeader onAddNew={handleAddNewClick} />
+      <SubscriptionHeader 
+        onAddNew={handleAddNewClick} 
+        onAddNewType={handleAddNewTypeClick}
+      />
       
       <SubscriptionTable 
         subscriptions={subscriptions}
@@ -95,6 +119,12 @@ const AdminSubscriptions = () => {
         selectedSubscription={selectedSubscription}
         onOpenChange={setIsDialogOpen}
         onSubmit={handleSubscriptionSubmit}
+      />
+
+      <SubscriptionTypeDialog
+        isOpen={isTypeDialogOpen}
+        onOpenChange={setIsTypeDialogOpen}
+        onSubmit={handleSubscriptionTypeSubmit}
       />
     </div>
   );
