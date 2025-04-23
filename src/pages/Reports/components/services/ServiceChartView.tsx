@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ServiceChartData } from '../../hooks/types/serviceTypes';
 
 interface ServiceChartViewProps {
@@ -27,12 +27,12 @@ const ServiceChartView: React.FC<ServiceChartViewProps> = ({ data, loading }) =>
   }
 
   return (
-    <Card className="border-border">
+    <Card className="border-border overflow-hidden">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg">Service Requests per Month</CardTitle>
       </CardHeader>
-      <CardContent className="pt-0 pb-4">
-        <div className="h-72">
+      <CardContent className="pt-0 pb-8">
+        <div className="h-72 w-full">
           {data.length > 0 ? (
             <ChartContainer 
               config={{
@@ -43,7 +43,10 @@ const ServiceChartView: React.FC<ServiceChartViewProps> = ({ data, loading }) =>
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
-                <RechartsBarChart data={data}>
+                <RechartsBarChart 
+                  data={data}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="month" />
                   <YAxis allowDecimals={false} />
