@@ -44,29 +44,33 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
   };
 
   return (
-    <div className="relative">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onCancel}
-        className="absolute right-2 top-2 hover:bg-muted"
-      >
-        <X className="h-4 w-4" />
-      </Button>
+    <div className="flex flex-col h-full max-h-[85vh] overflow-hidden">
+      <div className="relative">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onCancel}
+          className="absolute right-2 top-2 hover:bg-muted z-10"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+        
+        <UserEditHeader 
+          user={user}
+          isEditMode={isEditMode}
+        />
+      </div>
       
-      <UserEditHeader 
-        user={user}
-        isEditMode={isEditMode}
-      />
-      
-      <UserEditTabs
-        user={user}
-        onUserChange={onUserChange}
-        isEditMode={isEditMode}
-        setIsEditMode={setIsEditMode}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      <div className="flex-1 overflow-hidden">
+        <UserEditTabs
+          user={user}
+          onUserChange={onUserChange}
+          isEditMode={isEditMode}
+          setIsEditMode={setIsEditMode}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      </div>
       
       <UserEditFooter
         user={user}

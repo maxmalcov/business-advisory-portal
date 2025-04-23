@@ -30,7 +30,7 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
   const isReadOnly = !isEditMode;
   
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
       <div className="px-6 border-b">
         <TabsList className="gap-4">
           <TabsTrigger value="details">Details</TabsTrigger>
@@ -38,9 +38,12 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
         </TabsList>
       </div>
       
-      <TabsContent value="details" className="flex-1 flex flex-col data-[state=active]:flex data-[state=inactive]:hidden overflow-hidden">
-        <ScrollArea className="flex-1 px-6 py-4">
-          <div className="space-y-6 pb-4">
+      <TabsContent 
+        value="details" 
+        className="flex-1 h-full data-[state=active]:flex data-[state=inactive]:hidden flex-col overflow-hidden"
+      >
+        <ScrollArea className="flex-1">
+          <div className="px-6 py-4 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <BasicInfoSection user={user} onUserChange={onUserChange} isReadOnly={isReadOnly} />
               <div className="grid grid-cols-1 gap-4">
@@ -61,7 +64,10 @@ const UserEditTabs: React.FC<UserEditTabsProps> = ({
         </ScrollArea>
       </TabsContent>
       
-      <TabsContent value="activity" className="flex-1 flex flex-col data-[state=active]:flex data-[state=inactive]:hidden overflow-hidden">
+      <TabsContent 
+        value="activity" 
+        className="flex-1 h-full data-[state=active]:flex data-[state=inactive]:hidden flex-col overflow-hidden"
+      >
         <ActivityTabContent userId={user.id} />
       </TabsContent>
     </Tabs>
