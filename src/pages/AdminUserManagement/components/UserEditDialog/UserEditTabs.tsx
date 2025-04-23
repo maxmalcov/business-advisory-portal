@@ -14,18 +14,16 @@ interface UserEditTabsProps {
   user: User;
   onUserChange: (user: User) => void;
   isEditMode: boolean;
-  setIsEditMode: (value: boolean) => void;  // Added missing property
-  activeTab?: string;
-  setActiveTab?: (tab: string) => void;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
 }
 
 const UserEditTabs: React.FC<UserEditTabsProps> = ({
   user,
   onUserChange,
   isEditMode,
-  setIsEditMode,
-  activeTab = "details",  // Default value if not provided
-  setActiveTab = () => {}  // Default no-op function if not provided
+  activeTab,
+  setActiveTab
 }) => {
   const isReadOnly = !isEditMode;
   
