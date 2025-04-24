@@ -4,6 +4,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsMobile, useIsSmallScreen } from '@/hooks/use-mobile';
 import { useAuth } from '@/context/AuthContext';
+import { FileChart } from 'lucide-react';
 
 interface ReportsHeaderProps {
   activeTab: string;
@@ -23,7 +24,17 @@ const ReportsHeader: React.FC<ReportsHeaderProps> = ({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">{t('nav.reports')} {isAdmin && "(Admin)"}</h1>
+      <div className="flex items-center space-x-4 pb-4 border-b">
+        <div className="bg-primary/10 p-3 rounded-full">
+          <FileChart className="h-6 w-6 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">{t('nav.reports')} {isAdmin && "(Admin)"}</h1>
+          <p className="text-muted-foreground mt-1">
+            Analyze platform metrics, track user activity, and monitor business performance
+          </p>
+        </div>
+      </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className={`mb-4 ${isMobile ? 'w-full grid grid-cols-2 gap-1' : ''} ${isSmallScreen ? 'flex flex-wrap' : ''}`}>
