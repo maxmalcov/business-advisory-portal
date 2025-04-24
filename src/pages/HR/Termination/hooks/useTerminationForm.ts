@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { employeesTable } from '@/integrations/supabase/client';
+import { employeesTable, supabase } from '@/integrations/supabase/client';
 
 export const useTerminationForm = (selectedEmployee: string, terminationDate: Date | undefined, employeeStartDate?: string) => {
   const { t } = useLanguage();
@@ -34,7 +33,6 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
       return false;
     }
     
-    // Validate that termination date is not before start date
     if (employeeStartDate) {
       const startDate = new Date(employeeStartDate);
       if (terminationDate < startDate) {
@@ -51,7 +49,7 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
     return true;
   };
   
-  const handleSubmit = async (terminationReason: string) => {
+  const handleSubmit = async (terminationReason: string, comments?: string, additionalVacationDays?: string) => {
     if (!validateForm()) {
       return;
     }
@@ -59,14 +57,41 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
     setIsSubmitting(true);
     
     try {
+      const { data: employeeData } = await employeesTable()
+        .select('full_name')
+        .eq('id', selectedEmployee)
+        .single();
+
+      if (!employeeData) {
+        throw new Error('Employee not found');
+      }
+
       const { error } = await employeesTable()
         .update({
           status: 'terminated',
-          end_date: terminationDate.toISOString().split('T')[0]
+          end_date: terminationDate?.toISOString().split('T')[0]
         })
         .eq('id', selectedEmployee);
         
       if (error) throw error;
+
+      const { error: emailError } = await supabase.functions.invoke('notify-admin-termination', {
+        body: {
+          employeeName: employeeData.full_name,
+          terminationDate: terminationDate?.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          terminationReason,
+          additionalVacationDays: additionalVacationDays || '0',
+          comments
+        },
+      });
+
+      if (emailError) {
+        console.error('Error sending termination notification:', emailError);
+      }
       
       toast({
         title: t('app.success'),

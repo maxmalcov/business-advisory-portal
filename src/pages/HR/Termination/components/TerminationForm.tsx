@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { EmployeeData } from '../types';
@@ -45,9 +44,7 @@ const TerminationForm = ({
             return;
           }
           
-          // Check if data exists and has start_date property before accessing it
           if (data && 'start_date' in data) {
-            // Safely access start_date and ensure it's a string
             const startDate = typeof data.start_date === 'string' ? data.start_date : undefined;
             setEmployeeStartDate(startDate);
           } else {
@@ -75,10 +72,8 @@ const TerminationForm = ({
   const onTerminationDateChange = (date: Date | undefined) => {
     setTerminationDate(date);
     
-    // Clear any existing date errors
     setDateError(null);
     
-    // Validate date if employee start date is available
     if (date && employeeStartDate) {
       const startDate = new Date(employeeStartDate);
       if (date < startDate) {
@@ -89,7 +84,7 @@ const TerminationForm = ({
   
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleSubmit(terminationReason);
+    handleSubmit(terminationReason, comments, additionalVacationDays);
   };
   
   return (
