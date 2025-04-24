@@ -86,7 +86,7 @@ const NotificationSettings = () => {
               <div className="flex gap-2">
                 <Input id={setting.category} type="email" value={form.watch(setting.category as keyof NotificationSettingsForm) || ''} onChange={e => {
               form.setValue(setting.category as keyof NotificationSettingsForm, e.target.value);
-            }} className="flex-grow" placeholder={`e.g., ${setting.category}@yourcompany.com`} />
+            }} placeholder={`e.g., ${setting.category}@yourcompany.com`} className="flex-grow rounded" />
                 <Button onClick={() => onSubmit(setting.category, form.watch(setting.category as keyof NotificationSettingsForm))} disabled={isUpdating}>
                   {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
                 </Button>
