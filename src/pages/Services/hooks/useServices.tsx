@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { ServiceItem } from '../types';
+import { ServiceItem, ServiceStatus } from '../types';
 import { servicesTable } from '@/integrations/supabase/client';
 
 export const useServices = () => {

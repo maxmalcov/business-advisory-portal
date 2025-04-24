@@ -4,7 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ServiceItem, ServiceStatus } from '../types';
 import { serviceRequestsTable } from '@/integrations/supabase/client';
 
-export const useServiceRequests = (user: any, services: ServiceItem[], setServices: (services: ServiceItem[]) => void) => {
+export const useServiceRequests = (user: any, services: ServiceItem[], setServices: React.Dispatch<React.SetStateAction<ServiceItem[]>>) => {
   const { toast } = useToast();
   const [userRequests, setUserRequests] = useState<{[key: string]: ServiceStatus}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
