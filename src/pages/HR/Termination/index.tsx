@@ -23,7 +23,7 @@ const Termination: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>{t('hr.termination.formTitle', 'Termination Form')}</CardTitle>
+            <CardTitle>{t('hr.termination.formTitle') || 'Termination Form'}</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
