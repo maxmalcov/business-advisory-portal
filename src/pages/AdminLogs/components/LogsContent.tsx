@@ -1,11 +1,9 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
+import { 
+  Tabs, 
+  TabsContent 
 } from "@/components/ui/tabs";
 import LogsTable from './LogsTable';
 import LogsFilters from './LogsFilters';
@@ -40,10 +38,6 @@ const LogsContent: React.FC<LogsContentProps> = ({
 
   return (
     <Tabs defaultValue="logs">
-      <TabsList className="mb-4">
-        <TabsTrigger value="logs">Log Entries</TabsTrigger>
-      </TabsList>
-      
       <TabsContent value="logs" className="space-y-4">
         <LogsFilters
           searchQuery={searchQuery}
