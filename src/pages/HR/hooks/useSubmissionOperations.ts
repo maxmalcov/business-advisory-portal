@@ -1,21 +1,18 @@
 
-import { useAuth } from '@/context/AuthContext';
-import { workHoursSubmissionsTable } from '@/integrations/supabase/client';
-import { getMonthYearForStorage } from '@/utils/dates';
+import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { isAfter, startOfMonth } from 'date-fns';
+import { workHoursSubmissionsTable, supabase } from '@/integrations/supabase/client';
+import { getMonthYearForStorage } from '@/utils/dates';
 
 export const useSubmissionOperations = (
   selectedMonth: Date,
   refreshSubmissions: () => Promise<void>
 ) => {
-  const { user } = useAuth();
   const { toast } = useToast();
-
+  
   // Submit month's work hours
-  const submitMonth = async (hrEmail: string | null = null) => {
-    if (!user?.id) return false;
-    
+  const submitMonth = async (hrEmail: string | null = null, workHoursData: any[] = []) => {
     try {
       // Prevent submissions for future months
       const today = new Date();
@@ -30,14 +27,30 @@ export const useSubmissionOperations = (
       
       const formattedMonth = getMonthYearForStorage(selectedMonth);
       
-      const { data, error } = await workHoursSubmissionsTable().insert({
-        client_id: user.id,
+      const { error } = await workHoursSubmissionsTable().insert({
         month_year: formattedMonth,
         hr_email: hrEmail,
         is_locked: true,
       });
       
       if (error) throw error;
+      
+      // Send email notification to admin
+      const { error: emailError } = await supabase.functions.invoke('notify-admin-work-hours', {
+        body: {
+          monthYear: selectedMonth,
+          employees: workHoursData,
+        },
+      });
+
+      if (emailError) {
+        console.error('Error sending work hours notification:', emailError);
+        toast({
+          title: 'Warning',
+          description: 'Work hours submitted but admin notification failed',
+          variant: 'destructive',
+        });
+      }
       
       // Refresh the submissions data
       await refreshSubmissions();

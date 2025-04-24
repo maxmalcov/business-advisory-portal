@@ -25,30 +25,30 @@ const ActionSection: React.FC<ActionSectionProps> = ({
   const { handleAddEmployee } = useMonthlySubmissions();
   const { toast } = useToast();
 
-  const handleAddEmployeeClick = () => {
+  const handleSubmitMonth = async () => {
     const today = new Date();
     if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
       toast({
         title: "Future month not allowed",
-        description: "You cannot add employees to future months.",
+        description: "You cannot submit data for future months.",
         variant: "destructive"
       });
       return;
     }
     
-    handleAddEmployee();
+    onSubmitMonth();
   };
 
   return (
     <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-between">
       {!isSubmitted && (
-        <Button onClick={handleAddEmployeeClick} disabled={loading}>
+        <Button onClick={() => handleAddEmployee()} disabled={loading}>
           Add Employee
         </Button>
       )}
       
       {!isSubmitted && workHours.length > 0 && (
-        <Button onClick={onSubmitMonth} className="sm:ml-auto" disabled={loading}>
+        <Button onClick={handleSubmitMonth} className="sm:ml-auto" disabled={loading}>
           <Send className="mr-2 h-4 w-4" />
           Submit {formatMonthYear(selectedMonth)}
         </Button>
