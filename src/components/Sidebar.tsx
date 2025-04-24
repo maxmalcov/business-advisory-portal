@@ -16,6 +16,7 @@ import {
   Activity,
   FileText,
   History,
+  Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -136,6 +137,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: Sparkles,
       highlight: true,
       tooltip: 'Manage and configure client services',
+    },
+    {
+      name: 'Email Settings',
+      path: '/admin/settings/notifications',
+      icon: Mail,
     },
   ];
 
