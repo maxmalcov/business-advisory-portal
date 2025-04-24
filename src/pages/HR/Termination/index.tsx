@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEmployeeData } from './hooks/useEmployeeData';
 import TerminationForm from './components/TerminationForm';
 import EmployeeInfoCard from './components/EmployeeInfoCard';
+import TerminationHeader from './components/TerminationHeader';
 
 const Termination: React.FC = () => {
   const { t } = useLanguage();
@@ -17,11 +18,12 @@ const Termination: React.FC = () => {
   
   return (
     <div className="space-y-6">
+      <TerminationHeader />
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>{t('hr.termination.title')}</CardTitle>
-            <CardDescription>Fill out this form to process an employee termination</CardDescription>
+            <CardTitle>{t('hr.termination.formTitle', 'Termination Form')}</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
