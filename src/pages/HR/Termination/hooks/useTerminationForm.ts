@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { employeesTable, supabase } from '@/integrations/supabase/client';
+import { Employee } from '@/pages/HR/types/employee';
 
 export const useTerminationForm = (selectedEmployee: string, terminationDate: Date | undefined, employeeStartDate?: string) => {
   const { t } = useLanguage();
@@ -59,7 +60,7 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
     
     try {
       // First, get the employee data
-      const { data: employeeData, error: fetchError } = await employeesTable()
+      const { data, error: fetchError } = await employeesTable()
         .select('full_name')
         .eq('id', selectedEmployee)
         .single();
@@ -69,6 +70,9 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
         throw new Error('Employee not found');
       }
 
+      // Safely type the employee data
+      const employeeData = data as { full_name: string };
+      
       if (!employeeData || !employeeData.full_name) {
         throw new Error('Employee data is incomplete');
       }
