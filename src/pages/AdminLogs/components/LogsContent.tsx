@@ -8,7 +8,6 @@ import {
   TabsTrigger
 } from "@/components/ui/tabs";
 import LogsTable from './LogsTable';
-import LogsStatistics from './LogsStatistics';
 import LogsFilters from './LogsFilters';
 import { LogEntry, ChartDataItem, WeeklyDataItem } from '../types';
 
@@ -43,7 +42,6 @@ const LogsContent: React.FC<LogsContentProps> = ({
     <Tabs defaultValue="logs">
       <TabsList className="mb-4">
         <TabsTrigger value="logs">Log Entries</TabsTrigger>
-        <TabsTrigger value="statistics">Visual Statistics</TabsTrigger>
       </TabsList>
       
       <TabsContent value="logs" className="space-y-4">
@@ -57,13 +55,6 @@ const LogsContent: React.FC<LogsContentProps> = ({
         />
         
         <LogsTable logs={filteredLogs} />
-      </TabsContent>
-      
-      <TabsContent value="statistics" className="space-y-6">
-        <LogsStatistics 
-          chartData={chartData}
-          weeklyData={weeklyData}
-        />
       </TabsContent>
     </Tabs>
   );
