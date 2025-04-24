@@ -2,6 +2,7 @@
 import { FormData } from '../types';
 import { employeesTable } from '@/integrations/supabase/client';
 import { uploadDocumentToStorage } from './DocumentUploader';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SubmitFormProps {
   formData: FormData;
@@ -70,6 +71,21 @@ export const submitEmployeeForm = async ({
     }
     
     console.log('Employee added successfully:', data);
+    
+    // Send notification to admin
+    const notificationResult = await supabase.functions.invoke('notify-admin-new-employee', {
+      body: JSON.stringify({
+        ...formData,
+        startDate: formData.startDate?.toISOString().split('T')[0],
+        idDocument: documentPath
+      })
+    });
+
+    if (notificationResult.error) {
+      console.error('Admin notification failed:', notificationResult.error);
+      // Non-critical error, so we continue with the success flow
+    }
+    
     onSuccess();
     
   } catch (error) {
