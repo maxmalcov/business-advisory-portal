@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { EmployeeData } from '../types';
@@ -63,21 +64,24 @@ const TerminationForm = ({
     fetchEmployeeData();
   }, [selectedEmployee]);
   
-  const { handleSubmit, isSubmitting, dateError, setDateError } = useTerminationForm(
-    selectedEmployee, 
-    terminationDate,
-    employeeStartDate
-  );
+  const { 
+    handleSubmit, 
+    isSubmitting, 
+    dateError, 
+    setDateError 
+  } = useTerminationForm(selectedEmployee, terminationDate, employeeStartDate);
   
   const onTerminationDateChange = (date: Date | undefined) => {
     setTerminationDate(date);
     
-    setDateError(null);
-    
-    if (date && employeeStartDate) {
-      const startDate = new Date(employeeStartDate);
-      if (date < startDate) {
-        setDateError('End Date cannot be before Start Date');
+    if (setDateError) {
+      setDateError(null);
+      
+      if (date && employeeStartDate) {
+        const startDate = new Date(employeeStartDate);
+        if (date < startDate) {
+          setDateError('End Date cannot be before Start Date');
+        }
       }
     }
   };

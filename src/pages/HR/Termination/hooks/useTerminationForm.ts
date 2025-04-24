@@ -1,5 +1,7 @@
+
 import { useState } from 'react';
 import { calculateDaysWorked, submitTerminationRequest } from '../utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface FormData {
   employeeId: string;
@@ -8,23 +10,23 @@ interface FormData {
   additionalNotes: string;
 }
 
-interface TerminationResponse {
-  data: {
-    startDate: string;
-    endDate: string;
-  };
-}
-
-export function useTerminationForm() {
+export function useTerminationForm(
+  employeeId?: string,
+  terminationDate?: Date | undefined,
+  employeeStartDate?: string
+) {
   const [formData, setFormData] = useState<FormData>({
-    employeeId: '',
-    terminationDate: null,
+    employeeId: employeeId || '',
+    terminationDate: terminationDate || null,
     reason: '',
     additionalNotes: '',
   });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [daysWorked, setDaysWorked] = useState(0);
+  const [dateError, setDateError] = useState<string | null>(null);
+  const toast = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -41,11 +43,27 @@ export function useTerminationForm() {
     }));
   };
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (reason: string, comments: string, additionalVacationDays: string) => {
     try {
+      if (dateError) {
+        toast.toast({
+          title: "Error",
+          description: "Please fix the date errors before submitting",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       setIsSubmitting(true);
       
-      const response = await submitTerminationRequest(formData);
+      const submitData = {
+        ...formData,
+        reason,
+        additionalNotes: comments,
+        additionalVacationDays
+      };
+      
+      const response = await submitTerminationRequest(submitData);
       
       // Add null checks for data
       if (response?.data) {
@@ -53,21 +71,32 @@ export function useTerminationForm() {
         
         // Ensure we have valid dates before calculating
         if (startDate && endDate) {
-          const daysWorked = calculateDaysWorked(
+          const calculatedDaysWorked = calculateDaysWorked(
             new Date(startDate),
             new Date(endDate)
           );
           
-          setDaysWorked(daysWorked);
+          setDaysWorked(calculatedDaysWorked);
         }
       }
       
       setIsSubmitted(true);
       setIsSubmitting(false);
       
+      toast.toast({
+        title: "Success",
+        description: "Termination request submitted successfully"
+      });
+      
     } catch (error) {
       setIsSubmitting(false);
       console.error('Error submitting termination form:', error);
+      
+      toast.toast({
+        title: "Error",
+        description: "Failed to submit termination request",
+        variant: "destructive"
+      });
     }
   };
 
@@ -80,6 +109,7 @@ export function useTerminationForm() {
     });
     setIsSubmitted(false);
     setDaysWorked(0);
+    setDateError(null);
   };
 
   return {
@@ -87,6 +117,8 @@ export function useTerminationForm() {
     isSubmitting,
     isSubmitted,
     daysWorked,
+    dateError,
+    setDateError,
     handleInputChange,
     handleDateChange,
     handleSubmit,
