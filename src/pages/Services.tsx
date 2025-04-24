@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -7,6 +7,7 @@ import ServiceCard from './Services/components/ServiceCard';
 import ServiceSearch from './Services/components/ServiceSearch';
 import { ServiceItem, ServiceStatus } from './Services/types';
 import { 
+  Puzzle,
   CircleDollarSign, 
   FileText, 
   Users, 
@@ -14,7 +15,6 @@ import {
   PackagePlus, 
   Boxes 
 } from 'lucide-react';
-import { supabase, serviceRequestsTable, servicesTable, Service } from '@/integrations/supabase/client';
 
 const Services: React.FC = () => {
   const { t } = useLanguage();
@@ -210,11 +210,18 @@ const Services: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">{t('nav.additional_services')}</h1>
-        <p className="text-muted-foreground">Explore our premium services designed to help your business thrive.</p>
+      <div className="flex items-center space-x-4 pb-4 border-b">
+        <div className="bg-primary/10 p-3 rounded-full">
+          <Puzzle className="h-6 w-6 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Additional Services</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage optional service offerings and integrations
+          </p>
+        </div>
       </div>
-      
+
       {/* Search bar */}
       <ServiceSearch value={searchQuery} onChange={setSearchQuery} />
 
