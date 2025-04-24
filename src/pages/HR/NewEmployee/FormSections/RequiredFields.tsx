@@ -18,7 +18,7 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({
   uploadProgress = 0
 }) => {
   return <div className="space-y-4">
-      <h3 className="font-semibold border-b pb-1 py-[10px]">Required Information</h3>
+      <h3 className="font-semibold border-b pb-1 py-[20px]">Required Information</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Company Name */}
