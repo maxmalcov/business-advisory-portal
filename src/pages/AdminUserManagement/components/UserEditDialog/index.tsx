@@ -1,6 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import UserEditHeader from './UserEditHeader';
 import UserEditTabs from './UserEditTabs';
 import UserEditFooter from './UserEditFooter';
@@ -43,10 +45,21 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
 
   return (
     <div className="flex flex-col h-full max-h-[85vh] overflow-hidden">
-      <UserEditHeader 
-        user={user}
-        isEditMode={isEditMode}
-      />
+      <div className="relative">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onCancel}
+          className="absolute right-2 top-2 hover:bg-muted z-10"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+        
+        <UserEditHeader 
+          user={user}
+          isEditMode={isEditMode}
+        />
+      </div>
       
       <div className="flex-1 overflow-hidden">
         <UserEditTabs
