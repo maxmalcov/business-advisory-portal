@@ -218,7 +218,7 @@ const Services: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Additional Services</h1>
           <p className="text-muted-foreground mt-1">
-            Manage optional service offerings and integrations
+            Explore our premium services designed to help your business thrive.
           </p>
         </div>
       </div>
