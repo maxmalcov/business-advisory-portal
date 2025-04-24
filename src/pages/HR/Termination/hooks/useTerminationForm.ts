@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/LanguageContext';
@@ -57,15 +58,22 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
     setIsSubmitting(true);
     
     try {
-      const { data: employeeData } = await employeesTable()
+      // First, get the employee data
+      const { data: employeeData, error: fetchError } = await employeesTable()
         .select('full_name')
         .eq('id', selectedEmployee)
         .single();
 
-      if (!employeeData) {
+      if (fetchError) {
+        console.error('Error fetching employee data:', fetchError);
         throw new Error('Employee not found');
       }
 
+      if (!employeeData || !employeeData.full_name) {
+        throw new Error('Employee data is incomplete');
+      }
+
+      // Now update the employee status
       const { error } = await employeesTable()
         .update({
           status: 'terminated',
@@ -75,6 +83,7 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
         
       if (error) throw error;
 
+      // Send notification email
       const { error: emailError } = await supabase.functions.invoke('notify-admin-termination', {
         body: {
           employeeName: employeeData.full_name,
