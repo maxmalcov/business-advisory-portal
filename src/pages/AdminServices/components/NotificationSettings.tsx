@@ -76,7 +76,7 @@ const NotificationSettings = () => {
         </div>
       </div>
       <Card className="w-full max-w-2xl mx-auto">
-        <CardContent className="space-y-6 rounded">
+        <CardContent className="space-y-6 rounded-md">
           {settings?.map(setting => <div key={setting.id} className="flex flex-col space-y-2">
               <Label htmlFor={setting.category}>
                 {setting.category === 'hr_payroll' && 'HR & Payroll Notification Email'}
