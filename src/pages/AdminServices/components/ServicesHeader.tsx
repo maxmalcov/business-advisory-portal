@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ServiceFlow } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 const ServicesHeader: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const ServicesHeader: React.FC = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="bg-primary/10 p-3 rounded-full">
-            <ServiceFlow className="h-6 w-6 text-primary" />
+            <Settings className="h-6 w-6 text-primary" />
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Services Management</h1>
