@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -19,8 +18,20 @@ const HR: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">{t('nav.hr')}</h1>
+      {/* Header Section */}
+      <div className="flex items-center space-x-4 pb-4 border-b">
+        <div className="bg-primary/10 p-3 rounded-full">
+          <Users className="h-6 w-6 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">HR & Payroll</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage employees, work hours, and terminations
+          </p>
+        </div>
+      </div>
       
+      {/* Quick Actions Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card className="card-hover flex flex-col">
           <CardHeader className="pb-3">
@@ -86,6 +97,7 @@ const HR: React.FC = () => {
         </Card>
       </div>
       
+      {/* Employee List Section */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-4">Employee List</h2>
         
