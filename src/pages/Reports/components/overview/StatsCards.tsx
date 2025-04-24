@@ -36,7 +36,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({
 }) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Link to="/invoices" className="block">
+      <Link to="/invoice-history" className="block">
         <Card className="h-full transition-all duration-200 hover:bg-muted/50 hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
