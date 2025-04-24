@@ -10,6 +10,7 @@ import SubscriptionCard from '@/components/subscriptions/SubscriptionCard';
 import SubscriptionSheetContent from '@/components/subscriptions/SubscriptionSheetContent';
 import RequestAccessDialog from '@/components/subscriptions/RequestAccessDialog';
 import SubscriptionsHeader from './Subscriptions/components/SubscriptionsHeader';
+import { supabase } from '@/integrations/supabase/client';
 
 const Subscriptions: React.FC = () => {
   const { t } = useLanguage();
@@ -64,13 +65,40 @@ const Subscriptions: React.FC = () => {
     setIsSheetOpen(true);
   };
 
-  const handleRequestAccess = () => {
+  const handleRequestAccess = async () => {
     setIsRequestDialogOpen(false);
     
-    toast({
-      title: "Access Requested",
-      description: `Your request for ${selectedTool?.name} has been sent to the administrator.`,
-    });
+    if (!selectedTool) return;
+    
+    try {
+      const { error: notificationError } = await supabase.functions.invoke('notify-admin-subscription-request', {
+        body: {
+          clientName: user?.name || user?.email || 'Unknown User',
+          subscriptionName: selectedTool.name
+        }
+      });
+
+      if (notificationError) {
+        console.error('Error sending notification:', notificationError);
+        toast({
+          title: "Request Failed",
+          description: "There was a problem submitting your request. Please try again.",
+          variant: "destructive"
+        });
+      }
+      
+      toast({
+        title: "Access Requested",
+        description: `Your request for ${selectedTool?.name} has been sent to the administrator.`,
+      });
+    } catch (error) {
+      console.error('Error handling subscription request:', error);
+      toast({
+        title: "Request Failed",
+        description: "There was a problem submitting your request. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
