@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { useSubscriptionTypes } from './hooks/useSubscriptionTypes';
-import SubscriptionHeader from './components/SubscriptionHeader';
+import SubscriptionHeader from '@/pages/Reports/components/SubscriptionsHeader';
 import SubscriptionTable from './components/SubscriptionTable';
 import SubscriptionDialog from './components/SubscriptionDialog';
 import SubscriptionTypeDialog from './components/SubscriptionTypeDialog';
