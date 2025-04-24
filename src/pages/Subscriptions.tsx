@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -80,7 +79,7 @@ const Subscriptions: React.FC = () => {
       
       <Card>
         <CardHeader>
-          <CardDescription>{t('subscriptions.tools_description')}</CardDescription>
+          <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
