@@ -29,6 +29,7 @@ import AdminLogs from "@/pages/AdminLogs";
 import AdminSubscriptions from "@/pages/AdminSubscriptions";
 import { ProtectedRoute } from "./ProtectedRoute";
 import InvoiceHistory from "@/pages/InvoiceHistory";
+import NotificationSettings from "@/pages/AdminServices/components/NotificationSettings";
 
 const AppRoutes = () => {
   return (
@@ -171,6 +172,11 @@ const AppRoutes = () => {
         <Route path="admin/subscriptions" element={
           <ProtectedRoute requiredRole="admin">
             <AdminSubscriptions />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/settings/notifications" element={
+          <ProtectedRoute requiredRole="admin">
+            <NotificationSettings />
           </ProtectedRoute>
         } />
       </Route>
