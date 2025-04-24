@@ -1,11 +1,10 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEmployeeData } from './hooks/useEmployeeData';
 import TerminationForm from './components/TerminationForm';
 import EmployeeInfoCard from './components/EmployeeInfoCard';
-import { Separator } from '@/components/ui/separator';
 
 const Termination: React.FC = () => {
   const { t } = useLanguage();
@@ -17,24 +16,17 @@ const Termination: React.FC = () => {
   const selectedEmployeeData = employees.find(emp => emp.id === selectedEmployee);
   
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">{t('hr.termination.title')}</h1>
-        <p className="text-muted-foreground mt-2">
-          Complete this form to process an employee termination request
-        </p>
-        <Separator className="mt-4" />
-      </div>
-      
+    <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2 border-none shadow-md">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Termination Details</CardTitle>
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>{t('hr.termination.title')}</CardTitle>
+            <CardDescription>Fill out this form to process an employee termination</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
-                <p className="text-muted-foreground">Loading employee data...</p>
+                <p>Loading employee data...</p>
               </div>
             ) : (
               <TerminationForm 
@@ -48,19 +40,17 @@ const Termination: React.FC = () => {
           </CardContent>
         </Card>
         
-        <div className="space-y-6">
-          <Card className="border-none shadow-md">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Employee Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <EmployeeInfoCard 
-                selectedEmployeeData={selectedEmployeeData} 
-                additionalVacationDays={additionalVacationDays} 
-              />
-            </CardContent>
-          </Card>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Employee Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <EmployeeInfoCard 
+              selectedEmployeeData={selectedEmployeeData} 
+              additionalVacationDays={additionalVacationDays} 
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

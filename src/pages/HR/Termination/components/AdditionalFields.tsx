@@ -18,32 +18,28 @@ const AdditionalFields = ({
   setComments
 }: AdditionalFieldsProps) => {
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="additionalVacationDays">Additional vacation days</Label>
-          <Input 
-            id="additionalVacationDays"
-            type="number"
-            min="0"
-            value={additionalVacationDays}
-            onChange={e => setAdditionalVacationDays(e.target.value)}
-            className="max-w-[200px]"
-          />
-        </div>
+    <>
+      <div className="grid gap-2">
+        <Label htmlFor="additionalVacationDays">Additional vacation days to compensate</Label>
+        <Input 
+          id="additionalVacationDays"
+          type="number"
+          min="0"
+          value={additionalVacationDays}
+          onChange={e => setAdditionalVacationDays(e.target.value)}
+        />
       </div>
       
-      <div className="space-y-2">
+      <div className="grid gap-2">
         <Label htmlFor="comments">Additional comments</Label>
         <Textarea 
           id="comments"
-          placeholder="Add any additional information about the termination..."
+          placeholder="Add any additional information here..."
           value={comments}
           onChange={e => setComments(e.target.value)}
-          className="h-32"
         />
       </div>
-    </div>
+    </>
   );
 };
 

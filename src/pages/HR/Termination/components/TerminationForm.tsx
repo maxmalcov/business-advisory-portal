@@ -93,28 +93,26 @@ const TerminationForm = ({
   
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      <div className="space-y-6">
+      <div className="space-y-4">
         <EmployeeSelector 
           employees={employees}
           selectedEmployee={selectedEmployee}
           setSelectedEmployee={setSelectedEmployee}
         />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <TerminationDatePicker
-            terminationDate={terminationDate}
-            setTerminationDate={onTerminationDateChange}
-            isDatePickerOpen={isDatePickerOpen}
-            setIsDatePickerOpen={setIsDatePickerOpen}
-            dateError={dateError}
-            employeeStartDate={employeeStartDate}
-          />
-          
-          <TerminationReasonSelector
-            terminationReason={terminationReason}
-            setTerminationReason={setTerminationReason}
-          />
-        </div>
+        <TerminationDatePicker
+          terminationDate={terminationDate}
+          setTerminationDate={onTerminationDateChange}
+          isDatePickerOpen={isDatePickerOpen}
+          setIsDatePickerOpen={setIsDatePickerOpen}
+          dateError={dateError}
+          employeeStartDate={employeeStartDate}
+        />
+        
+        <TerminationReasonSelector
+          terminationReason={terminationReason}
+          setTerminationReason={setTerminationReason}
+        />
         
         <AdditionalFields
           additionalVacationDays={additionalVacationDays}
@@ -124,15 +122,9 @@ const TerminationForm = ({
         />
       </div>
       
-      <div className="flex justify-end pt-4">
-        <Button 
-          type="submit" 
-          disabled={isSubmitting || !!dateError}
-          className="min-w-[150px]"
-        >
-          {isSubmitting ? 'Processing...' : 'Submit Request'}
-        </Button>
-      </div>
+      <Button type="submit" className="w-full" disabled={isSubmitting || !!dateError}>
+        {isSubmitting ? 'Processing...' : 'Submit Termination Request'}
+      </Button>
     </form>
   );
 };
