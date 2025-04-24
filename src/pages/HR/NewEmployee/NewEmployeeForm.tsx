@@ -64,29 +64,37 @@ const NewEmployeeForm: React.FC = () => {
   return (
     <>
       <CardHeader>
-        <CardTitle>{t('hr.new_employee.title')}</CardTitle>
-        <CardDescription>Fill in the form below to register a new employee</CardDescription>
+        <CardTitle className="text-2xl">{t('hr.new_employee.title')}</CardTitle>
+        <CardDescription>{t('hr.new_employee.description')}</CardDescription>
       </CardHeader>
       
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-6">
-          <RequiredFields 
-            formData={formData}
-            errors={errors}
-            handleInputChange={handleInputChange}
-            handleDateChange={handleDateChange}
-            handleFileChange={handleFileChange}
-            uploadProgress={uploadProgress}
-          />
+        <CardContent className="space-y-8">
+          {/* Required Fields Section */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold tracking-tight">Required Information</h3>
+            <RequiredFields 
+              formData={formData}
+              errors={errors}
+              handleInputChange={handleInputChange}
+              handleDateChange={handleDateChange}
+              handleFileChange={handleFileChange}
+              uploadProgress={uploadProgress}
+            />
+          </div>
           
-          <OptionalFields 
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleSalaryTypeChange={handleSalaryTypeChange}
-          />
+          {/* Optional Fields Section */}
+          <div className="space-y-6 pt-4">
+            <h3 className="text-lg font-semibold tracking-tight">Optional Information</h3>
+            <OptionalFields 
+              formData={formData}
+              handleInputChange={handleInputChange}
+              handleSalaryTypeChange={handleSalaryTypeChange}
+            />
+          </div>
         </CardContent>
         
-        <CardFooter>
+        <CardFooter className="border-t pt-6">
           <FormActions 
             isSubmitting={isSubmitting} 
             onCancel={handleCancel} 
