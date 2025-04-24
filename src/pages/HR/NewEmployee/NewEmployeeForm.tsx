@@ -3,7 +3,6 @@ import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import {
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -65,7 +64,6 @@ const NewEmployeeForm: React.FC = () => {
     <>
       <CardHeader>
         <CardTitle className="text-2xl">{t('hr.new_employee.title')}</CardTitle>
-        <CardDescription>Fill in the form below to register a new employee</CardDescription>
       </CardHeader>
       
       <form onSubmit={handleSubmit}>
