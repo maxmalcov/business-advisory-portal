@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +15,7 @@ import {
   PackagePlus, 
   Boxes 
 } from 'lucide-react';
+import { supabase, serviceRequestsTable, servicesTable } from '@/integrations/supabase/client';
 
 const Services: React.FC = () => {
   const { t } = useLanguage();
