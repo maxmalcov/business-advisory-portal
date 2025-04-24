@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { History } from 'lucide-react';
+import { Activity } from 'lucide-react';
 
 const LogsHeader: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const LogsHeader: React.FC = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="bg-primary/10 p-3 rounded-full">
-            <History className="h-6 w-6 text-primary" />
+            <Activity className="h-6 w-6 text-primary" />
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">System Log History</h1>
