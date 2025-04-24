@@ -20,10 +20,7 @@ const WorkHoursCardHeader: React.FC<WorkHoursCardHeaderProps> = ({
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
       <div>
-        {/* Title has been removed as per user request */}
-        <p className="text-sm text-muted-foreground">
-          Manage monthly work hours for your employees
-        </p>
+        {/* Paragraph text removed as per user request */}
       </div>
       
       <div className="flex gap-2">
@@ -59,4 +56,3 @@ const WorkHoursCardHeader: React.FC<WorkHoursCardHeaderProps> = ({
 };
 
 export default WorkHoursCardHeader;
-
