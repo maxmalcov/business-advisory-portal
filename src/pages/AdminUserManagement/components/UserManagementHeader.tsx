@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { UserPlus } from 'lucide-react';
+import { UserGroup } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface UserManagementHeaderProps {
   onAddUser: () => void;
@@ -10,23 +10,25 @@ interface UserManagementHeaderProps {
 
 const UserManagementHeader: React.FC<UserManagementHeaderProps> = ({ onAddUser }) => {
   return (
-    <Card className="border-l-4 border-l-blue-600">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle className="text-2xl">User Management</CardTitle>
-          <CardDescription>
-            View and manage user accounts
-          </CardDescription>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="bg-primary/10 p-3 rounded-full">
+            <UserGroup className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+            <p className="text-muted-foreground mt-1">
+              View, manage, and support registered client accounts across the platform
+            </p>
+          </div>
         </div>
-        <Button 
-          onClick={onAddUser}
-          variant="default"
-        >
-          <UserPlus className="mr-2 h-4 w-4" />
+        <Button onClick={onAddUser}>
+          <Plus className="h-4 w-4 mr-1" />
           Add New User
         </Button>
-      </CardHeader>
-    </Card>
+      </div>
+    </div>
   );
 };
 
