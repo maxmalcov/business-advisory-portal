@@ -70,8 +70,13 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
         throw new Error('Employee not found');
       }
 
-      // Ensure data is not null and has the expected structure
-      if (!data || typeof data !== 'object' || !('full_name' in data) || typeof data.full_name !== 'string') {
+      // Add additional null check before proceeding
+      if (data === null) {
+        throw new Error('No employee data returned');
+      }
+
+      // Now that we've confirmed data isn't null, we can safely check its structure
+      if (typeof data !== 'object' || !('full_name' in data) || typeof data.full_name !== 'string') {
         throw new Error('Employee data is incomplete or invalid');
       }
 
