@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import WorkHoursHeader from './components/WorkHoursHeader';
+import WorkHoursCardHeader from './components/WorkHoursCardHeader';
 import MonthlySubmissionsView from './components/MonthlySubmissionsView';
 import { useAuth } from '@/context/AuthContext';
 import { useMonthlySubmissions } from './hooks/useMonthlySubmissions';
@@ -30,7 +32,7 @@ const WorkHours: React.FC = () => {
       
       <Card>
         <CardHeader>
-          <WorkHoursHeader 
+          <WorkHoursCardHeader 
             isAddingNew={isAddingNew} 
             setIsAddingNew={setIsAddingNew}
             submitToHR={handleSubmitToHR}
