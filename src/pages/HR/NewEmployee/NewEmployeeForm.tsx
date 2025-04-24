@@ -65,7 +65,7 @@ const NewEmployeeForm: React.FC = () => {
           
           {/* Optional Fields Section */}
           <div className="space-y-6 pt-4">
-            <h3 className="text-lg font-semibold tracking-tight">Optional Information</h3>
+            
             <OptionalFields formData={formData} handleInputChange={handleInputChange} handleSalaryTypeChange={handleSalaryTypeChange} />
           </div>
         </CardContent>
