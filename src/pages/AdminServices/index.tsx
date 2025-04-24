@@ -1,5 +1,5 @@
-
 import React from 'react';
+import ServicesHeader from './components/ServicesHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ServiceFilters from './components/ServiceFilters';
 import ServiceRequestsList from './components/ServiceRequestsList';
@@ -30,10 +30,7 @@ const AdminServices: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">Manage Service Requests</h1>
-        <p className="text-muted-foreground">Oversee and update service requests from clients</p>
-      </div>
+      <ServicesHeader />
       
       {/* Filters */}
       <ServiceFilters
