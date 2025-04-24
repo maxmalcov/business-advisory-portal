@@ -9,7 +9,7 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { IframeSubscription } from '../../../hooks/types';
+import { IframeSubscription } from '../../hooks/types';
 
 interface SubscriptionItemProps {
   subscription: IframeSubscription;

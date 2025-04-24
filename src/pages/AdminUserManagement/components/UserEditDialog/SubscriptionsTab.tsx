@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/card';
 import { RefreshCw } from 'lucide-react';
-import { useIframeSubscriptions } from '../../../hooks/useIframeSubscriptions';
+import { useIframeSubscriptions } from '../../hooks/useIframeSubscriptions';
 import SubscriptionItem from './SubscriptionItem';
-import { User } from '../../../hooks/types';
+import { User } from '../../hooks/types';
 
 interface SubscriptionsTabProps {
   user: User;
@@ -60,4 +60,3 @@ const SubscriptionsTab: React.FC<SubscriptionsTabProps> = ({ user }) => {
 };
 
 export default SubscriptionsTab;
-
