@@ -1,22 +1,24 @@
 
 import React from 'react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+import { History } from 'lucide-react';
 
 const LogsHeader: React.FC = () => {
   return (
-    <Card className="border-l-4 border-l-ba-blue">
-      <CardHeader>
-        <CardTitle className="text-2xl">System Log History</CardTitle>
-        <CardDescription>
-          Detailed log of all system activity and events
-        </CardDescription>
-      </CardHeader>
-    </Card>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="bg-primary/10 p-3 rounded-full">
+            <History className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">System Log History</h1>
+            <p className="text-muted-foreground mt-1">
+              Track and monitor all system activities and events
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
