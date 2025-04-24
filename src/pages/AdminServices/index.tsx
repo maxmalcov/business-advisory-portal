@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import NotificationSettings from './components/NotificationSettings';
 import ServiceFilters from './components/ServiceFilters';
 import ServiceRequestsList from './components/ServiceRequestsList';
 import RequestDetailsDialog from './components/RequestDetailsDialog';
@@ -35,9 +34,6 @@ const AdminServices: React.FC = () => {
         <h1 className="text-2xl font-bold tracking-tight">Manage Service Requests</h1>
         <p className="text-muted-foreground">Oversee and update service requests from clients</p>
       </div>
-      
-      {/* Admin Email Setting */}
-      <NotificationSettings />
       
       {/* Filters */}
       <ServiceFilters
