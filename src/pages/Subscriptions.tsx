@@ -9,7 +9,7 @@ import { SubscriptionTool } from '@/types/subscriptions';
 import SubscriptionCard from '@/components/subscriptions/SubscriptionCard';
 import SubscriptionSheetContent from '@/components/subscriptions/SubscriptionSheetContent';
 import RequestAccessDialog from '@/components/subscriptions/RequestAccessDialog';
-import SubscriptionsHeader from './components/SubscriptionsHeader';
+import SubscriptionsHeader from './Subscriptions/components/SubscriptionsHeader';
 
 const Subscriptions: React.FC = () => {
   const { t } = useLanguage();
