@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -7,7 +6,7 @@ import ServiceCard from './Services/components/ServiceCard';
 import ServiceSearch from './Services/components/ServiceSearch';
 import { ServiceItem, ServiceStatus } from './Services/types';
 import { 
-  Puzzle,
+  Sparkles,
   CircleDollarSign, 
   FileText, 
   Users, 
@@ -27,7 +26,6 @@ const Services: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  // Load services from database
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -52,12 +50,11 @@ const Services: React.FC = () => {
         console.log('Services fetched from DB:', data);
         
         if (data && data.length > 0) {
-          // Convert database services to ServiceItem format for the UI
           const serviceItems: ServiceItem[] = data.map((service: any) => ({
             id: service.id,
             title: service.title,
             description: service.description,
-            iconName: service.iconname || 'Package', // Use lowercase iconname from DB
+            iconName: service.iconname || 'Package',
             price: service.price.toString(),
             badges: service.badges || [],
             popular: service.popular || false,
@@ -79,7 +76,6 @@ const Services: React.FC = () => {
     fetchServices();
   }, [toast]);
   
-  // Load service request status from database on component mount
   useEffect(() => {
     const loadUserServiceRequests = async () => {
       if (!user) return;
@@ -98,7 +94,6 @@ const Services: React.FC = () => {
         
         console.log('User service requests data:', data);
         
-        // Create a map of service_id to status
         const requestsMap: {[key: string]: ServiceStatus} = {};
         data.forEach(request => {
           requestsMap[request.service_id] = request.status as ServiceStatus;
@@ -108,7 +103,6 @@ const Services: React.FC = () => {
         
         setUserRequests(requestsMap);
         
-        // Update local services state with the request status
         setServices(prevServices => 
           prevServices.map(service => ({
             ...service,
@@ -152,7 +146,6 @@ const Services: React.FC = () => {
       return;
     }
     
-    // Find the service by ID
     const service = services.find(s => s.id === serviceId);
     if (!service) return;
     
@@ -161,7 +154,6 @@ const Services: React.FC = () => {
     try {
       console.log(`Requesting service ${serviceId} for user ${user.id}`);
       
-      // Insert the service request into the database
       const { data, error } = await serviceRequestsTable()
         .insert({
           service_id: serviceId,
@@ -179,7 +171,6 @@ const Services: React.FC = () => {
       
       console.log('Service request created:', data);
       
-      // Update local state
       setServices(prevServices => 
         prevServices.map(service => 
           service.id === serviceId 
@@ -213,7 +204,7 @@ const Services: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center space-x-4 pb-4 border-b">
         <div className="bg-primary/10 p-3 rounded-full">
-          <Puzzle className="h-6 w-6 text-primary" />
+          <Sparkles className="h-6 w-6 text-primary" />
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Additional Services</h1>
@@ -223,10 +214,8 @@ const Services: React.FC = () => {
         </div>
       </div>
 
-      {/* Search bar */}
       <ServiceSearch value={searchQuery} onChange={setSearchQuery} />
 
-      {/* Services grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
@@ -262,7 +251,6 @@ const Services: React.FC = () => {
         </div>
       )}
       
-      {/* Debug information during development */}
       {process.env.NODE_ENV !== 'production' && (
         <div className="p-4 mt-8 text-sm bg-gray-100 rounded">
           <h3 className="font-bold">Debug Info</h3>
