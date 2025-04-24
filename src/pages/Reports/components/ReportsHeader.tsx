@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsMobile, useIsSmallScreen } from '@/hooks/use-mobile';
 import { useAuth } from '@/context/AuthContext';
-import { FileChart } from 'lucide-react';
+import { FileChartLine } from 'lucide-react';
 
 interface ReportsHeaderProps {
   activeTab: string;
@@ -26,7 +25,7 @@ const ReportsHeader: React.FC<ReportsHeaderProps> = ({
     <div className="space-y-6">
       <div className="flex items-center space-x-4 pb-4 border-b">
         <div className="bg-primary/10 p-3 rounded-full">
-          <FileChart className="h-6 w-6 text-primary" />
+          <FileChartLine className="h-6 w-6 text-primary" />
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t('nav.reports')} {isAdmin && "(Admin)"}</h1>
