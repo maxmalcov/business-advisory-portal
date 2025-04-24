@@ -1,59 +1,21 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { FileDown, FileUp, Plus } from 'lucide-react';
-import { EmployeeRecord } from './WorkHoursTable';
-import ExportButton from './ExportButton';
+import { useLanguage } from '@/context/LanguageContext';
+import { Clock } from 'lucide-react';
 
-interface WorkHoursHeaderProps {
-  isAddingNew: boolean;
-  setIsAddingNew: (value: boolean) => void;
-  submitToHR: () => void;
-  employeeData: EmployeeRecord[];
-}
-
-const WorkHoursHeader: React.FC<WorkHoursHeaderProps> = ({
-  isAddingNew,
-  setIsAddingNew,
-  submitToHR,
-  employeeData
-}) => {
+const WorkHoursHeader: React.FC = () => {
+  const { t } = useLanguage();
+  
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
-      <div>
-        <h2 className="text-lg font-semibold">Employee Work Hours</h2>
-        <p className="text-sm text-muted-foreground">
-          Manage monthly work hours for your employees
-        </p>
+    <div className="flex items-center space-x-4 pb-4 border-b">
+      <div className="bg-primary/10 p-3 rounded-full">
+        <Clock className="h-6 w-6 text-primary" />
       </div>
-      
-      <div className="flex gap-2">
-        <ExportButton
-          data={employeeData}
-          fileName="employee-work-hours"
-        />
-        
-        {employeeData.length > 0 && (
-          <Button 
-            variant="default" 
-            onClick={submitToHR}
-            className="flex items-center gap-1"
-          >
-            <FileUp size={16} />
-            Submit to HR
-          </Button>
-        )}
-        
-        {!isAddingNew && (
-          <Button 
-            variant="outline" 
-            onClick={() => setIsAddingNew(true)}
-            className="flex items-center gap-1"
-          >
-            <Plus size={16} />
-            Add Employee
-          </Button>
-        )}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">{t('nav.hr.work_hours')}</h1>
+        <p className="text-muted-foreground mt-1">
+          Track and manage employee working hours and attendance
+        </p>
       </div>
     </div>
   );

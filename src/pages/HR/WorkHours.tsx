@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { WorkHoursHeader } from './components';
+import WorkHoursHeader from './components/WorkHoursHeader';
 import MonthlySubmissionsView from './components/MonthlySubmissionsView';
 import { useAuth } from '@/context/AuthContext';
 import { useMonthlySubmissions } from './hooks/useMonthlySubmissions';
@@ -27,7 +26,7 @@ const WorkHours: React.FC = () => {
   
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">{t('nav.hr.work_hours')}</h1>
+      <WorkHoursHeader />
       
       <Card>
         <CardHeader>
