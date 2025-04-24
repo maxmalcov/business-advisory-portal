@@ -70,12 +70,12 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
         throw new Error('Employee not found');
       }
 
-      // Safely type the employee data
-      const employeeData = data as { full_name: string };
-      
-      if (!employeeData || !employeeData.full_name) {
-        throw new Error('Employee data is incomplete');
+      // Ensure data is not null and has the expected structure
+      if (!data || typeof data !== 'object' || !('full_name' in data) || typeof data.full_name !== 'string') {
+        throw new Error('Employee data is incomplete or invalid');
       }
+
+      const employeeName = data.full_name;
 
       // Now update the employee status
       const { error } = await employeesTable()
@@ -90,7 +90,7 @@ export const useTerminationForm = (selectedEmployee: string, terminationDate: Da
       // Send notification email
       const { error: emailError } = await supabase.functions.invoke('notify-admin-termination', {
         body: {
-          employeeName: employeeData.full_name,
+          employeeName,
           terminationDate: terminationDate?.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
