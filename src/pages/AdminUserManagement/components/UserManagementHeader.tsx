@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { UserGroup } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { Plus } from 'lucide-react';
 
 interface UserManagementHeaderProps {
@@ -14,7 +14,7 @@ const UserManagementHeader: React.FC<UserManagementHeaderProps> = ({ onAddUser }
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="bg-primary/10 p-3 rounded-full">
-            <UserGroup className="h-6 w-6 text-primary" />
+            <Users className="h-6 w-6 text-primary" />
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
