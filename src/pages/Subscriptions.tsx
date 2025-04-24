@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Sheet } from "@/components/ui/sheet";
 import { Frame, Calendar, Clock, Users } from 'lucide-react';
 import { SubscriptionTool } from '@/types/subscriptions';
@@ -79,7 +80,6 @@ const Subscriptions: React.FC = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>{t('subscriptions.title')}</CardTitle>
           <CardDescription>{t('subscriptions.tools_description')}</CardDescription>
         </CardHeader>
         <CardContent>
