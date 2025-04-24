@@ -65,7 +65,7 @@ const NewEmployeeForm: React.FC = () => {
     <>
       <CardHeader>
         <CardTitle className="text-2xl">{t('hr.new_employee.title')}</CardTitle>
-        <CardDescription>{t('hr.new_employee.description')}</CardDescription>
+        <CardDescription>Fill in the form below to register a new employee</CardDescription>
       </CardHeader>
       
       <form onSubmit={handleSubmit}>
