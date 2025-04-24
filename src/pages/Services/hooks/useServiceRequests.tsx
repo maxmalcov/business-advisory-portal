@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceItem, ServiceStatus } from '../types';
-import { serviceRequestsTable } from '@/integrations/supabase/client';
+import { serviceRequestsTable, supabase } from '@/integrations/supabase/client';
 
 export const useServiceRequests = (user: any, services: ServiceItem[], setServices: React.Dispatch<React.SetStateAction<ServiceItem[]>>) => {
   const { toast } = useToast();
@@ -84,6 +84,19 @@ export const useServiceRequests = (user: any, services: ServiceItem[], setServic
       }
       
       console.log('Service request created:', data);
+      
+      // Send email notification to admin
+      const { error: notificationError } = await supabase.functions.invoke('notify-admin-service-request', {
+        body: {
+          clientName: user.name || user.email,
+          serviceName: service.title
+        }
+      });
+
+      if (notificationError) {
+        console.error('Error sending notification:', notificationError);
+        // Don't throw here - we don't want to fail the request just because notification failed
+      }
       
       setServices(prevServices => 
         prevServices.map(service => 
