@@ -14,7 +14,7 @@ const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAdd
   
   return (
     <div className="flex justify-between items-center">
-      <h1 className="text-2xl font-bold tracking-tight">{t('admin.subscriptions.title')}</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Subscriptions Management</h1>
       <div className="flex space-x-2">
         <Button variant="outline" onClick={onAddNewType}>
           <Plus className="h-4 w-4 mr-1" />
@@ -30,3 +30,4 @@ const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAdd
 };
 
 export default SubscriptionHeader;
+
