@@ -19,7 +19,6 @@ const AdminUsefulLinks = () => {
       
       if (error) throw error;
       
-      // First convert to unknown then to our expected type to avoid TypeScript errors
       return (data as unknown) as UsefulLinkDB[];
     }
   });
