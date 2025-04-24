@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { EmployeeData } from '../types';
 import EmployeeSelector from './EmployeeSelector';
@@ -93,26 +93,28 @@ const TerminationForm = ({
   
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      <div className="space-y-4">
+      <div className="space-y-6">
         <EmployeeSelector 
           employees={employees}
           selectedEmployee={selectedEmployee}
           setSelectedEmployee={setSelectedEmployee}
         />
         
-        <TerminationDatePicker
-          terminationDate={terminationDate}
-          setTerminationDate={onTerminationDateChange}
-          isDatePickerOpen={isDatePickerOpen}
-          setIsDatePickerOpen={setIsDatePickerOpen}
-          dateError={dateError}
-          employeeStartDate={employeeStartDate}
-        />
-        
-        <TerminationReasonSelector
-          terminationReason={terminationReason}
-          setTerminationReason={setTerminationReason}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <TerminationDatePicker
+            terminationDate={terminationDate}
+            setTerminationDate={onTerminationDateChange}
+            isDatePickerOpen={isDatePickerOpen}
+            setIsDatePickerOpen={setIsDatePickerOpen}
+            dateError={dateError}
+            employeeStartDate={employeeStartDate}
+          />
+          
+          <TerminationReasonSelector
+            terminationReason={terminationReason}
+            setTerminationReason={setTerminationReason}
+          />
+        </div>
         
         <AdditionalFields
           additionalVacationDays={additionalVacationDays}
@@ -122,9 +124,15 @@ const TerminationForm = ({
         />
       </div>
       
-      <Button type="submit" className="w-full" disabled={isSubmitting || !!dateError}>
-        {isSubmitting ? 'Processing...' : 'Submit Termination Request'}
-      </Button>
+      <div className="flex justify-end pt-4">
+        <Button 
+          type="submit" 
+          disabled={isSubmitting || !!dateError}
+          className="min-w-[150px]"
+        >
+          {isSubmitting ? 'Processing...' : 'Submit Request'}
+        </Button>
+      </div>
     </form>
   );
 };
