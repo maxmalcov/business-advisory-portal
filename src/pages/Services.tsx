@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -6,7 +7,7 @@ import ServiceCard from './Services/components/ServiceCard';
 import ServiceSearch from './Services/components/ServiceSearch';
 import { ServiceItem, ServiceStatus } from './Services/types';
 import { 
-  Sparkles,
+  Badge,
   CircleDollarSign, 
   FileText, 
   Users, 
@@ -204,7 +205,7 @@ const Services: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center space-x-4 pb-4 border-b">
         <div className="bg-primary/10 p-3 rounded-full">
-          <Sparkles className="h-6 w-6 text-primary" />
+          <Badge className="h-6 w-6 text-primary" />
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Additional Services</h1>
