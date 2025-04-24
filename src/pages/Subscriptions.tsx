@@ -1,26 +1,15 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet } from "@/components/ui/sheet";
-import { 
-  Frame, 
-  Calendar, 
-  Clock, 
-  Users
-} from 'lucide-react';
+import { Frame, Calendar, Clock, Users } from 'lucide-react';
 import { SubscriptionTool } from '@/types/subscriptions';
 import SubscriptionCard from '@/components/subscriptions/SubscriptionCard';
 import SubscriptionSheetContent from '@/components/subscriptions/SubscriptionSheetContent';
 import RequestAccessDialog from '@/components/subscriptions/RequestAccessDialog';
+import SubscriptionsHeader from './components/SubscriptionsHeader';
 
 const Subscriptions: React.FC = () => {
   const { t } = useLanguage();
@@ -86,9 +75,7 @@ const Subscriptions: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">{t('nav.subscriptions')}</h1>
-      </div>
+      <SubscriptionsHeader />
       
       <Card>
         <CardHeader>
