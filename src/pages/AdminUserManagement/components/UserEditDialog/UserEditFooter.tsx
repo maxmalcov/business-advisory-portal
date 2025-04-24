@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { DialogClose, DialogFooter } from '@/components/ui/dialog';
+import { DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Edit, Power, Trash2, Save, X } from 'lucide-react';
 import { AlertDialog, AlertDialogContent, AlertDialogTrigger, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog';
@@ -112,19 +112,17 @@ const UserEditFooter: React.FC<UserEditFooterProps> = ({
         </TooltipProvider>
       </div>
       
-      <div className="flex items-center justify-end gap-2">
-        <DialogClose asChild>
-          <Button variant="outline" onClick={onCancel} size="sm">Close</Button>
-        </DialogClose>
-        {isEditMode && (
+      {isEditMode && (
+        <div className="flex items-center justify-end">
           <Button onClick={onSave} size="sm">
             <Save className="mr-2 h-4 w-4" />
             Save Changes
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </DialogFooter>
   );
 };
 
 export default UserEditFooter;
+
