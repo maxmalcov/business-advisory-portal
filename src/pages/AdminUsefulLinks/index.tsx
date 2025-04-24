@@ -1,14 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { usefulLinksTable, UsefulLinkDB } from '@/integrations/supabase/client';
 import AdminUsefulLinksHeader from './components/AdminUsefulLinksHeader';
 import UsefulLinksTable from './components/UsefulLinksTable';
 import { UsefulLink } from '../UsefulLinks/types';
 import { useToast } from '@/components/ui/use-toast';
+import AddEditLinkDialog from './components/AddEditLinkDialog';
 
 const AdminUsefulLinks = () => {
   const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['admin-useful-links'],
@@ -38,14 +40,28 @@ const AdminUsefulLinks = () => {
     })) : [];
   }, [data]);
 
+  const handleAddNew = () => {
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="space-y-6">
-      <AdminUsefulLinksHeader refetch={refetch} />
+      <AdminUsefulLinksHeader onAddNew={handleAddNew} />
       <UsefulLinksTable 
         links={links} 
         isLoading={isLoading}
         error={error}
         refetch={refetch}
+      />
+
+      <AddEditLinkDialog 
+        open={isDialogOpen} 
+        onOpenChange={setIsDialogOpen}
+        mode="add"
+        onSuccess={() => {
+          refetch();
+          setIsDialogOpen(false);
+        }}
       />
     </div>
   );
