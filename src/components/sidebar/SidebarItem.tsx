@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import { NotificationBadge } from '../ui/notification-badge';
 
 type SidebarItemProps = {
   item: {
@@ -12,6 +12,7 @@ type SidebarItemProps = {
     icon: React.ElementType;
     highlight?: boolean;
     tooltip?: string;
+    badge?: number;
     children?: Array<{
       name: string;
       path: string;
@@ -54,7 +55,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <Link
           to={item.path}
           className={cn(
-            "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
+            "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors",
             isActive 
               ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
               : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
@@ -62,11 +63,16 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           )}
           onClick={handleChildClick}
         >
-          {item.highlight ? 
-            <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
-            <item.icon className="h-4 w-4 mr-2" />
-          }
-          <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
+          <div className="flex items-center">
+            {item.highlight ? 
+              <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
+              <item.icon className="h-4 w-4 mr-2" />
+            }
+            <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
+          </div>
+          {item.badge && (
+            <NotificationBadge count={item.badge} className="ml-2" />
+          )}
         </Link>
       ) : (
         <div className="mb-2">
@@ -79,11 +85,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             )}
             onClick={handleParentClick}
           >
-            <div className="flex items-center">
+            <div className="flex items-center flex-1">
               <item.icon className="h-4 w-4 mr-2" />
               <span>{item.name}</span>
             </div>
-            <span className="ml-auto">
+            {item.badge && (
+              <NotificationBadge count={item.badge} className="mx-2" />
+            )}
+            <span className="ml-1">
               <ChevronDown 
                 className={cn(
                   "h-4 w-4 transition-transform duration-200",

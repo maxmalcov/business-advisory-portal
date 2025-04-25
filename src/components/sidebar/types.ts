@@ -1,16 +1,15 @@
 
-import { ReactElement } from 'react';
-
-export type SidebarItem = {
+export interface SidebarItem {
   name: string;
   path: string;
   icon: React.ElementType;
-  children?: SidebarItem[];
   highlight?: boolean;
   tooltip?: string;
-};
+  badge?: number;
+  children?: SidebarItem[];
+}
 
-export type SidebarProps = {
+export interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-};
+}

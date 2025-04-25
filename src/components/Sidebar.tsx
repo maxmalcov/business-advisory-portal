@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -28,6 +27,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import SidebarHeader from './sidebar/SidebarHeader';
 import SidebarNav from './sidebar/SidebarNav';
 import { SidebarItem, SidebarProps } from './sidebar/types';
+import { useNotificationCounts } from '@/hooks/use-notification-counts';
+import { NotificationBadge } from './ui/notification-badge';
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
@@ -123,8 +124,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
     {
       name: 'Subscription Management',
-      path: '/admin/subscription-requests', // Default path when clicking the parent
+      path: '/admin/subscription-requests',
       icon: Layers,
+      badge: pendingSubscriptions,
       children: [
         {
           name: 'Subscription Requests',
@@ -150,8 +152,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
     {
       name: 'Service Management',
-      path: '/admin/service-requests', // Default path when clicking the parent
+      path: '/admin/service-requests',
       icon: Settings,
+      badge: pendingServices,
       children: [
         {
           name: 'Service Requests',
@@ -172,6 +175,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
   ];
 
+  const { pendingServices, pendingSubscriptions } = useNotificationCounts();
+  
   const menuItems = isAdmin ? adminMenuItems : clientMenuItems;
 
   return (
