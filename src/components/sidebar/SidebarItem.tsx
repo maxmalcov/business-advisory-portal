@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { NotificationBadge } from '../ui/notification-badge';
-import { NotificationDot } from '../ui/notification-dot';
 
 type SidebarItemProps = {
   item: {
@@ -18,7 +17,6 @@ type SidebarItemProps = {
       name: string;
       path: string;
       icon: React.ElementType;
-      badge?: number;
     }>;
   };
   isParentActive: (path: string) => boolean;
@@ -39,7 +37,6 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const isActive = isItemActive(item);
-  const totalChildBadges = item.children?.reduce((sum, child) => sum + (child.badge || 0), 0) || 0;
 
   const handleParentClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -58,7 +55,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <Link
           to={item.path}
           className={cn(
-            "relative flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors",
+            "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors",
             isActive 
               ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
               : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
@@ -71,18 +68,18 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
               <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
               <item.icon className="h-4 w-4 mr-2" />
             }
-            <span className={cn("relative", item.highlight && "animate-pulse")}>
-              {item.name}
-              {item.badge ? <NotificationBadge count={item.badge} /> : null}
-            </span>
+            <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
           </div>
+          {item.badge && (
+            <NotificationBadge count={item.badge} className="ml-2" />
+          )}
         </Link>
       ) : (
         <div className="mb-2">
           <div
             className={cn(
-              "relative flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer",
-              isActive
+              "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer",
+              (isActive)
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                 : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
             )}
@@ -90,9 +87,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           >
             <div className="flex items-center flex-1">
               <item.icon className="h-4 w-4 mr-2" />
-              <span className="relative">{item.name}</span>
+              <span>{item.name}</span>
             </div>
-            <NotificationDot show={totalChildBadges > 0} />
+            {item.badge && (
+              <NotificationBadge count={item.badge} className="mx-2" />
+            )}
             <span className="ml-1">
               <ChevronDown 
                 className={cn(
@@ -115,7 +114,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   <Link
                     to={child.path}
                     className={cn(
-                      "relative flex items-center px-3 py-2 rounded-md text-sm transition-colors",
+                      "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
                       location.pathname === child.path
                         ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                         : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
@@ -123,10 +122,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                     onClick={handleChildClick}
                   >
                     <child.icon className="h-4 w-4 mr-2" />
-                    <span className="relative">
-                      {child.name}
-                      {child.badge ? <NotificationBadge count={child.badge} /> : null}
-                    </span>
+                    <span>{child.name}</span>
                   </Link>
                 </li>
               ))}
