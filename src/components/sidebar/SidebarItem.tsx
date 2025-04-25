@@ -1,11 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, BellRing } from 'lucide-react';
 import { NotificationBadge } from '../ui/notification-badge';
-import { NotificationDot } from '../ui/notification-dot';
 import { SidebarItem as SidebarItemType } from './types';
 
 type SidebarItemProps = {
@@ -77,14 +75,20 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             onClick={handleParentClick}
           >
             <div className="flex items-center flex-1">
-              <item.icon className="h-4 w-4 mr-2" />
-              <span>{item.name}</span>
+              <div className="flex items-center">
+                <item.icon className="h-4 w-4 mr-2" />
+                <span>{item.name}</span>
+                {item.hasPendingNotification && (
+                  <BellRing 
+                    className="h-4 w-4 ml-2 text-destructive animate-pulse" 
+                    strokeWidth={2.5} 
+                  />
+                )}
+              </div>
             </div>
             {item.badge ? (
               <NotificationBadge count={item.badge} className="mx-2" />
-            ) : item.hasPendingChildren && (
-              <NotificationDot />
-            )}
+            ) : null}
             <span className="ml-1">
               <ChevronDown 
                 className={cn(
