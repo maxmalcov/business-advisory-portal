@@ -63,10 +63,10 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onDelete }) => {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="text-red-500 hover:text-red-700"
+                  className="text-red-500 hover:text-red-700 p-2"
                   onClick={() => onDelete(service.id)}
                 >
-                  <Trash className="h-4 w-4 mr-1" /> Delete
+                  <Trash className="h-4 w-4" />
                 </Button>
               </div>
             </TableCell>
