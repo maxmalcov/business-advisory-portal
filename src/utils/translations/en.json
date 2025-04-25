@@ -1,3 +1,4 @@
+
 {
   "common": {
     "loading": "Loading...",
@@ -24,7 +25,12 @@
     "invoices": "Invoices",
     "sale_invoices": "Sale Invoices",
     "supplier_invoices": "Supplier Invoices",
-    "subscriptions": "Subscription Management"
+    "subscriptions": "Subscription Management",
+    "hr": {
+      "new_employee": "New Employee",
+      "termination": "Employee Termination",
+      "work_hours": "Work Hours"
+    }
   },
   "services": {
     "title": "Service Requests",
@@ -49,6 +55,26 @@
     "allowed_types": "Allowed file types: PDF or JPG"
   },
   "hr": {
-    "employee_list": "Employee List"
+    "title": "HR & Payroll",
+    "description": "Manage employees, work hours, and terminations",
+    "employee_list": "Employee List",
+    "employee_search_placeholder": "Search by name, position, or company...",
+    "new_employee": {
+      "description": "Start the onboarding process for new employees",
+      "action": "Go to New Employee"
+    },
+    "termination": {
+      "description": "Manage employee termination processes",
+      "action": "Go to Termination"
+    },
+    "work_hours": {
+      "description": "Track and manage employee working hours", 
+      "action": "Go to Work Hours"
+    },
+    "filter": {
+      "all_employees": "All Employees",
+      "active_employees": "Active Employees",
+      "terminated_employees": "Terminated Employees"
+    }
   }
 }
