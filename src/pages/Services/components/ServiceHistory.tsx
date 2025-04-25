@@ -50,10 +50,10 @@ export const ServiceHistory = () => {
               <Badge
                 variant={
                   request.status === 'approved'
-                    ? 'success'
+                    ? 'default'
                     : request.status === 'rejected'
                     ? 'destructive'
-                    : 'default'
+                    : 'secondary'
                 }
               >
                 {request.status}
