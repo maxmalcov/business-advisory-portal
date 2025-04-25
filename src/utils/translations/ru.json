@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Загрузка...",
@@ -34,7 +33,8 @@
     "requested_date": "Запрошено",
     "completion_date": "Выполнено",
     "no_results": "Запросы на обслуживание не найдены",
-    "search_placeholder": "Поиск запросов на обслуживание..."
+    "search_placeholder": "Поиск запросов на обслуживание...",
+    "request": "Запрос"
   },
   "invoices": {
     "title": "Счета продаж",

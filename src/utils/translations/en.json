@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Loading...",
@@ -34,7 +33,8 @@
     "requested_date": "Requested",
     "completion_date": "Completed",
     "no_results": "No service requests found",
-    "search_placeholder": "Search service requests..."
+    "search_placeholder": "Search service requests...",
+    "request": "Request"
   },
   "invoices": {
     "title": "Sale Invoices",

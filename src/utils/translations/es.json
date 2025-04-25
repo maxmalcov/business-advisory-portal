@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Cargando...",
@@ -34,7 +33,8 @@
     "requested_date": "Solicitado",
     "completion_date": "Completado",
     "no_results": "No se encontraron solicitudes de servicio",
-    "search_placeholder": "Buscar solicitudes de servicio..."
+    "search_placeholder": "Buscar solicitudes de servicio...",
+    "request": "Solicitar"
   },
   "invoices": {
     "title": "Facturas de Venta",

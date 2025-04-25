@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -17,6 +16,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { ServiceCardProps, ServiceStatus } from '../types';
+import { useLanguage } from '@/context/LanguageContext';
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ 
   id,
@@ -28,6 +28,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   status = 'available',
   onRequestService
 }) => {
+  const { t } = useLanguage();
   const [isHovering, setIsHovering] = useState(false);
 
   const getButtonProps = (status: ServiceStatus) => {
@@ -37,7 +38,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           variant: 'outline' as const,
           className: `${isHovering ? 'bg-green-100 hover:bg-green-200' : 'bg-green-50'} text-green-600`,
           disabled: false,
-          label: isHovering ? 'Request Again' : 'Completed',
+          label: isHovering ? t('services.request') : 'Completed',
           tooltip: 'Request this service again'
         };
       case 'pending':
@@ -53,7 +54,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           variant: 'outline' as const,
           className: `${isHovering ? 'bg-red-100 hover:bg-red-200' : 'bg-red-50'} text-red-600`,
           disabled: false,
-          label: isHovering ? 'Request Again' : 'Rejected',
+          label: isHovering ? t('services.request') : 'Rejected',
           tooltip: 'Request this service again'
         };
       default:
@@ -61,7 +62,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           variant: 'default' as const,
           className: '',
           disabled: false,
-          label: 'Request', // Updated label from 'Request Service' to 'Request'
+          label: t('services.request'),
           tooltip: ''
         };
     }
