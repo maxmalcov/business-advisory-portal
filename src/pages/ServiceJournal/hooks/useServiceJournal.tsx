@@ -30,15 +30,18 @@ export const useServiceJournal = (userId?: string) => {
           const serviceIds = serviceRequests.map(request => request.service_id);
           
           // Fetch service details for all service IDs
-          const { data: serviceDetails, error: servicesError } = await servicesTable()
+          // The TypeScript error is happening here, so we need to handle the response more carefully
+          const serviceDetailsResponse = await servicesTable()
             .select('id, description, price')
             .in('id', serviceIds);
             
-          if (servicesError) throw servicesError;
+          if (serviceDetailsResponse.error) throw serviceDetailsResponse.error;
+          
+          const serviceDetails = serviceDetailsResponse.data || [];
           
           // Create a map of service details for quick lookup
           const serviceDetailsMap = {};
-          serviceDetails?.forEach(service => {
+          serviceDetails.forEach(service => {
             serviceDetailsMap[service.id] = service;
           });
           
