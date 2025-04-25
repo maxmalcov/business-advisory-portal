@@ -1,6 +1,4 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
 import {
   Card,
   CardHeader,
@@ -26,6 +24,7 @@ interface StatsCardsProps {
     pending: number;
   };
   activityData: ActivityEvent[];
+  onTabChange?: (tab: string) => void;
 }
 
 const StatsCards: React.FC<StatsCardsProps> = ({
@@ -33,6 +32,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({
   employeeStats,
   servicesStats,
   activityData,
+  onTabChange
 }) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -81,22 +81,19 @@ const StatsCards: React.FC<StatsCardsProps> = ({
         </Card>
       </Link>
       
-      <Link to="/user/activity-log" className="block">
-        <Card className="h-full transition-all duration-200 hover:bg-muted/50 hover:shadow-md">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Activity</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{activityData.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Last activity: {activityData.length > 0 ? 
-                formatDistanceToNow(activityData[0].timestamp, { addSuffix: true }) : 
-                'No recent activity'}
-            </p>
-          </CardContent>
-        </Card>
-      </Link>
+      <Card 
+        className="cursor-pointer transition-colors hover:bg-muted/50"
+        onClick={() => onTabChange?.('invoices')}
+      >
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground text-center">
+            Total Activity
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center">
+          <div className="text-2xl font-bold text-center">{activityData.length}</div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

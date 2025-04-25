@@ -57,6 +57,7 @@ const ReportsPage: React.FC = () => {
             servicesStats={servicesStats}
             activityData={activityData}
             monthlyData={monthlyData}
+            onTabChange={setActiveTab}
           />
         </TabsContent>
         
