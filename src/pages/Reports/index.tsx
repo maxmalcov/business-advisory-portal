@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import ReportsHeader from './components/ReportsHeader';
@@ -19,6 +20,7 @@ const ReportsPage: React.FC = () => {
     employeeStats, 
     servicesStats, 
     activityData, 
+    subscriptionStats,
     monthlyData, 
     loading 
   } = useReportData();
@@ -55,7 +57,7 @@ const ReportsPage: React.FC = () => {
             invoiceStats={invoiceStats}
             employeeStats={employeeStats}
             servicesStats={servicesStats}
-            activityData={activityData}
+            subscriptionStats={subscriptionStats}
             monthlyData={monthlyData}
             onTabChange={setActiveTab}
           />

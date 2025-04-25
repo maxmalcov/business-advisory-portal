@@ -22,8 +22,8 @@ const Dashboard: React.FC = () => {
   const { 
     invoiceStats, 
     employeeStats, 
-    servicesStats, 
-    activityData, 
+    servicesStats,
+    subscriptionStats, 
     monthlyData, 
     loading 
   } = useReportData();
@@ -104,7 +104,7 @@ const Dashboard: React.FC = () => {
               invoiceStats={invoiceStats}
               employeeStats={employeeStats}
               servicesStats={servicesStats}
-              activityData={activityData}
+              subscriptionStats={subscriptionStats}
             />
             
             <MonthlyInvoiceChart monthlyData={monthlyData} />

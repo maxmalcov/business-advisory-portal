@@ -23,6 +23,12 @@ export interface ServicesStats {
   requested: number;
 }
 
+export interface SubscriptionStats {
+  total: number;
+  active: number;
+  pending: number;
+}
+
 export interface MonthlyData {
   name: string;
   sales: number;
@@ -33,6 +39,7 @@ export interface ReportStats {
   invoiceStats: InvoiceStats;
   employeeStats: EmployeeStats;
   servicesStats: ServicesStats;
+  subscriptionStats: SubscriptionStats;
   activityData: ActivityEvent[];
   monthlyData: MonthlyData[];
   loading: boolean;
