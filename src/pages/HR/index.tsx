@@ -100,7 +100,7 @@ const HR: React.FC = () => {
       {/* Employee List Section */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-4">
-          {t('hr.employee_list') || 'Employee List'}
+          {t('hr.employee_list')}
         </h2>
         
         {isSmallScreen ? (
