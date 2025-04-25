@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -21,6 +22,8 @@ const AdminServicesPage: React.FC = () => {
     serviceRequests,
     filteredRequests,
     handleUpdateStatus,
+    selectedRequest,  // Add this
+    setSelectedRequest,  // Add this
   } = useServiceRequests();
 
   const {
@@ -31,7 +34,6 @@ const AdminServicesPage: React.FC = () => {
     error,
     isDialogOpen,
     setIsDialogOpen,
-    selectedRequest,
     handleSaveEmail,
     handleDelete,
   } = useServiceRequestData();
@@ -81,7 +83,7 @@ const AdminServicesPage: React.FC = () => {
         filteredRequests={filteredRequests}
         openDetailsDialog={openDetailsDialog}
         handleUpdateStatus={handleUpdateStatus}
-        handleDelete={handleDelete}
+        handleDelete={handleDelete}  // Pass delete handler
       />
       
       <ServiceRequestDialog 
