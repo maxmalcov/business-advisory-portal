@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -23,7 +22,6 @@ const AdminServicesPage: React.FC = () => {
   const [adminNotes, setAdminNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch service requests from Supabase
   useEffect(() => {
     const fetchServiceRequests = async () => {
       try {
@@ -32,7 +30,6 @@ const AdminServicesPage: React.FC = () => {
         
         console.log('Fetching service requests...');
         
-        // Use a more direct query to ensure we get all requests
         const { data, error } = await supabase
           .from('service_requests')
           .select('*')
@@ -64,7 +61,6 @@ const AdminServicesPage: React.FC = () => {
     
     fetchServiceRequests();
     
-    // Set up a realtime subscription for updates to the service_requests table
     const subscription = supabase
       .channel('service_request_changes')
       .on('postgres_changes', { 
@@ -92,7 +88,6 @@ const AdminServicesPage: React.FC = () => {
         throw error;
       }
       
-      // Update local state
       setServiceRequests(prev => 
         prev.map(request => 
           request.id === requestId ? { ...request, status: newStatus } : request
@@ -138,7 +133,6 @@ const AdminServicesPage: React.FC = () => {
         throw error;
       }
       
-      // Update local state
       setServiceRequests(prev => 
         prev.map(request => 
           request.id === selectedRequest.id ? { ...request, admin_notes: adminNotes } : request
@@ -156,6 +150,32 @@ const AdminServicesPage: React.FC = () => {
       toast({
         title: "Save Failed",
         description: "Failed to save notes. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDelete = async (requestId: string) => {
+    try {
+      const { error } = await serviceRequestsTable()
+        .delete()
+        .eq('id', requestId);
+        
+      if (error) {
+        throw error;
+      }
+      
+      setServiceRequests(prev => prev.filter(request => request.id !== requestId));
+      
+      toast({
+        title: "Service Request Deleted",
+        description: "The service request has been deleted successfully.",
+      });
+    } catch (error) {
+      console.error('Error deleting service request:', error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete the service request. Please try again.",
         variant: "destructive"
       });
     }
@@ -198,7 +218,6 @@ const AdminServicesPage: React.FC = () => {
         </div>
       )}
       
-      {/* Debug information section */}
       <div className="p-4 mb-4 text-black bg-yellow-100 rounded-md">
         <h3 className="font-semibold mb-2">Debug Information</h3>
         <p>Total service requests: {serviceRequests.length}</p>
@@ -218,6 +237,7 @@ const AdminServicesPage: React.FC = () => {
         filteredRequests={filteredRequests}
         openDetailsDialog={openDetailsDialog}
         handleUpdateStatus={handleUpdateStatus}
+        handleDelete={handleDelete}
       />
       
       <ServiceRequestDialog 
