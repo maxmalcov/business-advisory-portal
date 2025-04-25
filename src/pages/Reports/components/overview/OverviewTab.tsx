@@ -8,7 +8,11 @@ interface OverviewTabProps {
   invoiceStats: any;
   employeeStats: any;
   servicesStats: any;
-  activityData: any;
+  subscriptionStats: {
+    total: number;
+    active: number;
+    pending: number;
+  };
   monthlyData: any;
   onTabChange: (tab: string) => void;
 }
@@ -17,7 +21,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   invoiceStats,
   employeeStats,
   servicesStats,
-  activityData,
+  subscriptionStats,
   monthlyData,
   onTabChange
 }) => {
@@ -46,7 +50,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         invoiceStats={invoiceStats}
         employeeStats={employeeStats}
         servicesStats={servicesStats}
-        activityData={activityData}
+        subscriptionStats={subscriptionStats}
         onTabChange={onTabChange}
       />
       <MonthlyInvoiceChart monthlyData={monthlyData} />

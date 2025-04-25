@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Card,
@@ -5,7 +6,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/components/ui/card';
-import { FileText, Users, Package, Clock } from 'lucide-react';
+import { FileText, Users, Package, Stack } from 'lucide-react';
 import { ActivityEvent } from '@/utils/activity';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +24,11 @@ interface StatsCardsProps {
     completed: number;
     pending: number;
   };
-  activityData: ActivityEvent[];
+  subscriptionStats: {
+    total: number;
+    active: number;
+    pending: number;
+  };
   onTabChange?: (tab: string) => void;
 }
 
@@ -31,7 +36,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({
   invoiceStats,
   employeeStats,
   servicesStats,
-  activityData,
+  subscriptionStats,
   onTabChange
 }) => {
   const navigate = useNavigate();
@@ -84,16 +89,18 @@ const StatsCards: React.FC<StatsCardsProps> = ({
       </Card>
       
       <Card 
-        className="cursor-pointer transition-colors hover:bg-muted/50"
-        onClick={() => onTabChange?.('activity')}
+        className="cursor-pointer h-full transition-all duration-200 hover:bg-muted/50 hover:shadow-md"
+        onClick={() => navigate('/admin/subscription-requests')}
       >
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground text-center">
-            Total Activity
-          </CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Subscription Requests</CardTitle>
+          <Stack className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent className="flex items-center justify-center">
-          <div className="text-2xl font-bold text-center">{activityData.length}</div>
+        <CardContent>
+          <div className="text-2xl font-bold">{subscriptionStats.total}</div>
+          <p className="text-xs text-muted-foreground">
+            {subscriptionStats.active} active, {subscriptionStats.pending} pending
+          </p>
         </CardContent>
       </Card>
     </div>
