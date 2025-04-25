@@ -9,7 +9,7 @@ export const useServiceRequestData = () => {
   const [adminNotes, setAdminNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState<ServiceRequest | null>(null);
+  // Remove selectedRequest state from here as it's now handled in useServiceRequests
 
   const handleSaveEmail = async () => {
     toast({
@@ -54,8 +54,6 @@ export const useServiceRequestData = () => {
     setError,
     isDialogOpen,
     setIsDialogOpen,
-    selectedRequest,
-    setSelectedRequest,
     handleSaveEmail,
     handleDelete
   };

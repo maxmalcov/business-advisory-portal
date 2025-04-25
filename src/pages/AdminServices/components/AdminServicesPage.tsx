@@ -22,8 +22,8 @@ const AdminServicesPage: React.FC = () => {
     serviceRequests,
     filteredRequests,
     handleUpdateStatus,
-    selectedRequest,  // Add this
-    setSelectedRequest,  // Add this
+    selectedRequest,
+    setSelectedRequest,
   } = useServiceRequests();
 
   const {
@@ -83,7 +83,7 @@ const AdminServicesPage: React.FC = () => {
         filteredRequests={filteredRequests}
         openDetailsDialog={openDetailsDialog}
         handleUpdateStatus={handleUpdateStatus}
-        handleDelete={handleDelete}  // Pass delete handler
+        handleDelete={handleDelete}
       />
       
       <ServiceRequestDialog 
