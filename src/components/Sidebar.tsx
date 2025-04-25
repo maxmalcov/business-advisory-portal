@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -34,6 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const isMobile = useIsMobile();
+  const { pendingServices, pendingSubscriptions } = useNotificationCounts();
   
   const isAdmin = user?.userType === 'admin';
   
@@ -174,8 +176,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: Mail,
     },
   ];
-
-  const { pendingServices, pendingSubscriptions } = useNotificationCounts();
   
   const menuItems = isAdmin ? adminMenuItems : clientMenuItems;
 
