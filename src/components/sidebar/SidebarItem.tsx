@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -5,23 +6,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { NotificationBadge } from '../ui/notification-badge';
 import { NotificationDot } from '../ui/notification-dot';
+import { SidebarItem as SidebarItemType } from './types';
 
 type SidebarItemProps = {
-  item: {
-    name: string;
-    path: string;
-    icon: React.ElementType;
-    highlight?: boolean;
-    tooltip?: string;
-    badge?: number;
-    children?: Array<{
-      name: string;
-      path: string;
-      icon: React.ElementType;
-    }>;
-  };
+  item: SidebarItemType;
   isParentActive: (path: string) => boolean;
-  isItemActive: (item: any) => boolean;
+  isItemActive: (item: SidebarItemType) => boolean;
   isExpanded: boolean;
   toggleExpanded: (path: string, hasChildren: boolean) => void;
   onClick: (path: string, hasChildren: boolean) => void;
