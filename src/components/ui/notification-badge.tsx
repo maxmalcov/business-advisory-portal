@@ -12,7 +12,7 @@ export function NotificationBadge({ count, className }: NotificationBadgeProps) 
   return (
     <div 
       className={cn(
-        "flex items-center justify-center h-5 min-w-5 text-xs font-medium rounded-full bg-destructive text-destructive-foreground",
+        "absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-xs font-medium text-destructive-foreground",
         className
       )}
     >
