@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 export const ServiceHistory = () => {
   const { user } = useAuth();
@@ -33,7 +35,7 @@ export const ServiceHistory = () => {
       <Card className="bg-muted/5">
         <CardContent className="pt-6">
           <p className="text-center text-muted-foreground">
-            No service requests found in your history.
+            You haven't requested any services yet.
           </p>
         </CardContent>
       </Card>
@@ -43,10 +45,10 @@ export const ServiceHistory = () => {
   return (
     <div className="space-y-4">
       {serviceRequests.map((request) => (
-        <Card key={request.id}>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center justify-between">
-              <span>{request.service_name}</span>
+        <Card key={request.id} className="overflow-hidden">
+          <CardHeader className="py-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">{request.service_name}</CardTitle>
               <Badge
                 variant={
                   request.status === 'approved'
@@ -58,16 +60,24 @@ export const ServiceHistory = () => {
               >
                 {request.status}
               </Badge>
-            </CardTitle>
+            </div>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="pb-4">
+            <div className="text-sm text-muted-foreground">
               Requested on {format(new Date(request.request_date), 'PPP')}
-            </p>
+            </div>
             {request.admin_notes && (
               <p className="mt-2 text-sm border-l-2 border-primary/20 pl-2">
                 {request.admin_notes}
               </p>
+            )}
+            {request.status === 'rejected' && (
+              <div className="mt-4">
+                <Button variant="outline" size="sm" className="gap-2">
+                  Request Again
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             )}
           </CardContent>
         </Card>
