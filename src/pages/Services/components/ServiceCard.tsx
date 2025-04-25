@@ -61,7 +61,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           variant: 'default' as const,
           className: '',
           disabled: false,
-          label: 'Request Service',
+          label: 'Request', // Updated label from 'Request Service' to 'Request'
           tooltip: ''
         };
     }
