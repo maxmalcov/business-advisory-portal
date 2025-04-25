@@ -152,11 +152,9 @@ export const useServiceRequests = () => {
     statusFilter,
     setStatusFilter,
     serviceRequests,
-    setServiceRequests,
     loading,
     filteredRequests,
     selectedRequest,
-    setSelectedRequest,  // Make sure this is included in the return value
     isDialogOpen,
     setIsDialogOpen,
     adminNotes,
