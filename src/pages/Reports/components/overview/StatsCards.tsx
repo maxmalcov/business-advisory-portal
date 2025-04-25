@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -7,7 +6,6 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { FileText, Users, Package, Grid2X2 } from 'lucide-react';
-import { ActivityEvent } from '@/utils/activity';
 import { useNavigate } from 'react-router-dom';
 
 interface StatsCardsProps {
@@ -90,7 +88,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({
       
       <Card 
         className="cursor-pointer h-full transition-all duration-200 hover:bg-muted/50 hover:shadow-md"
-        onClick={() => navigate('/admin/subscription-requests')}
+        onClick={() => onTabChange?.('subscriptions')}
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Subscription Requests</CardTitle>
