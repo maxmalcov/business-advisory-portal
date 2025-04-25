@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -51,12 +50,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   };
 
   return (
-    <li key={item.path} className="relative">
+    <li key={item.path}>
       {!hasChildren ? (
         <Link
           to={item.path}
           className={cn(
-            "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors relative",
+            "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors",
             isActive 
               ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
               : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
@@ -64,28 +63,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           )}
           onClick={handleChildClick}
         >
-          <div className="flex items-center relative">
+          <div className="flex items-center">
             {item.highlight ? 
               <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
               <item.icon className="h-4 w-4 mr-2" />
             }
-            <span className={cn(item.highlight && "animate-pulse")}>
-              {item.name}
-            </span>
-            {item.badge && (
-              <NotificationBadge 
-                count={item.badge} 
-                position="top-right"
-                className="ml-2"
-              />
-            )}
+            <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
           </div>
+          {item.badge && (
+            <NotificationBadge count={item.badge} className="ml-2" />
+          )}
         </Link>
       ) : (
         <div className="mb-2">
           <div
             className={cn(
-              "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer relative",
+              "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer",
               (isActive)
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                 : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
@@ -95,14 +88,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             <div className="flex items-center flex-1">
               <item.icon className="h-4 w-4 mr-2" />
               <span>{item.name}</span>
-              {item.badge && (
-                <NotificationBadge 
-                  count={item.badge} 
-                  position="top-right"
-                  className="ml-2"
-                />
-              )}
             </div>
+            {item.badge && (
+              <NotificationBadge count={item.badge} className="mx-2" />
+            )}
             <span className="ml-1">
               <ChevronDown 
                 className={cn(
