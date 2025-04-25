@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -128,12 +127,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: 'Subscription Management',
       path: '/admin/subscription-requests',
       icon: Layers,
-      badge: pendingSubscriptions,
+      hasPendingChildren: pendingSubscriptions > 0,
       children: [
         {
           name: 'Subscription Requests',
           path: '/admin/subscription-requests',
           icon: Inbox,
+          badge: pendingSubscriptions
         },
         {
           name: 'Subscription Catalog',
@@ -156,12 +156,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: 'Service Management',
       path: '/admin/service-requests',
       icon: Settings,
-      badge: pendingServices,
+      hasPendingChildren: pendingServices > 0,
       children: [
         {
           name: 'Service Requests',
           path: '/admin/service-requests',
           icon: Inbox,
+          badge: pendingServices
         },
         {
           name: 'Service Catalog',

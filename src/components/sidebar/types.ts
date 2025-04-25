@@ -6,6 +6,7 @@ export interface SidebarItem {
   highlight?: boolean;
   tooltip?: string;
   badge?: number;
+  hasPendingChildren?: boolean;
   children?: SidebarItem[];
 }
 

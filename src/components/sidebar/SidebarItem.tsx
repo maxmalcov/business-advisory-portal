@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { NotificationBadge } from '../ui/notification-badge';
+import { NotificationDot } from '../ui/notification-dot';
 
 type SidebarItemProps = {
   item: {
@@ -78,7 +79,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <div className="mb-2">
           <div
             className={cn(
-              "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer",
+              "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer relative",
               (isActive)
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                 : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
@@ -89,8 +90,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
               <item.icon className="h-4 w-4 mr-2" />
               <span>{item.name}</span>
             </div>
-            {item.badge && (
+            {item.badge ? (
               <NotificationBadge count={item.badge} className="mx-2" />
+            ) : item.hasPendingChildren && (
+              <NotificationDot />
             )}
             <span className="ml-1">
               <ChevronDown 
@@ -114,7 +117,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   <Link
                     to={child.path}
                     className={cn(
-                      "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
+                      "relative flex items-center px-3 py-2 rounded-md text-sm transition-colors",
                       location.pathname === child.path
                         ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                         : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
@@ -123,6 +126,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   >
                     <child.icon className="h-4 w-4 mr-2" />
                     <span>{child.name}</span>
+                    {child.badge && (
+                      <NotificationBadge count={child.badge} className="ml-2" />
+                    )}
                   </Link>
                 </li>
               ))}
