@@ -1,17 +1,17 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Layers, Plus } from 'lucide-react';
-import { useSubscriptionTypes } from '../AdminSubscriptions/hooks/useSubscriptionTypes';
+import { useSubscriptionTypes } from './hooks/useSubscriptionTypes';
 import SubscriptionTypeTable from './components/SubscriptionTypeTable';
 import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
 import SubscriptionTypeDialog from '../AdminSubscriptions/components/SubscriptionTypeDialog';
+import { toast } from '@/components/ui/use-toast';
 
 const AdminSubscriptionCatalog: React.FC = () => {
-  const { loading, subscriptionTypes, handleDelete, DeleteConfirmationDialog } = useSubscriptionTypes();
+  const { loading, subscriptionTypes, handleDelete, DeleteConfirmationDialog, createSubscriptionType } = useSubscriptionTypes();
   const [isTypeDialogOpen, setIsTypeDialogOpen] = React.useState(false);
 
   const handleAddNewTypeClick = () => {

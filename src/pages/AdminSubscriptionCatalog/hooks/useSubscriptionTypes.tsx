@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from '@/components/ui/use-toast';
+import { useSubscriptionTypes as useAdminSubscriptionTypes } from '../../AdminSubscriptions/hooks/useSubscriptionTypes';
 
 // Types
 export interface SubscriptionType {
@@ -25,6 +26,7 @@ export interface SubscriptionType {
 }
 
 export const useSubscriptionTypes = () => {
+  const { createSubscriptionType: adminCreateSubscriptionType, loading: adminLoading } = useAdminSubscriptionTypes();
   const [loading, setLoading] = useState<boolean>(false);
   const [subscriptionTypes, setSubscriptionTypes] = useState<SubscriptionType[]>([
     {
@@ -104,6 +106,37 @@ export const useSubscriptionTypes = () => {
     setIsDeleteDialogOpen(false);
     setDeleteId(null);
   }, []);
+  
+  // Function to create a subscription type
+  const createSubscriptionType = async (data: any) => {
+    try {
+      setLoading(true);
+      // Call the admin createSubscriptionType function
+      await adminCreateSubscriptionType(data);
+      
+      // Add the new subscription type to the local state
+      // In a real app this would come from the API response
+      const newType: SubscriptionType = {
+        id: Math.random().toString(36).substring(2, 9),
+        name: data.name,
+        description: data.description,
+        type_id: data.type_id || data.type || '',
+        icon_type: data.icon_type || data.iconType || 'iframe',
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      
+      setSubscriptionTypes(prev => [newType, ...prev]);
+      
+      return true;
+    } catch (error) {
+      console.error('Error creating subscription type:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const DeleteConfirmationDialog = () => (
     <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
@@ -127,13 +160,9 @@ export const useSubscriptionTypes = () => {
 
   return {
     subscriptionTypes,
-    loading,
+    loading: loading || adminLoading,
     handleDelete,
     DeleteConfirmationDialog,
-    createSubscriptionType: async (data: any) => {
-      // This would be a real API call in a real app
-      console.log('Creating subscription type:', data);
-      return Promise.resolve();
-    }
+    createSubscriptionType
   };
 };
