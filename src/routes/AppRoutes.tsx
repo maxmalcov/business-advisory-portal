@@ -31,6 +31,8 @@ import InvoiceHistory from "@/pages/InvoiceHistory";
 import NotificationSettings from "@/pages/AdminServices/components/NotificationSettings";
 import AdminServiceRequests from "@/pages/AdminServiceRequests";
 import AdminServiceCatalog from "@/pages/AdminServiceCatalog";
+import AdminSubscriptionRequests from "@/pages/AdminSubscriptionRequests";
+import AdminSubscriptionCatalog from "@/pages/AdminSubscriptionCatalog";
 
 const AppRoutes = () => {
   return (
@@ -129,7 +131,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         } />
 
-        {/* Admin Routes - replacing the old /admin/services route */}
+        {/* Admin Routes */}
         <Route path="admin/service-requests" element={
           <ProtectedRoute requiredRole="admin">
             <AdminServiceRequests />
@@ -178,6 +180,16 @@ const AppRoutes = () => {
         <Route path="admin/subscriptions" element={
           <ProtectedRoute requiredRole="admin">
             <AdminSubscriptions />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/subscription-requests" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminSubscriptionRequests />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/subscription-catalog" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminSubscriptionCatalog />
           </ProtectedRoute>
         } />
         <Route path="admin/settings/notifications" element={

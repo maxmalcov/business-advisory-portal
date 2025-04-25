@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -19,7 +20,8 @@ import {
   Mail,
   Settings,
   Inbox,
-  Wrench
+  Wrench,
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -121,8 +123,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
     {
       name: 'Subscription Management',
-      path: '/admin/subscriptions',
+      path: '/admin/subscription-requests', // Default path when clicking the parent
       icon: Layers,
+      children: [
+        {
+          name: 'Subscription Requests',
+          path: '/admin/subscription-requests',
+          icon: Inbox,
+        },
+        {
+          name: 'Subscription Catalog',
+          path: '/admin/subscription-catalog',
+          icon: BookOpen,
+        }
+      ]
     },
     {
       name: 'Useful Links',
