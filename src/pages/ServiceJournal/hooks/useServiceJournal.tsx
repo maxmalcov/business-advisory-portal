@@ -37,25 +37,27 @@ export const useServiceJournal = (userId?: string) => {
           const serviceIds = serviceRequests.map(request => request.service_id);
           
           // Fetch service details for all service IDs
-          const serviceDetailsResponse = await servicesTable()
+          const { data: serviceDetailsData, error: serviceDetailsError } = await servicesTable()
             .select('id, description, price')
             .in('id', serviceIds);
             
-          if (serviceDetailsResponse.error) throw serviceDetailsResponse.error;
+          if (serviceDetailsError) throw serviceDetailsError;
           
           // Make sure we have data before proceeding
-          if (!serviceDetailsResponse.data) {
+          if (!serviceDetailsData) {
             throw new Error('No service details found');
           }
           
-          // Safely cast the data to our interface type
-          const serviceDetails = serviceDetailsResponse.data as ServiceDetail[];
-          
           // Create a map of service details for quick lookup
-          const serviceDetailsMap: Record<string, ServiceDetail> = {};
-          serviceDetails.forEach(service => {
-            if (service && service.id) {
-              serviceDetailsMap[service.id] = service;
+          const serviceDetailsMap: Record<string, { description: string, price: string }> = {};
+          
+          // Type assertion with runtime check for each property we need
+          serviceDetailsData.forEach((service: any) => {
+            if (service && typeof service.id === 'string') {
+              serviceDetailsMap[service.id] = {
+                description: typeof service.description === 'string' ? service.description : 'No description available',
+                price: typeof service.price === 'string' || typeof service.price === 'number' ? String(service.price) : 'N/A'
+              };
             }
           });
           
