@@ -69,7 +69,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({
       
       <Card 
         className="cursor-pointer h-full transition-all duration-200 hover:bg-muted/50 hover:shadow-md"
-        onClick={() => navigate('/admin/subscription-requests')}
+        onClick={() => navigate('/admin/service-requests')}
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Service Requests</CardTitle>
