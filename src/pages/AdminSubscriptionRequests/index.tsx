@@ -24,7 +24,7 @@ const AdminSubscriptionRequests = () => {
 
   useEffect(() => {
     fetchSubscriptions();
-  }, [fetchSubscriptions]);
+  }, []);
 
   const handleEditSubscription = (subscription: Subscription) => {
     setSelectedSubscription(subscription);
@@ -78,7 +78,7 @@ const AdminSubscriptionRequests = () => {
                 <Skeleton className="h-10 w-full" />
               </div>
             </div>
-          ) : subscriptions.length === 0 ? (
+          ) : !subscriptions || subscriptions.length === 0 ? (
             <div className="text-center py-6">
               <p className="text-muted-foreground">No subscription requests found.</p>
             </div>
