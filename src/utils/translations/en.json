@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Loading...",
@@ -48,5 +47,8 @@
     "max_size": "Maximum file size per upload: 25MB",
     "max_files": "Upload up to 15 files at once",
     "allowed_types": "Allowed file types: PDF or JPG"
+  },
+  "hr": {
+    "employee_list": "Employee List"
   }
 }

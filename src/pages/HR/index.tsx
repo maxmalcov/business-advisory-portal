@@ -99,7 +99,9 @@ const HR: React.FC = () => {
       
       {/* Employee List Section */}
       <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">Employee List</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {t('hr.employee_list') || 'Employee List'}
+        </h2>
         
         {isSmallScreen ? (
           <div className="space-y-4">

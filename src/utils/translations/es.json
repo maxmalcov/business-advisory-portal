@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Cargando...",
@@ -48,5 +47,8 @@
     "max_size": "Tamaño máximo por archivo: 25MB",
     "max_files": "Subir hasta 15 archivos a la vez",
     "allowed_types": "Tipos de archivo permitidos: PDF o JPG"
+  },
+  "hr": {
+    "employee_list": "Lista de Empleados"
   }
 }
