@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Cargando...",
@@ -25,12 +24,7 @@
     "invoices": "Facturas",
     "sale_invoices": "Facturas de Venta",
     "supplier_invoices": "Facturas de Proveedores",
-    "subscriptions": "Gestión de Suscripciones",
-    "hr": {
-      "new_employee": "Nuevo Empleado",
-      "termination": "Terminación de Empleado",
-      "work_hours": "Horas de Trabajo"
-    }
+    "subscriptions": "Gestión de Suscripciones"
   },
   "services": {
     "title": "Solicitudes de Servicio",
@@ -55,26 +49,6 @@
     "allowed_types": "Tipos de archivo permitidos: PDF o JPG"
   },
   "hr": {
-    "title": "RRHH & Nóminas",
-    "description": "Gestione empleados, horas de trabajo y terminaciones",
-    "employee_list": "Lista de Empleados",
-    "employee_search_placeholder": "Buscar por nombre, posición o empresa...",
-    "new_employee": {
-      "description": "Inicie el proceso de incorporación de nuevos empleados",
-      "action": "Ir a Nuevo Empleado"
-    },
-    "termination": {
-      "description": "Gestione los procesos de terminación de empleados",
-      "action": "Ir a Terminación"
-    },
-    "work_hours": {
-      "description": "Haga seguimiento y gestione las horas de trabajo de los empleados",
-      "action": "Ir a Horas de Trabajo"
-    },
-    "filter": {
-      "all_employees": "Todos los Empleados",
-      "active_employees": "Empleados Activos",
-      "terminated_employees": "Empleados Terminados"
-    }
+    "employee_list": "Lista de Empleados"
   }
 }

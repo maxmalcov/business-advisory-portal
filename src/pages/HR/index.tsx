@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
@@ -25,9 +24,9 @@ const HR: React.FC = () => {
           <Users className="h-6 w-6 text-primary" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('hr.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">HR & Payroll</h1>
           <p className="text-muted-foreground mt-1">
-            {t('hr.description')}
+            Manage employees, work hours, and terminations
           </p>
         </div>
       </div>
@@ -43,13 +42,13 @@ const HR: React.FC = () => {
           </CardHeader>
           <CardContent className="flex-grow">
             <p className="text-sm text-muted-foreground">
-              {t('hr.new_employee.description')}
+              Start the onboarding process for new employees
             </p>
           </CardContent>
           <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/new-employee" className="w-full">
               <Button variant="outline" className="w-full">
-                {t('hr.new_employee.action')}
+                Go to New Employee
               </Button>
             </Link>
           </CardFooter>
@@ -64,13 +63,13 @@ const HR: React.FC = () => {
           </CardHeader>
           <CardContent className="flex-grow">
             <p className="text-sm text-muted-foreground">
-              {t('hr.termination.description')}
+              Manage employee termination processes
             </p>
           </CardContent>
           <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/termination" className="w-full">
               <Button variant="outline" className="w-full">
-                {t('hr.termination.action')}
+                Go to Termination
               </Button>
             </Link>
           </CardFooter>
@@ -85,13 +84,13 @@ const HR: React.FC = () => {
           </CardHeader>
           <CardContent className="flex-grow">
             <p className="text-sm text-muted-foreground">
-              {t('hr.work_hours.description')}
+              Track and manage employee working hours
             </p>
           </CardContent>
           <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/work-hours" className="w-full">
               <Button variant="outline" className="w-full">
-                {t('hr.work_hours.action')}
+                Go to Work Hours
               </Button>
             </Link>
           </CardFooter>
@@ -101,7 +100,7 @@ const HR: React.FC = () => {
       {/* Employee List Section */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-4">
-          {t('hr.employee_list')}
+          {t('hr.employee_list') || 'Employee List'}
         </h2>
         
         {isSmallScreen ? (
@@ -109,7 +108,7 @@ const HR: React.FC = () => {
             <FilterInput 
               value={filterText} 
               onChange={setFilterText} 
-              placeholder={t('hr.employee_search_placeholder')}
+              placeholder="Search by name, position, or company..."
               className="w-full"
             />
             
@@ -125,7 +124,7 @@ const HR: React.FC = () => {
             <FilterInput 
               value={filterText} 
               onChange={setFilterText} 
-              placeholder={t('hr.employee_search_placeholder')}
+              placeholder="Search by name, position, or company..."
             />
             <EmployeeStatusToggle 
               value={statusFilter} 

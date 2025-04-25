@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { User, UserMinus, Users } from 'lucide-react';
 import { EmployeeStatus } from '../types/employee';
 import { useIsSmallScreen } from '@/hooks/use-mobile';
-import { useLanguage } from '@/context/LanguageContext';
 
 interface EmployeeStatusToggleProps {
   value: EmployeeStatus | 'all';
@@ -16,7 +15,6 @@ const EmployeeStatusToggle: React.FC<EmployeeStatusToggleProps> = ({
   onChange 
 }) => {
   const isSmallScreen = useIsSmallScreen();
-  const { t } = useLanguage();
 
   return (
     <div className={`flex ${isSmallScreen ? 'flex-col w-full gap-3' : 'items-center gap-2'}`}>
@@ -27,7 +25,7 @@ const EmployeeStatusToggle: React.FC<EmployeeStatusToggleProps> = ({
         onClick={() => onChange('all')}
       >
         <Users className="h-4 w-4" />
-        <span>{t('hr.filter.all_employees')}</span>
+        <span>All Employees</span>
       </Button>
       <Button
         variant="ghost"
@@ -36,7 +34,7 @@ const EmployeeStatusToggle: React.FC<EmployeeStatusToggleProps> = ({
         onClick={() => onChange('active')}
       >
         <User className="h-4 w-4" />
-        <span>{t('hr.filter.active_employees')}</span>
+        <span>Active Employees</span>
       </Button>
       <Button
         variant="ghost"
@@ -45,7 +43,7 @@ const EmployeeStatusToggle: React.FC<EmployeeStatusToggleProps> = ({
         onClick={() => onChange('terminated')}
       >
         <UserMinus className="h-4 w-4" />
-        <span>{t('hr.filter.terminated_employees')}</span>
+        <span>Terminated Employees</span>
       </Button>
     </div>
   );
