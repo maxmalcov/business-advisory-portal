@@ -7,7 +7,7 @@ import ServiceSearch from './components/ServiceSearch';
 import { useServices } from './hooks/useServices';
 import { useServiceRequests } from './hooks/useServiceRequests';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ServiceJournal } from '@/pages/ServiceJournal';
+import ServiceJournal from '@/pages/ServiceJournal'; // Updated import
 
 const Services: React.FC = () => {
   const { user } = useAuth();
