@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
@@ -21,7 +22,6 @@ import NewEmployee from "@/pages/HR/NewEmployee";
 import Termination from "@/pages/HR/Termination";
 import WorkHours from "@/pages/HR/WorkHours";
 import AdminDashboard from "@/pages/AdminDashboard";
-import AdminServices from "@/pages/AdminServices";
 import AdminUsefulLinks from "@/pages/AdminUsefulLinks";
 import ServiceEditor from "@/pages/AdminServices/components/ServiceEditor";
 import AdminUserManagement from "@/pages/AdminUserManagement";
@@ -139,11 +139,6 @@ const AppRoutes = () => {
         <Route path="admin/reports" element={
           <ProtectedRoute requiredRole="admin">
             <Reports />
-          </ProtectedRoute>
-        } />
-        <Route path="admin/services" element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminServices />
           </ProtectedRoute>
         } />
         <Route path="admin/useful-links" element={

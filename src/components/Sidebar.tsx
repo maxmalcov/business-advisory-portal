@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -18,7 +19,7 @@ import {
   History,
   Mail,
   Inbox,
-  Tools
+  Wrench
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -142,7 +143,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     {
       name: t('admin.service_catalog'),
       path: '/admin/service-catalog',
-      icon: Tools,
+      icon: Wrench,
       tooltip: 'Manage service offerings',
     },
   ];
