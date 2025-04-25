@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -17,9 +16,7 @@ import {
   Activity,
   FileText,
   History,
-  Mail,
-  Inbox,
-  Wrench
+  Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -135,16 +132,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: Activity,
     },
     {
-      name: t('admin.service_requests'),
-      path: '/admin/service-requests',
-      icon: Inbox,
-      tooltip: 'View and manage service requests',
+      name: t('nav.services'),
+      path: '/admin/services',
+      icon: Sparkles,
+      highlight: true,
+      tooltip: 'Manage and configure client services',
     },
     {
-      name: t('admin.service_catalog'),
-      path: '/admin/service-catalog',
-      icon: Wrench,
-      tooltip: 'Manage service offerings',
+      name: 'Email Settings',
+      path: '/admin/settings/notifications',
+      icon: Mail,
     },
   ];
 

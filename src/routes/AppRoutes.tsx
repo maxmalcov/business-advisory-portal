@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
@@ -22,6 +21,7 @@ import NewEmployee from "@/pages/HR/NewEmployee";
 import Termination from "@/pages/HR/Termination";
 import WorkHours from "@/pages/HR/WorkHours";
 import AdminDashboard from "@/pages/AdminDashboard";
+import AdminServices from "@/pages/AdminServices";
 import AdminUsefulLinks from "@/pages/AdminUsefulLinks";
 import ServiceEditor from "@/pages/AdminServices/components/ServiceEditor";
 import AdminUserManagement from "@/pages/AdminUserManagement";
@@ -30,8 +30,6 @@ import AdminSubscriptions from "@/pages/AdminSubscriptions";
 import { ProtectedRoute } from "./ProtectedRoute";
 import InvoiceHistory from "@/pages/InvoiceHistory";
 import NotificationSettings from "@/pages/AdminServices/components/NotificationSettings";
-import AdminServiceRequests from "@/pages/AdminServiceRequests";
-import AdminServiceCatalog from "@/pages/AdminServiceCatalog";
 
 const AppRoutes = () => {
   return (
@@ -141,6 +139,11 @@ const AppRoutes = () => {
             <Reports />
           </ProtectedRoute>
         } />
+        <Route path="admin/services" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminServices />
+          </ProtectedRoute>
+        } />
         <Route path="admin/useful-links" element={
           <ProtectedRoute requiredRole="admin">
             <AdminUsefulLinks />
@@ -174,16 +177,6 @@ const AppRoutes = () => {
         <Route path="admin/settings/notifications" element={
           <ProtectedRoute requiredRole="admin">
             <NotificationSettings />
-          </ProtectedRoute>
-        } />
-        <Route path="admin/service-requests" element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminServiceRequests />
-          </ProtectedRoute>
-        } />
-        <Route path="admin/service-catalog" element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminServiceCatalog />
           </ProtectedRoute>
         } />
       </Route>
