@@ -1,19 +1,19 @@
 
 import React from 'react';
-import { Settings } from 'lucide-react';
+import { Tools } from 'lucide-react';
 
-const ServicesHeader: React.FC = () => {
+const ServiceCatalogHeader: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="bg-primary/10 p-3 rounded-full">
-            <Settings className="h-6 w-6 text-primary" />
+            <Tools className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Services Management</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Service Catalog</h1>
             <p className="text-muted-foreground mt-1">
-              Oversee and process all additional service requests from clients
+              Manage available service offerings
             </p>
           </div>
         </div>
@@ -22,4 +22,4 @@ const ServicesHeader: React.FC = () => {
   );
 };
 
-export default ServicesHeader;
+export default ServiceCatalogHeader;
