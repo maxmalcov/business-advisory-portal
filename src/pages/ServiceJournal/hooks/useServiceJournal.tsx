@@ -3,6 +3,13 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase, serviceRequestsTable, servicesTable } from '@/integrations/supabase/client';
 
+// Define a more specific type for our service details
+interface ServiceDetail {
+  id: string;
+  description: string;
+  price: string;
+}
+
 export const useServiceJournal = (userId?: string) => {
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,19 +37,26 @@ export const useServiceJournal = (userId?: string) => {
           const serviceIds = serviceRequests.map(request => request.service_id);
           
           // Fetch service details for all service IDs
-          // The TypeScript error is happening here, so we need to handle the response more carefully
           const serviceDetailsResponse = await servicesTable()
             .select('id, description, price')
             .in('id', serviceIds);
             
           if (serviceDetailsResponse.error) throw serviceDetailsResponse.error;
           
-          const serviceDetails = serviceDetailsResponse.data || [];
+          // Make sure we have data before proceeding
+          if (!serviceDetailsResponse.data) {
+            throw new Error('No service details found');
+          }
+          
+          // Safely cast the data to our interface type
+          const serviceDetails = serviceDetailsResponse.data as ServiceDetail[];
           
           // Create a map of service details for quick lookup
-          const serviceDetailsMap = {};
+          const serviceDetailsMap: Record<string, ServiceDetail> = {};
           serviceDetails.forEach(service => {
-            serviceDetailsMap[service.id] = service;
+            if (service && service.id) {
+              serviceDetailsMap[service.id] = service;
+            }
           });
           
           // Combine service requests with their details
