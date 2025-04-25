@@ -7,6 +7,7 @@ import { Wrench, Plus } from 'lucide-react';
 import { useServiceData } from './hooks/useServiceData';
 import ServiceTable from './components/ServiceTable';
 import { PageHeader } from '@/components/ui/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const AdminServiceCatalog: React.FC = () => {
   const { services, loading, handleDelete, DeleteConfirmationDialog } = useServiceData();
