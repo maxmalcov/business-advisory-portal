@@ -33,6 +33,7 @@ import AdminServiceRequests from "@/pages/AdminServiceRequests";
 import AdminServiceCatalog from "@/pages/AdminServiceCatalog";
 import AdminSubscriptionRequests from "@/pages/AdminSubscriptionRequests";
 import AdminSubscriptionCatalog from "@/pages/AdminSubscriptionCatalog";
+import ServiceJournal from "@/pages/ServiceJournal";
 
 const AppRoutes = () => {
   return (
@@ -130,7 +131,12 @@ const AppRoutes = () => {
             <WorkHours />
           </ProtectedRoute>
         } />
-
+        <Route path="user/service-journal" element={
+          <ProtectedRoute requiredRole="client">
+            <ServiceJournal />
+          </ProtectedRoute>
+        } />
+        
         {/* Admin Routes */}
         <Route path="admin/service-requests" element={
           <ProtectedRoute requiredRole="admin">
