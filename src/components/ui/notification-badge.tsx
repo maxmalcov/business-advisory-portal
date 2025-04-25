@@ -7,12 +7,13 @@ interface NotificationBadgeProps {
 }
 
 export function NotificationBadge({ count, className }: NotificationBadgeProps) {
+  // Do not render anything if count is 0
   if (count === 0) return null;
 
   return (
     <div 
       className={cn(
-        "flex items-center justify-center h-5 min-w-5 text-xs font-medium rounded-full bg-destructive text-destructive-foreground",
+        "absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center justify-center min-w-[20px] h-[20px] text-xs font-bold rounded-full bg-destructive text-destructive-foreground",
         className
       )}
     >
