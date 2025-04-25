@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { FilterInput } from '@/pages/HR/components/FilterInput';
 import { Download } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface InvoiceFiltersProps {
   filterOption: DateFilterOption;
@@ -34,10 +35,46 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
   onExport,
   totalItems
 }) => {
+  const { language } = useLanguage();
+  
+  const getTexts = () => {
+    if (language === 'es') {
+      return {
+        invoiceRecords: "Registros de Facturas",
+        exportCSV: "Exportar CSV",
+        searchPlaceholder: "Buscar por nombre de usuario o correo electrónico",
+        selectType: "Seleccionar tipo de factura",
+        allTypes: "Todos los tipos",
+        salesInvoices: "Facturas de Venta",
+        supplierInvoices: "Facturas de Proveedores",
+        showing: "Mostrando",
+        invoice: "factura",
+        invoices: "facturas",
+        matching: "coincidentes con el filtro"
+      };
+    } else {
+      return {
+        invoiceRecords: "Invoice Records",
+        exportCSV: "Export CSV",
+        searchPlaceholder: "Search by user name or email",
+        selectType: "Select invoice type",
+        allTypes: "All Types",
+        salesInvoices: "Sales Invoices",
+        supplierInvoices: "Supplier Invoices",
+        showing: "Showing",
+        invoice: "invoice",
+        invoices: "invoices",
+        matching: "matching filter"
+      };
+    }
+  };
+  
+  const texts = getTexts();
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h3 className="text-lg font-medium">Invoice Records</h3>
+        <h3 className="text-lg font-medium">{texts.invoiceRecords}</h3>
         <Button 
           onClick={onExport} 
           variant="outline" 
@@ -45,7 +82,7 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
           disabled={totalItems === 0}
         >
           <Download className="h-4 w-4" />
-          Export CSV
+          {texts.exportCSV}
         </Button>
       </div>
       
@@ -60,24 +97,24 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
         <FilterInput 
           value={userFilter}
           onChange={onUserFilterChange}
-          placeholder="Search by user name or email"
+          placeholder={texts.searchPlaceholder}
           className="w-full"
         />
         
         <Select value={typeFilter} onValueChange={(value) => onTypeFilterChange(value as 'all' | 'sales' | 'supplier')}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select invoice type" />
+            <SelectValue placeholder={texts.selectType} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="sales">Sales Invoices</SelectItem>
-            <SelectItem value="supplier">Supplier Invoices</SelectItem>
+            <SelectItem value="all">{texts.allTypes}</SelectItem>
+            <SelectItem value="sales">{texts.salesInvoices}</SelectItem>
+            <SelectItem value="supplier">{texts.supplierInvoices}</SelectItem>
           </SelectContent>
         </Select>
       </div>
       
       <div className="text-sm text-muted-foreground">
-        Showing {totalItems} {totalItems === 1 ? 'invoice' : 'invoices'} {userFilter && 'matching filter'}
+        {texts.showing} {totalItems} {totalItems === 1 ? texts.invoice : texts.invoices} {userFilter && texts.matching}
       </div>
     </div>
   );

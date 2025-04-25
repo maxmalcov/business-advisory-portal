@@ -14,7 +14,7 @@ const InvoicesHeader: React.FC = () => {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t('invoices.title')}</h1>
         <p className="text-muted-foreground mt-1">
-          Upload and manage your sales invoices
+          {t('language') === 'es' ? 'Suba y gestione sus facturas de venta' : 'Upload and manage your sales invoices'}
         </p>
       </div>
     </div>

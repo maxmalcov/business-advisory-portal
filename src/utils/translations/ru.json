@@ -1,0 +1,52 @@
+
+{
+  "common": {
+    "loading": "Загрузка...",
+    "empty": "Нет доступных данных",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "back": "Назад"
+  },
+  "activity": {
+    "all_activity": "Вся активность",
+    "search": "Поиск",
+    "search_placeholder": "Поиск активностей...",
+    "no_results": "Активности не найдены",
+    "type": "Тип",
+    "title": "Заголовок",
+    "description": "Описание",
+    "date": "Дата и время",
+    "view_all": "Просмотреть всю активность"
+  },
+  "nav": {
+    "dashboard": "Панель управления",
+    "activity_log": "Журнал активности",
+    "service_requests": "Запросы на обслуживание",
+    "invoices": "Счета",
+    "sale_invoices": "Счета продаж",
+    "supplier_invoices": "Счета поставщиков",
+    "subscriptions": "Управление подписками"
+  },
+  "services": {
+    "title": "Запросы на обслуживание",
+    "service_name": "Услуга",
+    "status": "Статус",
+    "requested_date": "Запрошено",
+    "completion_date": "Выполнено",
+    "no_results": "Запросы на обслуживание не найдены",
+    "search_placeholder": "Поиск запросов на обслуживание..."
+  },
+  "invoices": {
+    "title": "Счета продаж",
+    "upload": "Загрузить",
+    "history": "История",
+    "date": "Дата",
+    "amount": "Сумма",
+    "client": "Клиент",
+    "status": "Статус",
+    "upload_success": "Счета успешно загружены",
+    "max_size": "Максимальный размер файла: 25МБ",
+    "max_files": "Загрузите до 15 файлов за раз",
+    "allowed_types": "Допустимые типы файлов: PDF или JPG"
+  }
+}

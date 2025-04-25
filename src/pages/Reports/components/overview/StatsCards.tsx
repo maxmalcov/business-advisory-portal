@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Card,
@@ -7,6 +8,7 @@ import {
 } from '@/components/ui/card';
 import { FileText, Users, Package, Grid2X2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface StatsCardsProps {
   invoiceStats: {
@@ -38,6 +40,37 @@ const StatsCards: React.FC<StatsCardsProps> = ({
   onTabChange
 }) => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  
+  const getTexts = () => {
+    if (language === 'es') {
+      return {
+        totalInvoices: "Total de Facturas",
+        uploadedThisMonth: "subidas este mes",
+        activeEmployees: "Empleados Activos",
+        addedInLast30Days: "añadidos en los últimos 30 días",
+        serviceRequests: "Solicitudes de Servicio",
+        completed: "completadas",
+        pending: "pendientes",
+        subscriptionRequests: "Solicitudes de Suscripción",
+        active: "activas",
+      };
+    } else {
+      return {
+        totalInvoices: "Total Invoices",
+        uploadedThisMonth: "uploaded this month",
+        activeEmployees: "Active Employees",
+        addedInLast30Days: "added in last 30 days",
+        serviceRequests: "Service Requests",
+        completed: "completed",
+        pending: "pending",
+        subscriptionRequests: "Subscription Requests",
+        active: "active",
+      };
+    }
+  };
+  
+  const texts = getTexts();
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -46,26 +79,26 @@ const StatsCards: React.FC<StatsCardsProps> = ({
         onClick={() => onTabChange?.('invoices')}
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
+          <CardTitle className="text-sm font-medium">{texts.totalInvoices}</CardTitle>
           <FileText className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{invoiceStats.total}</div>
           <p className="text-xs text-muted-foreground">
-            {invoiceStats.thisMonth} uploaded this month
+            {invoiceStats.thisMonth} {texts.uploadedThisMonth}
           </p>
         </CardContent>
       </Card>
 
       <Card className="h-full transition-all duration-200 hover:bg-muted/50 hover:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Active Employees</CardTitle>
+          <CardTitle className="text-sm font-medium">{texts.activeEmployees}</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{employeeStats.active}</div>
           <p className="text-xs text-muted-foreground">
-            {employeeStats.recentlyAdded} added in last 30 days
+            {employeeStats.recentlyAdded} {texts.addedInLast30Days}
           </p>
         </CardContent>
       </Card>
@@ -75,13 +108,13 @@ const StatsCards: React.FC<StatsCardsProps> = ({
         onClick={() => navigate('/admin/service-requests')}
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Service Requests</CardTitle>
+          <CardTitle className="text-sm font-medium">{texts.serviceRequests}</CardTitle>
           <Package className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{servicesStats.requested}</div>
           <p className="text-xs text-muted-foreground">
-            {servicesStats.completed} completed, {servicesStats.pending} pending
+            {servicesStats.completed} {texts.completed}, {servicesStats.pending} {texts.pending}
           </p>
         </CardContent>
       </Card>
@@ -91,13 +124,13 @@ const StatsCards: React.FC<StatsCardsProps> = ({
         onClick={() => onTabChange?.('subscriptions')}
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Subscription Requests</CardTitle>
+          <CardTitle className="text-sm font-medium">{texts.subscriptionRequests}</CardTitle>
           <Grid2X2 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{subscriptionStats.total}</div>
           <p className="text-xs text-muted-foreground">
-            {subscriptionStats.active} active, {subscriptionStats.pending} pending
+            {subscriptionStats.active} {texts.active}, {subscriptionStats.pending} {texts.pending}
           </p>
         </CardContent>
       </Card>

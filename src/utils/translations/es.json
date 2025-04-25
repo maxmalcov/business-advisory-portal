@@ -1,0 +1,52 @@
+
+{
+  "common": {
+    "loading": "Cargando...",
+    "empty": "No hay datos disponibles",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "back": "Atrás"
+  },
+  "activity": {
+    "all_activity": "Toda la Actividad",
+    "search": "Buscar",
+    "search_placeholder": "Buscar actividades...",
+    "no_results": "No se encontraron actividades",
+    "type": "Tipo",
+    "title": "Título",
+    "description": "Descripción",
+    "date": "Fecha y Hora",
+    "view_all": "Ver Toda la Actividad"
+  },
+  "nav": {
+    "dashboard": "Panel de Control",
+    "activity_log": "Registro de Actividad",
+    "service_requests": "Solicitudes de Servicio",
+    "invoices": "Facturas",
+    "sale_invoices": "Facturas de Venta",
+    "supplier_invoices": "Facturas de Proveedores",
+    "subscriptions": "Gestión de Suscripciones"
+  },
+  "services": {
+    "title": "Solicitudes de Servicio",
+    "service_name": "Servicio",
+    "status": "Estado",
+    "requested_date": "Solicitado",
+    "completion_date": "Completado",
+    "no_results": "No se encontraron solicitudes de servicio",
+    "search_placeholder": "Buscar solicitudes de servicio..."
+  },
+  "invoices": {
+    "title": "Facturas de Venta",
+    "upload": "Subir",
+    "history": "Historial",
+    "date": "Fecha",
+    "amount": "Importe",
+    "client": "Cliente",
+    "status": "Estado",
+    "upload_success": "Facturas subidas correctamente",
+    "max_size": "Tamaño máximo por archivo: 25MB",
+    "max_files": "Subir hasta 15 archivos a la vez",
+    "allowed_types": "Tipos de archivo permitidos: PDF o JPG"
+  }
+}

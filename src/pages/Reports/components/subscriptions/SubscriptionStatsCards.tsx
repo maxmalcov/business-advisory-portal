@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SubscriptionStats } from '../../hooks/types/subscriptionTypes';
 import { Users, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface SubscriptionStatsCardsProps {
   stats: SubscriptionStats;
@@ -10,6 +11,28 @@ interface SubscriptionStatsCardsProps {
 }
 
 const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({ stats, loading }) => {
+  const { language } = useLanguage();
+  
+  const getTexts = () => {
+    if (language === 'es') {
+      return {
+        totalSubscriptions: "Total de Suscripciones",
+        active: "Activas",
+        expired: "Expiradas",
+        cancelled: "Canceladas"
+      };
+    } else {
+      return {
+        totalSubscriptions: "Total Subscriptions",
+        active: "Active",
+        expired: "Expired",
+        cancelled: "Cancelled"
+      };
+    }
+  };
+  
+  const texts = getTexts();
+  
   if (loading) {
     return (
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -31,7 +54,7 @@ const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({ stats, 
     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Total Subscriptions</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.totalSubscriptions}</CardTitle>
           <Users className="h-4 w-4 text-blue-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">
@@ -41,7 +64,7 @@ const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({ stats, 
       
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Active</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.active}</CardTitle>
           <CheckCircle className="h-4 w-4 text-green-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">
@@ -51,7 +74,7 @@ const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({ stats, 
       
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Expired</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.expired}</CardTitle>
           <Clock className="h-4 w-4 text-yellow-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">
@@ -61,7 +84,7 @@ const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({ stats, 
       
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Cancelled</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.cancelled}</CardTitle>
           <XCircle className="h-4 w-4 text-red-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">
