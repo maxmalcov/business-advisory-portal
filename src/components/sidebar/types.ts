@@ -7,7 +7,6 @@ export interface SidebarItem {
   tooltip?: string;
   badge?: number;
   hasPendingChildren?: boolean;
-  hasPendingNotification?: boolean;
   children?: SidebarItem[];
 }
 
