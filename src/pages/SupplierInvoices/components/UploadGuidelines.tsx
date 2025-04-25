@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
 
 interface UploadGuidelinesProps {
   maxFileSize?: number;
@@ -17,43 +16,17 @@ const UploadGuidelines: React.FC<UploadGuidelinesProps> = ({
   emailAddress,
   emailType
 }) => {
-  const { language } = useLanguage();
-  
-  const emailTypeLabel = emailType === 'outgoing' ? 
-    (language === 'es' ? 'salida' : 'outgoing') : 
-    (language === 'es' ? 'entrada' : 'incoming');
-
-  const getTexts = () => {
-    if (language === 'es') {
-      return {
-        maxSize: `Tamaño máximo: ${maxFileSize}MB por archivo`,
-        maxFilesText: `Máximo ${maxFiles} archivos a la vez`,
-        formats: `Formatos aceptados: ${acceptedFormats.join(', ')}`,
-        emailConfirmed: `Las notificaciones por correo electrónico se enviarán a: ${emailAddress}`,
-        emailWarning: `Advertencia: No hay correo electrónico de factura de ${emailTypeLabel} configurado en su perfil`
-      };
-    } else {
-      return {
-        maxSize: `Maximum file size: ${maxFileSize}MB per file`,
-        maxFilesText: `Maximum ${maxFiles} files at once`,
-        formats: `Allowed file types: ${acceptedFormats.join(', ')}`,
-        emailConfirmed: `Email notifications will be sent to: ${emailAddress}`,
-        emailWarning: `Warning: No ${emailTypeLabel} invoice email configured in your profile`
-      };
-    }
-  };
-  
-  const texts = getTexts();
+  const emailTypeLabel = emailType === 'outgoing' ? 'outgoing' : 'incoming';
 
   return (
     <div className="bg-muted p-4 rounded-md text-sm space-y-1">
-      <p>{texts.maxSize}</p>
-      <p>{texts.maxFilesText}</p>
-      <p>{texts.formats}</p>
+      <p>Maximum file size: {maxFileSize}MB per file</p>
+      <p>Maximum {maxFiles} files at once</p>
+      <p>Allowed file types: {acceptedFormats.join(', ')}</p>
       {emailAddress ? (
-        <p className="text-green-600">{texts.emailConfirmed}</p>
+        <p className="text-green-600">Email notifications will be sent to: {emailAddress}</p>
       ) : (
-        <p className="text-amber-600">{texts.emailWarning}</p>
+        <p className="text-amber-600">Warning: No {emailTypeLabel} invoice email configured in your profile</p>
       )}
     </div>
   );
