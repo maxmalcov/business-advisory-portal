@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -28,36 +28,41 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   status = 'available',
   onRequestService
 }) => {
+  const [isHovering, setIsHovering] = useState(false);
+
   const getButtonProps = (status: ServiceStatus) => {
     switch(status) {
       case 'completed':
         return {
           variant: 'outline' as const,
-          className: 'bg-green-50 hover:bg-green-50 text-green-600 cursor-not-allowed',
-          disabled: true,
-          label: 'Completed'
+          className: `${isHovering ? 'bg-green-100 hover:bg-green-200' : 'bg-green-50'} text-green-600`,
+          disabled: false,
+          label: isHovering ? 'Request Again' : 'Completed',
+          tooltip: 'Request this service again'
         };
       case 'pending':
         return {
           variant: 'outline' as const,
           className: 'bg-yellow-50 hover:bg-yellow-50 text-yellow-600 cursor-not-allowed',
           disabled: true,
-          label: 'Pending'
+          label: 'Pending',
+          tooltip: 'Your request is being processed'
         };
       case 'rejected':
         return {
           variant: 'outline' as const,
-          className: 'bg-red-50 hover:bg-red-100 text-red-600',
+          className: `${isHovering ? 'bg-red-100 hover:bg-red-200' : 'bg-red-50'} text-red-600`,
           disabled: false,
-          label: 'Request Again',
-          tooltip: 'Click to request again'
+          label: isHovering ? 'Request Again' : 'Rejected',
+          tooltip: 'Request this service again'
         };
       default:
         return {
           variant: 'default' as const,
           className: '',
           disabled: false,
-          label: 'Request Service'
+          label: 'Request Service',
+          tooltip: ''
         };
     }
   };
@@ -71,6 +76,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         className={buttonProps.className}
         disabled={buttonProps.disabled}
         onClick={() => !buttonProps.disabled && onRequestService(id)}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
       >
         {buttonProps.label}
       </Button>
