@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ServiceRequest, ServiceStatus } from '../hooks/useServiceRequests';
 import { format } from 'date-fns';
 import { Eye, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface ServiceRequestsListProps {
   loading: boolean;
@@ -28,16 +29,18 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
     }
   };
 
+  const {t} = useLanguage()
+
   const getStatusBadge = (status: string) => {
     switch(status) {
       case 'pending':
-        return <Badge className="bg-yellow-500">Pending</Badge>;
+        return <Badge className="bg-yellow-500">{t('status.pending')}</Badge>;
       case 'completed':
-        return <Badge className="bg-green-500">Completed</Badge>;
+        return <Badge className="bg-green-500">{t('status.completed')}</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-500">Rejected</Badge>;
+        return <Badge className="bg-red-500">{t('status.rejected')}</Badge>;
       default:
-        return <Badge>Unknown</Badge>;
+        return <Badge>{t('status.unknown')}</Badge>;
     }
   };
 
@@ -64,11 +67,11 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Client</TableHead>
-          <TableHead>Service</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Actions</TableHead>
+          <TableHead>{t('service.table.client')}</TableHead>
+          <TableHead>{t('service.table.service')}</TableHead>
+          <TableHead>{t('service.table.date')}</TableHead>
+          <TableHead>{t('service.table.status')}</TableHead>
+          <TableHead>{t('service.table.actions')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -86,7 +89,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
                   onClick={() => openDetailsDialog(request)}
                 >
                   <Eye className="h-4 w-4 mr-1" />
-                  Details
+                  {t('service.table.details')}
                 </Button>
                 
                 {request.status !== 'completed' && (
@@ -97,7 +100,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
                     onClick={() => handleUpdateStatus(request.id, 'completed')}
                   >
                     <CheckCircle className="h-4 w-4 mr-1" />
-                    Approve
+                    {t('service.table.approve')}
                   </Button>
                 )}
                 
@@ -109,7 +112,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
                     onClick={() => handleUpdateStatus(request.id, 'rejected')}
                   >
                     <XCircle className="h-4 w-4 mr-1" />
-                    Reject
+                    {t('service.table.reject')}
                   </Button>
                 )}
                 
@@ -121,7 +124,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
                     onClick={() => handleUpdateStatus(request.id, 'pending')}
                   >
                     <RotateCcw className="h-4 w-4 mr-1" />
-                    Reset
+                    {t('service.table.reset')}
                   </Button>
                 )}
               </div>

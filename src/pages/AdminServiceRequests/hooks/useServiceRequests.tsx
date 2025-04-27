@@ -1,6 +1,8 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
+import {serviceRequestsTable} from "@/integrations/supabase/client.ts";
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 // Types
 export type ServiceStatus = 'all' | 'pending' | 'completed' | 'rejected';
@@ -32,44 +34,9 @@ export const useServiceRequests = () => {
 
   // Mock data
   useEffect(() => {
-    // Simulate API fetch delay
-    const timer = setTimeout(() => {
-      const mockRequests: ServiceRequest[] = [
-        {
-          id: '1',
-          client_id: 'client-001',
-          client_name: 'John Doe',
-          service_id: 'service-001',
-          service_name: 'Financial Consulting',
-          request_date: '2025-04-10T09:30:00Z',
-          updated_at: '2025-04-10T09:30:00Z',
-          status: 'pending',
-          details: 'Looking for quarterly financial analysis.'
-        },
-        {
-          id: '2',
-          client_id: 'client-002',
-          client_name: 'Jane Smith',
-          service_id: 'service-002',
-          service_name: 'Tax Filing Assistance',
-          request_date: '2025-04-08T14:15:00Z',
-          updated_at: '2025-04-09T10:20:00Z',
-          status: 'completed',
-          admin_notes: 'Completed tax filing for 2024.'
-        },
-        {
-          id: '3',
-          client_id: 'client-003',
-          client_name: 'Robert Johnson',
-          service_id: 'service-003',
-          service_name: 'Business Plan Development',
-          request_date: '2025-04-05T11:45:00Z',
-          updated_at: '2025-04-07T16:30:00Z',
-          status: 'rejected',
-          admin_notes: 'Client requested cancellation.'
-        }
-      ];
-      
+    const timer = setTimeout(async () => {
+      const mockRequests: ServiceRequest[] = (await serviceRequestsTable().select("*") as any).data as ServiceRequest[]
+
       setRequests(mockRequests);
       setFilteredRequests(mockRequests);
       setLoading(false);
@@ -105,8 +72,10 @@ export const useServiceRequests = () => {
     setIsDialogOpen(true);
   }, []);
 
+  const {t} = useLanguage()
+
   // Update request status
-  const handleUpdateStatus = useCallback((requestId: string, newStatus: ServiceStatus) => {
+  const handleUpdateStatus = useCallback(async (requestId: string, newStatus: ServiceStatus) => {
     if (newStatus === 'all') return; // 'all' is not a valid status for a request
     
     setRequests(prevRequests => 
@@ -116,10 +85,12 @@ export const useServiceRequests = () => {
           : request
       )
     );
+
+    await serviceRequestsTable().update({ status: newStatus }).eq('id', requestId)
     
     toast({
-      title: "Status updated",
-      description: `Request status has been updated to ${newStatus}.`,
+      title: t('service.request.toast.title'),
+      description: t('service.request.toast.description'),
     });
   }, []);
 
@@ -138,10 +109,12 @@ export const useServiceRequests = () => {
           : request
       )
     );
+
+    const {t} = useLanguage()
     
     toast({
-      title: "Notes saved",
-      description: "Admin notes have been successfully saved.",
+      title: t('service.notes.toast.title'),
+      description: t('service.notes.toast.description'),
     });
     
     setLoading(false);

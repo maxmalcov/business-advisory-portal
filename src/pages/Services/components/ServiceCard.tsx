@@ -38,7 +38,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           variant: 'outline' as const,
           className: `${isHovering ? 'bg-green-100 hover:bg-green-200' : 'bg-green-50'} text-green-600`,
           disabled: false,
-          label: isHovering ? t('services.request') : 'Completed',
+          label: isHovering ? t('services.request') : t('status.completed'),
           tooltip: 'Request this service again'
         };
       case 'pending':
@@ -46,7 +46,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           variant: 'outline' as const,
           className: 'bg-yellow-50 hover:bg-yellow-50 text-yellow-600 cursor-not-allowed',
           disabled: true,
-          label: 'Pending',
+          label: t('status.pending'),
           tooltip: 'Your request is being processed'
         };
       case 'rejected':
@@ -54,7 +54,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           variant: 'outline' as const,
           className: `${isHovering ? 'bg-red-100 hover:bg-red-200' : 'bg-red-50'} text-red-600`,
           disabled: false,
-          label: isHovering ? t('services.request') : 'Rejected',
+          label: isHovering ? t('services.request') : t('status.rejected'),
           tooltip: 'Request this service again'
         };
       default:

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Service } from '../hooks/useServiceData';
 import { format } from 'date-fns';
 import { Edit, Trash } from 'lucide-react';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface ServiceTableProps {
   services: Service[];
@@ -22,17 +23,19 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onDelete }) => {
     }
   };
 
+  const {t} = useLanguage()
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Title</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Created</TableHead>
-          <TableHead>Actions</TableHead>
+          <TableHead>{t('services.title')}</TableHead>
+          <TableHead>{t('services.description')}</TableHead>
+          <TableHead>{t('services.price')}</TableHead>
+          <TableHead>{t('services.category')}</TableHead>
+          <TableHead>{t('services.status')}</TableHead>
+          <TableHead>{t('services.created')}</TableHead>
+          <TableHead>{t('services.actions')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -44,8 +47,8 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onDelete }) => {
             <TableCell>{service.category || '-'}</TableCell>
             <TableCell>
               {service.status === 'active' ? 
-                <Badge className="bg-green-500">Active</Badge> : 
-                <Badge variant="outline" className="text-red-500">Inactive</Badge>
+                <Badge className="bg-green-500">{t('services.status.active')}</Badge> :
+                <Badge variant="outline" className="text-red-500">{t('services.status.inactive')}</Badge>
               }
             </TableCell>
             <TableCell>{formatDate(service.created_at)}</TableCell>
@@ -57,7 +60,7 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ services, onDelete }) => {
                   asChild
                 >
                   <Link to={`/admin/services/edit/${service.id}`}>
-                    <Edit className="h-4 w-4 mr-1" /> Edit
+                    <Edit className="h-4 w-4 mr-1" /> {t('service.edit')}
                   </Link>
                 </Button>
                 <Button 

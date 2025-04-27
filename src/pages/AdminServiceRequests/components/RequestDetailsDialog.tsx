@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 type ServiceStatus = 'available' | 'pending' | 'completed' | 'rejected';
 
@@ -34,16 +35,18 @@ const RequestDetailsDialog: React.FC<RequestDetailsDialogProps> = ({
   setAdminNotes,
   handleSaveNotes
 }) => {
+  const {t} = useLanguage()
+
   const getStatusBadge = (status: ServiceStatus) => {
     switch(status) {
       case 'pending':
-        return <Badge className="bg-yellow-500">Pending</Badge>;
+        return <Badge className="bg-yellow-500">{t('status.pending')}</Badge>;
       case 'completed':
-        return <Badge className="bg-green-500">Completed</Badge>;
+        return <Badge className="bg-green-500">{t('status.completed')}</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-500">Rejected</Badge>;
+        return <Badge className="bg-red-500">{t('status.rejected')}</Badge>;
       default:
-        return <Badge>Available</Badge>;
+        return <Badge>{t('status.available')}</Badge>;
     }
   };
 
@@ -62,45 +65,45 @@ const RequestDetailsDialog: React.FC<RequestDetailsDialogProps> = ({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Service Request Details</DialogTitle>
+          <DialogTitle>{t('service.detail.title')}</DialogTitle>
           <DialogDescription>
-            View and manage the details of this service request
+            {t('service.detail.description')}
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Client:</Label>
+              <Label>{t('service.detail.client')}</Label>
               <div className="font-medium">{selectedRequest.client_name}</div>
             </div>
             <div>
-              <Label>Service:</Label>
+              <Label>{t('service.detail.service')}</Label>
               <div className="font-medium">{selectedRequest.service_name}</div>
             </div>
             <div>
-              <Label>Request Date:</Label>
+              <Label>{t('service.detail.date')}</Label>
               <div className="font-medium">{formatDate(selectedRequest.request_date)}</div>
             </div>
             <div>
-              <Label>Status:</Label>
+              <Label>{t('service.detail.status')}</Label>
               <div className="font-medium">{getStatusBadge(selectedRequest.status as ServiceStatus)}</div>
             </div>
             <div>
-              <Label>Last Updated:</Label>
+              <Label>{t('service.detail.last-update')}</Label>
               <div className="font-medium">{formatDate(selectedRequest.updated_at)}</div>
             </div>
             <div>
-              <Label>Request ID:</Label>
+              <Label>{t('service.detail.req-id')}</Label>
               <div className="font-medium text-xs">{selectedRequest.id}</div>
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="admin-notes">Admin Notes:</Label>
+            <Label htmlFor="admin-notes">{t('service.detail.admin-notes')}</Label>
             <Textarea
               id="admin-notes"
-              placeholder="Add internal notes about this request..."
+              placeholder={t('service.detail.add-note.placeholder')}
               rows={4}
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
@@ -109,8 +112,8 @@ const RequestDetailsDialog: React.FC<RequestDetailsDialogProps> = ({
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleSaveNotes}>Save Notes</Button>
+          <Button variant="outline" onClick={() => setIsDialogOpen(false)}>{t('service.detail.cancel')}</Button>
+          <Button onClick={handleSaveNotes}>{t('service.detail.save-notes')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -18,11 +18,11 @@ export const useServiceData = () => {
         const { data, error } = await servicesTable()
           .select('*')
           .order('created_at', { ascending: false });
-          
+
         if (error) {
           throw error;
         }
-        
+
         // Properly handle typing by first checking that data is not null
         if (data) {
           // Convert data to unknown first and then to Service[] to satisfy TypeScript
@@ -41,7 +41,7 @@ export const useServiceData = () => {
         setLoading(false);
       }
     };
-    
+
     fetchServices();
   }, [toast]);
 
@@ -50,22 +50,19 @@ export const useServiceData = () => {
     setConfirmDeleteId(serviceId);
   };
 
-  const confirmDelete = async () => {
+  const confirmDelete = () => {
+    console.log('delete')
     if (!confirmDeleteId) return;
-    
+
     try {
       setLoading(true);
-      
-      const { error } = await servicesTable()
+
+      servicesTable()
         .delete()
         .eq('id', confirmDeleteId);
-        
-      if (error) {
-        throw error;
-      }
-      
+
       setServices(services.filter(service => service.id !== confirmDeleteId));
-      
+
       toast({
         title: 'Service deleted',
         description: 'The service has been deleted successfully.',
@@ -101,7 +98,7 @@ export const useServiceData = () => {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
-            Delete
+            undo
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

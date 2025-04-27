@@ -8,27 +8,30 @@ import { useServiceData } from './hooks/useServiceData';
 import ServiceTable from './components/ServiceTable';
 import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 const AdminServiceCatalog: React.FC = () => {
   const { services, loading, handleDelete, DeleteConfirmationDialog } = useServiceData();
+
+  const {t} = useLanguage()
 
   return (
     <div className="space-y-6">
       <PageHeader
         icon={<Wrench className="h-6 w-6" />}
-        title="Service Catalog"
-        subtitle="Manage available service offerings"
+        title={t('service.title')}
+        subtitle={t('service.subtitle')}
       />
       
       <Card className="h-full">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Available Services</CardTitle>
+          <CardTitle>{t('service.available')}</CardTitle>
           <Button 
             asChild
             disabled={loading}
           >
             <Link to="/admin/services/create">
-              <Plus className="h-4 w-4 mr-2" /> Add New Service
+              <Plus className="h-4 w-4 mr-2" /> {t('service.add-new')}
             </Link>
           </Button>
         </CardHeader>
@@ -45,7 +48,7 @@ const AdminServiceCatalog: React.FC = () => {
             </div>
           ) : services.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-muted-foreground">No services found. Add your first service!</p>
+              <p className="text-muted-foreground">{t('service.not_found')}</p>
             </div>
           ) : (
             <ServiceTable 

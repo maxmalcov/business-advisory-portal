@@ -37,14 +37,6 @@ const Services: React.FC = () => {
           searchQuery={searchQuery}
         />
       )}
-      
-      {process.env.NODE_ENV !== 'production' && (
-        <div className="p-4 mt-8 text-sm bg-gray-100 rounded">
-          <h3 className="font-bold">Debug Info</h3>
-          <p>User ID: {user?.id || 'Not logged in'}</p>
-          <p>Services Count: {services.length}</p>
-        </div>
-      )}
     </div>
   );
 };

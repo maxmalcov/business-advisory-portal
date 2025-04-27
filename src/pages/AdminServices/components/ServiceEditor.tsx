@@ -9,6 +9,7 @@ import { useServiceForm } from '../hooks/useServiceForm';
 import { useServiceEditor } from '../hooks/useServiceEditor';
 import { ServiceEditorHeader } from './ServiceEditorHeader';
 import { ServiceEditorForm } from './ServiceEditorForm';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 const ServiceEditor: React.FC = () => {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ const ServiceEditor: React.FC = () => {
         description: `The service "${serviceForm.title}" has been ${isEditMode ? 'updated' : 'created'}.`,
       });
       
-      navigate('/admin/services');
+      navigate('/admin/service-catalog');
     } catch (error) {
       console.error('Error saving service:', error);
       toast({
@@ -81,7 +82,7 @@ const ServiceEditor: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate('/admin/services');
+    navigate('/admin/service-catalog');
   };
 
   // Add debugging for form state
@@ -118,6 +119,8 @@ const ServiceEditor: React.FC = () => {
     );
   }
 
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-6">
       <ServiceEditorHeader 
@@ -127,7 +130,7 @@ const ServiceEditor: React.FC = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>Service Details</CardTitle>
+          <CardTitle>{t('services.details')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ServiceEditorForm

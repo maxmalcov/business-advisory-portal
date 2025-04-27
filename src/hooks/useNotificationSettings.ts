@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface NotificationSetting {
   id: string;
@@ -31,6 +32,8 @@ export const useNotificationSettings = () => {
     },
   });
 
+  const {t} = useLanguage()
+
   const updateMutation = useMutation({
     mutationFn: async ({ category, email }: { category: string; email: string }) => {
       setIsUpdating(true);
@@ -44,15 +47,15 @@ export const useNotificationSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notification-settings'] });
       toast({
-        title: "Settings Updated",
-        description: "Email notification settings have been saved successfully.",
+        title: t('settings.toast.success.title'),
+        description: t('settings.toast.success.description'),
       });
     },
     onError: (error) => {
       console.error('Error updating notification settings:', error);
       toast({
-        title: "Update Failed",
-        description: "There was a problem updating the notification settings.",
+        title: t('settings.toast.failed.title'),
+        description: t('settings.toast.failed.description'),
         variant: "destructive",
       });
     },

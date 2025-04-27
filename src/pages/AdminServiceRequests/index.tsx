@@ -7,6 +7,7 @@ import ServiceFilters from './components/ServiceFilters';
 import RequestDetailsDialog from './components/RequestDetailsDialog';
 import { useServiceRequests } from './hooks/useServiceRequests';
 import { PageHeader } from '@/components/ui/page-header';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 const AdminServiceRequests: React.FC = () => {
   const {
@@ -26,12 +27,14 @@ const AdminServiceRequests: React.FC = () => {
     handleSaveNotes
   } = useServiceRequests();
 
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-6">
       <PageHeader
         icon={<Inbox className="h-6 w-6" />}
-        title="Service Requests"
-        subtitle="Oversee client service requests"
+        title={t('service.requests.title')}
+        subtitle={t('service.requests.description')}
       />
       
       {/* Filters */}
@@ -45,7 +48,7 @@ const AdminServiceRequests: React.FC = () => {
       {/* Service Requests Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Service Requests</CardTitle>
+          <CardTitle>{t('service.requests.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ServiceRequestsList

@@ -3,6 +3,7 @@ import React from 'react';
 import { ServiceItem } from '../types';
 import ServiceCard from './ServiceCard';
 import { getIconComponent } from '../utils/iconUtils';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface ServicesListProps {
   services: ServiceItem[];
@@ -17,9 +18,11 @@ export const ServicesList = ({ services, onRequestService, searchQuery }: Servic
   );
 
   if (filteredServices.length === 0) {
+    const {t} = useLanguage()
+
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground text-lg">No services available at the moment.</p>
+        <p className="text-muted-foreground text-lg">{t('services.no-available')}</p>
       </div>
     );
   }
