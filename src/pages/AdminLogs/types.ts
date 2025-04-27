@@ -1,12 +1,18 @@
+export enum LogCategory {
+  USER = 'user',
+  EMAIL = 'email',
+  SERVICE = 'service',
+  INVOICE = 'invoice'
+}
 
 export interface LogEntry {
   id: string;
   action: string;
   description: string;
-  timestamp: string;
-  user: string;
+  timestamp: string | Date;
+  user: string ;
   level: string;
-  category: string;
+  category: string | LogCategory;
 }
 
 export interface ChartDataItem {

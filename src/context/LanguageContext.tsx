@@ -172,320 +172,34 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Reports
     'reports.title': 'Reports & Analytics',
-    'reports.description': 'View detailed reports about your business activities'
+    'reports.description': 'View detailed reports about your business activities',
+
+    // Logs
+    'logs.history.title': 'System Log History',
+    'logs.history.description': 'Track and monitor all system activities and events',
+
+    'logs.type': 'Type',
+    'logs.action': 'Action',
+    'logs.user': 'User',
+    'logs.description': 'Description',
+    'logs.timestamp': 'Timestamp',
+    'logs.level': 'Level',
+
+    'logs.search.placeholder': 'Search logs...',
+    'logs.export': 'Export Logs',
+    'logs.categories': 'All Categories',
+    'logs.email': 'Email',
+    'logs.service': 'Service',
+    'logs.invoice': 'Invoice',
+
+    'logs.register_action': 'User registration',
+    'logs.register_description': 'New user registered: ',
   },
   
   es: {
-    // Common
-    'app.title': 'Portal Business Advisory',
-    'app.login': 'Iniciar sesión',
-    'app.logout': 'Cerrar sesión',
-    'app.register': 'Registrarse',
-    'app.welcome': 'Bienvenido a Business Advisory',
-    'app.error': 'Ha ocurrido un error',
-    'app.loading': 'Cargando...',
-    'app.save': 'Guardar',
-    'app.cancel': 'Cancelar',
-    'app.submit': 'Enviar',
-    'app.back': 'Atrás',
-    'app.next': 'Siguiente',
-    'app.close': 'Cerrar',
-    'app.search': 'Buscar',
-    'app.add': 'Añadir',
-    'app.edit': 'Editar',
-    'app.delete': 'Eliminar',
-    'app.language': 'Idioma',
-    'app.success': 'Éxito',
-    'app.warning': 'Advertencia',
-    'app.info': 'Información',
-    
-    // Navigation
-    'nav.dashboard': 'Panel de control',
-    'nav.sale_invoices': 'Facturas de Venta',
-    'nav.sale_invoices.create': 'Crear nueva',
-    'nav.supplier_invoices': 'Facturas de proveedores',
-    'nav.hr': 'RRHH & Nóminas',
-    'nav.hr.new_employee': 'Nuevo empleado',
-    'nav.hr.termination': 'Terminación de empleado',
-    'nav.hr.work_hours': 'Horas de trabajo',
-    'nav.contracts': 'Contratos',
-    'nav.documents': 'Documentos',
-    'nav.reports': 'Informes',
-    'nav.profile': 'Mi perfil',
-    'nav.services': 'Gestión de servicios',
-    'nav.users': 'Gestión de usuarios',
-    'nav.additional_services': 'Servicios adicionales',
-    'nav.subscriptions': 'Suscripciones',
-    
-    // Auth
-    'auth.email': 'Correo electrónico',
-    'auth.password': 'Contraseña',
-    'auth.forgot_password': '¿Olvidaste la contraseña?',
-    'auth.login_success': 'Sesión iniciada correctamente',
-    'auth.logout_success': 'Sesión cerrada correctamente',
-    'auth.register_success': 'Registro completado correctamente',
-    
-    // Dashboard
-    'dashboard.welcome': 'Bienvenido a su panel de control',
-    'dashboard.recent_activity': 'Actividad reciente',
-    'dashboard.stats': 'Estadísticas',
-    'dashboard.quick_actions': 'Acciones rápidas',
-    
-    // Invoices
-    'invoices.title': 'Facturas de Venta',
-    'invoices.upload': 'Subir',
-    'invoices.history': 'Historial',
-    'invoices.date': 'Fecha',
-    'invoices.amount': 'Importe',
-    'invoices.client': 'Cliente',
-    'invoices.status': 'Estado',
-    'invoices.upload_success': 'Facturas subidas correctamente',
-    'invoices.max_size': 'Tamaño máximo por archivo: 25MB',
-    'invoices.max_files': 'Suba hasta 15 archivos a la vez',
-    'invoices.allowed_types': 'Tipos de archivo permitidos: PDF o JPG',
-    
-    // Supplier Invoices
-    'supplier_invoices.title': 'Facturas de proveedores',
-    
-    // HR & Payroll
-    'hr.new_employee.title': 'Contratación de nuevo empleado',
-    'hr.new_employee.company': 'Nombre de la empresa',
-    'hr.new_employee.dni': 'DNI o TIE del empleado',
-    'hr.new_employee.start_date': 'Fecha de inicio',
-    'hr.new_employee.schedule': 'Horario semanal de trabajo',
-    'hr.new_employee.days_off': 'El empleado debe tener dos días consecutivos de descanso',
-    'hr.new_employee.position': 'Puesto de trabajo',
-    'hr.new_employee.ss_number': 'Número de Seguridad Social',
-    'hr.new_employee.salary': 'Salario mensual',
-    'hr.new_employee.iban': 'IBAN',
-    'hr.new_employee.address': 'Dirección completa',
-    'hr.new_employee.email': 'Correo electrónico del empleado',
-    'hr.new_employee.comments': 'Comentarios adicionales',
-    
-    'hr.termination.title': 'Terminación de empleado',
-    'hr.termination.employee': 'Nombre del empleado',
-    'hr.termination.date': 'Fecha de terminación',
-    'hr.termination.vacation': 'Días de vacaciones utilizados',
-    'hr.termination.reason': 'Motivo de la terminación',
-    
-    'hr.work_hours.title': 'Horas de trabajo mensuales',
-    'hr.work_hours.salary': 'Salario bruto mensual',
-    'hr.work_hours.notes': 'Notas',
-    'hr.work_hours.absence': 'Días de ausencia',
-    'hr.work_hours.medical': 'Fecha de baja médica',
-    
-    // Registration
-    'registration.title': 'Registrar cuenta',
-    'registration.language': 'Idioma preferido',
-    'registration.type': 'Tipo de cuenta',
-    'registration.type.freelancer': 'Autónomo',
-    'registration.type.sl': 'Sociedad Limitada (SL)',
-    'registration.type.sa': 'Sociedad Anónima (SA)',
-    'registration.type.individual': 'Particular',
-    'registration.name': 'Nombre completo',
-    'registration.company': 'Nombre de la empresa',
-    'registration.admin_name': 'Nombre del administrador',
-    'registration.nif': 'NIF',
-    'registration.address': 'Dirección',
-    'registration.postal': 'Código postal',
-    'registration.city': 'Ciudad',
-    'registration.province': 'Provincia',
-    'registration.country': 'País',
-    'registration.email': 'Correo electrónico',
-    'registration.phone': 'Teléfono',
-    
-    // Admin
-    'admin.dashboard': 'Panel de administración',
-    'admin.logs': 'Historial de registros',
-    'admin.manage_users': 'Gestionar usuarios',
-    'admin.manage_services': 'Gestionar servicios',
-    'admin.statistics': 'Estadísticas',
-    
-    // Services
-    'services.request': 'Solicitar servicio',
-    'services.status.requested': 'Solicitado',
-    'services.status.pending': 'Pendiente',
-    'services.status.completed': 'Completado',
-    'services.status.rejected': 'Rechazado',
-    
-    // Subscriptions
-    'subscriptions.title': 'Suscripciones disponibles',
-    'subscriptions.request': 'Solicitar servicio',
-    'subscriptions.demo': 'Ver demo',
-    'subscriptions.iframe1': 'IFRAME 1',
-    'subscriptions.iframe2': 'IFRAME 2',
-    'subscriptions.crm': 'CRM',
-    'subscriptions.timetracking': 'Control de tiempo',
-    
-    // Common pages
-    'page.under_construction': 'Esta página está en construcción',
-    
-    // Contracts & Documents
-    'contracts.title': 'Gestión de contratos',
-    'contracts.description': 'Ver y gestionar sus contratos de negocio',
-    'documents.title': 'Gestión de documentos',
-    'documents.description': 'Acceda y gestione sus documentos importantes',
-    
-    // Reports
-    'reports.title': 'Informes y análisis',
-    'reports.description': 'Ver informes detallados sobre las actividades de su negocio'
+
   },
-  
-  ru: {
-    // Common
-    'app.title': 'Портал Business Advisory',
-    'app.login': 'Войти',
-    'app.logout': 'Выйти',
-    'app.register': 'Регистрация',
-    'app.welcome': 'Добро пожаловать в Business Advisory',
-    'app.error': 'Произошла ошибка',
-    'app.loading': 'Загрузка...',
-    'app.save': 'Сохранить',
-    'app.cancel': 'Отмена',
-    'app.submit': 'Отправить',
-    'app.back': 'Назад',
-    'app.next': 'Далее',
-    'app.close': 'Закрыть',
-    'app.search': 'Поиск',
-    'app.add': 'Добавить',
-    'app.edit': 'Редактировать',
-    'app.delete': 'Удалить',
-    'app.language': 'Язык',
-    'app.success': 'Успех',
-    'app.warning': 'Предупреждение',
-    'app.info': 'Информация',
-    
-    // Navigation
-    'nav.dashboard': 'Панель управления',
-    'nav.sale_invoices': 'Счета Продаж',
-    'nav.sale_invoices.create': 'Создать новый',
-    'nav.supplier_invoices': 'Счета поставщиков',
-    'nav.hr': 'HR и зарплата',
-    'nav.hr.new_employee': 'Новый сотрудник',
-    'nav.hr.termination': 'Увольнение',
-    'nav.hr.work_hours': 'Рабочие часы',
-    'nav.contracts': 'Контракты',
-    'nav.documents': 'Документы',
-    'nav.reports': 'Отчеты',
-    'nav.profile': 'Мой профиль',
-    'nav.services': 'Управление услугами',
-    'nav.users': 'Управление пользователями',
-    'nav.additional_services': 'Дополнительные услуги',
-    'nav.subscriptions': 'Подписки',
-    
-    // Auth
-    'auth.email': 'Электронная почта',
-    'auth.password': 'Пароль',
-    'auth.forgot_password': 'Забыли пароль?',
-    'auth.login_success': 'Вход выполнен успешно',
-    'auth.logout_success': 'Выход выполнен успешно',
-    'auth.register_success': 'Регистрация выполнена успешно',
-    
-    // Dashboard
-    'dashboard.welcome': 'Добро пожаловать в вашу панель управления',
-    'dashboard.recent_activity': 'Недавняя активность',
-    'dashboard.stats': 'Статистика',
-    'dashboard.quick_actions': 'Быстрые действия',
-    
-    // Invoices
-    'invoices.title': 'Счета Продаж',
-    'invoices.upload': 'Загрузить',
-    'invoices.history': 'История',
-    'invoices.date': 'Дата',
-    'invoices.amount': 'Сумма',
-    'invoices.client': 'Клиент',
-    'invoices.status': 'Статус',
-    'invoices.upload_success': 'Счета успешно загружены',
-    'invoices.max_size': 'Максимальный размер файла для загрузки: 25MB',
-    'invoices.max_files': 'Загрузка до 15 файлов за раз',
-    'invoices.allowed_types': 'Допустимые типы файлов: PDF или JPG',
-    
-    // Supplier Invoices
-    'supplier_invoices.title': 'Счета поставщиков',
-    
-    // HR & Payroll
-    'hr.new_employee.title': 'Наём нового сотрудника',
-    'hr.new_employee.company': 'Название компании',
-    'hr.new_employee.dni': 'DNI или TIE сотрудника',
-    'hr.new_employee.start_date': 'Дата начала',
-    'hr.new_employee.schedule': 'Еженедельный график работы',
-    'hr.new_employee.days_off': 'У сотрудника должно быть два последовательных выходных дня',
-    'hr.new_employee.position': 'Должность',
-    'hr.new_employee.ss_number': 'Номер социального страхования',
-    'hr.new_employee.salary': 'Ежемесячная зарплата',
-    'hr.new_employee.iban': 'IBAN',
-    'hr.new_employee.address': 'Полный адрес',
-    'hr.new_employee.email': 'Электронная почта сотрудника',
-    'hr.new_employee.comments': 'Дополнительные комментарии',
-    
-    'hr.termination.title': 'Увольнение сотрудника',
-    'hr.termination.employee': 'Имя сотрудника',
-    'hr.termination.date': 'Дата увольнения',
-    'hr.termination.vacation': 'Использованные дни отпуска',
-    'hr.termination.reason': 'Причина увольнения',
-    
-    'hr.work_hours.title': 'Ежемесячные рабочие часы',
-    'hr.work_hours.salary': 'Ежемесячная брутто-зарплата',
-    'hr.work_hours.notes': 'Примечания',
-    'hr.work_hours.absence': 'Дни отсутствия',
-    'hr.work_hours.medical': 'Дата медицинского отпуска',
-    
-    // Registration
-    'registration.title': 'Регистрация аккаунта',
-    'registration.language': 'Предпочитаемый язык',
-    'registration.type': 'Тип аккаунта',
-    'registration.type.freelancer': 'Фрилансер / ИП',
-    'registration.type.sl': 'ООО (SL)',
-    'registration.type.sa': 'АО (SA)',
-    'registration.type.individual': 'Частное лицо',
-    'registration.name': 'Полное имя',
-    'registration.company': 'Название компании',
-    'registration.admin_name': 'Имя администратора',
-    'registration.nif': 'NIF (налоговый номер)',
-    'registration.address': 'Адрес',
-    'registration.postal': 'Почтовый индекс',
-    'registration.city': 'Город',
-    'registration.province': 'Область',
-    'registration.country': 'Страна',
-    'registration.email': 'Электронная почта',
-    'registration.phone': 'Телефон',
-    
-    // Admin
-    'admin.dashboard': 'Панель администратора',
-    'admin.logs': 'История логов',
-    'admin.manage_users': 'Управление пользователями',
-    'admin.manage_services': 'Управление услугами',
-    'admin.statistics': 'Статистика',
-    
-    // Services
-    'services.request': 'Запросить услугу',
-    'services.status.requested': 'Запрошено',
-    'services.status.pending': 'В ожидании',
-    'services.status.completed': 'Завершено',
-    'services.status.rejected': 'Отклонено',
-    
-    // Subscriptions
-    'subscriptions.title': 'Доступные подписки',
-    'subscriptions.request': 'Запросить услугу',
-    'subscriptions.demo': 'Смотреть демо',
-    'subscriptions.iframe1': 'IFRAME 1',
-    'subscriptions.iframe2': 'IFRAME 2',
-    'subscriptions.crm': 'CRM',
-    'subscriptions.timetracking': 'Учет времени',
-    
-    // Common pages
-    'page.under_construction': 'Эта страница находится в разработке',
-    
-    // Contracts & Documents
-    'contracts.title': 'Управление контрактами',
-    'contracts.description': 'Просмотр и управление вашими бизнес-контрактами',
-    'documents.title': 'Управление документами',
-    'documents.description': 'Доступ и управление важными документами',
-    
-    // Reports
-    'reports.title': 'Отчеты и аналитика',
-    'reports.description': 'Просмотр подробных отчетов о деятельности вашего бизнеса'
-  }
+  ru: {}
 };
 
 // Provider component

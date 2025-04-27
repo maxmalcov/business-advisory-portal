@@ -129,6 +129,10 @@ export const workHoursSubmissionsTable = () => {
   return supabase.from('work_hours_submissions' as any);
 };
 
+export const logsTable = () => {
+  return supabase.from('logs' as any);
+};
+
 // Setup realtime subscription for the service_requests table
 // We're removing the problematic RPC call and using direct channel subscription instead
 const setupRealtimeSubscription = () => {

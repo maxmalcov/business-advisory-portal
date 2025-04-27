@@ -1,21 +1,16 @@
-
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth, AccountType } from '@/context/AuthContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {AccountType, useAuth} from '@/context/AuthContext';
+import {useLanguage} from '@/context/LanguageContext';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Label} from '@/components/ui/label';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
+import {useToast} from '@/hooks/use-toast';
 import LanguageSelector from '@/components/LanguageSelector';
+import {log} from "@/utils/logs/log.funciton.ts";
+import {LogCategory} from "@/pages/AdminLogs/types.ts";
 
 const Register: React.FC = () => {
   const { register } = useAuth();
@@ -83,6 +78,7 @@ const Register: React.FC = () => {
         ...formData,
         userType: 'client',
       });
+      log({ action: 'logs.register_action', description: `logs.register_description|${formData.email}`, category: LogCategory.USER, user: formData.email, level: 'info'})
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);

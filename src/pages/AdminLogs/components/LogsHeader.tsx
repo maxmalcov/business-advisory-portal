@@ -1,8 +1,11 @@
 
 import React from 'react';
 import { Activity } from 'lucide-react';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 const LogsHeader: React.FC = () => {
+  const { t } = useLanguage()
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -11,9 +14,9 @@ const LogsHeader: React.FC = () => {
             <Activity className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">System Log History</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{t('logs.history.title')}</h1>
             <p className="text-muted-foreground mt-1">
-              Track and monitor all system activities and events
+              {t('logs.history.description')}
             </p>
           </div>
         </div>

@@ -22,16 +22,23 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface LogsTableProps {
   logs: LogEntry[];
 }
 
 const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (dateString: string | Date) => {
+    console.log(dateString)
+    if(dateString instanceof Date){
+      return dateString.toLocaleString()
+    }
+    const date = new Date(dateString + 'Z');
     return date.toLocaleString();
   };
+
+  const {t} = useLanguage()
   
   return (
     <Card>
@@ -39,12 +46,12 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Type</TableHead>
-              <TableHead>Action</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Timestamp</TableHead>
-              <TableHead>Level</TableHead>
+              <TableHead>{t('logs.type')}</TableHead>
+              <TableHead>{t('logs.action')}</TableHead>
+              <TableHead>{t('logs.description')}</TableHead>
+              <TableHead>{t('logs.user')}</TableHead>
+              <TableHead>{t('logs.timestamp')}</TableHead>
+              <TableHead>{t('logs.level')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

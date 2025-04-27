@@ -14,6 +14,7 @@ import {
   Filter,
   Download,
 } from 'lucide-react';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface LogsFiltersProps {
   searchQuery: string;
@@ -36,12 +37,14 @@ const LogsFilters: React.FC<LogsFiltersProps> = ({
     onSearchChange(e.target.value);
   };
 
+  const {t} = useLanguage()
+
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div className="relative w-full sm:w-64">
         <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search logs..."
+          placeholder={t('logs.search.placeholder')}
           className="pl-8"
           value={searchQuery}
           onChange={handleSearch}
@@ -56,36 +59,33 @@ const LogsFilters: React.FC<LogsFiltersProps> = ({
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="user">User</SelectItem>
-              <SelectItem value="file">File</SelectItem>
-              <SelectItem value="email">Email</SelectItem>
-              <SelectItem value="security">Security</SelectItem>
-              <SelectItem value="service">Service</SelectItem>
-              <SelectItem value="system">System</SelectItem>
-              <SelectItem value="invoice">Invoice</SelectItem>
+              <SelectItem value="all">{t('logs.categories')}</SelectItem>
+              <SelectItem value="user">{t('logs.user')}</SelectItem>
+              <SelectItem value="email">{t('logs.email')}</SelectItem>
+              <SelectItem value="service">{t('logs.service')}</SelectItem>
+              <SelectItem value="invoice">{t('logs.invoice')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         
-        <div className="flex items-center">
-          <Select value={levelFilter} onValueChange={onLevelChange}>
-            <SelectTrigger className="w-[140px]">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue placeholder="Level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Levels</SelectItem>
-              <SelectItem value="info">Info</SelectItem>
-              <SelectItem value="warning">Warning</SelectItem>
-              <SelectItem value="error">Error</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        {/*<div className="flex items-center">*/}
+        {/*  <Select value={levelFilter} onValueChange={onLevelChange}>*/}
+        {/*    <SelectTrigger className="w-[140px]">*/}
+        {/*      <Filter className="mr-2 h-4 w-4" />*/}
+        {/*      <SelectValue placeholder="Level" />*/}
+        {/*    </SelectTrigger>*/}
+        {/*    <SelectContent>*/}
+        {/*      <SelectItem value="all">All Levels</SelectItem>*/}
+        {/*      <SelectItem value="info">Info</SelectItem>*/}
+        {/*      <SelectItem value="warning">Warning</SelectItem>*/}
+        {/*      <SelectItem value="error">Error</SelectItem>*/}
+        {/*    </SelectContent>*/}
+        {/*  </Select>*/}
+        {/*</div>*/}
         
         <Button variant="outline">
           <Download className="mr-2 h-4 w-4" />
-          Export Logs
+          {t('logs.export')}
         </Button>
       </div>
     </div>
