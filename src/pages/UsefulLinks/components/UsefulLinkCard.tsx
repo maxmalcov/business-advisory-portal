@@ -52,7 +52,7 @@ const UsefulLinkCard: React.FC<UsefulLinkCardProps> = ({ link }) => {
             rel="noopener noreferrer" 
             className="flex items-center justify-center gap-2"
           >
-            <span>Open link</span>
+            <span>{t('useful-links.table.open-link')}</span>
             <ExternalLink className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </a>
         </Button>

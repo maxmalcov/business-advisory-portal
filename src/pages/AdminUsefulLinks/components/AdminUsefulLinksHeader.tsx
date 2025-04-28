@@ -2,12 +2,15 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Link2 } from 'lucide-react';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface AdminUsefulLinksHeaderProps {
   onAddNew: () => void;
 }
 
 const AdminUsefulLinksHeader: React.FC<AdminUsefulLinksHeaderProps> = ({ onAddNew }) => {
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -16,15 +19,15 @@ const AdminUsefulLinksHeader: React.FC<AdminUsefulLinksHeaderProps> = ({ onAddNe
             <Link2 className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Useful Links</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{t('useful-links.title')}</h1>
             <p className="text-muted-foreground mt-1">
-              Manage and organize useful links for platform users
+              {t('useful-links.description')}
             </p>
           </div>
         </div>
         <Button onClick={onAddNew}>
           <Plus className="h-4 w-4 mr-1" />
-          Add New Link
+          {t('useful-links.add-link')}
         </Button>
       </div>
     </div>

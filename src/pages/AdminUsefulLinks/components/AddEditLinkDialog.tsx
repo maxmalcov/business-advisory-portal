@@ -44,17 +44,17 @@ const AddEditLinkDialog: React.FC<AddEditLinkDialogProps> = ({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {mode === 'add' ? 'Add New Link' : 'Edit Link'}
+            {mode === 'add' ? t('useful-links.dialog.add-new.title') : t('useful-links.dialog.edit.title')}
           </DialogTitle>
           <DialogDescription>
-            Add a useful link that will be displayed on the Useful Links page.
+            {t('useful-links.dialog.description')}
           </DialogDescription>
         </DialogHeader>
         
         <UsefulLinkForm 
           initialData={initialData} 
           onSubmit={handleSubmit}
-          submitButtonText={mode === 'add' ? 'Add Link' : 'Update Link'}
+          submitButtonText={mode === 'add' ? t('useful-links.dialog.add.title') : t('useful-links.dialog.update.title')}
         />
       </DialogContent>
     </Dialog>

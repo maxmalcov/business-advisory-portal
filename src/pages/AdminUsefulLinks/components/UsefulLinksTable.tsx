@@ -46,7 +46,7 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
   if (error) {
     return (
       <div className="bg-destructive/10 p-4 rounded-md text-destructive">
-        Error loading data. Please try again later.
+        {t('useful-links.error-loading')}
       </div>
     );
   }
@@ -55,7 +55,7 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
     return (
       <div className="text-center p-8">
         <p className="text-muted-foreground">
-          No links available. Click "Add New Link" to create your first resource.
+          {t('useful-links.no-links-available')}
         </p>
       </div>
     );
@@ -67,11 +67,11 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
         <table className="w-full">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="p-3 text-left font-medium">Title</th>
-              <th className="p-3 text-left font-medium">Category</th>
-              <th className="p-3 text-left font-medium">Icon</th>
-              <th className="p-3 text-left font-medium">Display Order</th>
-              <th className="p-3 text-center font-medium">Actions</th>
+              <th className="p-3 text-left font-medium">{t('useful-links.table.title')}</th>
+              <th className="p-3 text-left font-medium">{t('useful-links.table.category')}</th>
+              <th className="p-3 text-left font-medium">{t('useful-links.table.icon')}</th>
+              <th className="p-3 text-left font-medium">{t('useful-links.table.order')}</th>
+              <th className="p-3 text-center font-medium">{t('useful-links.table.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -81,8 +81,8 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
                   <div className="font-medium">{link.title}</div>
                   <div className="text-sm text-muted-foreground truncate max-w-[200px]">{link.url}</div>
                 </td>
-                <td className="p-3">{link.category}</td>
-                <td className="p-3">{link.icon || '—'}</td>
+                <td className="p-3">{t(link.category)}</td>
+                <td className="p-3">{t(link.icon) || '—'}</td>
                 <td className="p-3">{link.display_order || 0}</td>
                 <td className="p-3 text-center">
                   <div className="flex justify-center space-x-2">

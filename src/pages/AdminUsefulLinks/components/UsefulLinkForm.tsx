@@ -87,7 +87,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>{t('useful-links.dialog.form.title')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -101,12 +101,12 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>{t('useful-links.dialog.form.description')}</FormLabel>
               <FormControl>
                 <Textarea {...field} value={field.value || ''} />
               </FormControl>
               <FormDescription>
-                A brief description of what this link provides.
+                  {t('useful-links.dialog.form.description.brief')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -132,19 +132,19 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
+              <FormLabel>{t('useful-links.dialog.form.category')}</FormLabel>
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
+                    <SelectValue placeholder={t('useful-links.dialog.form.category.placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {categoryOptions.map((category) => (
                       <SelectItem key={category} value={category}>
-                        {category}
+                        {t(category)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -160,26 +160,26 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="icon"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Icon</FormLabel>
+              <FormLabel>{t('useful-links.dialog.form.icon')}</FormLabel>
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value || undefined}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select an icon" />
+                    <SelectValue placeholder={t('useful-links.dialog.form.icon.placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {iconOptions.map((icon) => (
                       <SelectItem key={icon.value} value={icon.value}>
-                        {icon.label}
+                        {t(icon.label)}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </FormControl>
               <FormDescription>
-                Choose an icon that best represents this resource.
+                  {t('useful-links.dialog.form.icon.description')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -191,12 +191,12 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
           name="display_order"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Display Order</FormLabel>
+              <FormLabel>{t('useful-links.dialog.form.display-order')}</FormLabel>
               <FormControl>
                 <Input type="number" {...field} value={field.value || 0} />
               </FormControl>
               <FormDescription>
-                Lower numbers will appear first in the list.
+                  {t('useful-links.dialog.form.display-order.description')}
               </FormDescription>
               <FormMessage />
             </FormItem>
