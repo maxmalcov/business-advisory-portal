@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Languages
-export type Language = 'es' | 'en' | 'ru';
+export type Language = 'es' | 'en';
 
 // Context type
 type LanguageContextType = {
@@ -60,7 +60,9 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.users': 'User Management',
     'nav.additional_services': 'Additional Services',
     'nav.subscriptions': 'Subscriptions',
-    
+    'nav.invoices': 'Invoices',
+    'nav.useful-links': 'Useful Links',
+
     // Auth
     'auth.email': 'Email',
     'auth.password': 'Password',
@@ -144,7 +146,33 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.manage_users': 'Manage Users',
     'admin.manage_services': 'Manage Services',
     'admin.statistics': 'Statistics',
-    
+    'admin.subscriptions': 'Subscription Management',
+    'admin.subscriptions.requests': 'Subscription Requests',
+    'admin.subscriptions.catalog': 'Subscription Catalog',
+    'admin.useful-links': 'Useful Links',
+    'admin.service': 'Service Management',
+    'admin.service.requests': 'Service Requests',
+    'admin.service.catalog': 'Service Catalog',
+    'admin.email-settings': 'Email Settings',
+
+    // Useful Links
+    'useful-links.search.placeholder': 'Search for resources...',
+    'useful-links.error-loading': 'Error loading resources. Please try again later.',
+    'useful-links.table.all': 'All',
+    'useful-links.table.social-security': 'Social Security',
+    'useful-links.table.no-resources': 'No resources match your search.',
+    'useful-links.table.no-available-resources': 'No resources available yet.',
+    'Taxes':'Taxes',
+    'Legal':'Legal',
+    'Social Security':'Social Security',
+    'Employment':'Employment',
+    'Business':'Business',
+    'Banking':'Banking',
+    'Health':'Health',
+    'Education':'Education',
+    'General':'General',
+    // P.S. thanks fucking AI:)
+
     // Services
     'services.request': 'Request Service',
     'services.status.requested': 'Requested',
@@ -311,8 +339,7 @@ const translations: Record<Language, Record<string, string>> = {
   
   es: {
 
-  },
-  ru: {}
+  }
 };
 
 // Provider component
@@ -322,7 +349,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   // Load language preference from localStorage on mount
   useEffect(() => {
     const savedLang = localStorage.getItem('language') as Language;
-    if (savedLang && ['en', 'es', 'ru'].includes(savedLang)) {
+    if (savedLang && ['en', 'es'].includes(savedLang)) {
       setLanguageState(savedLang);
     }
   }, []);

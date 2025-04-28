@@ -16,7 +16,7 @@ export function NotificationBadge({ count, className }: NotificationBadgeProps) 
         className
       )}
     >
-      {count > 99 ? '99+' : count}
+      {/*{count > 99 ? '99+' : count}*/}
     </div>
   );
 }

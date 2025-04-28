@@ -94,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: Layers,
     },
     {
-      name: 'Useful Links',
+      name: t('nav.useful-links'),
       path: '/useful-links',
       icon: Link2,
     },
@@ -124,26 +124,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: BarChart3,
     },
     {
-      name: 'Subscription Management',
+      name: t('admin.subscriptions'),
       path: '/admin/subscription-requests',
       icon: Layers,
       hasPendingChildren: pendingSubscriptions > 0,
       children: [
         {
-          name: 'Subscription Requests',
+          name: t('admin.subscriptions.requests'),
           path: '/admin/subscription-requests',
           icon: Inbox,
           badge: pendingSubscriptions
         },
         {
-          name: 'Subscription Catalog',
+          name: t('admin.subscriptions.catalog'),
           path: '/admin/subscription-catalog',
           icon: BookOpen,
         }
       ]
     },
     {
-      name: 'Useful Links',
+      name: t('admin.useful-links'),
       path: '/admin/useful-links',
       icon: Link2,
     },
@@ -153,26 +153,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: Activity,
     },
     {
-      name: 'Service Management',
+      name: t('admin.service'),
       path: '/admin/service-requests',
       icon: Settings,
       hasPendingChildren: pendingServices > 0,
       children: [
         {
-          name: 'Service Requests',
+          name: t('admin.service.requests'),
           path: '/admin/service-requests',
           icon: Inbox,
           badge: pendingServices
         },
         {
-          name: 'Service Catalog',
+          name: t('admin.service.catalog'),
           path: '/admin/service-catalog',
           icon: Wrench,
         }
       ]
     },
     {
-      name: 'Email Settings',
+      name: t('admin.email-settings'),
       path: '/admin/settings/notifications',
       icon: Mail,
     },

@@ -32,12 +32,6 @@ const LanguageSelector: React.FC = () => {
           <span className="flex-1 bg-yellow-400"></span>
           <span className="flex-1 bg-red-600"></span>
         </span>;
-      case 'ru':
-        return <span className="flex flex-col w-6 h-4 rounded overflow-hidden">
-          <span className="flex-1 bg-white"></span>
-          <span className="flex-1 bg-blue-600"></span>
-          <span className="flex-1 bg-red-600"></span>
-        </span>;
       default:
         return <Flag className="h-4 w-4" />;
     }
@@ -69,16 +63,6 @@ const LanguageSelector: React.FC = () => {
               <span className="flex-1 bg-red-600"></span>
             </span>
             <span>Español</span>
-          </span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleLanguageChange('ru')} className="cursor-pointer">
-          <span className="flex items-center gap-2">
-            <span className="flex flex-col w-6 h-4 rounded overflow-hidden">
-              <span className="flex-1 bg-white"></span>
-              <span className="flex-1 bg-blue-600"></span>
-              <span className="flex-1 bg-red-600"></span>
-            </span>
-            <span>Русский</span>
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>

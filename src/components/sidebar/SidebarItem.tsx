@@ -2,7 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { NotificationBadge } from '../ui/notification-badge';
 import { NotificationDot } from '../ui/notification-dot';
@@ -116,9 +115,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   >
                     <child.icon className="h-4 w-4 mr-2" />
                     <span>{child.name}</span>
-                    {child.badge && (
-                      <NotificationBadge count={child.badge} className="ml-2" />
-                    )}
+                    {/*{child.badge && (*/}
+                    {/*  <NotificationBadge count={child.badge} className="ml-2" />*/}
+                    {/*)}*/}
                   </Link>
                 </li>
               ))}
