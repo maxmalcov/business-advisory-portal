@@ -15,6 +15,7 @@ import {
   Download,
 } from 'lucide-react';
 import {useLanguage} from "@/context/LanguageContext.tsx";
+import {exportToCSV} from "@/pages/AdminLogs/exportToCSV.funciton.ts";
 
 interface LogsFiltersProps {
   searchQuery: string;
@@ -83,7 +84,7 @@ const LogsFilters: React.FC<LogsFiltersProps> = ({
         {/*  </Select>*/}
         {/*</div>*/}
         
-        <Button variant="outline">
+        <Button variant="outline" onClick={exportToCSV}>
           <Download className="mr-2 h-4 w-4" />
           {t('logs.export')}
         </Button>

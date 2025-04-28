@@ -1,0 +1,9 @@
+node_modules
+.idea
+server
+supabase
+.gitignore
+Dockerfile
+docker-compose.yml
+eslint.config.js
+README.md

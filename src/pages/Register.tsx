@@ -78,7 +78,7 @@ const Register: React.FC = () => {
         ...formData,
         userType: 'client',
       });
-      log({ action: 'logs.register_action', description: `logs.register_description|${formData.email}`, category: LogCategory.USER, user: formData.email, level: 'info'})
+      log({ action: "User registration", description: `New user registered: ${formData.email}`, category: LogCategory.USER, user: formData.email, level: 'info'})
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);

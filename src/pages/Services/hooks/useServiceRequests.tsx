@@ -2,41 +2,39 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceItem, ServiceStatus } from '../types';
-import { serviceRequestsTable, supabase } from '@/integrations/supabase/client';
+import {logsTable, notificationSettingsTable, serviceRequestsTable, supabase} from '@/integrations/supabase/client';
+import {useLanguage} from "@/context/LanguageContext.tsx";
+import {sendEmail} from "@/integrations/email";
 
 export const useServiceRequests = (user: any, services: ServiceItem[], setServices: React.Dispatch<React.SetStateAction<ServiceItem[]>>) => {
   const { toast } = useToast();
   const [userRequests, setUserRequests] = useState<{[key: string]: ServiceStatus}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const {t} = useLanguage()
+
   useEffect(() => {
     const loadUserServiceRequests = async () => {
       if (!user) return;
-      
+
       try {
-        console.log('Fetching service requests for user:', user.id);
-        
         const { data, error } = await serviceRequestsTable()
           .select('service_id, status')
           .eq('client_id', user.id);
-        
+
         if (error) {
           console.error('Error loading service requests:', error);
           return;
         }
-        
-        console.log('User service requests data:', data);
-        
+
         const requestsMap: {[key: string]: ServiceStatus} = {};
         data.forEach(request => {
           requestsMap[request.service_id] = request.status as ServiceStatus;
         });
-        
-        console.log('Service requests map:', requestsMap);
-        
+
         setUserRequests(requestsMap);
-        
-        setServices(prevServices => 
+
+        setServices(prevServices =>
           prevServices.map(service => ({
             ...service,
             status: requestsMap[service.id] || 'available'
@@ -46,75 +44,81 @@ export const useServiceRequests = (user: any, services: ServiceItem[], setServic
         console.error('Error fetching service requests:', error);
       }
     };
-    
+
     loadUserServiceRequests();
   }, [user, setServices]);
 
   const handleRequestService = async (serviceId: string) => {
     if (!user) {
       toast({
-        title: "Authentication Required",
-        description: "Please login to request services.",
-        variant: "destructive"
+        title: t('service.request.auth-require.title'),
+        description: t('service.request.auth-require.description'),
+        variant: 'destructive'
       });
       return;
     }
-    
+
     const service = services.find(s => s.id === serviceId);
     if (!service) return;
-    
+
     setIsSubmitting(true);
-    
+
+    const { data , error } = await notificationSettingsTable()
+        .select('email')
+        .eq('category', 'services')
+        .maybeSingle();
+
+    if(error){
+      throw new Error(`Get notification settings error: ${error}`)
+    }
+
+    await sendEmail(
+        (data as any).email,
+        `New Service Request: ${service.title}`,
+        `A client has submitted a new service request.
+
+Client Name: ${user.name}
+Service Requested: ${service.title}
+
+You can manage this request in the admin dashboard.`
+    );
+
     try {
       console.log(`Requesting service ${serviceId} for user ${user.id}`);
-      
+
       const { data, error } = await serviceRequestsTable()
-        .insert({
-          service_id: serviceId,
-          service_name: service.title,
-          client_id: user.id,
-          client_name: user.name || user.email,
-          status: 'pending'
-        })
-        .select();
-        
+          .insert({
+            service_id: serviceId,
+            service_name: service.title,
+            client_id: user.id,
+            client_name: user.name || user.email,
+            status: 'pending'
+          })
+          .select();
+
       if (error) {
-        console.error('Error details:', error);
+        console.error('Ошибка при вставке запроса сервиса:', error);
         throw error;
       }
-      
-      console.log('Service request created:', data);
-      
-      // Send email notification to admin
-      const { error: notificationError } = await supabase.functions.invoke('notify-admin-service-request', {
-        body: {
-          clientName: user.name || user.email,
-          serviceName: service.title
-        }
+
+      setServices(prevServices =>
+          prevServices.map(service =>
+              service.id === serviceId
+                  ? { ...service, status: 'pending' as ServiceStatus }
+                  : service
+          )
+      );
+
+      toast({
+        title: t('service.request.success.title'),
+        description: t('service.request.success.description'),
       });
 
-      if (notificationError) {
-        console.error('Error sending notification:', notificationError);
-        // Don't throw here - we don't want to fail the request just because notification failed
-      }
-      
-      setServices(prevServices => 
-        prevServices.map(service => 
-          service.id === serviceId 
-            ? { ...service, status: 'pending' as ServiceStatus } 
-            : service
-        )
-      );
-      
-      toast({
-        title: "Service Requested",
-        description: `Your request for ${service.title} has been submitted. The admin has been notified.`,
-      });
     } catch (error) {
-      console.error('Error requesting service:', error);
+      console.error('Error during creating service process:', error);
       toast({
-        title: "Request Failed",
-        description: "There was a problem submitting your service request. Please try again.",
+        title: t('service.request.auth-failed.title'),
+        description: t('service.request.auth-failed.description'),
         variant: "destructive"
       });
     } finally {

@@ -42,7 +42,7 @@ const translations: Record<Language, Record<string, string>> = {
     'app.success': 'Success',
     'app.warning': 'Warning',
     'app.info': 'Information',
-    
+
     // Navigation
     'nav.dashboard': 'Dashboard',
     'nav.sale_invoices': 'Sale Invoices',
@@ -241,6 +241,12 @@ const translations: Record<Language, Record<string, string>> = {
     'service.notes.toast.description': 'Admin notes have been successfully saved.',
     'service.request.toast.title': 'Status updated',
     'service.request.toast.description': 'Request status has been updated',
+    'service.request.auth-require.title': 'Authentication Required',
+    'service.request.auth-require.description': 'Please login to request services.',
+    'service.request.auth-failed.title': 'Request Failed',
+    'service.request.auth-failed.description': 'There was a problem submitting your service request. Please try again.',
+    'service.request.success.title': 'Service Requested',
+    'service.request.success.description': 'Your request has been submitted. The admin has been notified.',
 
     // Statuses
     'status.completed': 'Completed',
@@ -301,9 +307,6 @@ const translations: Record<Language, Record<string, string>> = {
     'logs.email': 'Email',
     'logs.service': 'Service',
     'logs.invoice': 'Invoice',
-
-    'logs.register_action': 'User registration',
-    'logs.register_description': 'New user registered: ',
   },
   
   es: {

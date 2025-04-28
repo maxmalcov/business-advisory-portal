@@ -98,11 +98,10 @@ export const useServiceRequests = () => {
   const handleSaveNotes = useCallback(async () => {
     if (!selectedRequest) return;
     
-    // Simulate API call
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    setRequests(prevRequests => 
+    await serviceRequestsTable().update({ admin_notes: adminNotes }).eq('client_id', selectedRequest.client_id)
+
+    setRequests(prevRequests =>
       prevRequests.map(request => 
         request.id === selectedRequest.id 
           ? { ...request, admin_notes: adminNotes, updated_at: new Date().toISOString() } 
@@ -110,8 +109,6 @@ export const useServiceRequests = () => {
       )
     );
 
-    const {t} = useLanguage()
-    
     toast({
       title: t('service.notes.toast.title'),
       description: t('service.notes.toast.description'),

@@ -22,7 +22,7 @@ const SMTP_AUTH_TYPE = process.env.SMTP_AUTH_TYPE as string
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-app.post('/send-email', async (req: Request, res: Response) => {
+app.post('/v1/send-email', async (req: Request, res: Response) => {
     const { to, subject, text } = req.body;
 
     if (!to || !subject || !text){

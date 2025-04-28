@@ -23,14 +23,8 @@ const LogsContent: React.FC<LogsContentProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
-  const { t } = useLanguage()
-  
+
   const filteredLogs = logs.filter(log => {
-    let [description, email] = log.description.split('|')
-
-    log.description = t(description) + email
-    log.action = t(log.action)
-
     const matchesSearch =
       log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
       log.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
