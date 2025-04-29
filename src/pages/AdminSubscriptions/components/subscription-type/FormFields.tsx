@@ -6,12 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { IconSelector } from './IconSelector';
 import { SubscriptionTypeFormValues } from './schema';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface FormFieldsProps {
   form: UseFormReturn<SubscriptionTypeFormValues>;
 }
 
 export const SubscriptionTypeFormFields: React.FC<FormFieldsProps> = ({ form }) => {
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-4">
       <FormField
@@ -19,12 +22,12 @@ export const SubscriptionTypeFormFields: React.FC<FormFieldsProps> = ({ form }) 
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Name</FormLabel>
+            <FormLabel>{t('subscriptions.admin.form.name')}</FormLabel>
             <FormControl>
-              <Input placeholder="Time Tracking" {...field} />
+              <Input placeholder={t('subscriptions.admin.form.name.placeholder')} {...field} />
             </FormControl>
             <FormDescription>
-              Display name for this subscription type
+                {t('subscriptions.admin.form.name.help')}
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -36,16 +39,16 @@ export const SubscriptionTypeFormFields: React.FC<FormFieldsProps> = ({ form }) 
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Description</FormLabel>
+            <FormLabel>{t('subscriptions.admin.form.description')}</FormLabel>
             <FormControl>
               <Textarea 
-                placeholder="Track and manage your work hours"
+                placeholder={t('subscriptions.admin.form.description.placeholder')}
                 className="min-h-[100px]" 
                 {...field} 
               />
             </FormControl>
             <FormDescription>
-              A brief description of what this subscription provides
+                {t('subscriptions.admin.form.description.help')}
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -57,12 +60,12 @@ export const SubscriptionTypeFormFields: React.FC<FormFieldsProps> = ({ form }) 
         name="type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Type (Slug)</FormLabel>
+            <FormLabel>{t('subscriptions.admin.form.type')}</FormLabel>
             <FormControl>
-              <Input placeholder="timetracking" {...field} />
+              <Input placeholder={t('subscriptions.admin.form.type.placeholder')} {...field} />
             </FormControl>
             <FormDescription>
-              Internal identifier (lowercase letters, numbers, and hyphens only)
+                {t('subscriptions.admin.form.type.help')}
             </FormDescription>
             <FormMessage />
           </FormItem>

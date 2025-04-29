@@ -49,7 +49,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
       <div className="flex justify-center p-8">
         <div className="flex flex-col items-center gap-2">
           <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
-          <p className="text-sm text-muted-foreground">Loading requests...</p>
+          <p className="text-sm text-muted-foreground">{t('service.request.loading')}</p>
         </div>
       </div>
     );
@@ -58,7 +58,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
   if (filteredRequests.length === 0) {
     return (
       <div className="text-center p-8">
-        <p className="text-muted-foreground">No service requests found.</p>
+        <p className="text-muted-foreground">{t('service.request.not-found')}</p>
       </div>
     );
   }

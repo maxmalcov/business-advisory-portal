@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from '@/components/ui/use-toast';
 import { useSubscriptionTypes as useAdminSubscriptionTypes } from '../../AdminSubscriptions/hooks/useSubscriptionTypes';
+import {subscriptionTypeTable} from "@/integrations/supabase/client.ts";
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 // Types
 export interface SubscriptionType {
@@ -28,48 +30,28 @@ export interface SubscriptionType {
 export const useSubscriptionTypes = () => {
   const { createSubscriptionType: adminCreateSubscriptionType, loading: adminLoading } = useAdminSubscriptionTypes();
   const [loading, setLoading] = useState<boolean>(false);
-  const [subscriptionTypes, setSubscriptionTypes] = useState<SubscriptionType[]>([
-    {
-      id: '1',
-      name: 'IFrame Dashboard',
-      description: 'Access your custom dashboard with real-time data',
-      type_id: 'iframe1',
-      icon_type: 'iframe',
-      status: 'active',
-      created_at: '2025-01-15T12:00:00Z',
-      updated_at: '2025-01-15T12:00:00Z'
-    },
-    {
-      id: '2',
-      name: 'Calendar Integration',
-      description: 'Schedule and manage your calendar events',
-      type_id: 'calendar',
-      icon_type: 'calendar',
-      status: 'active',
-      created_at: '2025-02-10T15:30:00Z',
-      updated_at: '2025-02-10T15:30:00Z'
-    },
-    {
-      id: '3',
-      name: 'CRM Tool',
-      description: 'Customer relationship management tool',
-      type_id: 'crm',
-      icon_type: 'crm',
-      status: 'inactive',
-      created_at: '2025-03-05T09:15:00Z',
-      updated_at: '2025-03-05T09:15:00Z'
-    },
-    {
-      id: '4',
-      name: 'Time Tracking',
-      description: 'Track and manage your work hours',
-      type_id: 'timetracking',
-      icon_type: 'timetracking',
-      status: 'active',
-      created_at: '2025-03-15T14:45:00Z',
-      updated_at: '2025-03-15T14:45:00Z'
-    }
-  ]);
+  const [subscriptionTypes, setSubscriptionTypes] = useState<SubscriptionType[]>([]);
+  const {t} = useLanguage()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const { data, error } = await subscriptionTypeTable().select('*');
+      if (error) {
+        console.error('Error fetching subscription types:', error);
+        toast({
+          title: "Internal Error",
+          description: '',
+        });
+      } else {
+        setSubscriptionTypes((data as any) || []);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
 
   // For delete confirmation dialog
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -80,25 +62,25 @@ export const useSubscriptionTypes = () => {
     setIsDeleteDialogOpen(true);
   }, []);
 
-  const confirmDelete = useCallback(() => {
+  const confirmDelete = useCallback(async () => {
     if (deleteId) {
       setLoading(true);
       
       // Simulate API call delay
-      setTimeout(() => {
-        setSubscriptionTypes((prevTypes) => 
-          prevTypes.filter((type) => type.id !== deleteId)
-        );
-        
-        toast({
-          title: "Subscription type deleted",
-          description: "The subscription type has been successfully removed",
-        });
-        
-        setLoading(false);
-        setIsDeleteDialogOpen(false);
-        setDeleteId(null);
-      }, 500);
+      await subscriptionTypeTable().delete().eq('id', deleteId)
+
+      setSubscriptionTypes((prevTypes) =>
+        prevTypes.filter((type) => type.id !== deleteId)
+      );
+
+      toast({
+        title: t('subscriptions.admin.delete.toast.title'),
+        description: t('subscriptions.admin.delete.toast.description'),
+      });
+
+      setLoading(false);
+      setIsDeleteDialogOpen(false);
+      setDeleteId(null);
     }
   }, [deleteId]);
 
@@ -114,20 +96,18 @@ export const useSubscriptionTypes = () => {
       // Call the admin createSubscriptionType function
       await adminCreateSubscriptionType(data);
       
-      // Add the new subscription type to the local state
-      // In a real app this would come from the API response
-      const newType: SubscriptionType = {
-        id: Math.random().toString(36).substring(2, 9),
-        name: data.name,
-        description: data.description,
-        type_id: data.type_id || data.type || '',
-        icon_type: data.icon_type || data.iconType || 'iframe',
-        status: 'active',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      
-      setSubscriptionTypes(prev => [newType, ...prev]);
+      // const newType: SubscriptionType = {
+      //   id: Math.random().toString(36).substring(2, 9),
+      //   name: data.name,
+      //   description: data.description,
+      //   type_id: data.type_id || data.type || '',
+      //   icon_type: data.icon_type || data.iconType || 'iframe',
+      //   status: 'active',
+      //   created_at: new Date().toISOString(),
+      //   updated_at: new Date().toISOString(),
+      // };
+      //
+      // setSubscriptionTypes(prev => [newType, ...prev]);
       
       return true;
     } catch (error) {
@@ -142,16 +122,15 @@ export const useSubscriptionTypes = () => {
     <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogTitle>{t('subscriptions.admin.remove.areyousure')}</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this subscription type
-            and may affect users who have active subscriptions of this type.
+            {t('subscriptions.admin.remove.warning')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={cancelDelete}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={cancelDelete}>{t('subscriptions.admin.remove.button.cancel')}</AlertDialogCancel>
           <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-            Delete
+            {t('subscriptions.admin.remove.button.delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -163,6 +142,6 @@ export const useSubscriptionTypes = () => {
     loading: loading || adminLoading,
     handleDelete,
     DeleteConfirmationDialog,
-    createSubscriptionType
+    createSubscriptionType,
   };
 };

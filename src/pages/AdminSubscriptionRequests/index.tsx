@@ -9,6 +9,7 @@ import SubscriptionTable from '../AdminSubscriptions/components/SubscriptionTabl
 import { AssignSubscriptionDialog } from '../AdminSubscriptions/components/subscription-assign/AssignSubscriptionDialog';
 import { toast } from '@/components/ui/use-toast';
 import { Subscription } from '../AdminSubscriptions/types';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 const AdminSubscriptionRequests = () => {
   const { 
@@ -55,17 +56,19 @@ const AdminSubscriptionRequests = () => {
     }
   };
 
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-6">
       <PageHeader
         icon={<Inbox className="h-6 w-6" />}
-        title="Subscription Requests"
-        subtitle="Manage user subscription requests"
+        title={t('subscriptions.requests.title')}
+        subtitle={t('subscriptions.requests.subtitle')}
       />
       
       <Card className="h-full">
         <CardHeader>
-          <CardTitle>Subscription Requests</CardTitle>
+          <CardTitle>{t('subscriptions.requests.card.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -80,7 +83,7 @@ const AdminSubscriptionRequests = () => {
             </div>
           ) : !subscriptions || subscriptions.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-muted-foreground">No subscription requests found.</p>
+              <p className="text-muted-foreground">{t('subscriptions.requests.not-found')}</p>
             </div>
           ) : (
             <SubscriptionTable 

@@ -5,17 +5,20 @@ import { FormField, FormItem, FormControl, FormDescription, FormMessage } from '
 import { Button } from '@/components/ui/button';
 import { UseFormReturn } from 'react-hook-form';
 import { SubscriptionTypeFormValues } from './schema';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface IconSelectorProps {
   form: UseFormReturn<SubscriptionTypeFormValues>;
 }
 
 export const IconSelector: React.FC<IconSelectorProps> = ({ form }) => {
+  const {t} = useLanguage()
+
   const iconOptions = [
-    { value: 'iframe', label: 'Web App', icon: <Frame className="h-5 w-5" /> },
-    { value: 'calendar', label: 'Calendar', icon: <Calendar className="h-5 w-5" /> },
-    { value: 'crm', label: 'CRM', icon: <Users className="h-5 w-5" /> },
-    { value: 'timetracking', label: 'Time Tracking', icon: <Clock className="h-5 w-5" /> },
+    { value: 'iframe', label: t('subscriptions.admin.form.icon.label.web-app'), icon: <Frame className="h-5 w-5" /> },
+    { value: 'calendar', label: t('subscriptions.admin.form.icon.label.calendar'), icon: <Calendar className="h-5 w-5" /> },
+    { value: 'crm', label: t('subscriptions.admin.form.icon.label.crm'), icon: <Users className="h-5 w-5" /> },
+    { value: 'timetracking', label: t('subscriptions.admin.form.icon.label.timetracking'), icon: <Clock className="h-5 w-5" /> },
   ];
 
   return (
@@ -45,7 +48,7 @@ export const IconSelector: React.FC<IconSelectorProps> = ({ form }) => {
             </div>
           </FormControl>
           <FormDescription>
-            Choose an icon to represent this subscription type
+              {t('subscriptions.admin.form.icon.description')}
           </FormDescription>
           <FormMessage />
         </FormItem>

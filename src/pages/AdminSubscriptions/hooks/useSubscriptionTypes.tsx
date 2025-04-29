@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import {subscriptionTypeTable} from '@/integrations/supabase/client';
 
 export type SubscriptionTypeFormData = {
   name: string;
@@ -25,12 +25,12 @@ export const useSubscriptionTypes = () => {
       
       // Create a new subscription type in the database using a raw query
       // Use any type to bypass TypeScript's strict checking for RPC functions
-      const { error } = await (supabase.rpc as any)('create_subscription_type', {
-        p_name: data.name,
-        p_description: data.description,
-        p_type_id: type_id,
-        p_icon_type: icon_type,
-      });
+      const {error} = await subscriptionTypeTable().insert([{
+        name: data.name,
+        description: data.description,
+        type_id,
+        icon_type,
+      }])
 
       if (error) throw error;
       

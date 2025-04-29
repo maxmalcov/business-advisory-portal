@@ -10,7 +10,7 @@ import SubscriptionCard from '@/components/subscriptions/SubscriptionCard';
 import SubscriptionSheetContent from '@/components/subscriptions/SubscriptionSheetContent';
 import RequestAccessDialog from '@/components/subscriptions/RequestAccessDialog';
 import SubscriptionsHeader from './Subscriptions/components/SubscriptionsHeader';
-import { supabase } from '@/integrations/supabase/client';
+import {subscriptionTypeTable, supabase} from '@/integrations/supabase/client';
 
 const Subscriptions: React.FC = () => {
   const { t } = useLanguage();
@@ -22,7 +22,7 @@ const Subscriptions: React.FC = () => {
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
   
   const iframeUrls = user?.iframeUrls || [];
-  
+
   const subscriptionTools: SubscriptionTool[] = [
     {
       id: 'iframe1',

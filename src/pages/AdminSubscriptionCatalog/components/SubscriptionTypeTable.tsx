@@ -7,13 +7,15 @@ import { format } from 'date-fns';
 import { Edit, Trash } from 'lucide-react';
 import { SubscriptionType } from '../hooks/useSubscriptionTypes';
 import SubscriptionTypeIcon from '../../AdminSubscriptions/components/SubscriptionTypeIcon';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface SubscriptionTypeTableProps {
   subscriptionTypes: SubscriptionType[];
   onDelete: (typeId: string) => void;
+  onEdit: (typeId: string) => void;
 }
 
-const SubscriptionTypeTable: React.FC<SubscriptionTypeTableProps> = ({ subscriptionTypes, onDelete }) => {
+const SubscriptionTypeTable: React.FC<SubscriptionTypeTableProps> = ({ subscriptionTypes, onDelete, onEdit }) => {
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), 'MMM dd, yyyy');
@@ -22,17 +24,19 @@ const SubscriptionTypeTable: React.FC<SubscriptionTypeTableProps> = ({ subscript
     }
   };
 
+  const {t} = useLanguage()
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Type ID (Slug)</TableHead>
-          <TableHead>Icon Type</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Created</TableHead>
-          <TableHead>Actions</TableHead>
+          <TableHead>{t('subscriptions.admin.table.name')}</TableHead>
+          <TableHead>{t('subscriptions.admin.table.description')}</TableHead>
+          <TableHead>{t('subscriptions.admin.table.id')}</TableHead>
+          <TableHead>{t('subscriptions.admin.table.icon-type')}</TableHead>
+          <TableHead>{t('subscriptions.admin.table.status')}</TableHead>
+          <TableHead>{t('subscriptions.admin.table.created')}</TableHead>
+          <TableHead>{t('subscriptions.admin.table.actions')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -49,8 +53,8 @@ const SubscriptionTypeTable: React.FC<SubscriptionTypeTableProps> = ({ subscript
             <TableCell>{type.icon_type}</TableCell>
             <TableCell>
               {type.status === 'active' ? 
-                <Badge className="bg-green-500">Active</Badge> : 
-                <Badge variant="outline" className="text-red-500">Inactive</Badge>
+                <Badge className="bg-green-500">{t('services.status.active')}</Badge> :
+                <Badge variant="outline" className="text-red-500">{t('services.status.inactive')}</Badge>
               }
             </TableCell>
             <TableCell>{formatDate(type.created_at)}</TableCell>
@@ -59,8 +63,9 @@ const SubscriptionTypeTable: React.FC<SubscriptionTypeTableProps> = ({ subscript
                 <Button 
                   variant="outline" 
                   size="sm"
+                  onClick={() => { onEdit(type.id) }}
                 >
-                  <Edit className="h-4 w-4 mr-1" /> Edit
+                  <Edit className="h-4 w-4 mr-1" /> {t('subscriptions.admin.table.edit')}
                 </Button>
                 <Button 
                   variant="outline" 

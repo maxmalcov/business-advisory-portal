@@ -14,7 +14,7 @@ const SubscriptionsHeader: React.FC = () => {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t('nav.subscriptions')}</h1>
         <p className="text-muted-foreground mt-1">
-          Manage access requests and active client subscriptions
+            {t('subscriptions.requests.description')}
         </p>
       </div>
     </div>
