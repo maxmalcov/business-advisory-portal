@@ -55,9 +55,9 @@ const Subscriptions: React.FC = () => {
   }, []);
 
   let counter = 0
-  for (let i = 0; i < subscriptionRequests.length || iframeUrls.length < counter; i++){
+  for (let i = 0; i < subscriptionRequests.length; i++){
     if(subscriptionRequests[i].status == 'active'){
-      subscriptionRequests[i].iframe_url = iframeUrls[counter]
+      subscriptionRequests[i].iframe_url = iframeUrls[counter] || ''
       counter++
     }
   }
@@ -76,8 +76,6 @@ const Subscriptions: React.FC = () => {
       }
 
       const request = subscriptionRequests.find(item => item.tool_id == subscriptionTypes[i].id)
-      console.log('request')
-      console.log(request)
 
       if (request) {
         if (request.status == 'active') {
