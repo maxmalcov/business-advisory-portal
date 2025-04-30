@@ -22,6 +22,7 @@ const AdminSubscriptionRequests = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
+  const [editRequestId, setEditRequestId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchSubscriptions();
@@ -33,30 +34,33 @@ const AdminSubscriptionRequests = () => {
     setIsDialogOpen(true);
   };
 
+  const {t} = useLanguage()
+
   const handleStatusChange = async (subscriptionId: string, newStatus: Subscription['status'], iframeUrl?: string) => {
     try {
+      if(newStatus == 'active'){
+
+      }
       await updateSubscriptionStatus(subscriptionId, newStatus, iframeUrl);
       const statusMessages = {
-        active: 'Subscription activated successfully',
-        inactive: 'Subscription stopped successfully',
-        rejected: 'Subscription rejected successfully',
-        pending: 'Subscription status updated to pending'
+        active: t('subscription.admin.message.description.active'),
+        inactive: t('subscription.admin.message.description.inactive'),
+        rejected: t('subscription.admin.message.description.reject'),
+        pending: t('subscription.admin.message.description.pending')
       };
       toast({
-        title: "Status Updated",
+        title: t('subscription.admin.message.title'),
         description: statusMessages[newStatus]
       });
     } catch (error) {
       console.error('Error updating status:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update subscription status. Please try again."
+        title: t('subscription.admin.error'),
+        description: t("subscription.admin.error.description")
       });
     }
   };
-
-  const {t} = useLanguage()
 
   return (
     <div className="space-y-6">
@@ -100,6 +104,7 @@ const AdminSubscriptionRequests = () => {
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         onSuccess={fetchSubscriptions}
+        subscription={selectedSubscription}
       />
     </div>
   );

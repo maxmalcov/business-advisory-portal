@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { SubscriptionTool } from '@/types/subscriptions';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface RequestAccessDialogProps {
   isOpen: boolean;
@@ -25,20 +26,21 @@ const RequestAccessDialog: React.FC<RequestAccessDialogProps> = ({
   onConfirm,
   selectedTool,
 }) => {
+  const {t} = useLanguage()
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Request Access to {selectedTool?.name}</AlertDialogTitle>
+          <AlertDialogTitle>{t('subscriptions.dialog.confirm-submit.title')}{selectedTool?.name}</AlertDialogTitle>
           <AlertDialogDescription>
-            This will send a notification to the administrator to review your request.
-            You will be notified once your request has been processed.
+            {t('subscriptions.dialog.confirm-submit.description')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t('subscriptions.dialog.confirm-submit.cancel')}</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm}>
-            Submit Request
+            {t('subscriptions.dialog.confirm-submit.button')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

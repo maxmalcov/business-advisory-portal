@@ -4,10 +4,17 @@ import { google } from 'googleapis';
 import * as SMTPTransport from "nodemailer/lib/smtp-transport";
 import 'dotenv/config';
 import cors from "cors";
+import cron from 'node-cron';
+import {createClient} from "@supabase/supabase-js";
+import type {Database} from "../../src/integrations/supabase/types";
 
 const app = express();
 app.use(express.json());
 app.use(cors())
+
+const SUPABASE_URL = "https://grpzctxumndpwdwzgzqt.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdycHpjdHh1bW5kcHdkd3pnenF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Njc3NTUsImV4cCI6MjA1OTM0Mzc1NX0.au6WCg30IA9bx4-5MdapzytvS-AJoet5dFyPOIzHopw";
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const PORT = process.env.PORT || 3000;
 
@@ -56,6 +63,25 @@ app.post('/v1/send-email', async (req: Request, res: Response) => {
         res.status(200).json({ message: 'Email sent successful', messageId: result.messageId });
     } catch (error) {
         res.status(500).json({ error: 'Error sending email', status: 500 });
+    }
+});
+
+cron.schedule('0 0 * * *', async () => {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const {data: subscriptions, error } = await supabase.from('user_tool_subscriptions').select('*').gte('expires_at', startOfDay.toISOString())
+        .lte('expires_at', endOfDay.toISOString());
+
+    if(error){
+        throw new Error("Internal error")
+    }
+
+    for(const subscription of subscriptions){
+        await supabase.from('user_tool_subscriptions').update({ status: 'inactive'}).eq('id', subscription.id)
     }
 });
 

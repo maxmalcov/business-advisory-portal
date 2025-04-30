@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Subscription } from '../types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface SubscriptionTableProps {
   subscriptions: Subscription[];
@@ -60,6 +61,8 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
     </TooltipProvider>
   );
 
+  const {t} = useLanguage()
+
   const renderActions = (subscription: Subscription) => {
     const actions = [];
 
@@ -68,15 +71,15 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
       actions.push(
         renderActionButton(
           <Square className="h-4 w-4 mr-1" />,
-          'Stop',
+          t('subscription.admin.buttons.stop'),
           () => onStatusChange(subscription.id, 'inactive'),
-          'Stop this subscription and disable access'
+          t('subscription.admin.buttons.stop.prompt')
         ),
         renderActionButton(
           <Edit className="h-4 w-4 mr-1" />,
-          'Edit',
+          t('subscription.admin.buttons.edit'),
           () => onEdit(subscription),
-          'Edit subscription details'
+          t('subscription.admin.buttons.edit.prompt')
         )
       );
     }
@@ -86,15 +89,15 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
       actions.push(
         renderActionButton(
           <Check className="h-4 w-4 mr-1" />,
-          'Approve',
+          t('subscription.admin.buttons.approve'),
           () => onStatusChange(subscription.id, 'active', subscription.url),
-          'Approve this subscription request'
+          t('subscription.admin.buttons.approve.prompt')
         ),
         renderActionButton(
           <X className="h-4 w-4 mr-1" />,
-          'Reject',
+          t('subscription.admin.buttons.reject'),
           () => onStatusChange(subscription.id, 'rejected'),
-          'Reject this subscription request'
+          t('subscription.admin.buttons.reject.prompt')
         )
       );
     }
@@ -104,9 +107,9 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
       actions.push(
         renderActionButton(
           <Check className="h-4 w-4 mr-1" />,
-          'Approve',
+            t('subscription.admin.buttons.approve'),
           () => onStatusChange(subscription.id, 'active', subscription.url),
-          'Approve this subscription request'
+            t('subscription.admin.buttons.approve.prompt')
         )
       );
     }
@@ -130,10 +133,6 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
               </div>
               <StatusBadge status={subscription.status} />
             </div>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <div>User: {subscription.userName}</div>
-              <div className="truncate">URL: {subscription.url}</div>
-            </div>
             <div className="mt-4">
               {renderActions(subscription)}
             </div>
@@ -147,13 +146,13 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
     <div className="rounded-md border">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>User</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>URL</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+          <TableRow style={{width: '100%'}}>
+            <TableHead>{t('subscription.admin.table.name')}</TableHead>
+            <TableHead>{t('subscription.admin.table.type')}</TableHead>
+            <TableHead>{t('subscription.admin.table.user')}</TableHead>
+            <TableHead>{t('subscription.admin.table.status')}</TableHead>
+            <TableHead></TableHead>
+            <TableHead style={{marginLeft: '100%'}} className="text-right">{t('subscription.admin.table.actions')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

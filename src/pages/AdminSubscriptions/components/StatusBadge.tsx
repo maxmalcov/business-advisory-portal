@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 type StatusBadgeProps = {
   status: string;
@@ -15,30 +16,32 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, onClick }) => {
     onClick && "cursor-pointer hover:opacity-90"
   );
 
+  const {t} = useLanguage()
+
   const getStatusConfig = (status: string) => {
     switch(status) {
       case 'active':
         return {
           class: 'bg-green-500',
-          label: 'Active',
+          label: t('active'),
           tooltip: 'Subscription is active and accessible'
         };
       case 'pending':
         return {
           class: 'bg-yellow-500',
-          label: 'Pending',
+          label: t('pending'),
           tooltip: 'Waiting for admin approval'
         };
       case 'rejected':
         return {
           class: 'bg-red-500',
-          label: 'Rejected',
+          label: t('rejected'),
           tooltip: onClick ? 'Click to request again' : 'Subscription request was rejected'
         };
       case 'inactive':
         return {
           class: 'bg-gray-500',
-          label: 'Inactive',
+          label: t('inactive'),
           tooltip: onClick ? 'Click to request again' : 'Subscription has been stopped by admin'
         };
       default:

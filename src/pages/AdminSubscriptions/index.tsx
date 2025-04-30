@@ -47,24 +47,6 @@ const AdminSubscriptions = () => {
     setIsDialogOpen(true);
   };
 
-  const handleSubscriptionSubmit = async (subscription: Subscription) => {
-    try {
-      console.log('Subscription submitted:', subscription);
-      setIsDialogOpen(false);
-      toast({
-        title: isEditMode ? "Subscription Updated" : "Subscription Created",
-        description: `Successfully ${isEditMode ? 'updated' : 'created'} the subscription.`
-      });
-      await fetchSubscriptions();
-    } catch (error) {
-      console.error('Error submitting subscription:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to save the subscription. Please try again."
-      });
-    }
-  };
 
   const handleSubscriptionTypeSubmit = async (data: any) => {
     try {
@@ -121,6 +103,7 @@ const AdminSubscriptions = () => {
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         onSuccess={fetchSubscriptions}
+        subscription={selectedSubscription}
       />
 
       <SubscriptionTypeDialog

@@ -2,6 +2,8 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { SubscriptionTool } from '@/types/subscriptions';
+import SubscriptionTypeIcon from "@/pages/AdminSubscriptions/components/SubscriptionTypeIcon.tsx";
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface SubscriptionCardProps {
   tool: SubscriptionTool;
@@ -22,6 +24,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ tool, onClick }) =>
     }
   };
 
+  const {t} = useLanguage()
+
   return (
     <Card 
       className="cursor-pointer hover:shadow-md transition-all"
@@ -29,11 +33,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ tool, onClick }) =>
     >
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
-          <div className="bg-blue-50 p-2 rounded-lg">
-            {tool.icon}
+          <div className="flex items-center gap-2">
+            <SubscriptionTypeIcon type={tool.icon as any} />
           </div>
           <div className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(tool.status)}`}>
-            {tool.status.charAt(0).toUpperCase() + tool.status.slice(1)}
+            {t(tool.status)}
           </div>
         </div>
         <CardTitle className="mt-2 text-lg">{tool.name}</CardTitle>

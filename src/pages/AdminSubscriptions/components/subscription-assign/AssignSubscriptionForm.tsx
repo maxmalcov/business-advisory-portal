@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import type { SubscriptionAssignFormValues } from './schema';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 export function AssignSubscriptionForm() {
   const { control } = useFormContext<SubscriptionAssignFormValues>();
@@ -41,64 +42,17 @@ export function AssignSubscriptionForm() {
     fetchSubscriptionTypes();
   }, []);
 
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-4">
-      <FormField
-        control={control}
-        name="userId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>User</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a user" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {users.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.email}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="subscriptionTypeId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Subscription Type</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a subscription type" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {subscriptionTypes.map((type) => (
-                  <SelectItem key={type.type_id} value={type.type_id}>
-                    {type.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       <FormField
         control={control}
         name="startDate"
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel>Start Date</FormLabel>
+            <FormLabel>{t('subscription.admin.form.date-start')}</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -112,7 +66,7 @@ export function AssignSubscriptionForm() {
                     {field.value ? (
                       format(field.value, "PPP")
                     ) : (
-                      <span>Pick a date</span>
+                      <span>{t('subscription.admin.form.date')}</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
@@ -140,7 +94,7 @@ export function AssignSubscriptionForm() {
         name="endDate"
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel>End Date (Optional)</FormLabel>
+            <FormLabel>{t('subscription.admin.form.date-end')}</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -154,7 +108,7 @@ export function AssignSubscriptionForm() {
                     {field.value ? (
                       format(field.value, "PPP")
                     ) : (
-                      <span>No end date (unlimited)</span>
+                      <span>{t('subscription.admin.form.date-no')}</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>

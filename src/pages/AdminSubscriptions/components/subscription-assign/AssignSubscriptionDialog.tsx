@@ -1,69 +1,70 @@
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import {subscriptionRequestsTable, supabase} from '@/integrations/supabase/client';
 import { subscriptionAssignFormSchema, type SubscriptionAssignFormValues } from './schema';
 import { AssignSubscriptionForm } from './AssignSubscriptionForm';
+import {useLanguage} from "@/context/LanguageContext.tsx";
+import {Subscription} from "@/pages/AdminSubscriptions/types.ts";
 
 interface AssignSubscriptionDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
+  subscription: Subscription;
 }
 
 export function AssignSubscriptionDialog({ 
   isOpen, 
   onOpenChange,
-  onSuccess 
+  onSuccess,
+  subscription
 }: AssignSubscriptionDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {t} = useLanguage()
 
   const form = useForm<SubscriptionAssignFormValues>({
     resolver: zodResolver(subscriptionAssignFormSchema),
     defaultValues: {
-      userId: '',
-      subscriptionTypeId: '',
       startDate: new Date(),
       endDate: null,
     },
   });
 
+  useEffect(() => {
+    (async () => {
+      if(isOpen){
+        const { data, error } = await subscriptionRequestsTable().select('*').eq('id', subscription.id).single()
+
+        if(error){
+          throw new Error('Server error')
+        }
+
+        form.reset({
+          startDate: (data as any).activated_at,
+          endDate: (data as any).expires_at,
+        })
+      }
+    })()
+  }, [isOpen]);
+
   const onSubmit = async (data: SubscriptionAssignFormValues) => {
     try {
       setIsSubmitting(true);
-      
-      const { data: subscriptionType, error: typeError } = await supabase
-        .from('subscription_types')
-        .select('*')
-        .eq('type_id', data.subscriptionTypeId)
-        .single();
 
-      if (typeError) throw typeError;
-
-      // Insert new subscription with properly mapped column names
-      const { error: subscriptionError } = await supabase
-        .from('user_tool_subscriptions')
-        .insert({
-          user_id: data.userId,
-          tool_id: subscriptionType.type_id,
-          tool_name: subscriptionType.name,
-          status: 'active',
-          activated_at: new Date().toISOString(),
-          demo_video_url: '', // Provide a default empty string for the required field
-          start_date: data.startDate.toISOString(),
-          end_date: data.endDate?.toISOString() || null,
-        });
-
-      if (subscriptionError) throw subscriptionError;
+      await subscriptionRequestsTable().update({
+        activated_at: data.startDate,
+        expires_at: data.endDate,
+      }).eq('id', subscription.id)
 
       toast({
-        title: "Success",
-        description: "Subscription has been assigned successfully",
+        title: t('subscription.admin.toast.success.title'),
+        description: t('subscription.admin.toast.success.description'),
       });
       
       onOpenChange(false);
@@ -73,8 +74,8 @@ export function AssignSubscriptionDialog({
       console.error('Error assigning subscription:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to assign subscription. Please try again.",
+        title: t('subscription.admin.toast.failed.title'),
+        description: t('subscription.admin.toast.failed.description'),
       });
     } finally {
       setIsSubmitting(false);
@@ -85,7 +86,7 @@ export function AssignSubscriptionDialog({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Assign a New Subscription</DialogTitle>
+          <DialogTitle>{t('subscription.admin.assign-new')}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -102,7 +103,7 @@ export function AssignSubscriptionDialog({
                 type="submit" 
                 disabled={isSubmitting}
               >
-                Assign Subscription
+                {t('subscription.admin.assign-new.button')}
               </Button>
             </div>
           </form>

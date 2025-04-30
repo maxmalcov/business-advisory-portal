@@ -139,6 +139,9 @@ export const notificationSettingsTable = () => {
 export const subscriptionTypeTable = () => {
   return supabase.from('subscription_types' as any);
 };
+export const subscriptionRequestsTable = () => {
+  return supabase.from('user_tool_subscriptions' as any);
+};
 
 // Setup realtime subscription for the service_requests table
 // We're removing the problematic RPC call and using direct channel subscription instead

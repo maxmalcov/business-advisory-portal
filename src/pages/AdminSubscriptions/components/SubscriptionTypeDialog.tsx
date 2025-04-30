@@ -23,14 +23,14 @@ interface SubscriptionTypeDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: SubscriptionTypeFormData) => Promise<void>;
-  editSubscription: SubscriptionType | null;
+  editSubscription?: SubscriptionType | null;
 }
 
 const SubscriptionTypeDialog: React.FC<SubscriptionTypeDialogProps> = ({
   isOpen,
   onOpenChange,
   onSubmit,
-  editSubscription,
+  editSubscription = null,
 }) => {
 
   const form = useForm<SubscriptionTypeFormValues>({

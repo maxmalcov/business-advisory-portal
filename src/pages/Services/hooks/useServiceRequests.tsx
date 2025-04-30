@@ -5,6 +5,7 @@ import { ServiceItem, ServiceStatus } from '../types';
 import {logsTable, notificationSettingsTable, serviceRequestsTable, supabase} from '@/integrations/supabase/client';
 import {useLanguage} from "@/context/LanguageContext.tsx";
 import {sendEmail} from "@/integrations/email";
+import {log} from "@/utils/logs/log.funciton.ts";
 
 export const useServiceRequests = (user: any, services: ServiceItem[], setServices: React.Dispatch<React.SetStateAction<ServiceItem[]>>) => {
   const { toast } = useToast();
@@ -82,6 +83,8 @@ Service Requested: ${service.title}
 
 You can manage this request in the admin dashboard.`
     );
+
+    log({ action: 'Service request', description: `New service request ${service.title} from ${user.name}`, category: 'service', user: user.email, level: 'info'})
 
     try {
       console.log(`Requesting service ${serviceId} for user ${user.id}`);
