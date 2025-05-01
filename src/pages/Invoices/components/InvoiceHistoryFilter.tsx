@@ -19,24 +19,15 @@ const InvoiceHistoryFilter: React.FC<InvoiceHistoryFilterProps> = ({
   filterType,
   setFilterType
 }) => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   
   const getLabels = () => {
-    if (language === 'es') {
-      return {
-        placeholder: "Buscar facturas...",
-        all: "Todas",
-        sales: "Ventas",
-        supplier: "Proveedor"
-      };
-    } else {
-      return {
-        placeholder: "Search invoices...",
-        all: "All",
-        sales: "Sales",
-        supplier: "Supplier"
-      };
-    }
+    return {
+      placeholder: t('invoices.search.placeholder'),
+      all: t('invoices.search.all'),
+      sales: t('invoices.search.sales'),
+      supplier: t('invoices.search.supplier')
+    };
   };
   
   const labels = getLabels();

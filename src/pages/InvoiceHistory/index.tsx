@@ -15,12 +15,10 @@ const InvoiceHistory = () => {
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {language === 'es' ? 'Historial de Facturas' : 'Invoice History'}
+            {t('invoices.history.title')}
           </h1>
           <p className="text-muted-foreground mt-1">
-            {language === 'es' 
-              ? 'Ver y gestionar todos sus registros de facturas' 
-              : 'View and manage all your invoice records'}
+            {t('invoices.history.description')}
           </p>
         </div>
       </div>

@@ -18,7 +18,7 @@ export function useFetchInvoices() {
     try {
       // Use a raw query to fetch from the invoice_uploads table
       const { data, error } = await supabase
-        .from('invoice_uploads')
+        .from('invoice_files')
         .select('*')
         .order('created_at', { ascending: false });
       

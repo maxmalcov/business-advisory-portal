@@ -12,12 +12,15 @@ import { InvoiceHistoryTableProps } from './types';
 import { needsTruncation, truncateFileName } from '@/utils/fileUtils';
 import { InvoiceTypeTag } from './InvoiceTypeTag';
 import { InvoiceActions } from './InvoiceActions';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 export const InvoiceHistoryMobile: React.FC<InvoiceHistoryTableProps> = ({
   invoices,
   onViewInvoice,
   onDownloadInvoice,
 }) => {
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-4">
       {invoices.map((invoice) => (
@@ -48,14 +51,14 @@ export const InvoiceHistoryMobile: React.FC<InvoiceHistoryTableProps> = ({
           
           <div className="grid grid-cols-2 gap-2 text-sm mb-3">
             <div>
-              <span className="text-muted-foreground">Type:</span>
+              <span className="text-muted-foreground">{t('invoices.search.table.mobile.type')}</span>
               <span className="ml-2">
                 <InvoiceTypeTag type={invoice.invoice_type} />
               </span>
             </div>
             
             <div>
-              <span className="text-muted-foreground">Date:</span>
+              <span className="text-muted-foreground">{t('invoices.search.table.mobile.date')}</span>
               <span className="ml-2" title={invoice.created_at}>
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
               </span>

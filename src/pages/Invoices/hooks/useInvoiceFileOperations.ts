@@ -2,6 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { InvoiceUpload } from '../components/InvoiceHistoryList';
+import {sendEmail} from "@/integrations/email";
 
 export function useInvoiceFileOperations() {
   const { toast } = useToast();
@@ -34,7 +35,7 @@ export function useInvoiceFileOperations() {
       const { data, error } = await supabase.storage
         .from('invoices')
         .download(invoice.storage_path);
-      
+
       if (error) {
         console.error('Error downloading file:', error);
         toast({
@@ -48,12 +49,15 @@ export function useInvoiceFileOperations() {
       // Create a download link
       const url = URL.createObjectURL(data);
       const a = document.createElement('a');
+      console.log(url)
       a.href = url;
-      a.download = invoice.file_name;
+      a.download = invoice.file_name || 'download';
+      a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
       URL.revokeObjectURL(url);
       document.body.removeChild(a);
+
     } catch (error) {
       console.error('Error downloading invoice:', error);
     }

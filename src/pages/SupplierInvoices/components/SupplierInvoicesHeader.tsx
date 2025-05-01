@@ -14,7 +14,7 @@ const SupplierInvoicesHeader: React.FC = () => {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t('nav.supplier_invoices')}</h1>
         <p className="text-muted-foreground mt-1">
-          Upload and manage your supplier invoices
+            {t('invoices.supplier.title')}
         </p>
       </div>
     </div>

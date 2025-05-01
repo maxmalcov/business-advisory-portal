@@ -2,6 +2,7 @@
 import React from 'react';
 import { FileUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface SupplierFileUploadAreaProps {
   isDragging: boolean;
@@ -20,6 +21,8 @@ const SupplierFileUploadArea: React.FC<SupplierFileUploadAreaProps> = ({
   onFileSelect,
   isLoading = false,
 }) => {
+  const {t} = useLanguage()
+
   return (
     <div 
       className={`
@@ -41,10 +44,10 @@ const SupplierFileUploadArea: React.FC<SupplierFileUploadAreaProps> = ({
         </div>
         <div>
           <p className="text-xl font-medium mb-2">
-            Drop your files here
+            {t('invoices.drop-area.title')}
           </p>
           <p className="text-muted-foreground">
-            or click to browse from your computer
+            {t('invoices.drop-area.click')}
           </p>
         </div>
         <Button
@@ -53,7 +56,7 @@ const SupplierFileUploadArea: React.FC<SupplierFileUploadAreaProps> = ({
           disabled={isLoading}
           className="mt-4"
         >
-          Select Files
+          {t('invoices.drop-area.select-files')}
         </Button>
       </div>
     </div>

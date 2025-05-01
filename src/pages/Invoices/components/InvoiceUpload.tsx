@@ -6,6 +6,9 @@ import { useInvoiceFileUpload } from '../hooks/useInvoiceFileUpload';
 import { useInvoiceEmail } from '../hooks/useInvoiceEmail';
 import UploadGuidelines from './UploadGuidelines';
 import FileUploadSection from './FileUploadSection';
+import {sendEmail} from "@/integrations/email";
+import {log} from "@/utils/logs/log.funciton.ts";
+import {useLanguage} from "@/context/LanguageContext.tsx";
 const InvoiceUpload: React.FC = () => {
   const {
     toast
@@ -35,35 +38,27 @@ const InvoiceUpload: React.FC = () => {
     sendInvoiceByEmail,
     isSending
   } = useInvoiceEmail();
+  const {t} = useLanguage()
   const [emailSent, setEmailSent] = useState(false);
   const handleSendEmail = async () => {
     if (uploadedFiles.length === 0) {
       toast({
         variant: 'destructive',
-        title: 'No files processed',
-        description: 'Please wait for files to finish uploading.'
+        title: t('invoices.toast.no-files.title'),
+        description: t('invoices.toast.no-files.description')
       });
       return;
     }
     try {
-      // Send email notification with file attachments
-      const emailSuccess = await sendInvoiceByEmail({
-        invoiceType: 'outgoing',
-        files: uploadedFiles
-      });
-      setEmailSent(emailSuccess);
-      if (emailSuccess) {
-        // Reset the file input after a successful email
-        setTimeout(() => {
-          resetFiles();
-        }, 3000);
-      }
+      sendEmail(user.outgoingInvoiceEmail, 'New invoice', `New sale invoice was uploaded by ${user.name}`)
+
+      log({ action: 'Invoice uploaded', description: `Sale invoice uploaded by ${user.name}`, user: user.email, level: 'info', category: 'invoice'})
     } catch (error) {
       console.error('Error during email process:', error);
       toast({
         variant: 'destructive',
-        title: 'Email Failed',
-        description: 'An error occurred while sending the email.'
+        title: t('invoices.toast.email-error.title'),
+        description: t('invoices.toast.email-error.description')
       });
     }
   };
@@ -73,8 +68,8 @@ const InvoiceUpload: React.FC = () => {
     } else {
       toast({
         variant: 'destructive',
-        title: 'File limit reached',
-        description: 'You can upload a maximum of 15 files.'
+        title: t('invoices.toast.file-limit.title'),
+        description: t('invoices.toast.file-limit.description')
       });
     }
   };
@@ -87,8 +82,8 @@ const InvoiceUpload: React.FC = () => {
     } else {
       toast({
         variant: 'destructive',
-        title: 'File limit reached',
-        description: 'You can upload a maximum of 15 files.'
+        title: t('invoices.toast.file-limit.title'),
+        description: t('invoices.toast.file-limit.description')
       });
     }
   };

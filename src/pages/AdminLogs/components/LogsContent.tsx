@@ -34,7 +34,7 @@ const LogsContent: React.FC<LogsContentProps> = ({
     const matchesLevel = levelFilter === 'all' || log.level === levelFilter;
     
     return matchesSearch && matchesCategory && matchesLevel;
-  });
+  }).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
     <Tabs defaultValue="logs">

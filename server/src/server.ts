@@ -6,7 +6,6 @@ import 'dotenv/config';
 import cors from "cors";
 import cron from 'node-cron';
 import {createClient} from "@supabase/supabase-js";
-import type {Database} from "../../src/integrations/supabase/types";
 
 const app = express();
 app.use(express.json());
@@ -14,7 +13,7 @@ app.use(cors())
 
 const SUPABASE_URL = "https://grpzctxumndpwdwzgzqt.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdycHpjdHh1bW5kcHdkd3pnenF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Njc3NTUsImV4cCI6MjA1OTM0Mzc1NX0.au6WCg30IA9bx4-5MdapzytvS-AJoet5dFyPOIzHopw";
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const PORT = process.env.PORT || 3000;
 

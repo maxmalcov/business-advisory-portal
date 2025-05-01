@@ -17,29 +17,20 @@ const UploadGuidelines: React.FC<UploadGuidelinesProps> = ({
   emailAddress,
   emailType
 }) => {
-  const { language } = useLanguage();
-  const emailTypeLabel = emailType === 'outgoing' ? 
-    (language === 'es' ? 'salida' : 'outgoing') : 
-    (language === 'es' ? 'entrada' : 'incoming');
+  const {t} = useLanguage()
+
+  const emailTypeLabel = emailType === 'outgoing' ?
+      t("invoices.type.sale") :
+      t('invoices.type.supplier');
 
   const getTexts = () => {
-    if (language === 'es') {
-      return {
-        maxSize: `Tamaño máximo: ${maxFileSize}MB por archivo`,
-        maxFilesText: `Máximo ${maxFiles} archivos a la vez`,
-        formats: `Formatos aceptados: ${acceptedFormats.join(', ')}`,
-        emailConfirmed: `Las notificaciones por correo electrónico se enviarán a: ${emailAddress}`,
-        emailWarning: `Advertencia: No hay correo electrónico de factura de ${emailTypeLabel} configurado en su perfil`
-      };
-    } else {
-      return {
-        maxSize: `Maximum file size: ${maxFileSize}MB per file`,
-        maxFilesText: `Maximum ${maxFiles} files at once`,
-        formats: `Accepted formats: ${acceptedFormats.join(', ')}`,
-        emailConfirmed: `Email notifications will be sent to: ${emailAddress}`,
-        emailWarning: `Warning: No ${emailTypeLabel} invoice email configured in your profile`
-      };
-    }
+    return {
+      maxSize: t('invoices.guidelines.maxsize').replace('|', maxFileSize.toString()),
+      maxFilesText: t('invoices.guidelines.maxfiles').replace('|', maxFiles.toString()),
+      formats: t('invoices.guidelines.accepted-formats').replace('|', acceptedFormats.join(', ')),
+      emailConfirmed: t('invoices.guidelines.email-to').replace('|', emailAddress),
+      emailWarning: t('invoices.guidelines.email-warning').replace('|', emailTypeLabel)
+    };
   };
   
   const texts = getTexts();

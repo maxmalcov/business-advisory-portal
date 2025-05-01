@@ -478,10 +478,42 @@ const translations: Record<Language, Record<string, string>> = {
     'logs.email': 'Email',
     'logs.service': 'Service',
     'logs.invoice': 'Invoice',
+
+    'invoices.toast.no-files.title': 'No files processed',
+    'invoices.toast.no-files.description': 'Please wait for files to finish uploading.',
+    'invoices.toast.email-error.title': 'Email Failed',
+    'invoices.toast.email-error.description': 'An error occurred while sending the email.',
+    'invoices.toast.file-limit.title': 'File limit reached',
+    'invoices.toast.file-limit.description': 'You can upload a maximum of 15 files.',
+    'invoices.sale.title': 'Upload and manage your sales invoices',
+    'invoices.type.sale': 'sale',
+    'invoices.type.supplier': 'supplier',
+    'invoices.guidelines.maxsize': 'Maximum file size: |MB per file',
+    'invoices.guidelines.maxfiles': 'Maximum | files at once',
+    'invoices.guidelines.accepted-formats': 'Accepted formats: |',
+    'invoices.guidelines.email-to': 'Email notifications will be sent to: |',
+    'invoices.guidelines.email-warning': 'Warning: No | invoice email configured in your profile',
+    'invoices.drop-area.title': 'Drop your files here',
+    'invoices.drop-area.click': 'or click to browse from your computer',
+    'invoices.drop-area.select-files': 'Select Files',
+    'invoices.supplier.title': 'Upload and manage your supplier invoices',
+    'invoices.history.title': 'Invoice History',
+    'invoices.history.description': 'View and manage all your invoice records',
+    'invoices.search.placeholder': 'Search invoices...',
+    'invoices.search.all': 'All',
+    'invoices.search.sales': 'Sales',
+    'invoices.search.supplier': 'Supplier',
+    'invoices.search.table.file-name': 'File Name',
+    'invoices.search.table.type': 'Type',
+    'invoices.search.table.upload-date': 'Upload Date',
+    'invoices.search.table.actions': 'Actions',
+    'invoices.search.table.mobile.date': 'Date:',
+    'invoices.search.table.mobile.type': 'Type:',
+    'invoices.search.table.mobile.download': 'Download',
+    'invoices.search.table.mobile.view': 'View',
   },
   
   es: {
-
   }
 };
 

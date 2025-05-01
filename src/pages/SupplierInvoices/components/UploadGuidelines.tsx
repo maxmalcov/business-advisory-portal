@@ -1,5 +1,6 @@
 
 import React from 'react';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface UploadGuidelinesProps {
   maxFileSize?: number;
@@ -18,15 +19,17 @@ const UploadGuidelines: React.FC<UploadGuidelinesProps> = ({
 }) => {
   const emailTypeLabel = emailType === 'outgoing' ? 'outgoing' : 'incoming';
 
+  const {t} = useLanguage()
+
   return (
     <div className="bg-muted p-4 rounded-md text-sm space-y-1">
-      <p>Maximum file size: {maxFileSize}MB per file</p>
-      <p>Maximum {maxFiles} files at once</p>
-      <p>Allowed file types: {acceptedFormats.join(', ')}</p>
+      <p>{t('invoices.guidelines.maxsize').replace('|', maxFileSize.toString())}</p>
+      <p>{t('invoices.guidelines.maxfiles').replace('|', maxFiles.toString())}</p>
+      <p>{t('invoices.guidelines.accepted-formats').replace('|', acceptedFormats.join(', '))}</p>
       {emailAddress ? (
-        <p className="text-green-600">Email notifications will be sent to: {emailAddress}</p>
+        <p className="text-green-600">{t('invoices.guidelines.email-to').replace('|', emailAddress)}</p>
       ) : (
-        <p className="text-amber-600">Warning: No {emailTypeLabel} invoice email configured in your profile</p>
+        <p className="text-amber-600">{t('invoices.guidelines.email-warning').replace('|', emailTypeLabel)}</p>
       )}
     </div>
   );

@@ -21,22 +21,14 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
   onFileSelect,
   isLoading = false,
 }) => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   
   const getTexts = () => {
-    if (language === 'es') {
-      return {
-        dropHere: 'Suelte sus archivos aquí',
-        orClickTo: 'o haga clic para buscar en su computadora',
-        selectFiles: 'Seleccionar Archivos'
-      };
-    } else {
-      return {
-        dropHere: 'Drop your files here',
-        orClickTo: 'or click to browse from your computer',
-        selectFiles: 'Select Files'
-      };
-    }
+    return {
+      dropHere: t('invoices.drop-area.title'),
+      orClickTo: t("invoices.drop-area.click"),
+      selectFiles: t('invoices.drop-area.select-files')
+    };
   };
   
   const texts = getTexts();
