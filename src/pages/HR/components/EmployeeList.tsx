@@ -16,6 +16,7 @@ import EmployeeDetailDialog from './EmployeeDetailDialog';
 import { Eye } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -58,6 +59,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
     emp.position.toLowerCase().includes(localFilterText.toLowerCase()) ||
     (emp.companyName && emp.companyName.toLowerCase().includes(localFilterText.toLowerCase()))
   );
+  const {t} = useLanguage()
 
   if (isLoading) {
     return (
@@ -65,11 +67,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Full Name</TableHead>
-              <TableHead>Position/Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>End Date</TableHead>
+              <TableHead>{t('hr.index.table.full-name')}</TableHead>
+              <TableHead>{t('hr.index.table.position')}</TableHead>
+              <TableHead>{t('hr.index.table.status')}</TableHead>
+              <TableHead>{t('hr.index.table.start-date')}</TableHead>
+              <TableHead>{t('hr.index.table.end-date')}</TableHead>
               <TableHead className="w-[60px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -97,11 +99,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Position/Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
+                <TableHead>{t('hr.index.table.full-name')}</TableHead>
+                <TableHead>{t('hr.index.table.position')}</TableHead>
+                <TableHead>{t('hr.index.table.status')}</TableHead>
+                <TableHead>{t('hr.index.table.start-date')}</TableHead>
+                <TableHead>{t('hr.index.table.end-date')}</TableHead>
                 <TableHead className="w-[60px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -136,7 +138,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                     <TableCell>{employee.position}</TableCell>
                     <TableCell>
                       <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
-                        {employee.status === 'active' ? 'Active' : 'Terminated'}
+                        {employee.status === 'active' ? t('hr.index.status.active') : t('hr.index.status.terminated')}
                       </Badge>
                     </TableCell>
                     <TableCell>{formatDate(employee.startDate)}</TableCell>
@@ -157,7 +159,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                             </button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>View details</p>
+                            <p>{t('hr.index.button.view-details')}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

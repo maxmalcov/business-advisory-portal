@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { getMonthYearForStorage, getCurrentMonthYear, getLastMonths, getMonthsInYear } from '@/utils/dates';
 import { MonthSubmission, WorkHoursSubmission, SubmissionStatus } from './useMonthlySubmissions';
-import { addMonths, subMonths, isAfter, startOfMonth } from 'date-fns';
+import { addMonths, subMonths, isAfter, startOfMonth, isSameMonth} from 'date-fns';
 
 export const useMonthsProcessor = (
   submissions: WorkHoursSubmission[],
@@ -64,12 +64,14 @@ export const useMonthsProcessor = (
       const currentMonthEntry = months.find(month => month.isCurrentMonth);
       
       // If current month is submitted or we're on a future month, find the most recent available month
-      if ((currentMonthEntry && currentMonthEntry.status === 'submitted') || 
-          (selectedMonth && isAfter(startOfMonth(selectedMonth), startOfMonth(new Date())))) {
+      const isFutureSelected = selectedMonth && isAfter(startOfMonth(selectedMonth), startOfMonth(new Date()));
+      const isSelectedUnusable = isFutureSelected || !months.some(m => isSameMonth(m.date, selectedMonth));
+
+      if (isSelectedUnusable) {
         const availableMonths = months
-          .filter(month => !month.isFutureMonth)
-          .sort((a, b) => b.date.getTime() - a.date.getTime());
-        
+            .filter(month => !month.isFutureMonth)
+            .sort((a, b) => b.date.getTime() - a.date.getTime());
+
         if (availableMonths.length > 0) {
           setSelectedMonth(availableMonths[0].date);
           setSelectedYear(availableMonths[0].date.getFullYear());

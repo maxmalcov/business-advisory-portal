@@ -2,6 +2,10 @@
 import { useState } from 'react';
 import { calculateDaysWorked, submitTerminationRequest } from '../utils';
 import { useToast } from '@/hooks/use-toast';
+import {notificationSettingsTable, supabase} from "@/integrations/supabase/client.ts";
+import {log} from "@/utils/logs/log.funciton.ts";
+import {AppUser} from "@/context/AuthContext.tsx";
+import {sendEmail} from "@/integrations/email";
 
 interface FormData {
   employeeId: string;
@@ -11,17 +15,17 @@ interface FormData {
 }
 
 export function useTerminationForm(
+  user: AppUser,
   employeeId?: string,
   terminationDate?: Date | undefined,
-  employeeStartDate?: string
+  employeeStartDate?: string,
 ) {
-  const [formData, setFormData] = useState<FormData>({
-    employeeId: employeeId || '',
-    terminationDate: terminationDate || null,
+  const [formData, setFormData] = useState({
+    // employeeId: employeeId || '',
+    // terminationDate: terminationDate,
     reason: '',
     additionalNotes: '',
   });
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [daysWorked, setDaysWorked] = useState(0);
@@ -58,27 +62,52 @@ export function useTerminationForm(
       
       const submitData = {
         ...formData,
+        terminationDate,
         reason,
         additionalNotes: comments,
         additionalVacationDays
       };
+      console.log(submitData)
+
+      const { data , error: settingsError } = await notificationSettingsTable()
+          .select('email')
+          .eq('category', 'hr_payroll')
+          .maybeSingle();
+
+      if(settingsError){
+        throw new Error()
+      }
+
+      const { data: employee } = await supabase.from('employees').update({
+        status: 'terminated',
+        end_date: submitData.terminationDate.toISOString()
+      }).eq('id', employeeId).select('*').single()
+
+      log({ action: "Termination", description: `Employee ${employee.full_name} was terminated`, user: user.email, level: 'info', category: "Employee"})
+
+      sendEmail((data as any).email, `Employee Termination Notice`, `
+A termination request has been submitted by a client.
+
+👤 Employee Name: ${employee.full_name}
+📅 Termination Date: ${employee.end_date}
+`)
       
-      const response = await submitTerminationRequest(submitData);
+      // const response = await submitTerminationRequest(submitData);
       
       // Add null checks for data
-      if (response?.data) {
-        const { startDate, endDate } = response.data;
-        
-        // Ensure we have valid dates before calculating
-        if (startDate && endDate) {
-          const calculatedDaysWorked = calculateDaysWorked(
-            new Date(startDate),
-            new Date(endDate)
-          );
-          
-          setDaysWorked(calculatedDaysWorked);
-        }
-      }
+      // if (response?.data) {
+      //   const { startDate, endDate } = response.data;
+      //
+      //   // Ensure we have valid dates before calculating
+      //   if (startDate && endDate) {
+      //     const calculatedDaysWorked = calculateDaysWorked(
+      //       new Date(startDate),
+      //       new Date(endDate)
+      //     );
+      //
+      //     setDaysWorked(calculatedDaysWorked);
+      //   }
+      // }
       
       setIsSubmitted(true);
       setIsSubmitting(false);
@@ -102,8 +131,6 @@ export function useTerminationForm(
 
   const resetForm = () => {
     setFormData({
-      employeeId: '',
-      terminationDate: null,
       reason: '',
       additionalNotes: '',
     });

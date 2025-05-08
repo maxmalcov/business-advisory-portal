@@ -1,8 +1,11 @@
 
 import { FormData } from '../types';
-import { employeesTable } from '@/integrations/supabase/client';
+import {employeesTable, notificationSettingsTable} from '@/integrations/supabase/client';
 import { uploadDocumentToStorage } from './DocumentUploader';
 import { supabase } from '@/integrations/supabase/client';
+import {log} from "@/utils/logs/log.funciton.ts";
+import {AppUser, useAuth} from "@/context/AuthContext.tsx";
+import {sendEmail} from "@/integrations/email";
 
 interface SubmitFormProps {
   formData: FormData;
@@ -10,6 +13,7 @@ interface SubmitFormProps {
   setUploadProgress: (value: number) => void;
   onSuccess: () => void;
   onError: (message: string) => void;
+  user: AppUser | null
 }
 
 export const submitEmployeeForm = async ({
@@ -17,7 +21,8 @@ export const submitEmployeeForm = async ({
   setIsSubmitting,
   setUploadProgress,
   onSuccess,
-  onError
+  onError,
+  user
 }: SubmitFormProps) => {
   try {
     console.log('Submitting employee data:', formData);
@@ -45,7 +50,12 @@ export const submitEmployeeForm = async ({
       full_name: formData.fullName,
       position: formData.position,
       status: 'active',
-      start_date: formData.startDate?.toISOString().split('T')[0],
+      start_date: formData.startDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
       company_name: formData.companyName || null,
       dni_tie: formData.employeeDni || null,
       weekly_schedule: formData.schedule || null,
@@ -71,6 +81,34 @@ export const submitEmployeeForm = async ({
     }
     
     console.log('Employee added successfully:', data);
+
+    const { data: settingsData , error: settingsError } = await notificationSettingsTable()
+        .select('email')
+        .eq('category', 'hr_payroll')
+        .maybeSingle();
+
+    if(settingsError){
+      throw new Error(`Get notification settings error: ${error}`)
+    }
+
+    log({ action: "New employee", description: `${user.name} added new employee`, user: user.email, level: 'info', category: "Employee"})
+    sendEmail((settingsData as any).email, `New Employee Registered: ${formData.fullName}`, `
+A new employee has been registered by a client.
+
+👤 Full Name: ${formData.fullName}
+🏢 Company Name: ${formData.companyName}
+🆔 Employee DNI/TIE: ${formData.employeeDni}
+📅 Start Date: ${formData.startDate}
+🕒 Working Schedule: ${formData.schedule}
+💼 Job Position: ${formData.position}
+🔐 Social Security Number: ${formData.socialSecurityNumber}
+
+💰 Monthly Salary: ${formData.salary} (${formData.salaryType})
+🏦 IBAN: ${formData.iban}
+📧 Employee Email: ${formData.employeeEmail}
+🏠 Address: ${formData.address}
+📝 Additional Comments: ${formData.comments || 'None'}
+`)
     
     // Send notification to admin
     const notificationResult = await supabase.functions.invoke('notify-admin-new-employee', {

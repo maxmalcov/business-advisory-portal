@@ -24,9 +24,9 @@ const HR: React.FC = () => {
           <Users className="h-6 w-6 text-primary" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">HR & Payroll</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('hr.index.title')}</h1>
           <p className="text-muted-foreground mt-1">
-            Manage employees, work hours, and terminations
+            {t('hr.index.description')}
           </p>
         </div>
       </div>
@@ -42,13 +42,13 @@ const HR: React.FC = () => {
           </CardHeader>
           <CardContent className="flex-grow">
             <p className="text-sm text-muted-foreground">
-              Start the onboarding process for new employees
+              {t('hr.index.new-employee.description')}
             </p>
           </CardContent>
           <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/new-employee" className="w-full">
               <Button variant="outline" className="w-full">
-                Go to New Employee
+                {t('hr.index.new-employee.button')}
               </Button>
             </Link>
           </CardFooter>
@@ -63,13 +63,13 @@ const HR: React.FC = () => {
           </CardHeader>
           <CardContent className="flex-grow">
             <p className="text-sm text-muted-foreground">
-              Manage employee termination processes
+              {t('hr.index.termination.description')}
             </p>
           </CardContent>
           <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/termination" className="w-full">
               <Button variant="outline" className="w-full">
-                Go to Termination
+                {t("hr.index.termination.button")}
               </Button>
             </Link>
           </CardFooter>
@@ -84,13 +84,13 @@ const HR: React.FC = () => {
           </CardHeader>
           <CardContent className="flex-grow">
             <p className="text-sm text-muted-foreground">
-              Track and manage employee working hours
+              {t('hr.index.work-hours.description')}
             </p>
           </CardContent>
           <CardFooter className="pt-2 mt-auto">
             <Link to="/hr/work-hours" className="w-full">
               <Button variant="outline" className="w-full">
-                Go to Work Hours
+                {t('hr.index.work-hours.button')}
               </Button>
             </Link>
           </CardFooter>
@@ -99,14 +99,14 @@ const HR: React.FC = () => {
       
       {/* Employee List Section */}
       <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">Employee List</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('hr.index.list.title')}</h2>
         
         {isSmallScreen ? (
           <div className="space-y-4">
             <FilterInput 
               value={filterText} 
               onChange={setFilterText} 
-              placeholder="Search by name, position, or company..."
+              placeholder={t("hr.index.search.placeholder")}
               className="w-full"
             />
             
@@ -122,7 +122,7 @@ const HR: React.FC = () => {
             <FilterInput 
               value={filterText} 
               onChange={setFilterText} 
-              placeholder="Search by name, position, or company..."
+              placeholder={t('hr.index.search.placeholder')}
             />
             <EmployeeStatusToggle 
               value={statusFilter} 

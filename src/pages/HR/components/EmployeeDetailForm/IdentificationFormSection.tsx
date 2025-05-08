@@ -8,6 +8,7 @@ import { Eye, Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface IdentificationFormSectionProps {
   formData: Employee;
@@ -137,12 +138,14 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
     }
   };
 
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-500">Identification</h3>
+      <h3 className="text-sm font-medium text-gray-500">{t('hr.index.employee.detail-from.id')}</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="dniTie">DNI/TIE</Label>
+          <Label htmlFor="dniTie">{t('hr.index.employee.detail-from.id.dni')}</Label>
           <Input
             id="dniTie"
             name="dniTie"
@@ -152,7 +155,7 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="idDocument">ID Document</Label>
+          <Label htmlFor="idDocument">{t('hr.index.employee.detail-from.id.title')}</Label>
           <div className="flex flex-col gap-2">
             <div className="flex">
               <Input

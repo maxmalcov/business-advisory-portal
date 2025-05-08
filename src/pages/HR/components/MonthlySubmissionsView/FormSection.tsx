@@ -8,12 +8,14 @@ interface FormSectionProps {
   isSubmitted: boolean;
   workHours: WorkHoursData[];
   onSubmitForm: (values: WorkHoursData) => Promise<void>;
+  selectedMonth: Date,
 }
 
 const FormSection: React.FC<FormSectionProps> = ({
   isSubmitted,
   workHours,
   onSubmitForm,
+  selectedMonth
 }) => {
   const { editingEmployee, handleCancelEdit } = useMonthlySubmissions();
 
@@ -29,6 +31,7 @@ const FormSection: React.FC<FormSectionProps> = ({
         initialValues={editingEmployee}
         onCancel={handleCancelEdit}
         existingEmployees={workHours}
+        selectedMonth={selectedMonth}
       />
     </div>
   );

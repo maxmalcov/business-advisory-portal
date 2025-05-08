@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button';
 import { EmployeeData } from '../types';
 import EmployeeSelector from './EmployeeSelector';
 import TerminationDatePicker from './TerminationDatePicker';
-import TerminationReasonSelector from './TerminationReasonSelector';
-import AdditionalFields from './AdditionalFields';
 import { useTerminationForm } from '../hooks/useTerminationForm';
 import { employeesTable } from '@/integrations/supabase/client';
+import {useAuth} from "@/context/AuthContext.tsx";
 
 interface TerminationFormProps {
   employees: EmployeeData[];
@@ -29,6 +28,7 @@ const TerminationForm = ({
   const [comments, setComments] = useState<string>('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [employeeStartDate, setEmployeeStartDate] = useState<string | undefined>(undefined);
+  const {user} = useAuth()
   
   useEffect(() => {
     const fetchEmployeeData = async () => {
@@ -68,8 +68,8 @@ const TerminationForm = ({
     handleSubmit, 
     isSubmitting, 
     dateError, 
-    setDateError 
-  } = useTerminationForm(selectedEmployee, terminationDate, employeeStartDate);
+    setDateError,
+  } = useTerminationForm(user, selectedEmployee, terminationDate, employeeStartDate);
   
   const onTerminationDateChange = (date: Date | undefined) => {
     setTerminationDate(date);
@@ -94,7 +94,7 @@ const TerminationForm = ({
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="space-y-4">
-        <EmployeeSelector 
+        <EmployeeSelector
           employees={employees}
           selectedEmployee={selectedEmployee}
           setSelectedEmployee={setSelectedEmployee}
@@ -109,17 +109,17 @@ const TerminationForm = ({
           employeeStartDate={employeeStartDate}
         />
         
-        <TerminationReasonSelector
-          terminationReason={terminationReason}
-          setTerminationReason={setTerminationReason}
-        />
+        {/*<TerminationReasonSelector*/}
+        {/*  terminationReason={terminationReason}*/}
+        {/*  setTerminationReason={setTerminationReason}*/}
+        {/*/>*/}
         
-        <AdditionalFields
-          additionalVacationDays={additionalVacationDays}
-          setAdditionalVacationDays={setAdditionalVacationDays}
-          comments={comments}
-          setComments={setComments}
-        />
+        {/*<AdditionalFields*/}
+        {/*  additionalVacationDays={additionalVacationDays}*/}
+        {/*  setAdditionalVacationDays={setAdditionalVacationDays}*/}
+        {/*  comments={comments}*/}
+        {/*  setComments={setComments}*/}
+        {/*/>*/}
       </div>
       
       <Button type="submit" className="w-full" disabled={isSubmitting || !!dateError}>

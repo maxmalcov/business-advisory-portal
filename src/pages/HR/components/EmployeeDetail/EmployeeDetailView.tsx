@@ -13,12 +13,15 @@ import {
   CommentsCard
 } from './index';
 import { formatDate } from './utils/dateUtils';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface EmployeeDetailViewProps {
   employee: Employee;
 }
 
 const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => {
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-6">
       {/* Header Section with Avatar and Title */}
@@ -44,17 +47,17 @@ const EmployeeDetailView: React.FC<EmployeeDetailViewProps> = ({ employee }) => 
         <div className="bg-muted/30 px-6 py-3 border-b border-border">
           <h3 className="text-md font-medium flex items-center text-foreground">
             <Clock className="h-4 w-4 mr-2 text-primary" />
-            Schedule
+              {t('hr.index.employee.schedule')}
           </h3>
         </div>
         <CardContent className="pt-4 bg-card">
           {employee.weeklySchedule ? (
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Weekly Working Schedule</p>
+              <p className="text-sm font-medium text-muted-foreground">{t('hr.index.employee.schedule.weekly')}</p>
               <p className="text-sm font-semibold whitespace-pre-line mt-1 text-foreground">{employee.weeklySchedule}</p>
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground italic">No schedule information available</p>
+            <p className="text-sm text-muted-foreground italic">{t('hr.index.employee.schedule.not-found')}</p>
           )}
         </CardContent>
       </Card>

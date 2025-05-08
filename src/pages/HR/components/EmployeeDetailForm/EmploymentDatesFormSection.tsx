@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface EmploymentDatesFormSectionProps {
   formData: Employee;
@@ -48,12 +49,14 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
     setEndDateOpen(false);
   };
 
+  const {t} = useLanguage()
+
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-500">Employment Dates</h3>
+      <h3 className="text-sm font-medium text-gray-500">{t('hr.index.employee.detail-from.date')}</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="startDate">Start Date</Label>
+          <Label htmlFor="startDate">{t('hr.index.employee.detail-from.date.start')}</Label>
           <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -84,7 +87,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="endDate">End Date</Label>
+          <Label htmlFor="endDate">{t('hr.index.employee.detail-from.date.end')}</Label>
           <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
             <PopoverTrigger asChild>
               <Button

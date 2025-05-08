@@ -5,12 +5,14 @@ import { Download } from 'lucide-react';
 import { EmployeeRecord } from './WorkHoursTable';
 
 interface ExportButtonProps {
-  data: EmployeeRecord[];
+  data: any;
+  selectedMonth: Date;
   fileName?: string;
 }
 
 const ExportButton: React.FC<ExportButtonProps> = ({ 
-  data, 
+  data,
+  selectedMonth,
   fileName = 'work-hours-data'
 }) => {
   const exportToCSV = () => {
@@ -26,11 +28,11 @@ const ExportButton: React.FC<ExportButtonProps> = ({
     
     // Map the data to a CSV-friendly format
     const csvData = data.map(item => [
-      item.companyName || '',
-      item.employeeName,
-      item.grossSalary.toString(),
-      (item.absenceDays || 0).toString(),
-      item.medicalLeaveDate || 'N/A',
+      item.company_name || '',
+      item.employee_name,
+      item.gross_salary,
+      (item.absence_days || 0).toString(),
+      item.medical_leave_date || 'N/A',
       (item.notes || '').replace(/,/g, ';') // Replace any commas in notes with semicolons to avoid CSV issues
     ]);
     
@@ -48,7 +50,7 @@ const ExportButton: React.FC<ExportButtonProps> = ({
     const url = URL.createObjectURL(blob);
     
     link.setAttribute('href', url);
-    link.setAttribute('download', `${fileName}-${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `${fileName}-${selectedMonth.getFullYear()}-0${selectedMonth.getMonth()+1}.csv`);
     link.style.visibility = 'hidden';
     
     document.body.appendChild(link);

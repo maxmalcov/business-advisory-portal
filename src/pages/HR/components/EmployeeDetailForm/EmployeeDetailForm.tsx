@@ -8,6 +8,7 @@ import BasicInfoFormSection from './BasicInfoFormSection';
 import IdentificationFormSection from './IdentificationFormSection';
 import EmploymentDatesFormSection from './EmploymentDatesFormSection';
 import ScheduleFormSection from './ScheduleFormSection';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface EmployeeDetailFormProps {
   employee: Employee;
@@ -36,6 +37,7 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
   
   // Use external isSubmitting state if provided, otherwise use the internal one
   const isSubmittingState = externalIsSubmitting || internalIsSubmitting;
+  const {t} = useLanguage()
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-foreground">
@@ -72,14 +74,14 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
           disabled={isSubmittingState}
         >
           <X className="h-4 w-4 mr-2" />
-          Cancel
+            {t('hr.index.employee.detail-from.button.cancel')}
         </Button>
         <Button 
           type="submit"
           disabled={isSubmittingState}
         >
           <Save className="h-4 w-4 mr-2" />
-          {isSubmittingState ? 'Saving...' : 'Save Changes'}
+          {isSubmittingState ? t('hr.index.employee.detail-from.button.saving') : t('hr.index.employee.detail-from.button.save')}
         </Button>
       </div>
     </form>

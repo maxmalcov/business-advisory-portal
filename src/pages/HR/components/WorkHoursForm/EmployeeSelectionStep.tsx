@@ -1,9 +1,12 @@
 
-import React from 'react';
+import React, {useState} from 'react';
 import { Button } from '@/components/ui/button';
-import EmployeeSelector from '../EmployeeSelector';
+import EmployeeSelector from "@/pages/HR/Termination/components/EmployeeSelector.tsx";
 import { Employee } from '../../types/employee';
 import { FormValues } from './types';
+import {useEmployeeData} from "@/pages/HR/Termination/hooks/useEmployeeData.ts";
+import FormFields from "@/pages/HR/components/WorkHoursForm/FormFields.tsx";
+import {Form} from "@/components/ui/form.tsx";
 
 interface EmployeeSelectionStepProps {
   existingEmployees: FormValues[];
@@ -17,7 +20,9 @@ const EmployeeSelectionStep: React.FC<EmployeeSelectionStepProps> = ({
   onCancel,
 }) => {
   // Ensure existingEmployees is always an array
+  const { employees, isLoading } = useEmployeeData();
   const safeExistingEmployees = Array.isArray(existingEmployees) ? existingEmployees : [];
+    const [selectedEmployee, setSelectedEmployee] = useState<string>('');
   
   return (
     <div className="space-y-6">
@@ -26,16 +31,16 @@ const EmployeeSelectionStep: React.FC<EmployeeSelectionStepProps> = ({
         Choose an employee from the list or add a new one manually.
       </p>
       
-      <EmployeeSelector 
-        existingEmployees={safeExistingEmployees}
-        onSelectEmployee={onSelectEmployee}
-      />
-      
-      <div className="flex justify-end space-x-4 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-      </div>
+      {/*<EmployeeSelector*/}
+      {/*  existingEmployees={safeExistingEmployees}*/}
+      {/*  onSelectEmployee={onSelectEmployee}*/}
+      {/*/>*/}
+    <EmployeeSelector
+        employees={employees}
+        selectedEmployee={selectedEmployee}
+        setSelectedEmployee={setSelectedEmployee}
+    />
+
     </div>
   );
 };

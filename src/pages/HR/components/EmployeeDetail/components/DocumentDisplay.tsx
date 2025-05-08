@@ -2,6 +2,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Eye, Download } from 'lucide-react';
+import {useLanguage} from "@/context/LanguageContext.tsx";
+import {supabase} from "@/integrations/supabase/client.ts";
 
 interface DocumentDisplayProps {
   documentUrl: string;
@@ -11,19 +13,33 @@ const DocumentDisplay: React.FC<DocumentDisplayProps> = ({ documentUrl }) => {
   const fileName = documentUrl.split('/').pop() || 'Document';
   
   // Function to handle document preview
-  const handlePreview = () => {
-    window.open(documentUrl, '_blank');
+  const handlePreview = async () => {
+    const { data, error } = await supabase.storage
+        .from('employee_documents')
+        .createSignedUrl(documentUrl, 60);
+
+    window.open(data.signedUrl, '_blank');
   };
   
   // Function to handle document download
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = documentUrl;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    const { data, error } = await supabase.storage
+        .from('employee_documents')
+        .download(documentUrl);
+
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    console.log(url)
+    a.href = url;
+    a.download = documentUrl || 'download';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   };
+
+  const {t} = useLanguage()
   
   return (
     <div className="flex flex-col space-y-2">
@@ -38,7 +54,7 @@ const DocumentDisplay: React.FC<DocumentDisplayProps> = ({ documentUrl }) => {
           onClick={handlePreview}
         >
           <Eye className="h-3.5 w-3.5 mr-1" />
-          View
+          {t('hr.index.employee.detail-from.id.view')}
         </Button>
         <Button 
           size="sm" 
@@ -47,7 +63,7 @@ const DocumentDisplay: React.FC<DocumentDisplayProps> = ({ documentUrl }) => {
           onClick={handleDownload}
         >
           <Download className="h-3.5 w-3.5 mr-1" />
-          Download
+          {t('hr.index.employee.detail-from.id.download')}
         </Button>
       </div>
     </div>

@@ -13,26 +13,32 @@ import MonthlySubmissionsContent from './MonthlySubmissionsContent';
 interface MonthlySubmissionsViewProps {
   isAddingNew: boolean;
   setIsAddingNew: (isAdding: boolean) => void;
+  months,
+  selectedMonth,
+  setSelectedMonth,
+  selectedYear,
+  onYearChange,
+  onNavigateMonth,
+  isSubmitted,
+  submissionsLoading,
+  submitMonth
 }
 
 const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
   isAddingNew,
   setIsAddingNew,
+   months,
+   selectedMonth,
+   setSelectedMonth,
+   selectedYear,
+   onYearChange,
+   onNavigateMonth,
+   isSubmitted,
+   submissionsLoading,
+   submitMonth
 }) => {
   const { toast } = useToast();
   const { user } = useAuth();
-  
-  const { 
-    months, 
-    selectedMonth, 
-    setSelectedMonth,
-    selectedYear,
-    onYearChange,
-    onNavigateMonth,
-    isSubmitted,
-    loading: submissionsLoading,
-    submitMonth 
-  } = useMonthlySubmissionsData();
   
   const {
     workHours,

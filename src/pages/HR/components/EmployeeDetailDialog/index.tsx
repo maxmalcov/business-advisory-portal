@@ -13,6 +13,7 @@ import { useEmployeeDetail } from '../../hooks/useEmployeeDetail';
 import EmployeeDetailDialogContent from './EmployeeDetailDialogContent';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
+import {useLanguage} from "@/context/LanguageContext.tsx";
 
 interface EmployeeDetailDialogProps {
   employeeId: string | null;
@@ -61,13 +62,15 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     setIsEditing(false);
   };
 
+  const {t} = useLanguage()
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={`p-0 overflow-hidden ${isMobile ? 'w-[95vw] max-w-none' : 'sm:max-w-[650px] md:max-w-[700px]'} max-h-[90vh] bg-background`}>
         <div className="flex flex-col h-full">
           <DialogHeader className="px-6 py-4 border-b border-border bg-muted/40 sticky top-0 z-10 flex flex-row items-center justify-between">
             <DialogTitle className="text-xl font-bold text-foreground">
-              {isEditing ? 'Edit Employee' : 'Employee Details'}
+              {isEditing ? t('hr.index.employee.edit.title') : t('hr.index.employee.details.title')}
             </DialogTitle>
             <div className="flex items-center gap-2">
               {!isEditing && employee && !isLoading && (
@@ -77,7 +80,7 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
                   onClick={() => setIsEditing(true)}
                 >
                   <Pencil className="h-4 w-4 mr-2" />
-                  Edit
+                  {t('hr.index.employee.edit.button')}
                 </Button>
               )}
               <Button

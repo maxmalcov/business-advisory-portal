@@ -56,6 +56,7 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
           isSubmitted={isSubmitted}
           workHours={workHours}
           onSubmitForm={onSubmitForm}
+          selectedMonth={selectedMonth}
         />
       </CardContent>
     </Card>

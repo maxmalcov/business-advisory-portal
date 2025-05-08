@@ -20,10 +20,10 @@ const EmployeeInfoCard = ({ selectedEmployeeData, additionalVacationDays }: Empl
     <div className="space-y-4">
       <BasicInfo employeeData={selectedEmployeeData} />
       <DateInfo employeeData={selectedEmployeeData} />
-      <VacationInfo 
-        employeeData={selectedEmployeeData}
-        additionalVacationDays={additionalVacationDays}
-      />
+      {/*<VacationInfo */}
+      {/*  employeeData={selectedEmployeeData}*/}
+      {/*  additionalVacationDays={additionalVacationDays}*/}
+      {/*/>*/}
     </div>
   );
 };

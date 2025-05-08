@@ -19,20 +19,22 @@ export const useWorkHoursData = (selectedMonth: Date) => {
     setLoading(true);
     try {
       const formattedMonth = getMonthYearForStorage(selectedMonth);
-      
+
+      const formattedDate = formattedMonth.split('-').map((el, index) => {
+        if(index != 2){
+          return el
+        }
+      })
+      formattedDate.pop()
       const { data, error } = await employeeWorkHoursTable()
         .select('*')
         .eq('client_id', user.id)
-        .eq('month_year', formattedMonth)
+        .eq('month_year', formattedDate.join('-'))
         .order('employee_name', { ascending: true });
-      
+
       if (error) throw error;
-      
-      // Explicitly cast data to any first to avoid TypeScript errors
-      const recordsArray = data as any[] || [];
-      
-      // Map database records to frontend format
-      const mappedData: WorkHoursData[] = recordsArray.map(record => ({
+
+      const mappedData: WorkHoursData[] = (data as any).map(record => ({
         id: record.id,
         employeeId: record.employee_id,
         employeeName: record.employee_name,
@@ -42,7 +44,7 @@ export const useWorkHoursData = (selectedMonth: Date) => {
         medicalLeaveDate: record.medical_leave_date,
         notes: record.notes,
       }));
-      
+
       setWorkHours(mappedData);
     } catch (error) {
       console.error('Error fetching work hours:', error);

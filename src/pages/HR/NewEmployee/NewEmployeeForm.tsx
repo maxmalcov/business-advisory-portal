@@ -6,10 +6,12 @@ import OptionalFields from './FormSections/OptionalFields';
 import { useNewEmployeeForm } from './hooks/useNewEmployeeForm';
 import FormActions from './components/FormActions';
 import { submitEmployeeForm } from './components/FormSubmissionHandler';
+import {useAuth} from "@/context/AuthContext.tsx";
 const NewEmployeeForm: React.FC = () => {
   const {
     t
   } = useLanguage();
+  const {user} = useAuth()
   const {
     formData,
     errors,
@@ -47,7 +49,8 @@ const NewEmployeeForm: React.FC = () => {
           description: message,
           variant: 'destructive'
         });
-      }
+      },
+      user,
     });
   };
   return <>

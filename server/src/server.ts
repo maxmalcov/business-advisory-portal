@@ -24,6 +24,7 @@ const REDIRECT_URI = process.env.REDIRECT_URI as string
 const SMTP_USER = process.env.SMTP_USER as string
 const SMTP_SERVICE = process.env.SMTP_SERVICE as string
 const SMTP_AUTH_TYPE = process.env.SMTP_AUTH_TYPE as string
+const FROM = 'business-advisory'
 
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
@@ -52,7 +53,7 @@ app.post('/v1/send-email', async (req: Request, res: Response) => {
         } as SMTPTransport.Options);
 
         const mailOptions = {
-            from: SMTP_USER,
+            from: FROM,
             to,
             subject,
             text,
@@ -61,6 +62,7 @@ app.post('/v1/send-email', async (req: Request, res: Response) => {
         const result = await transporter.sendMail(mailOptions);
         res.status(200).json({ message: 'Email sent successful', messageId: result.messageId });
     } catch (error) {
+        console.error(error)
         res.status(500).json({ error: 'Error sending email', status: 500 });
     }
 });
@@ -86,4 +88,84 @@ cron.schedule('0 0 * * *', async () => {
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
+});
+
+app.post('/v1/work-hours', async (req: Request, res: Response) => {
+    const { to, subject, date: stringDate } = req.body;
+
+    const date = new Date(stringDate)
+
+    if (!to || !subject || !date){
+        res.status(400).send({ message: 'Bad Request', status: 400 })
+    }
+
+    try {
+        const accessTokenObj = await oAuth2Client.getAccessToken();
+        const accessToken = accessTokenObj.token;
+
+        const {data, error} = await supabase.from('employee_work_hours').select('*').eq('month_year', `${date.getFullYear()}-0${date.getMonth()+1}`)
+
+        if(error){
+            throw new Error('work hours data is null')
+        }
+
+        const headers = [
+            'Company',
+            'Employee',
+            'Gross Salary',
+            'Absence Days',
+            'Medical Leave',
+            'Notes'
+        ];
+
+        // Map the data to a CSV-friendly format
+        const csvData = data.map(item => [
+            item.company_name || '',
+            item.employee_name,
+            item.gross_salary,
+            (item.absence_days || 0).toString(),
+            item.medical_leave_date || 'N/A',
+            (item.notes || '').replace(/,/g, ';') // Replace any commas in notes with semicolons to avoid CSV issues
+        ]);
+
+        // Combine headers with data
+        const csvContent = [
+            headers.join(','),
+            ...csvData.map(row => row.join(','))
+        ].join('\n');
+
+        // Create a Blob with the CSV data
+        const csvBuffer = Buffer.from(csvContent, 'utf-8');
+
+        const transporter = nodemailer.createTransport({
+            service: SMTP_SERVICE,
+            auth: {
+                type: SMTP_AUTH_TYPE,
+                user: SMTP_USER,
+                clientId: CLIENT_ID,
+                clientSecret: CLIENT_SECRET,
+                refreshToken: REFRESH_TOKEN,
+                accessToken: accessToken,
+            }
+        } as SMTPTransport.Options);
+
+        const mailOptions = {
+            from: FROM,
+            to,
+            subject,
+            attachments: [
+                {
+                    filename: `${date.toLocaleString('en-US', { month: 'long' }).toLowerCase()}_report.csv`,
+                    content: csvBuffer,
+                    contentType: 'text/csv'
+                }
+            ]
+        };
+
+        const result = await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: 'Email sent successful', messageId: result.messageId });
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: 'Error sending email', status: 500 });
+    }
 });

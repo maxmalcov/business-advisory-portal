@@ -26,11 +26,10 @@ export const useUserManagement = () => {
   // When users change from the fetch hook, update our local state
   // But only do this once when users are first loaded or explicitly refreshed
   useEffect(() => {
-    if (users.length > 0) {
+    if (users.length > 0 && !localUsers.length) {
       setLocalUsers(users);
     }
-  }, [users]);
-  
+  }, [users, localUsers.length]);
   // Get user updating functionality
   const {
     editingUser,

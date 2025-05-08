@@ -44,8 +44,9 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
 
   const handleSelectEmployee = (employee: Employee) => {
     // Check if this employee has already been added
-    if (safeExistingEmployees.some(existing => 
-      existing.employeeId === employee.id || 
+    console.log(safeExistingEmployees)
+    if (safeExistingEmployees.some(existing =>
+      existing.employeeId === employee.id ||
       existing.employeeName === employee.fullName
     )) {
       toast({
@@ -55,7 +56,8 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
       });
       return;
     }
-    
+    console.log('LOG!!!!!')
+
     onSelectEmployee(employee);
     setOpen(false);
   };
@@ -66,7 +68,7 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -81,29 +83,31 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">
         <Command>
-          <CommandInput 
-            placeholder="Search employees..." 
-            value={search}
-            onValueChange={setSearch}
+          <CommandInput
+              placeholder="Search employees..."
+              value={search ?? ''}
+              onValueChange={(value) => setSearch(value ?? '')}
           />
+
           {isLoading ? (
             <EmptyState isLoading={true} />
           ) : (
             <>
               <CommandEmpty>No employee found.</CommandEmpty>
               <CommandGroup heading="Active Employees">
-                {availableEmployees && availableEmployees.length > 0 ? (
-                  availableEmployees.map((employee) => (
-                    <EmployeeListItem 
-                      key={employee.id}
-                      employee={employee}
-                      onSelect={handleSelectEmployee}
-                    />
-                  ))
+                {(availableEmployees ?? []).length > 0 ? (
+                    availableEmployees.map((employee) => (
+                        <EmployeeListItem
+                            key={employee.id}
+                            employee={employee}
+                            onSelect={handleSelectEmployee}
+                        />
+                    ))
                 ) : (
-                  <EmptyState isLoading={false} />
+                    <EmptyState isLoading={false} />
                 )}
               </CommandGroup>
+
               <ManualEntryOption onAddManually={handleAddManually} />
             </>
           )}

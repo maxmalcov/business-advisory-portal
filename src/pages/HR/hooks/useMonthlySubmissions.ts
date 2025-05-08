@@ -24,7 +24,7 @@ export type WorkHoursSubmission = {
   is_locked: boolean;
 };
 
-export const useMonthlySubmissions = (monthCount: number = 6) => {
+export const useMonthlySubmissions = (monthCount: number = 3) => {
   // Fetch all submissions
   const { submissions, loading, refreshSubmissions } = useSubmissionsFetcher();
   
