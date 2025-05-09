@@ -21,14 +21,14 @@ export const useEmployeeStats = () => {
       try {
         // Fetch user data from profiles table instead of employees
         const { data: users, error: userError } = await supabase
-          .from('profiles')
+          .from('employees')
           .select('*');
         
         if (userError) throw userError;
         
         if (users) {
           // Determine active users (those with non-null usertype)
-          const active = users.filter(user => user.usertype !== null);
+          const active = users.filter(user => user.status != 'terminated');
           
           // Users registered in the last 30 days
           const thirtyDaysAgo = new Date();

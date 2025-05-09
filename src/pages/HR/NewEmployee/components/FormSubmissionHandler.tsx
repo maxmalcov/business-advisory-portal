@@ -91,7 +91,7 @@ export const submitEmployeeForm = async ({
       throw new Error(`Get notification settings error: ${error}`)
     }
 
-    log({ action: "New employee", description: `${user.name} added new employee`, user: user.email, level: 'info', category: "Employee"})
+    log({ action: "New employee", description: `${user.name} added new employee`, user: user.email, level: 'info', category: "employee"})
     sendEmail((settingsData as any).email, `New Employee Registered: ${formData.fullName}`, `
 A new employee has been registered by a client.
 

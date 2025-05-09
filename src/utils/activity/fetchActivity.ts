@@ -3,22 +3,14 @@ import { useAuth } from '@/context/AuthContext';
 import {
   employeeWorkHoursTable,
   workHoursSubmissionsTable,
-  supabase
+  supabase, logsTable
 } from '@/integrations/supabase/client';
 import { ActivityEvent, ActivityEventType } from './types';
-import { getMockRecentActivity } from './mockActivity';
 
 // Function to fetch work hours submissions
 export const fetchWorkHoursSubmissions = async (userId: string) => {
   try {
-    const { data, error } = await workHoursSubmissionsTable()
-      .select('*')
-      .eq('client_id', userId)
-      .order('month_year', { ascending: false });
-    
-    if (error) throw error;
-    
-    return data || [];
+    return await getRecentActivity() || [];
   } catch (error) {
     console.error('Error fetching work hours submissions:', error);
     return [];
@@ -33,9 +25,9 @@ export const fetchEmployeeWorkHours = async (userId: string, monthYear: string) 
       .eq('client_id', userId)
       .eq('month_year', monthYear)
       .order('employee_name', { ascending: true });
-    
+
     if (error) throw error;
-    
+
     return data || [];
   } catch (error) {
     console.error('Error fetching employee work hours:', error);
@@ -52,9 +44,9 @@ export const submitWorkHoursMonth = async (userId: string, monthYear: string, hr
       hr_email: hrEmail,
       is_locked: true,
     });
-    
+
     if (error) throw error;
-    
+
     return data;
   } catch (error) {
     console.error('Error submitting work hours month:', error);
@@ -63,17 +55,29 @@ export const submitWorkHoursMonth = async (userId: string, monthYear: string, hr
 };
 
 // Implement the missing getRecentActivity function that was imported but not exported
-export const getRecentActivity = async (): Promise<ActivityEvent[]> => {
+export const getRecentActivity = async (): Promise<any> => {
   try {
-    console.log("Fetching recent activity...");
-    // In a real implementation, this would fetch from a database
-    // For now, we're using the mock data as a placeholder
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Return mock data
-    return getMockRecentActivity();
+    const { data, error: activityError } = await logsTable()
+        .select('*')
+        .in('category', ['employee', 'subscription', 'invoice', 'service']);
+
+    if(activityError){
+      throw new Error('Db error')
+    }
+
+    const mappedData: ActivityEvent[] = data.map((item: any) => {
+      const newItem: any = {}
+      newItem.id = item.id
+      newItem.type = item.category
+      newItem.timestamp = new Date(item.timestamp)
+      newItem.title = item.action
+      newItem.description = item.description
+      newItem.iconName = item.category
+
+      return newItem
+    })
+
+    return mappedData.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   } catch (error) {
     console.error("Error fetching activity:", error);
     return [];

@@ -28,7 +28,7 @@ export const useInvoiceStats = () => {
     const fetchInvoiceStats = async () => {
       try {
         const { data: invoices, error: invoiceError } = await supabase
-          .from('invoice_uploads')
+          .from('invoice_files')
           .select('*');
         
         if (invoiceError) throw invoiceError;

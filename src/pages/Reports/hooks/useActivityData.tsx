@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { ActivityEvent, getMockRecentActivity, getRecentActivity } from '@/utils/activity';
+import {ActivityEvent, getRecentActivity} from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
+import {logsTable} from "@/integrations/supabase/client.ts";
 
 export const useActivityData = () => {
   const { toast } = useToast();
@@ -12,14 +13,12 @@ export const useActivityData = () => {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const activityEvents = await getRecentActivity();
-        setActivityData(activityEvents);
+        setActivityData(await getRecentActivity());
       } catch (err) {
         console.error('Error fetching activity data:', err);
         setError(err instanceof Error ? err : new Error('Unknown error fetching activity data'));
         
-        // Use mock data as fallback
-        setActivityData(getMockRecentActivity());
+        setActivityData(await getRecentActivity());
         
         toast({
           variant: "destructive",

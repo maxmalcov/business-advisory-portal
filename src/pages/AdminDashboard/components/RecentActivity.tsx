@@ -25,7 +25,7 @@ import {
   formatTimestamp, 
   getActivityIcon, 
   getRecentActivity,
-  getMockRecentActivity 
+  // getMockRecentActivity
 } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -102,7 +102,7 @@ const RecentActivity: React.FC = () => {
           description: "There was a problem loading your recent activities. Please try again later.",
         });
         // Fall back to mock data
-        setActivities(getMockRecentActivity());
+        setActivities(await getRecentActivity());
       } finally {
         setLoading(false);
       }

@@ -81,14 +81,14 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ activities, loading
                   <div className="flex items-center gap-2">
                     <ActivityIcon type={activity.type} />
                     <span className="font-medium text-xs capitalize">
-                      {activity.type.split('-').join(' ')}
+                      {activity.type}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="font-medium">{activity.title}</TableCell>
                 <TableCell className="text-muted-foreground">{activity.description}</TableCell>
                 <TableCell className="text-right text-muted-foreground text-sm">
-                  {formatTimestamp(activity.timestamp)}
+                  {`${String(activity.timestamp.getDate()).padStart(2, '0')}-${String(activity.timestamp.getMonth() + 1).padStart(2, '0')}-${activity.timestamp.getFullYear()} ${String(activity.timestamp.getHours()).padStart(2, '0')}:${String(activity.timestamp.getMinutes()).padStart(2, '0')}`}
                 </TableCell>
               </TableRow>
             ))}

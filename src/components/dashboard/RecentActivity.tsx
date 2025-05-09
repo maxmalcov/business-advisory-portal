@@ -20,12 +20,10 @@ import {
   UserMinus,
   Loader2
 } from 'lucide-react';
-import { 
-  ActivityEvent, 
-  formatTimestamp, 
-  getActivityIcon, 
-  getRecentActivity,
-  getMockRecentActivity 
+import {
+  ActivityEvent,
+  formatTimestamp,
+  getActivityIcon, getRecentActivity,
 } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -36,6 +34,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
+import {logsTable} from "@/integrations/supabase/client.ts";
 
 const iconComponents = {
   Users,
@@ -71,7 +70,7 @@ const EmptyState: React.FC = () => (
 const RecentActivity: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
-  const [activities, setActivities] = useState<ActivityEvent[]>([]);
+  const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const isMobile = useIsMobile();
 
@@ -79,8 +78,7 @@ const RecentActivity: React.FC = () => {
     const fetchActivities = async () => {
       try {
         setLoading(true);
-        const data = await getRecentActivity();
-        setActivities(data);
+        setActivities(await getRecentActivity());
       } catch (error) {
         console.error('Error fetching activities:', error);
         toast({
@@ -88,8 +86,7 @@ const RecentActivity: React.FC = () => {
           title: "Error loading activities",
           description: "There was a problem loading your recent activities. Please try again later.",
         });
-        // Fall back to mock data
-        setActivities(getMockRecentActivity());
+        setActivities(await getRecentActivity());
       } finally {
         setLoading(false);
       }
@@ -152,7 +149,7 @@ const RecentActivity: React.FC = () => {
                   <div>
                     <p className="font-medium">{activity.title}</p>
                     <p className="text-sm text-muted-foreground">{formatDescription(activity.description)}</p>
-                    <p className="text-xs text-muted-foreground">{formatTimestamp(activity.timestamp)}</p>
+                    {/*<p className="text-xs text-muted-foreground">{formatTimestamp(activity.timestamp)}</p>*/}
                   </div>
                 </div>
               ))}

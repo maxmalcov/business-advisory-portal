@@ -59,7 +59,7 @@ export const useSubmissionOperations = (
         }
       })
 
-      log({ action: "Report", description: "Monthly work hours report sent to HR", user: user.email, level: 'info', category: "Employee"})
+      log({ action: "Report", description: "Monthly work hours report sent to HR", user: user.email, level: 'info', category: "employee"})
       
       // Refresh the submissions data
       await refreshSubmissions();

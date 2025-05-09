@@ -1,19 +1,16 @@
 
 import { ActivityEventType } from './types';
 
-export const getActivityIcon = (eventType: ActivityEventType) => {
+export const getActivityIcon = (eventType) => {
   switch (eventType) {
-    case 'employee-added':
+    case 'employee':
       return 'UserPlus';
-    case 'employee-terminated':
-      return 'UserMinus';
     case 'invoice-uploaded':
-    case 'supplier-invoice-uploaded':
+    case 'invoice':
       return 'FileText';
-    case 'service-completed':
+    case 'service':
       return 'CheckCircle';
-    case 'subscription-activated':
-    case 'subscription-ended':
+    case 'subscription':
       return 'Package';
     default:
       return 'Bell';

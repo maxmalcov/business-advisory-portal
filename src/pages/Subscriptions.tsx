@@ -124,7 +124,7 @@ const Subscriptions: React.FC = () => {
         })
 
         if (dbError) {
-          throw new Error('Request already exists')
+          console.log('Request already exists')
         }
       } else {
         const {error: dbError} = await subscriptionRequestsTable().update({

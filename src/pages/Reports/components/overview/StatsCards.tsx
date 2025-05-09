@@ -43,31 +43,17 @@ const StatsCards: React.FC<StatsCardsProps> = ({
   const { language } = useLanguage();
   
   const getTexts = () => {
-    if (language === 'es') {
-      return {
-        totalInvoices: "Total de Facturas",
-        uploadedThisMonth: "subidas este mes",
-        activeEmployees: "Empleados Activos",
-        addedInLast30Days: "añadidos en los últimos 30 días",
-        serviceRequests: "Solicitudes de Servicio",
-        completed: "completadas",
-        pending: "pendientes",
-        subscriptionRequests: "Solicitudes de Suscripción",
-        active: "activas",
-      };
-    } else {
-      return {
-        totalInvoices: "Total Invoices",
-        uploadedThisMonth: "uploaded this month",
-        activeEmployees: "Active Employees",
-        addedInLast30Days: "added in last 30 days",
-        serviceRequests: "Service Requests",
-        completed: "completed",
-        pending: "pending",
-        subscriptionRequests: "Subscription Requests",
-        active: "active",
-      };
-    }
+    return {
+      totalInvoices: "Total Invoices",
+      uploadedThisMonth: "uploaded this month",
+      activeEmployees: "Active Employees",
+      addedInLast30Days: "added in last 30 days",
+      serviceRequests: "Service Requests",
+      completed: "completed",
+      pending: "pending",
+      subscriptionRequests: "Subscription Requests",
+      active: "active",
+    };
   };
   
   const texts = getTexts();

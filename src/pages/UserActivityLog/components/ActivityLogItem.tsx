@@ -82,7 +82,7 @@ const ActivityLogItem: React.FC<ActivityLogItemProps> = ({ activity }) => {
                 {activity.type.split('-').join(' ')}
               </span>
               <span className="text-xs text-muted-foreground">
-                {formatTimestamp(activity.timestamp)}
+                {`${String(activity.timestamp.getDate()).padStart(2, '0')}-${String(activity.timestamp.getMonth() + 1).padStart(2, '0')}-${activity.timestamp.getFullYear()} ${String(activity.timestamp.getHours()).padStart(2, '0')}:${String(activity.timestamp.getMinutes()).padStart(2, '0')}`}
               </span>
             </div>
             <p className="font-medium">{activity.title}</p>

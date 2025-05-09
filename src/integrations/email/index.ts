@@ -9,5 +9,5 @@ export async function sendEmail(to: string, subject: string, text: string){
         text
     })
 
-    log({ category: LogCategory.EMAIL, user: 'system', level: 'info', action: 'Email sent', description: ""})
+    // log({ category: LogCategory.EMAIL, user: 'system', level: 'info', action: 'Email sent', description: ""})
 }

@@ -13,6 +13,10 @@ interface FormData {
   reason: string;
   additionalNotes: string;
 }
+function toLocalISOString(date: Date) {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
 
 export function useTerminationForm(
   user: AppUser,
@@ -80,10 +84,10 @@ export function useTerminationForm(
 
       const { data: employee } = await supabase.from('employees').update({
         status: 'terminated',
-        end_date: submitData.terminationDate.toISOString()
+        end_date: toLocalISOString(submitData.terminationDate)
       }).eq('id', employeeId).select('*').single()
 
-      log({ action: "Termination", description: `Employee ${employee.full_name} was terminated`, user: user.email, level: 'info', category: "Employee"})
+      log({ action: "Termination", description: `Employee ${employee.full_name} was terminated`, user: user.email, level: 'info', category: "employee"})
 
       sendEmail((data as any).email, `Employee Termination Notice`, `
 A termination request has been submitted by a client.
@@ -91,23 +95,6 @@ A termination request has been submitted by a client.
 👤 Employee Name: ${employee.full_name}
 📅 Termination Date: ${employee.end_date}
 `)
-      
-      // const response = await submitTerminationRequest(submitData);
-      
-      // Add null checks for data
-      // if (response?.data) {
-      //   const { startDate, endDate } = response.data;
-      //
-      //   // Ensure we have valid dates before calculating
-      //   if (startDate && endDate) {
-      //     const calculatedDaysWorked = calculateDaysWorked(
-      //       new Date(startDate),
-      //       new Date(endDate)
-      //     );
-      //
-      //     setDaysWorked(calculatedDaysWorked);
-      //   }
-      // }
       
       setIsSubmitted(true);
       setIsSubmitting(false);

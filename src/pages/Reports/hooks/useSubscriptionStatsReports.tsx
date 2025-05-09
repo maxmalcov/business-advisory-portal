@@ -36,8 +36,7 @@ export const useSubscriptionStatsReports = () => {
         const { data: subscriptionsData, error: subscriptionsError } = await supabase
           .from('user_tool_subscriptions')
           .select(`
-            *,
-            profiles:user_id(name)
+            *
           `);
 
         if (subscriptionsError) throw subscriptionsError;
