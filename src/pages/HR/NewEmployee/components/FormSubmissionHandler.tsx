@@ -72,6 +72,7 @@ export const submitEmployeeForm = async ({
       address: formData.address || null,
       comments: formData.comments || null,
       id_document: documentPath || null,
+      user_id: user.id
     };
 
     console.log('Sending employee data to Supabase:', employeeData);

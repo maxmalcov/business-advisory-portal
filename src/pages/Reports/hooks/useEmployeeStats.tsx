@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { EmployeeStats } from './types';
+import {useAuth} from "@/context/AuthContext.tsx";
 
 export const useEmployeeStats = () => {
   const { toast } = useToast();
@@ -14,6 +15,7 @@ export const useEmployeeStats = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const {user} = useAuth()
 
   useEffect(() => {
     const fetchEmployeeStats = async () => {
@@ -21,7 +23,8 @@ export const useEmployeeStats = () => {
         // Fetch user data from profiles table instead of employees
         const { data: users, error: userError } = await supabase
           .from('employees')
-          .select('*');
+          .select('*')
+          .eq('user_id', user.id)
 
         if (userError) throw userError;
 

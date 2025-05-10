@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Employee as EmployeeType, EmployeeStatus } from '../types/employee';
 import { employeesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import {useAuth} from "@/context/AuthContext.tsx";
 
 export function useEmployeeList() {
   const [statusFilter, setStatusFilter] = useState<EmployeeStatus | 'all'>(
@@ -11,6 +12,7 @@ export function useEmployeeList() {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { toast } = useToast();
+  const {user} = useAuth()
 
   const refreshEmployees = useCallback(() => {
     setRefreshTrigger((prev) => prev + 1);
@@ -26,7 +28,7 @@ export function useEmployeeList() {
         // Initialize query
         let query = employeesTable().select(
           'id, full_name, position, status, start_date, end_date, company_name, dni_tie, id_document, weekly_schedule',
-        );
+        ).eq('user_id', user.id);
 
         // Only apply status filter if not 'all'
         if (statusFilter !== 'all') {

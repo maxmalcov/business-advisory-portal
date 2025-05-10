@@ -57,6 +57,8 @@ export const useSubmissionOperations = (
         to: (data as any).email,
         subject: `Monthly Work Report Submitted: ${selectedMonth.toLocaleString('en-US', { month: 'long' })}`,
         date: formattedMonth,
+        by: user.name,
+        userId: user.id
       };
 
       axios.post('http://localhost:3001/v1/work-hours', payload, {
@@ -67,7 +69,7 @@ export const useSubmissionOperations = (
 
       log({
         action: 'Report',
-        description: 'Monthly work hours report sent to HR',
+        description: `Monthly work hours report sent to HR by ${user.name}`,
         user: user.email,
         level: 'info',
         category: 'employee',

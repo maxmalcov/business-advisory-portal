@@ -295,13 +295,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       };
 
       // Register the user with Supabase Auth
-      const { data, error } = await supabase.auth.signUp({
+      console.log(userData)
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: userData.email || '',
         password: userData.password,
         options: {
           data: userMetadata,
         },
       });
+      if(authError){
+        throw new Error()
+      }
+      const {data, error} = await supabase.from('profiles').update({
+        name: userData.name || '',
+        usertype: userData.userType || 'client',
+        companyname: userData.companyName || '-',
+        accounttype: userData.accountType || 'freelancer',
+        nif: userData.nif || '',
+        address: userData.address || '',
+        postalcode: userData.postalCode || '',
+        city: userData.city || '',
+        province: userData.province || '',
+        country: userData.country || '',
+        phone: userData.phone || '',
+        incominginvoiceemail: userData.incomingInvoiceEmail || '',
+        outgoinginvoiceemail: userData.outgoingInvoiceEmail || '',
+      }).eq('id', authData.user.id)
 
       if (error) {
         throw error;

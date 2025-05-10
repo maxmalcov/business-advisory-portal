@@ -105,11 +105,11 @@ app.listen(PORT, () => {
 });
 
 app.post('/v1/work-hours', async (req: Request, res: Response) => {
-  const { to, subject, date: stringDate } = req.body;
+  const { to, subject, date: stringDate, userId, by } = req.body;
 
   const date = new Date(stringDate);
 
-  if (!to || !subject || !date) {
+  if (!to || !subject || !date || !by || !userId) {
     res.status(400).send({ message: 'Bad Request', status: 400 });
   }
 
@@ -120,7 +120,8 @@ app.post('/v1/work-hours', async (req: Request, res: Response) => {
     const { data, error } = await supabase
       .from('employee_work_hours')
       .select('*')
-      .eq('month_year', `${date.getFullYear()}-0${date.getMonth() + 1}`);
+      .eq('month_year', `${date.getFullYear()}-0${date.getMonth() + 1}`)
+        .eq('client_id', userId);
 
     if (error) {
       throw new Error('work hours data is null');
@@ -170,6 +171,8 @@ app.post('/v1/work-hours', async (req: Request, res: Response) => {
       from: FROM,
       to,
       subject,
+      text: `Monthly work hours report sent by ${by}. 
+      `,
       attachments: [
         {
           filename: `${date.toLocaleString('en-US', { month: 'long' }).toLowerCase()}_report.csv`,

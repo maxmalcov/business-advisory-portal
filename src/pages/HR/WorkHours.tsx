@@ -36,7 +36,7 @@ const WorkHours: React.FC = () => {
         .eq(
           'month_year',
           `${selectedMonth.getFullYear()}-0${selectedMonth.getMonth() + 1}`,
-        );
+        ).eq('client_id', user.id);
       console.log(data);
 
       setEmployees(data);

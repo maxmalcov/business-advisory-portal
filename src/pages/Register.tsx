@@ -125,10 +125,10 @@ const Register: React.FC = () => {
           <CardContent className="space-y-6">
             {/* Language and Account Type */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>{t('registration.language')}</Label>
-                <LanguageSelector />
-              </div>
+              {/*<div className="space-y-2">*/}
+              {/*  <Label>{t('registration.language')}</Label>*/}
+              {/*  <LanguageSelector />*/}
+              {/*</div>*/}
               <div className="space-y-2">
                 <Label htmlFor="accountType">{t('registration.type')}</Label>
                 <Select
@@ -159,22 +159,22 @@ const Register: React.FC = () => {
             </div>
 
             {/* Individual or Business Information */}
-            {isBusinessAccount ? (
+            {isBusinessAccount && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="adminName">
-                    {t('registration.admin_name')}{' '}
-                    <span className="text-sm text-muted-foreground">
-                      (Optional)
-                    </span>
-                  </Label>
-                  <Input
-                    id="adminName"
-                    name="adminName"
-                    value={formData.adminName}
-                    onChange={handleChange}
-                  />
-                </div>
+                {/*<div className="space-y-2">*/}
+                {/*  <Label htmlFor="adminName">*/}
+                {/*    {t('registration.admin_name')}{' '}*/}
+                {/*    <span className="text-sm text-muted-foreground">*/}
+                {/*      (Optional)*/}
+                {/*    </span>*/}
+                {/*  </Label>*/}
+                {/*  <Input*/}
+                {/*    id="adminName"*/}
+                {/*    name="adminName"*/}
+                {/*    value={formData.adminName}*/}
+                {/*    onChange={handleChange}*/}
+                {/*  />*/}
+                {/*</div>*/}
                 <div className="space-y-2">
                   <Label htmlFor="companyName">
                     {t('registration.company')} *
@@ -188,18 +188,17 @@ const Register: React.FC = () => {
                   />
                 </div>
               </div>
-            ) : (
-              <div className="space-y-2">
-                <Label htmlFor="name">{t('registration.name')} *</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
             )}
+            <div className="space-y-2">
+              <Label htmlFor="name">{t('registration.name')} *</Label>
+              <Input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
             {/* Tax ID */}
             <div className="space-y-2">
