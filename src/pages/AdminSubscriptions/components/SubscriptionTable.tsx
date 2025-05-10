@@ -1,67 +1,76 @@
-
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Square, Check, X } from 'lucide-react';  // Added Check and X icons
+import { Edit, Square, Check, X } from 'lucide-react'; // Added Check and X icons
 import StatusBadge from './StatusBadge';
 import SubscriptionTypeIcon from './SubscriptionTypeIcon';
 import { Card } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Subscription } from '../types';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface SubscriptionTableProps {
   subscriptions: Subscription[];
   loading: boolean;
-  onStatusChange: (subscriptionId: string, newStatus: Subscription['status'], iframeUrl?: string) => Promise<void>;
+  onStatusChange: (
+    subscriptionId: string,
+    newStatus: Subscription['status'],
+    iframeUrl?: string,
+  ) => Promise<void>;
   onEdit: (subscription: Subscription) => void;
 }
 
-const SubscriptionTable: React.FC<SubscriptionTableProps> = ({ 
+const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   subscriptions,
   loading,
   onStatusChange,
-  onEdit
+  onEdit,
 }) => {
   const isMobile = useIsMobile();
 
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-16 bg-muted animate-pulse rounded-lg" />
-        ))}
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="space-y-4">
+  //       {[...Array(3)].map((_, i) => (
+  //         <div key={i} className="h-16 bg-muted animate-pulse rounded-lg" />
+  //       ))}
+  //     </div>
+  //   );
+  // }
 
   const renderActionButton = (
     icon: React.ReactNode,
     label: string,
     onClick: () => void,
-    tooltipText: string
+    tooltipText: string,
   ) => (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={onClick}
-          >
+          <Button variant="outline" size="sm" onClick={onClick}>
             {icon}
             <span>{label}</span>
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
-          {tooltipText}
-        </TooltipContent>
+        <TooltipContent>{tooltipText}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   const renderActions = (subscription: Subscription) => {
     const actions = [];
@@ -73,14 +82,14 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
           <Square className="h-4 w-4 mr-1" />,
           t('subscription.admin.buttons.stop'),
           () => onStatusChange(subscription.id, 'inactive'),
-          t('subscription.admin.buttons.stop.prompt')
+          t('subscription.admin.buttons.stop.prompt'),
         ),
         renderActionButton(
           <Edit className="h-4 w-4 mr-1" />,
           t('subscription.admin.buttons.edit'),
           () => onEdit(subscription),
-          t('subscription.admin.buttons.edit.prompt')
-        )
+          t('subscription.admin.buttons.edit.prompt'),
+        ),
       );
     }
 
@@ -91,34 +100,33 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
           <Check className="h-4 w-4 mr-1" />,
           t('subscription.admin.buttons.approve'),
           () => onStatusChange(subscription.id, 'active', subscription.url),
-          t('subscription.admin.buttons.approve.prompt')
+          t('subscription.admin.buttons.approve.prompt'),
         ),
         renderActionButton(
           <X className="h-4 w-4 mr-1" />,
           t('subscription.admin.buttons.reject'),
           () => onStatusChange(subscription.id, 'rejected'),
-          t('subscription.admin.buttons.reject.prompt')
-        )
+          t('subscription.admin.buttons.reject.prompt'),
+        ),
       );
     }
 
     // Rejected or Inactive subscription actions
-    if (subscription.status === 'rejected' || subscription.status === 'inactive') {
+    if (
+      subscription.status === 'rejected' ||
+      subscription.status === 'inactive'
+    ) {
       actions.push(
         renderActionButton(
           <Check className="h-4 w-4 mr-1" />,
-            t('subscription.admin.buttons.approve'),
+          t('subscription.admin.buttons.approve'),
           () => onStatusChange(subscription.id, 'active', subscription.url),
-            t('subscription.admin.buttons.approve.prompt')
-        )
+          t('subscription.admin.buttons.approve.prompt'),
+        ),
       );
     }
 
-    return (
-      <div className="flex justify-end gap-2">
-        {actions}
-      </div>
-    );
+    return <div className="flex justify-end gap-2">{actions}</div>;
   };
 
   if (isMobile) {
@@ -133,9 +141,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
               </div>
               <StatusBadge status={subscription.status} />
             </div>
-            <div className="mt-4">
-              {renderActions(subscription)}
-            </div>
+            <div className="mt-4">{renderActions(subscription)}</div>
           </Card>
         ))}
       </div>
@@ -146,13 +152,15 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
     <div className="rounded-md border">
       <Table>
         <TableHeader>
-          <TableRow style={{width: '100%'}}>
+          <TableRow style={{ width: '100%' }}>
             <TableHead>{t('subscription.admin.table.name')}</TableHead>
             <TableHead>{t('subscription.admin.table.type')}</TableHead>
             <TableHead>{t('subscription.admin.table.user')}</TableHead>
             <TableHead>{t('subscription.admin.table.status')}</TableHead>
             <TableHead></TableHead>
-            <TableHead style={{marginLeft: '100%'}} className="text-right">{t('subscription.admin.table.actions')}</TableHead>
+            <TableHead style={{ marginLeft: '100%' }} className="text-right">
+              {t('subscription.admin.table.actions')}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -169,10 +177,10 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
               <TableCell>
                 <StatusBadge status={subscription.status} />
               </TableCell>
-              <TableCell className="max-w-xs truncate">{subscription.url}</TableCell>
-              <TableCell>
-                {renderActions(subscription)}
+              <TableCell className="max-w-xs truncate">
+                {subscription.url}
               </TableCell>
+              <TableCell>{renderActions(subscription)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

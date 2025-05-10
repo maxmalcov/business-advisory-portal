@@ -1,12 +1,11 @@
-
 import React, { useState } from 'react';
-import { 
-  Table, 
-  TableHeader, 
-  TableBody, 
-  TableRow, 
-  TableHead, 
-  TableCell 
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
@@ -14,9 +13,14 @@ import { Employee } from '../types/employee';
 import { Skeleton } from '@/components/ui/skeleton';
 import EmployeeDetailDialog from './EmployeeDetailDialog';
 import { Eye } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -25,13 +29,15 @@ interface EmployeeListProps {
   filterText?: string;
 }
 
-const EmployeeList: React.FC<EmployeeListProps> = ({ 
-  employees, 
+const EmployeeList: React.FC<EmployeeListProps> = ({
+  employees,
   isLoading = false,
   onEmployeeSelect,
-  filterText = ''
+  filterText = '',
 }) => {
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    null,
+  );
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [localFilterText, setLocalFilterText] = useState(filterText);
 
@@ -54,12 +60,14 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   };
 
   // Filter employees based on search text
-  const filteredEmployees = employees.filter(emp => 
-    emp.fullName.toLowerCase().includes(localFilterText.toLowerCase()) ||
-    emp.position.toLowerCase().includes(localFilterText.toLowerCase()) ||
-    (emp.companyName && emp.companyName.toLowerCase().includes(localFilterText.toLowerCase()))
+  const filteredEmployees = employees.filter(
+    (emp) =>
+      emp.fullName.toLowerCase().includes(localFilterText.toLowerCase()) ||
+      emp.position.toLowerCase().includes(localFilterText.toLowerCase()) ||
+      (emp.companyName &&
+        emp.companyName.toLowerCase().includes(localFilterText.toLowerCase())),
   );
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   if (isLoading) {
     return (
@@ -78,12 +86,24 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           <TableBody>
             {Array.from({ length: 3 }).map((_, i) => (
               <TableRow key={i}>
-                <TableCell><Skeleton className="h-5 w-[150px]" /></TableCell>
-                <TableCell><Skeleton className="h-5 w-[120px]" /></TableCell>
-                <TableCell><Skeleton className="h-5 w-[80px]" /></TableCell>
-                <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
-                <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
-                <TableCell><Skeleton className="h-5 w-[30px]" /></TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-[150px]" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-[120px]" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-[80px]" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-[100px]" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-[100px]" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-[30px]" />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -110,11 +130,13 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
             <TableBody>
               {filteredEmployees.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center h-24">No employees found</TableCell>
+                  <TableCell colSpan={6} className="text-center h-24">
+                    No employees found
+                  </TableCell>
                 </TableRow>
               ) : (
                 filteredEmployees.map((employee) => (
-                  <TableRow 
+                  <TableRow
                     key={employee.id}
                     className="cursor-pointer transition-colors hover:bg-muted/50"
                     onClick={() => handleEmployeeClick(employee)}
@@ -137,17 +159,27 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                     </TableCell>
                     <TableCell>{employee.position}</TableCell>
                     <TableCell>
-                      <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
-                        {employee.status === 'active' ? t('hr.index.status.active') : t('hr.index.status.terminated')}
+                      <Badge
+                        className={
+                          employee.status === 'active'
+                            ? 'bg-green-500'
+                            : 'bg-red-500'
+                        }
+                      >
+                        {employee.status === 'active'
+                          ? t('hr.index.status.active')
+                          : t('hr.index.status.terminated')}
                       </Badge>
                     </TableCell>
                     <TableCell>{formatDate(employee.startDate)}</TableCell>
-                    <TableCell>{employee.endDate ? formatDate(employee.endDate) : '-'}</TableCell>
+                    <TableCell>
+                      {employee.endDate ? formatDate(employee.endDate) : '-'}
+                    </TableCell>
                     <TableCell className="text-right">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button 
+                            <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleEmployeeClick(employee);
@@ -171,8 +203,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           </Table>
         </div>
       </div>
-      
-      <EmployeeDetailDialog 
+
+      <EmployeeDetailDialog
         employeeId={selectedEmployeeId}
         open={detailDialogOpen}
         onOpenChange={setDetailDialogOpen}

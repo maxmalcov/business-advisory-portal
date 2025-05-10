@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -13,7 +12,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { ServiceFormState } from '../hooks/useServiceForm';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface ServiceEditorFormProps {
   serviceForm: ServiceFormState;
@@ -26,15 +25,18 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
   serviceForm,
   isEditMode,
   onSubmit,
-  onCancel
+  onCancel,
 }) => {
   // Debugging the form inputs and state updates
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setter: (value: string) => void) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    setter: (value: string) => void,
+  ) => {
     console.log('Input change:', e.target.name, e.target.value);
     setter(e.target.value);
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
@@ -82,22 +84,38 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
       {/* Icon */}
       <div className="space-y-2">
         <Label htmlFor="iconName">{t('services.editor.icon')}</Label>
-        <Select 
-          value={serviceForm.iconName} 
+        <Select
+          value={serviceForm.iconName}
           onValueChange={serviceForm.setIconName}
         >
           <SelectTrigger>
             <SelectValue placeholder={t('services.editor.icon.placeholder')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Package">{t('services.editor.icon.package')}</SelectItem>
-            <SelectItem value="FileText">{t('services.editor.icon.document')}</SelectItem>
-            <SelectItem value="Briefcase">{t('services.editor.icon.briefcase')}</SelectItem>
-            <SelectItem value="Users">{t('services.editor.icon.users')}</SelectItem>
-            <SelectItem value="CreditCard">{t('services.editor.icon.payment')}</SelectItem>
-            <SelectItem value="Calendar">{t('services.editor.icon.calendar')}</SelectItem>
-            <SelectItem value="Shield">{t('services.editor.icon.security')}</SelectItem>
-            <SelectItem value="Star">{t('services.editor.icon.premium')}</SelectItem>
+            <SelectItem value="Package">
+              {t('services.editor.icon.package')}
+            </SelectItem>
+            <SelectItem value="FileText">
+              {t('services.editor.icon.document')}
+            </SelectItem>
+            <SelectItem value="Briefcase">
+              {t('services.editor.icon.briefcase')}
+            </SelectItem>
+            <SelectItem value="Users">
+              {t('services.editor.icon.users')}
+            </SelectItem>
+            <SelectItem value="CreditCard">
+              {t('services.editor.icon.payment')}
+            </SelectItem>
+            <SelectItem value="Calendar">
+              {t('services.editor.icon.calendar')}
+            </SelectItem>
+            <SelectItem value="Shield">
+              {t('services.editor.icon.security')}
+            </SelectItem>
+            <SelectItem value="Star">
+              {t('services.editor.icon.premium')}
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -129,23 +147,31 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
       {/* Status */}
       <div className="space-y-2">
         <Label htmlFor="status">{t('services.status.category')}</Label>
-        <Select 
-          value={serviceForm.status} 
-          onValueChange={(value) => serviceForm.setStatus(value as 'active' | 'inactive')}
+        <Select
+          value={serviceForm.status}
+          onValueChange={(value) =>
+            serviceForm.setStatus(value as 'active' | 'inactive')
+          }
         >
           <SelectTrigger>
-            <SelectValue placeholder={t('services.status.category.placeholder')} />
+            <SelectValue
+              placeholder={t('services.status.category.placeholder')}
+            />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="active">{t('services.status.active')}</SelectItem>
-            <SelectItem value="inactive">{t('services.status.inactive')}</SelectItem>
+            <SelectItem value="active">
+              {t('services.status.active')}
+            </SelectItem>
+            <SelectItem value="inactive">
+              {t('services.status.inactive')}
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Popular */}
       <div className="flex items-center space-x-2">
-        <Checkbox 
+        <Checkbox
           id="popular"
           checked={serviceForm.popular}
           onCheckedChange={serviceForm.setPopular}
@@ -156,10 +182,12 @@ export const ServiceEditorForm: React.FC<ServiceEditorFormProps> = ({
       {/* Form Actions */}
       <div className="flex justify-end space-x-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
-            {t('services.form-action.cancel')}
+          {t('services.form-action.cancel')}
         </Button>
         <Button type="submit">
-          {isEditMode ? t('services.form-action.update') : t('services.form-action.create')}
+          {isEditMode
+            ? t('services.form-action.update')
+            : t('services.form-action.create')}
         </Button>
       </div>
     </form>

@@ -1,6 +1,11 @@
-
 import React, { useState } from 'react';
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
 import { RefreshCw } from 'lucide-react';
 import { useIframeSubscriptions } from '../../hooks/useIframeSubscriptions';
 import SubscriptionItem from './SubscriptionItem';
@@ -16,9 +21,9 @@ const SubscriptionsTab: React.FC<SubscriptionsTabProps> = ({ user }) => {
     loading,
     toggleSubscriptionStatus,
     updateSubscriptionPeriod,
-    formatDate
+    formatDate,
   } = useIframeSubscriptions(user);
-  
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -43,7 +48,7 @@ const SubscriptionsTab: React.FC<SubscriptionsTabProps> = ({ user }) => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {subscriptions.map(subscription => (
+            {subscriptions.map((subscription) => (
               <SubscriptionItem
                 key={subscription.id}
                 subscription={subscription}

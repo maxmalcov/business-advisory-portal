@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { Service } from '@/integrations/supabase/client';
 
@@ -39,13 +38,28 @@ export const useServiceForm = (): ServiceFormState => {
 
   // Direct state setters without any wrapping logic
   const handleSetTitle = useCallback((value: string) => setTitle(value), []);
-  const handleSetDescription = useCallback((value: string) => setDescription(value), []);
+  const handleSetDescription = useCallback(
+    (value: string) => setDescription(value),
+    [],
+  );
   const handleSetPrice = useCallback((value: string) => setPrice(value), []);
-  const handleSetIconName = useCallback((value: string) => setIconName(value), []);
+  const handleSetIconName = useCallback(
+    (value: string) => setIconName(value),
+    [],
+  );
   const handleSetBadges = useCallback((value: string) => setBadges(value), []);
-  const handleSetPopular = useCallback((value: boolean) => setPopular(value), []);
-  const handleSetCategory = useCallback((value: string) => setCategory(value), []);
-  const handleSetStatus = useCallback((value: 'active' | 'inactive') => setStatus(value), []);
+  const handleSetPopular = useCallback(
+    (value: boolean) => setPopular(value),
+    [],
+  );
+  const handleSetCategory = useCallback(
+    (value: string) => setCategory(value),
+    [],
+  );
+  const handleSetStatus = useCallback(
+    (value: 'active' | 'inactive') => setStatus(value),
+    [],
+  );
 
   const resetForm = useCallback(() => {
     console.log('Resetting form');
@@ -74,16 +88,22 @@ export const useServiceForm = (): ServiceFormState => {
     setStatus(service.status || 'active');
   }, []);
 
-  const getFormData = useCallback(() => ({
-    title,
-    description,
-    price: parseFloat(price) || 0,
-    iconName, // This will be mapped to iconname in the saveService function
-    badges: badges.split(',').map(b => b.trim()).filter(b => b),
-    popular,
-    category: category || null,
-    status
-  }), [title, description, price, iconName, badges, popular, category, status]);
+  const getFormData = useCallback(
+    () => ({
+      title,
+      description,
+      price: parseFloat(price) || 0,
+      iconName, // This will be mapped to iconname in the saveService function
+      badges: badges
+        .split(',')
+        .map((b) => b.trim())
+        .filter((b) => b),
+      popular,
+      category: category || null,
+      status,
+    }),
+    [title, description, price, iconName, badges, popular, category, status],
+  );
 
   return {
     title,
@@ -105,6 +125,6 @@ export const useServiceForm = (): ServiceFormState => {
     currentService,
     resetForm,
     populateFormWithService,
-    getFormData
+    getFormData,
   };
 };

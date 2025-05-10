@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Employee } from '../../types/employee';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import BasicInfoFormSection from './BasicInfoFormSection';
 import IdentificationFormSection from './IdentificationFormSection';
 import EmploymentDatesFormSection from './EmploymentDatesFormSection';
 import ScheduleFormSection from './ScheduleFormSection';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface EmployeeDetailFormProps {
   employee: Employee;
@@ -21,7 +20,7 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
   employee,
   onSave,
   onCancel,
-  isSubmitting: externalIsSubmitting
+  isSubmitting: externalIsSubmitting,
 }) => {
   const {
     formData,
@@ -32,56 +31,55 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
     handleEndDateChange,
     handleStatusChange,
     updateDocument,
-    handleSubmit
+    handleSubmit,
   } = useEmployeeForm(employee, onSave);
-  
+
   // Use external isSubmitting state if provided, otherwise use the internal one
   const isSubmittingState = externalIsSubmitting || internalIsSubmitting;
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-foreground">
-      <BasicInfoFormSection 
+      <BasicInfoFormSection
         formData={formData}
         errors={errors}
         handleInputChange={handleInputChange}
         handleStatusChange={handleStatusChange}
       />
-      
-      <IdentificationFormSection 
+
+      <IdentificationFormSection
         formData={formData}
         handleInputChange={handleInputChange}
         updateDocument={updateDocument}
       />
-      
-      <EmploymentDatesFormSection 
+
+      <EmploymentDatesFormSection
         formData={formData}
         errors={errors}
         handleStartDateChange={handleStartDateChange}
         handleEndDateChange={handleEndDateChange}
       />
-      
-      <ScheduleFormSection 
+
+      <ScheduleFormSection
         formData={formData}
         handleInputChange={handleInputChange}
       />
-      
+
       <div className="flex justify-end space-x-2 pt-4">
-        <Button 
-          type="button" 
-          variant="outline" 
+        <Button
+          type="button"
+          variant="outline"
           onClick={onCancel}
           disabled={isSubmittingState}
         >
           <X className="h-4 w-4 mr-2" />
-            {t('hr.index.employee.detail-from.button.cancel')}
+          {t('hr.index.employee.detail-from.button.cancel')}
         </Button>
-        <Button 
-          type="submit"
-          disabled={isSubmittingState}
-        >
+        <Button type="submit" disabled={isSubmittingState}>
           <Save className="h-4 w-4 mr-2" />
-          {isSubmittingState ? t('hr.index.employee.detail-from.button.saving') : t('hr.index.employee.detail-from.button.save')}
+          {isSubmittingState
+            ? t('hr.index.employee.detail-from.button.saving')
+            : t('hr.index.employee.detail-from.button.save')}
         </Button>
       </div>
     </form>

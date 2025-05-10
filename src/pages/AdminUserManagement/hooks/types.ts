@@ -1,4 +1,3 @@
-
 // Basic user types
 export type UserType = 'admin' | 'client' | 'manager';
 export type AccountType = 'freelancer' | 'sl' | 'sa' | 'individual';

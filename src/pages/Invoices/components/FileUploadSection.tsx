@@ -1,4 +1,3 @@
-
 import React from 'react';
 import FileUploadArea from './FileUploadArea';
 import FileList from './FileList';
@@ -47,14 +46,14 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
   onAddMoreFiles,
   onFileChange,
   remainingFilesCount,
-  hasReachedFileLimit
+  hasReachedFileLimit,
 }) => {
   return (
     <div className="space-y-6">
       {/* Only show file upload area if not currently uploading and file limit not reached */}
       {!isLoading && !uploadComplete && !hasReachedFileLimit && (
         <div className="transition-all duration-300 transform hover:scale-[1.01]">
-          <FileUploadArea 
+          <FileUploadArea
             isDragging={isDragging}
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
@@ -64,7 +63,7 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
           />
         </div>
       )}
-      
+
       {/* Hidden file input */}
       <input
         type="file"
@@ -75,11 +74,11 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
         onChange={(e) => onFileChange(e)}
         disabled={hasReachedFileLimit}
       />
-      
+
       {/* Selected files list with enhanced styling */}
       {selectedFiles.length > 0 && (
         <div className="bg-card rounded-lg border shadow-sm">
-          <FileList 
+          <FileList
             files={selectedFiles}
             uploadedFiles={uploadedFiles}
             onRemoveFile={onRemoveFile}

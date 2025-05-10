@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Inbox } from 'lucide-react';
@@ -7,7 +6,7 @@ import ServiceFilters from './components/ServiceFilters';
 import RequestDetailsDialog from './components/RequestDetailsDialog';
 import { useServiceRequests } from './hooks/useServiceRequests';
 import { PageHeader } from '@/components/ui/page-header';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 const AdminServiceRequests: React.FC = () => {
   const {
@@ -24,10 +23,10 @@ const AdminServiceRequests: React.FC = () => {
     setAdminNotes,
     handleUpdateStatus,
     openDetailsDialog,
-    handleSaveNotes
+    handleSaveNotes,
   } = useServiceRequests();
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-6">
@@ -36,7 +35,7 @@ const AdminServiceRequests: React.FC = () => {
         title={t('service.requests.title')}
         subtitle={t('service.requests.description')}
       />
-      
+
       {/* Filters */}
       <ServiceFilters
         searchQuery={searchQuery}
@@ -44,7 +43,7 @@ const AdminServiceRequests: React.FC = () => {
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
       />
-      
+
       {/* Service Requests Table */}
       <Card>
         <CardHeader>
@@ -59,7 +58,7 @@ const AdminServiceRequests: React.FC = () => {
           />
         </CardContent>
       </Card>
-      
+
       {/* Details Dialog */}
       <RequestDetailsDialog
         isDialogOpen={isDialogOpen}

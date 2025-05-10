@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { EmployeeData } from '../types';
 import BasicInfo from './EmployeeInfoSections/BasicInfo';
@@ -11,7 +10,10 @@ interface EmployeeInfoCardProps {
   additionalVacationDays: string;
 }
 
-const EmployeeInfoCard = ({ selectedEmployeeData, additionalVacationDays }: EmployeeInfoCardProps) => {
+const EmployeeInfoCard = ({
+  selectedEmployeeData,
+  additionalVacationDays,
+}: EmployeeInfoCardProps) => {
   if (!selectedEmployeeData) {
     return <EmptyState />;
   }

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,12 +20,12 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
 
   const handleAddIframeUrl = () => {
     if (!newIframeUrl.trim()) return;
-    
+
     const updatedUser = {
       ...user,
-      iframeUrls: [...iframeUrls, newIframeUrl.trim()]
+      iframeUrls: [...iframeUrls, newIframeUrl.trim()],
     };
-    
+
     onUserChange(updatedUser);
     setNewIframeUrl('');
   };
@@ -34,24 +33,24 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
   const handleRemoveIframeUrl = (index: number) => {
     const updatedIframeUrls = [...iframeUrls];
     updatedIframeUrls.splice(index, 1);
-    
+
     const updatedUser = {
       ...user,
-      iframeUrls: updatedIframeUrls
+      iframeUrls: updatedIframeUrls,
     };
-    
+
     onUserChange(updatedUser);
   };
 
   const handleIframeUrlChange = (index: number, value: string) => {
     const updatedIframeUrls = [...iframeUrls];
     updatedIframeUrls[index] = value;
-    
+
     const updatedUser = {
       ...user,
-      iframeUrls: updatedIframeUrls
+      iframeUrls: updatedIframeUrls,
     };
-    
+
     onUserChange(updatedUser);
   };
 
@@ -60,7 +59,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-medium">IFRAME URLs</h3>
       </div>
-      
+
       <div className="space-y-3">
         {iframeUrls.map((url, index) => (
           <div key={index} className="flex items-center space-x-2">
@@ -72,9 +71,9 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
               disabled={isReadOnly}
             />
             {!isReadOnly && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => handleRemoveIframeUrl(index)}
                 className="text-destructive hover:text-destructive"
               >
@@ -83,7 +82,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
             )}
           </div>
         ))}
-        
+
         {/* Show the empty URL input form always, in both edit and read-only modes */}
         <div className="flex items-center space-x-2">
           <LinkIcon className="h-5 w-5 text-muted-foreground" />
@@ -95,8 +94,8 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
             disabled={isReadOnly}
           />
           {!isReadOnly && (
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={handleAddIframeUrl}
               disabled={!newIframeUrl.trim()}
@@ -107,7 +106,7 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
             </Button>
           )}
         </div>
-        
+
         {iframeUrls.length === 0 && (
           <div className="text-sm text-muted-foreground italic text-center">
             No iframe URLs added.

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { InvoiceHistoryTableProps } from './types';
@@ -10,10 +9,10 @@ const InvoiceHistoryTable: React.FC<InvoiceHistoryTableProps> = ({
   isLoading,
   invoices,
   onViewInvoice,
-  onDownloadInvoice
+  onDownloadInvoice,
 }) => {
   const isMobile = useIsMobile();
-  
+
   if (isLoading) {
     return <LoadingState />;
   }

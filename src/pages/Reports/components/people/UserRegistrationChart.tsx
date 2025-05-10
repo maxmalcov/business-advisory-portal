@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { filterChartData, formatAxisDate } from './utils/chartUtils';
@@ -16,7 +15,9 @@ interface UserRegistrationChartProps {
   registrationData: Registration[];
 }
 
-const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrationData }) => {
+const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({
+  registrationData,
+}) => {
   const [timeRange, setTimeRange] = useState('30d');
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
   const [dateRange, setDateRange] = useState<{
@@ -30,11 +31,11 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
 
   // Filter data based on selected time range or custom date range
   const filteredData = filterChartData(registrationData, timeRange, dateRange);
-  
+
   // Process data for display
-  const processedData = filteredData.map(item => ({
+  const processedData = filteredData.map((item) => ({
     ...item,
-    displayDate: formatAxisDate(item.date)
+    displayDate: formatAxisDate(item.date),
   }));
 
   // Handle time range change
@@ -55,21 +56,21 @@ const UserRegistrationChart: React.FC<UserRegistrationChartProps> = ({ registrat
         <div className="flex space-x-2">
           {/* Chart type toggle */}
           <ChartTypeToggle chartType={chartType} setChartType={setChartType} />
-          
+
           {/* Date range selector for custom range */}
           {timeRange === 'custom' ? (
-            <DateRangePicker 
+            <DateRangePicker
               dateRange={dateRange}
               setDateRange={setDateRange}
               isOpen={isDatePickerOpen}
               onOpenChange={setIsDatePickerOpen}
             />
           ) : null}
-          
+
           {/* Always show time range selector */}
-          <TimeRangeSelector 
-            timeRange={timeRange} 
-            onTimeRangeChange={handleTimeRangeChange} 
+          <TimeRangeSelector
+            timeRange={timeRange}
+            onTimeRangeChange={handleTimeRangeChange}
           />
         </div>
       </CardHeader>

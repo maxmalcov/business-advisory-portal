@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { usefulLinksTable } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
@@ -13,14 +12,14 @@ export function useUsefulLinks() {
     setIsSubmitting(true);
     try {
       const { error } = await usefulLinksTable().insert(values);
-          
+
       if (error) throw error;
-      
+
       toast({
         title: 'Link added',
         description: 'The link has been successfully added.',
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error adding link:', error);
@@ -35,20 +34,21 @@ export function useUsefulLinks() {
     }
   };
 
-  const updateLink = async (id: string, values: UsefulLinkFormValues): Promise<boolean> => {
+  const updateLink = async (
+    id: string,
+    values: UsefulLinkFormValues,
+  ): Promise<boolean> => {
     setIsSubmitting(true);
     try {
-      const { error } = await usefulLinksTable()
-        .update(values)
-        .eq('id', id);
-          
+      const { error } = await usefulLinksTable().update(values).eq('id', id);
+
       if (error) throw error;
-      
+
       toast({
         title: 'Link updated',
         description: 'The link has been successfully updated.',
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error updating link:', error);
@@ -65,17 +65,15 @@ export function useUsefulLinks() {
 
   const deleteLink = async (id: string): Promise<boolean> => {
     try {
-      const { error } = await usefulLinksTable()
-        .delete()
-        .eq('id', id);
-      
+      const { error } = await usefulLinksTable().delete().eq('id', id);
+
       if (error) throw error;
-      
+
       toast({
         title: 'Link deleted',
         description: 'The link has been successfully deleted.',
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error deleting link:', error);
@@ -92,6 +90,6 @@ export function useUsefulLinks() {
     addLink,
     updateLink,
     deleteLink,
-    isSubmitting
+    isSubmitting,
   };
 }

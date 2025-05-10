@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Employee } from '../../types/employee';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,7 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
   employee,
   onSave,
   onCancel,
-  isSubmitting: externalIsSubmitting
+  isSubmitting: externalIsSubmitting,
 }) => {
   const {
     formData,
@@ -30,52 +29,49 @@ const EmployeeDetailForm: React.FC<EmployeeDetailFormProps> = ({
     handleStartDateChange,
     handleEndDateChange,
     handleStatusChange,
-    handleSubmit
+    handleSubmit,
   } = useEmployeeForm(employee, onSave);
-  
+
   // Use external isSubmitting state if provided, otherwise use the internal one
   const isSubmittingState = externalIsSubmitting || internalIsSubmitting;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <BasicInfoFormSection 
+      <BasicInfoFormSection
         formData={formData}
         errors={errors}
         handleInputChange={handleInputChange}
         handleStatusChange={handleStatusChange}
       />
-      
-      <IdentificationFormSection 
+
+      <IdentificationFormSection
         formData={formData}
         handleInputChange={handleInputChange}
       />
-      
-      <EmploymentDatesFormSection 
+
+      <EmploymentDatesFormSection
         formData={formData}
         errors={errors}
         handleStartDateChange={handleStartDateChange}
         handleEndDateChange={handleEndDateChange}
       />
-      
-      <ScheduleFormSection 
+
+      <ScheduleFormSection
         formData={formData}
         handleInputChange={handleInputChange}
       />
-      
+
       <div className="flex justify-end space-x-2 pt-4">
-        <Button 
-          type="button" 
-          variant="outline" 
+        <Button
+          type="button"
+          variant="outline"
           onClick={onCancel}
           disabled={isSubmittingState}
         >
           <X className="h-4 w-4 mr-2" />
           Cancel
         </Button>
-        <Button 
-          type="submit"
-          disabled={isSubmittingState}
-        >
+        <Button type="submit" disabled={isSubmittingState}>
           <Save className="h-4 w-4 mr-2" />
           {isSubmittingState ? 'Saving...' : 'Save Changes'}
         </Button>

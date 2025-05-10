@@ -20,7 +20,7 @@ import {
   Settings,
   Inbox,
   Wrench,
-  BookOpen
+  BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -35,9 +35,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const isMobile = useIsMobile();
   const { pendingServices, pendingSubscriptions } = useNotificationCounts();
-  
+
   const isAdmin = user?.userType === 'admin';
-  
+
   const clientMenuItems: SidebarItem[] = [
     {
       name: t('nav.dashboard'),
@@ -133,14 +133,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           name: t('admin.subscriptions.requests'),
           path: '/admin/subscription-requests',
           icon: Inbox,
-          badge: pendingSubscriptions
+          badge: pendingSubscriptions,
         },
         {
           name: t('admin.subscriptions.catalog'),
           path: '/admin/subscription-catalog',
           icon: BookOpen,
-        }
-      ]
+        },
+      ],
     },
     {
       name: t('admin.useful-links'),
@@ -162,14 +162,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           name: t('admin.service.requests'),
           path: '/admin/service-requests',
           icon: Inbox,
-          badge: pendingServices
+          badge: pendingServices,
         },
         {
           name: t('admin.service.catalog'),
           path: '/admin/service-catalog',
           icon: Wrench,
-        }
-      ]
+        },
+      ],
     },
     {
       name: t('admin.email-settings'),
@@ -177,15 +177,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       icon: Mail,
     },
   ];
-  
+
   const menuItems = isAdmin ? adminMenuItems : clientMenuItems;
 
   return (
-    <aside 
+    <aside
       className={cn(
-        "bg-sidebar text-sidebar-foreground w-64 min-h-screen overflow-y-auto fixed top-0 left-0 z-40 pt-4 transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : (isMobile ? "-translate-x-full" : "translate-x-0"),
-        isMobile && "shadow-lg"
+        'bg-sidebar text-sidebar-foreground w-64 min-h-screen overflow-y-auto fixed top-0 left-0 z-40 pt-4 transition-transform duration-300 ease-in-out',
+        isOpen
+          ? 'translate-x-0'
+          : isMobile
+            ? '-translate-x-full'
+            : 'translate-x-0',
+        isMobile && 'shadow-lg',
       )}
     >
       <SidebarHeader onClose={onClose} />

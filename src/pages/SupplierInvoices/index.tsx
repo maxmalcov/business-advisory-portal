@@ -1,4 +1,3 @@
-
 import React from 'react';
 import SupplierInvoicesHeader from './components/SupplierInvoicesHeader';
 import SupplierInvoiceTabs from './components/SupplierInvoiceTabs';

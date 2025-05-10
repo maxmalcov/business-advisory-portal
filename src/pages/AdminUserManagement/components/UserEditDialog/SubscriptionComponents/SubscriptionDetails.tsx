@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { IframeSubscription } from '../../../hooks/types';
 
@@ -29,26 +28,24 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
           )}
         </div>
       </div>
-      
+
       <div>
         <div className="text-sm text-muted-foreground mb-1">URL</div>
         <div className="font-medium text-sm truncate">
           {subscription.url || 'No URL configured'}
         </div>
       </div>
-      
+
       <div>
         <div className="text-sm text-muted-foreground mb-1">Start Date</div>
-        <div className="font-medium">
-          {formatDate(subscription.startDate)}
-        </div>
+        <div className="font-medium">{formatDate(subscription.startDate)}</div>
       </div>
-      
+
       <div>
         <div className="text-sm text-muted-foreground mb-1">End Date</div>
         <div className="font-medium">
-          {subscription.isLifetime 
-            ? "Lifetime (No expiration)" 
+          {subscription.isLifetime
+            ? 'Lifetime (No expiration)'
             : formatDate(subscription.endDate)}
         </div>
       </div>

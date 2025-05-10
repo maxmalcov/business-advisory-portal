@@ -1,4 +1,3 @@
-
 /**
  * Format a date string to a human-readable format
  * @param dateStr Date string to format
@@ -10,7 +9,7 @@ export const formatDate = (dateStr: string | undefined) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   } catch (error) {
     console.error('Date formatting error:', error);

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
@@ -8,7 +7,9 @@ interface EmploymentDatesSectionProps {
   employee: Employee;
 }
 
-const EmploymentDatesSection: React.FC<EmploymentDatesSectionProps> = ({ employee }) => {
+const EmploymentDatesSection: React.FC<EmploymentDatesSectionProps> = ({
+  employee,
+}) => {
   const formatDate = (dateStr: string | undefined) => {
     if (!dateStr) return '-';
     try {

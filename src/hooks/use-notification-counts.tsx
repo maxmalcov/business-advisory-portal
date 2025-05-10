@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -23,10 +22,11 @@ export function useNotificationCounts() {
     }
 
     // Fetch pending subscription requests count
-    const { count: subscriptionCount, error: subscriptionError } = await supabase
-      .from('user_tool_subscriptions')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'pending');
+    const { count: subscriptionCount, error: subscriptionError } =
+      await supabase
+        .from('user_tool_subscriptions')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
 
     if (!subscriptionError && subscriptionCount !== null) {
       setPendingSubscriptions(subscriptionCount);
@@ -36,13 +36,19 @@ export function useNotificationCounts() {
   const setupRealtimeSubscription = () => {
     const channel = supabase
       .channel('notification-counts')
-      .on('postgres_changes', 
+      .on(
+        'postgres_changes',
         { event: '*', schema: 'public', table: 'service_requests' },
-        () => fetchCounts()
+        () => fetchCounts(),
       )
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'user_tool_subscriptions' },
-        () => fetchCounts()
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_tool_subscriptions',
+        },
+        () => fetchCounts(),
       )
       .subscribe();
 
@@ -53,6 +59,6 @@ export function useNotificationCounts() {
 
   return {
     pendingServices,
-    pendingSubscriptions
+    pendingSubscriptions,
   };
 }

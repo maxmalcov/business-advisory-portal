@@ -1,4 +1,3 @@
-
 import React from 'react';
 import InvoiceHistoryList from '../Invoices/components/InvoiceHistoryList';
 import { FileText } from 'lucide-react';

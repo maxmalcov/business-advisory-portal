@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { useServiceStatsReports } from '../../hooks/useServiceStatsReports';
 import ServiceFilters from './ServiceFilters';
@@ -7,20 +6,20 @@ import ServiceChartView from './ServiceChartView';
 import ServiceTable from './ServiceTable';
 
 const ServicesTab: React.FC = () => {
-  const { 
-    serviceStats, 
-    serviceRequests, 
-    chartData, 
-    loading, 
-    filters, 
+  const {
+    serviceStats,
+    serviceRequests,
+    chartData,
+    loading,
+    filters,
     setFilters,
-    exportToCSV
+    exportToCSV,
   } = useServiceStatsReports();
 
   // Extract available services for filter
   const availableServices = useMemo(() => {
     const services = new Set<string>();
-    serviceRequests.forEach(request => {
+    serviceRequests.forEach((request) => {
       services.add(request.serviceName);
     });
     return Array.from(services);
@@ -28,25 +27,25 @@ const ServicesTab: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <ServiceFilters 
-        filters={filters}
-        setFilters={setFilters}
-        onExport={exportToCSV}
-        totalItems={serviceRequests.length}
-        availableServices={availableServices}
-        loading={loading}
-      />
+      {/*<ServiceFilters */}
+      {/*  filters={filters}*/}
+      {/*  setFilters={setFilters}*/}
+      {/*  onExport={exportToCSV}*/}
+      {/*  totalItems={serviceRequests.length}*/}
+      {/*  availableServices={availableServices}*/}
+      {/*  loading={loading}*/}
+      {/*/>*/}
 
       <ServiceStatsCards stats={serviceStats} loading={loading} />
-      
+
       <div className="mb-10">
         <ServiceChartView data={chartData} loading={loading} />
       </div>
-      
-      <div className="mt-10">
-        <h3 className="text-lg font-medium mb-4">Service Request Details</h3>
-        <ServiceTable services={serviceRequests} loading={loading} />
-      </div>
+
+      {/*<div className="mt-10">*/}
+      {/*  <h3 className="text-lg font-medium mb-4">Service Request Details</h3>*/}
+      {/*  <ServiceTable services={serviceRequests} loading={loading} />*/}
+      {/*</div>*/}
     </div>
   );
 };

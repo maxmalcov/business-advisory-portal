@@ -1,7 +1,12 @@
-
 import React from 'react';
 import { DateFilter } from '@/pages/AdminUserManagement/components/UserEditDialog/ActivityTab/DateFilter';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Download, FileBarChart } from 'lucide-react';
@@ -9,10 +14,10 @@ import { SubscriptionFilters as SubscriptionFiltersType } from '../../hooks/type
 
 // Define a type mapping between our filter options and DateFilterOption
 type DateFilterMapType = {
-  'last30days': 'last30days';
-  'thisYear': 'thisYear';
-  'custom': 'custom';
-  'allTime': 'allTime';
+  last30days: 'last30days';
+  thisYear: 'thisYear';
+  custom: 'custom';
+  allTime: 'allTime';
 };
 
 interface SubscriptionFiltersProps {
@@ -28,7 +33,7 @@ const SubscriptionFilters: React.FC<SubscriptionFiltersProps> = ({
   setFilters,
   onExport,
   totalItems,
-  loading
+  loading,
 }) => {
   return (
     <div className="space-y-4">
@@ -37,9 +42,9 @@ const SubscriptionFilters: React.FC<SubscriptionFiltersProps> = ({
           <FileBarChart className="h-5 w-5 text-[#7E69AB]" />
           <h3 className="text-lg font-medium">Subscription Analysis</h3>
         </div>
-        <Button 
-          onClick={onExport} 
-          variant="outline" 
+        <Button
+          onClick={onExport}
+          variant="outline"
           className="flex items-center gap-2 border-[#7E69AB] text-[#7E69AB] hover:bg-[#7E69AB]/10"
           disabled={totalItems === 0 || loading}
         >
@@ -47,18 +52,22 @@ const SubscriptionFilters: React.FC<SubscriptionFiltersProps> = ({
           Export CSV
         </Button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <DateFilter
           filterOption={filters.dateFilterOption as any}
-          onFilterChange={(option) => setFilters({ dateFilterOption: option as any })}
+          onFilterChange={(option) =>
+            setFilters({ dateFilterOption: option as any })
+          }
           customDateRange={filters.dateRange}
           onCustomDateChange={(range) => setFilters({ dateRange: range })}
         />
-        
-        <Select 
+
+        <Select
           value={filters.status}
-          onValueChange={(value: "all" | "active" | "expired" | "cancelled") => setFilters({ status: value })}
+          onValueChange={(value: 'all' | 'active' | 'expired' | 'cancelled') =>
+            setFilters({ status: value })
+          }
           disabled={loading}
         >
           <SelectTrigger>
@@ -71,10 +80,12 @@ const SubscriptionFilters: React.FC<SubscriptionFiltersProps> = ({
             <SelectItem value="cancelled">Cancelled</SelectItem>
           </SelectContent>
         </Select>
-        
-        <Select 
+
+        <Select
           value={filters.planType}
-          onValueChange={(value: "all" | "monthly" | "yearly") => setFilters({ planType: value })}
+          onValueChange={(value: 'all' | 'monthly' | 'yearly') =>
+            setFilters({ planType: value })
+          }
           disabled={loading}
         >
           <SelectTrigger>
@@ -94,13 +105,11 @@ const SubscriptionFilters: React.FC<SubscriptionFiltersProps> = ({
           className="h-10"
         />
       </div>
-      
+
       <div className="text-sm text-muted-foreground">
-        {loading ? (
-          'Loading subscriptions...'
-        ) : (
-          `Showing ${totalItems} ${totalItems === 1 ? 'subscription' : 'subscriptions'}`
-        )}
+        {loading
+          ? 'Loading subscriptions...'
+          : `Showing ${totalItems} ${totalItems === 1 ? 'subscription' : 'subscriptions'}`}
       </div>
     </div>
   );

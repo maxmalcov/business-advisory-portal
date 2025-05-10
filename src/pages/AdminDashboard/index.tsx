@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PieChart } from 'lucide-react';
 import StatsSummary from './components/StatsSummary';
@@ -15,17 +14,17 @@ const AdminDashboard: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
           <p className="text-muted-foreground mt-1">
-            Manage users, subscriptions, services, and overall platform operations
+            Manage users, subscriptions, services, and overall platform
+            operations
           </p>
         </div>
       </div>
 
       <StatsSummary />
       <RecentActivity />
-      <ActivityChart />
+      {/*<ActivityChart />*/}
     </div>
   );
 };
 
 export default AdminDashboard;
-

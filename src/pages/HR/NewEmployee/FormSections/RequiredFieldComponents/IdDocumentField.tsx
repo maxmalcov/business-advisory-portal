@@ -1,8 +1,11 @@
-
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { HelpCircle, Upload } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { FormData, FormErrors } from '../../types';
@@ -31,14 +34,17 @@ const IdDocumentField: React.FC<IdDocumentFieldProps> = ({
     <div className="space-y-2">
       <div className="flex items-center">
         <Label htmlFor="idDocument" className="flex items-center">
-          ID Document (PDF, JPG or PNG) <span className="text-red-500 ml-1">*</span>
+          ID Document (PDF, JPG or PNG){' '}
+          <span className="text-red-500 ml-1">*</span>
         </Label>
         <Tooltip>
           <TooltipTrigger asChild>
             <HelpCircle className="ml-1 h-4 w-4 text-muted-foreground" />
           </TooltipTrigger>
           <TooltipContent side="right">
-            <p>Upload a scanned copy of the employee's identification document.</p>
+            <p>
+              Upload a scanned copy of the employee's identification document.
+            </p>
           </TooltipContent>
         </Tooltip>
       </div>
@@ -51,28 +57,28 @@ const IdDocumentField: React.FC<IdDocumentFieldProps> = ({
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
             onChange={handleFileChange}
-            className={`${errors.idDocument ? "border-red-500" : ""} hidden`}
+            className={`${errors.idDocument ? 'border-red-500' : ''} hidden`}
           />
           <div className="flex gap-2">
-            <Button 
-              type="button" 
+            <Button
+              type="button"
               onClick={triggerFileInput}
-              variant="outline" 
+              variant="outline"
               className="flex-1 flex justify-center items-center gap-2"
             >
               <Upload className="h-4 w-4" />
               Choose File
             </Button>
             {formData.idDocument ? (
-              <Input 
-                value={formData.idDocument.name} 
+              <Input
+                value={formData.idDocument.name}
                 readOnly
                 className="flex-1"
                 onClick={triggerFileInput}
               />
             ) : (
-              <Input 
-                value="No file selected" 
+              <Input
+                value="No file selected"
                 readOnly
                 className="flex-1 text-muted-foreground"
                 onClick={triggerFileInput}
@@ -84,7 +90,9 @@ const IdDocumentField: React.FC<IdDocumentFieldProps> = ({
       {uploadProgress > 0 && uploadProgress < 100 && (
         <div className="space-y-1">
           <Progress value={uploadProgress} className="h-2" />
-          <p className="text-xs text-muted-foreground">Uploading: {Math.round(uploadProgress)}%</p>
+          <p className="text-xs text-muted-foreground">
+            Uploading: {Math.round(uploadProgress)}%
+          </p>
         </div>
       )}
       {errors.idDocument && (

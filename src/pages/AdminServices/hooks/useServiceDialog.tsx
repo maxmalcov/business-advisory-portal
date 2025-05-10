@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Service } from '@/integrations/supabase/client';
 import { useServiceForm } from './useServiceForm';
@@ -26,6 +25,6 @@ export const useServiceDialog = () => {
     isEditMode,
     openAddDialog,
     openEditDialog,
-    serviceForm
+    serviceForm,
   };
 };

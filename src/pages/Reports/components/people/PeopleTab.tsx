@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -31,9 +30,11 @@ const PeopleTab: React.FC<PeopleTabProps> = ({ employeeStats }) => {
           </div>
         </CardContent>
       </Card>
-      
+
       <div className="w-full">
-        <UserRegistrationChart registrationData={employeeStats.registrationTrends} />
+        <UserRegistrationChart
+          registrationData={employeeStats.registrationTrends}
+        />
       </div>
     </div>
   );

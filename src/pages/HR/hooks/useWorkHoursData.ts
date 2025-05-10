@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { employeeWorkHoursTable } from '@/integrations/supabase/client';
@@ -15,17 +14,17 @@ export const useWorkHoursData = (selectedMonth: Date) => {
   // Fetch work hours for the selected month
   const fetchWorkHours = async () => {
     if (!user?.id) return;
-    
+
     setLoading(true);
     try {
       const formattedMonth = getMonthYearForStorage(selectedMonth);
 
       const formattedDate = formattedMonth.split('-').map((el, index) => {
-        if(index != 2){
-          return el
+        if (index != 2) {
+          return el;
         }
-      })
-      formattedDate.pop()
+      });
+      formattedDate.pop();
       const { data, error } = await employeeWorkHoursTable()
         .select('*')
         .eq('client_id', user.id)
@@ -34,7 +33,7 @@ export const useWorkHoursData = (selectedMonth: Date) => {
 
       if (error) throw error;
 
-      const mappedData: WorkHoursData[] = (data as any).map(record => ({
+      const mappedData: WorkHoursData[] = (data as any).map((record) => ({
         id: record.id,
         employeeId: record.employee_id,
         employeeName: record.employee_name,

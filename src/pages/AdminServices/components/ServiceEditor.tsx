@@ -1,15 +1,14 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/context/AuthContext';  // Import useAuth to check user role
+import { useAuth } from '@/context/AuthContext'; // Import useAuth to check user role
 import { useServiceForm } from '../hooks/useServiceForm';
 import { useServiceEditor } from '../hooks/useServiceEditor';
 import { ServiceEditorHeader } from './ServiceEditorHeader';
 import { ServiceEditorForm } from './ServiceEditorForm';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 const ServiceEditor: React.FC = () => {
   const navigate = useNavigate();
@@ -17,16 +16,16 @@ const ServiceEditor: React.FC = () => {
   const isEditMode = !!serviceId;
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth(); // Get auth state and user role
-  
+
   // Debug auth state
   useEffect(() => {
-    console.log('Auth state in ServiceEditor:', { 
-      isAuthenticated, 
-      userType: user?.userType, 
-      user 
+    console.log('Auth state in ServiceEditor:', {
+      isAuthenticated,
+      userType: user?.userType,
+      user,
     });
   }, [isAuthenticated, user]);
-  
+
   // Redirect if not admin
   useEffect(() => {
     if (isAuthenticated && user && user.userType !== 'admin') {
@@ -39,16 +38,15 @@ const ServiceEditor: React.FC = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, user, navigate, toast]);
-  
+
   // Service form state
   const serviceForm = useServiceForm();
-  
+
   // Get service data and submit handler
-  const { 
-    loading, 
-    service, 
-    saveService 
-  } = useServiceEditor(serviceId, serviceForm.resetForm);
+  const { loading, service, saveService } = useServiceEditor(
+    serviceId,
+    serviceForm.resetForm,
+  );
 
   // Set form data when service is loaded (for edit mode)
   useEffect(() => {
@@ -59,17 +57,17 @@ const ServiceEditor: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const formData = serviceForm.getFormData();
       console.log('Submitting form data:', formData);
       await saveService(formData);
-      
+
       toast({
         title: `Service ${isEditMode ? 'updated' : 'created'} successfully`,
         description: `The service "${serviceForm.title}" has been ${isEditMode ? 'updated' : 'created'}.`,
       });
-      
+
       navigate('/admin/service-catalog');
     } catch (error) {
       console.error('Error saving service:', error);
@@ -90,7 +88,7 @@ const ServiceEditor: React.FC = () => {
     console.log('ServiceEditor form state:', {
       title: serviceForm.title,
       description: serviceForm.description,
-      price: serviceForm.price
+      price: serviceForm.price,
     });
   }, [serviceForm.title, serviceForm.description, serviceForm.price]);
 
@@ -119,15 +117,12 @@ const ServiceEditor: React.FC = () => {
     );
   }
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-6">
-      <ServiceEditorHeader 
-        isEditMode={isEditMode} 
-        onCancel={handleCancel} 
-      />
-      
+      <ServiceEditorHeader isEditMode={isEditMode} onCancel={handleCancel} />
+
       <Card>
         <CardHeader>
           <CardTitle>{t('services.details')}</CardTitle>

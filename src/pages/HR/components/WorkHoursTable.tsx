@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Table,
@@ -16,7 +15,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { formatDate } from '@/utils/dates';
 import { Edit, MoreHorizontal, Trash2 } from 'lucide-react';
 import { WorkHoursData } from '../hooks/useEmployeeWorkHours';
@@ -43,11 +51,12 @@ const WorkHoursTable: React.FC<WorkHoursTableProps> = ({
   const [employeeToDelete, setEmployeeToDelete] = useState<string | null>(null);
 
   // Filter employees based on search text
-  const filteredData = employeeData.filter(employee => {
+  const filteredData = employeeData.filter((employee) => {
     const searchText = filterText.toLowerCase();
     return (
       employee.employeeName.toLowerCase().includes(searchText) ||
-      (employee.companyName && employee.companyName.toLowerCase().includes(searchText))
+      (employee.companyName &&
+        employee.companyName.toLowerCase().includes(searchText))
     );
   });
 
@@ -86,20 +95,28 @@ const WorkHoursTable: React.FC<WorkHoursTableProps> = ({
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={onEdit ? 6 : 5} className="h-24 text-center">
+                <TableCell
+                  colSpan={onEdit ? 6 : 5}
+                  className="h-24 text-center"
+                >
                   Loading employee data...
                 </TableCell>
               </TableRow>
             ) : filteredData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={onEdit ? 6 : 5} className="h-24 text-center">
+                <TableCell
+                  colSpan={onEdit ? 6 : 5}
+                  className="h-24 text-center"
+                >
                   No employee data found
                 </TableCell>
               </TableRow>
             ) : (
               filteredData.map((employee) => (
                 <TableRow key={employee.id || employee.employeeName}>
-                  <TableCell className="font-medium">{employee.employeeName}</TableCell>
+                  <TableCell className="font-medium">
+                    {employee.employeeName}
+                  </TableCell>
                   <TableCell>{employee.companyName || '-'}</TableCell>
                   <TableCell className="text-right">
                     {employee.grossSalary.toLocaleString('en-US', {
@@ -108,9 +125,13 @@ const WorkHoursTable: React.FC<WorkHoursTableProps> = ({
                       minimumFractionDigits: 2,
                     })}
                   </TableCell>
-                  <TableCell className="text-center">{employee.absenceDays || 0}</TableCell>
+                  <TableCell className="text-center">
+                    {employee.absenceDays || 0}
+                  </TableCell>
                   <TableCell>
-                    {employee.medicalLeaveDate ? formatDate(employee.medicalLeaveDate) : '-'}
+                    {employee.medicalLeaveDate
+                      ? formatDate(employee.medicalLeaveDate)
+                      : '-'}
                   </TableCell>
                   {onEdit && onDelete && employee.id && (
                     <TableCell>
@@ -144,17 +165,24 @@ const WorkHoursTable: React.FC<WorkHoursTableProps> = ({
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!employeeToDelete} onOpenChange={(open) => !open && setEmployeeToDelete(null)}>
+      <AlertDialog
+        open={!!employeeToDelete}
+        onOpenChange={(open) => !open && setEmployeeToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this employee's records for the selected month.
+              This action cannot be undone. This will permanently delete this
+              employee's records for the selected month.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete} className="bg-destructive text-destructive-foreground">
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

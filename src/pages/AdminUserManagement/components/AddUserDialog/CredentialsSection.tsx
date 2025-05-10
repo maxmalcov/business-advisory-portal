@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -6,20 +5,26 @@ import { Lock, Eye, EyeOff } from 'lucide-react';
 import type { User } from '../../hooks/types';
 
 interface CredentialsSectionProps {
-  newUser: Omit<User, "id">;
-  onUserChange: (user: Omit<User, "id">) => void;
+  newUser: Omit<User, 'id'>;
+  onUserChange: (user: Omit<User, 'id'>) => void;
+  confirmPassword: string,
+  setConfirmPassword: (confirmValue: string) => void;
 }
 
-const CredentialsSection: React.FC<CredentialsSectionProps> = ({ newUser, onUserChange }) => {
+const CredentialsSection: React.FC<CredentialsSectionProps> = ({
+  newUser,
+  onUserChange,
+  confirmPassword,
+  setConfirmPassword
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
-    onUserChange({...newUser, password: newPassword});
-    
+    onUserChange({ ...newUser, password: newPassword });
+
     // Check if passwords match when both fields have values
     if (confirmPassword && newPassword !== confirmPassword) {
       setPasswordError('Passwords do not match');
@@ -28,12 +33,18 @@ const CredentialsSection: React.FC<CredentialsSectionProps> = ({ newUser, onUser
     }
   };
 
-  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const confirmedPassword = e.target.value;
     setConfirmPassword(confirmedPassword);
-    
+
     // Check if passwords match
-    if (newUser.password && confirmedPassword && newUser.password !== confirmedPassword) {
+    if (
+      newUser.password &&
+      confirmedPassword &&
+      newUser.password !== confirmedPassword
+    ) {
       setPasswordError('Passwords do not match');
     } else {
       setPasswordError('');
@@ -48,40 +59,48 @@ const CredentialsSection: React.FC<CredentialsSectionProps> = ({ newUser, onUser
           <Label htmlFor="password">Password *</Label>
         </div>
         <div className="relative">
-          <Input 
+          <Input
             id="password"
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             value={newUser.password || ''}
             onChange={handlePasswordChange}
           />
-          <button 
+          <button
             type="button"
             className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </button>
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <Lock className="h-4 w-4 text-gray-500" />
           <Label htmlFor="confirm-password">Confirm Password *</Label>
         </div>
         <div className="relative">
-          <Input 
+          <Input
             id="confirm-password"
-            type={showConfirmPassword ? "text" : "password"}
+            type={showConfirmPassword ? 'text' : 'password'}
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
           />
-          <button 
+          <button
             type="button"
             className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           >
-            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showConfirmPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </button>
         </div>
         {passwordError && (

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
@@ -29,13 +28,13 @@ const ActionSection: React.FC<ActionSectionProps> = ({
     const today = new Date();
     if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
       toast({
-        title: "Future month not allowed",
-        description: "You cannot submit data for future months.",
-        variant: "destructive"
+        title: 'Future month not allowed',
+        description: 'You cannot submit data for future months.',
+        variant: 'destructive',
       });
       return;
     }
-    
+
     onSubmitMonth();
   };
 
@@ -46,9 +45,13 @@ const ActionSection: React.FC<ActionSectionProps> = ({
           Add Employee
         </Button>
       )}
-      
+
       {!isSubmitted && workHours.length > 0 && (
-        <Button onClick={handleSubmitMonth} className="sm:ml-auto" disabled={loading}>
+        <Button
+          onClick={handleSubmitMonth}
+          className="sm:ml-auto"
+          disabled={loading}
+        >
           <Send className="mr-2 h-4 w-4" />
           Submit {formatMonthYear(selectedMonth)}
         </Button>

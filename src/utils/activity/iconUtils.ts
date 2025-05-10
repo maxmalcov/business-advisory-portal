@@ -1,4 +1,3 @@
-
 import { ActivityEventType } from './types';
 
 export const getActivityIcon = (eventType) => {

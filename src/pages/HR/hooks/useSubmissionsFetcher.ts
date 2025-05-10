@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { workHoursSubmissionsTable } from '@/integrations/supabase/client';
@@ -14,14 +13,14 @@ export const useSubmissionsFetcher = () => {
   // Fetch all submissions for the user
   const fetchSubmissions = async () => {
     if (!user?.id) return;
-    
+
     setLoading(true);
     try {
       const { data, error } = await workHoursSubmissionsTable()
         .select('*')
         .eq('client_id', user.id)
         .order('month_year', { ascending: false });
-      
+
       if (error) throw error;
 
       // Use a double assertion to safely cast the data
@@ -31,7 +30,8 @@ export const useSubmissionsFetcher = () => {
       console.error('Error fetching submissions:', error);
       toast({
         title: 'Failed to load submissions',
-        description: 'An error occurred while fetching your work hours submissions.',
+        description:
+          'An error occurred while fetching your work hours submissions.',
         variant: 'destructive',
       });
     } finally {
@@ -47,6 +47,6 @@ export const useSubmissionsFetcher = () => {
   return {
     submissions,
     loading,
-    refreshSubmissions: fetchSubmissions
+    refreshSubmissions: fetchSubmissions,
   };
 };

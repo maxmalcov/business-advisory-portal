@@ -1,4 +1,3 @@
-
 import { ChartDataItem, WeeklyDataItem } from './types';
 
 // Chart data

@@ -1,12 +1,18 @@
-
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ServiceRequest, ServiceStatus } from '../hooks/useServiceRequests';
 import { format } from 'date-fns';
 import { Eye, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface ServiceRequestsListProps {
   loading: boolean;
@@ -19,7 +25,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
   loading,
   filteredRequests,
   openDetailsDialog,
-  handleUpdateStatus
+  handleUpdateStatus,
 }) => {
   const formatDate = (dateString: string) => {
     try {
@@ -29,10 +35,10 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
     }
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   const getStatusBadge = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'pending':
         return <Badge className="bg-yellow-500">{t('status.pending')}</Badge>;
       case 'completed':
@@ -49,7 +55,9 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
       <div className="flex justify-center p-8">
         <div className="flex flex-col items-center gap-2">
           <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
-          <p className="text-sm text-muted-foreground">{t('service.request.loading')}</p>
+          <p className="text-sm text-muted-foreground">
+            {t('service.request.loading')}
+          </p>
         </div>
       </div>
     );
@@ -58,7 +66,9 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
   if (filteredRequests.length === 0) {
     return (
       <div className="text-center p-8">
-        <p className="text-muted-foreground">{t('service.request.not-found')}</p>
+        <p className="text-muted-foreground">
+          {t('service.request.not-found')}
+        </p>
       </div>
     );
   }
@@ -91,7 +101,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
                   <Eye className="h-4 w-4 mr-1" />
                   {t('service.table.details')}
                 </Button>
-                
+
                 {request.status !== 'completed' && (
                   <Button
                     variant="outline"
@@ -103,7 +113,7 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
                     {t('service.table.approve')}
                   </Button>
                 )}
-                
+
                 {request.status !== 'rejected' && (
                   <Button
                     variant="outline"
@@ -115,8 +125,9 @@ const ServiceRequestsList: React.FC<ServiceRequestsListProps> = ({
                     {t('service.table.reject')}
                   </Button>
                 )}
-                
-                {(request.status === 'completed' || request.status === 'rejected') && (
+
+                {(request.status === 'completed' ||
+                  request.status === 'rejected') && (
                   <Button
                     variant="outline"
                     size="sm"

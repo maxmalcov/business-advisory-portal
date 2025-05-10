@@ -1,10 +1,13 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -23,10 +26,10 @@ const TerminationDatePicker = ({
   isDatePickerOpen,
   setIsDatePickerOpen,
   dateError,
-  employeeStartDate
+  employeeStartDate,
 }: TerminationDatePickerProps) => {
   const { t } = useLanguage();
-  
+
   return (
     <div className="grid gap-2">
       <Label htmlFor="terminationDate">{t('hr.termination.date')}</Label>
@@ -38,7 +41,11 @@ const TerminationDatePicker = ({
             id="terminationDate"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {terminationDate ? format(terminationDate, 'PPP') : <span>Select a date</span>}
+            {terminationDate ? (
+              format(terminationDate, 'PPP')
+            ) : (
+              <span>Select a date</span>
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -59,9 +66,7 @@ const TerminationDatePicker = ({
           />
         </PopoverContent>
       </Popover>
-      {dateError && (
-        <p className="text-xs text-red-500">{dateError}</p>
-      )}
+      {dateError && <p className="text-xs text-red-500">{dateError}</p>}
     </div>
   );
 };

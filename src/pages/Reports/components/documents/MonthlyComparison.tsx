@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -15,23 +14,28 @@ interface MonthlyComparisonProps {
   lastMonth: number;
 }
 
-const MonthlyComparison: React.FC<MonthlyComparisonProps> = ({ thisMonth, lastMonth }) => {
+const MonthlyComparison: React.FC<MonthlyComparisonProps> = ({
+  thisMonth,
+  lastMonth,
+}) => {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Monthly Comparison</CardTitle>
-        <CardDescription>
-          Current month vs previous month
-        </CardDescription>
+        <CardDescription>Current month vs previous month</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
-            <p className="text-sm font-medium text-muted-foreground">This Month</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              This Month
+            </p>
             <h3 className="text-3xl font-bold mt-2">{thisMonth}</h3>
           </div>
           <div className="text-center">
-            <p className="text-sm font-medium text-muted-foreground">Last Month</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              Last Month
+            </p>
             <h3 className="text-3xl font-bold mt-2">{lastMonth}</h3>
           </div>
         </div>

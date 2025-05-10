@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
@@ -8,9 +7,9 @@ interface UserSearchBarProps {
   setSearchQuery: (value: string) => void;
 }
 
-const UserSearchBar: React.FC<UserSearchBarProps> = ({ 
-  searchQuery, 
-  setSearchQuery
+const UserSearchBar: React.FC<UserSearchBarProps> = ({
+  searchQuery,
+  setSearchQuery,
 }) => {
   return (
     <div className="relative w-full">

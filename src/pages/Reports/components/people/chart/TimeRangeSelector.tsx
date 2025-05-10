@@ -1,6 +1,11 @@
-
 import React from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { TIME_RANGES } from '../utils/chartUtils';
 
 interface TimeRangeSelectorProps {
@@ -8,9 +13,9 @@ interface TimeRangeSelectorProps {
   onTimeRangeChange: (value: string) => void;
 }
 
-const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ 
-  timeRange, 
-  onTimeRangeChange 
+const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
+  timeRange,
+  onTimeRangeChange,
 }) => {
   return (
     <Select value={timeRange} onValueChange={onTimeRangeChange}>
@@ -18,7 +23,7 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
         <SelectValue placeholder="Select range" />
       </SelectTrigger>
       <SelectContent>
-        {TIME_RANGES.map(option => (
+        {TIME_RANGES.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
           </SelectItem>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,24 +19,26 @@ const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
     <div className="p-4 bg-muted/30 flex items-center justify-between">
       <div className="flex items-center space-x-2">
         <span className="font-medium">{subscription.name}</span>
-        <Badge 
-          variant="outline" 
-          className={subscription.status === 'active' 
-            ? "bg-green-50 text-green-600 hover:bg-green-100" 
-            : "bg-red-50 text-red-600 hover:bg-red-100"
+        <Badge
+          variant="outline"
+          className={
+            subscription.status === 'active'
+              ? 'bg-green-50 text-green-600 hover:bg-green-100'
+              : 'bg-red-50 text-red-600 hover:bg-red-100'
           }
         >
           {subscription.status === 'active' ? 'Active' : 'Inactive'}
         </Badge>
       </div>
       <div className="flex items-center space-x-2">
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => onToggleStatus(subscription.id)}
-          className={subscription.status === 'active' 
-            ? "border-red-200 text-red-600 hover:bg-red-50" 
-            : "border-green-200 text-green-600 hover:bg-green-50"
+          className={
+            subscription.status === 'active'
+              ? 'border-red-200 text-red-600 hover:bg-red-50'
+              : 'border-green-200 text-green-600 hover:bg-green-50'
           }
         >
           {subscription.status === 'active' ? (
@@ -52,8 +53,8 @@ const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
             </>
           )}
         </Button>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={onEditClick}
           disabled={subscription.status !== 'active'}

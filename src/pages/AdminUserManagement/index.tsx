@@ -1,7 +1,15 @@
-
 import React from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog';
 import UserManagementHeader from './components/UserManagementHeader';
 import UserSearchBar from './components/UserSearchBar';
 import UserTable from './components/UserTable';
@@ -36,17 +44,17 @@ const AdminUserManagement: React.FC = () => {
   return (
     <div className="container mx-auto py-6 space-y-8">
       <UserManagementHeader onAddUser={handleAddUser} />
-      
+
       <div className="bg-card rounded-lg border p-6 shadow-sm">
         <div className="mb-4 w-full">
-          <UserSearchBar 
+          <UserSearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
         </div>
-        
+
         <div className="mt-6">
-          <UserTable 
+          <UserTable
             users={users}
             onEditUser={handleEditUser}
             onDeleteUser={handleDeleteUser}
@@ -54,9 +62,12 @@ const AdminUserManagement: React.FC = () => {
           />
         </div>
       </div>
-      
+
       {/* User Details/Edit Dialog */}
-      <Dialog open={!!editingUser} onOpenChange={(open) => !open && handleCancelEdit()}>
+      <Dialog
+        open={!!editingUser}
+        onOpenChange={(open) => !open && handleCancelEdit()}
+      >
         {editingUser && (
           <DialogContent className="max-w-4xl p-0 max-h-[90vh] h-[90vh] flex flex-col overflow-hidden mx-auto w-[95vw]">
             <UserEditDialog
@@ -70,32 +81,39 @@ const AdminUserManagement: React.FC = () => {
           </DialogContent>
         )}
       </Dialog>
-      
+
       {/* Add User Dialog */}
-      <Dialog open={isAddingUser} onOpenChange={(open) => !open && handleCancelAddUser()}>
+      <Dialog
+        open={isAddingUser}
+        onOpenChange={(open) => !open && handleCancelAddUser()}
+      >
         {isAddingUser && (
           <DialogContent>
-            <AddUserDialog 
+            <AddUserDialog
               onSave={handleSaveNewUser}
               onCancel={handleCancelAddUser}
             />
           </DialogContent>
         )}
       </Dialog>
-      
+
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the user
-              {userToDelete && ` "${userToDelete.name}"`} and all associated data.
+              This action cannot be undone. This will permanently delete the
+              user
+              {userToDelete && ` "${userToDelete.name}"`} and all associated
+              data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteUser}>Delete</AlertDialogAction>
+            <AlertDialogAction onClick={confirmDeleteUser}>
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -104,4 +122,3 @@ const AdminUserManagement: React.FC = () => {
 };
 
 export default AdminUserManagement;
-

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { IframeSubscription } from '../../hooks/types';
 import SubscriptionHeader from './SubscriptionComponents/SubscriptionHeader';
@@ -8,7 +7,12 @@ import SubscriptionPeriodEditor from './SubscriptionComponents/SubscriptionPerio
 interface SubscriptionItemProps {
   subscription: IframeSubscription;
   onToggleStatus: (id: string) => void;
-  onUpdatePeriod: (id: string, startDate: Date, endDate?: Date, isLifetime?: boolean) => void;
+  onUpdatePeriod: (
+    id: string,
+    startDate: Date,
+    endDate?: Date,
+    isLifetime?: boolean,
+  ) => void;
   formatDate: (date?: Date) => string;
 }
 
@@ -16,20 +20,29 @@ const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
   subscription,
   onToggleStatus,
   onUpdatePeriod,
-  formatDate
+  formatDate,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [startDate, setStartDate] = useState<Date | undefined>(subscription.startDate);
-  const [endDate, setEndDate] = useState<Date | undefined>(subscription.endDate);
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    subscription.startDate,
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    subscription.endDate,
+  );
   const [isLifetime, setIsLifetime] = useState(subscription.isLifetime);
-  
+
   const handleSavePeriod = () => {
     if (startDate) {
-      onUpdatePeriod(subscription.id, startDate, isLifetime ? undefined : endDate, isLifetime);
+      onUpdatePeriod(
+        subscription.id,
+        startDate,
+        isLifetime ? undefined : endDate,
+        isLifetime,
+      );
       setIsEditing(false);
     }
   };
-  
+
   const handleCancelEdit = () => {
     setStartDate(subscription.startDate);
     setEndDate(subscription.endDate);
@@ -44,7 +57,7 @@ const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
         onToggleStatus={onToggleStatus}
         onEditClick={() => setIsEditing(true)}
       />
-      
+
       {isEditing ? (
         <SubscriptionPeriodEditor
           startDate={startDate}

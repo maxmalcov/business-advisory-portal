@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useWorkHoursData } from './useWorkHoursData';
 import { usePreviousMonthData } from './usePreviousMonthData';
@@ -16,16 +15,23 @@ export type WorkHoursData = {
   notes?: string | null;
 };
 
-export const useEmployeeWorkHours = (selectedMonth: Date, isSubmitted: boolean) => {
+export const useEmployeeWorkHours = (
+  selectedMonth: Date,
+  isSubmitted: boolean,
+) => {
   // Fetch current month's data
   const { workHours, loading, refreshData } = useWorkHoursData(selectedMonth);
-  
+
   // Fetch previous month's data
-  const { lastMonthData, hasDataFromPreviousMonth } = usePreviousMonthData(selectedMonth);
-  
+  const { lastMonthData, hasDataFromPreviousMonth } =
+    usePreviousMonthData(selectedMonth);
+
   // Operations for saving and deleting employee data
-  const { saveEmployee, deleteEmployee } = useWorkHoursOperations(selectedMonth, refreshData);
-  
+  const { saveEmployee, deleteEmployee } = useWorkHoursOperations(
+    selectedMonth,
+    refreshData,
+  );
+
   // Auto-fill functionality
   useWorkHoursAutoFill(
     selectedMonth,
@@ -33,7 +39,7 @@ export const useEmployeeWorkHours = (selectedMonth: Date, isSubmitted: boolean) 
     lastMonthData,
     isSubmitted,
     loading,
-    refreshData
+    refreshData,
   );
 
   return {

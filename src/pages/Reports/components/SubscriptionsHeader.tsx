@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -9,29 +8,34 @@ type SubscriptionHeaderProps = {
   onAddNewType: () => void;
 };
 
-const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAddNewType }) => {
+const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
+  onAddNew,
+  onAddNewType,
+}) => {
   const { language } = useLanguage();
-  
+
   const getTexts = () => {
     if (language === 'es') {
       return {
-        title: "Gestión de Suscripciones",
-        description: "Administre y supervise todas las suscripciones y tipos de suscripción de la plataforma",
-        addType: "Añadir Nuevo Tipo de Suscripción",
-        assign: "Asignar una Nueva Suscripción"
+        title: 'Gestión de Suscripciones',
+        description:
+          'Administre y supervise todas las suscripciones y tipos de suscripción de la plataforma',
+        addType: 'Añadir Nuevo Tipo de Suscripción',
+        assign: 'Asignar una Nueva Suscripción',
       };
     } else {
       return {
-        title: "Subscription Management",
-        description: "Manage and oversee all platform subscriptions and subscription types",
-        addType: "Add New Subscription Type",
-        assign: "Assign a New Subscription"
+        title: 'Subscription Management',
+        description:
+          'Manage and oversee all platform subscriptions and subscription types',
+        addType: 'Add New Subscription Type',
+        assign: 'Assign a New Subscription',
       };
     }
   };
-  
+
   const texts = getTexts();
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -41,9 +45,7 @@ const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAdd
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{texts.title}</h1>
-            <p className="text-muted-foreground mt-1">
-              {texts.description}
-            </p>
+            <p className="text-muted-foreground mt-1">{texts.description}</p>
           </div>
         </div>
         <div className="flex space-x-2">

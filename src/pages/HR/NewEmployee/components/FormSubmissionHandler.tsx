@@ -1,11 +1,13 @@
-
 import { FormData } from '../types';
-import {employeesTable, notificationSettingsTable} from '@/integrations/supabase/client';
+import {
+  employeesTable,
+  notificationSettingsTable,
+} from '@/integrations/supabase/client';
 import { uploadDocumentToStorage } from './DocumentUploader';
 import { supabase } from '@/integrations/supabase/client';
-import {log} from "@/utils/logs/log.funciton.ts";
-import {AppUser, useAuth} from "@/context/AuthContext.tsx";
-import {sendEmail} from "@/integrations/email";
+import { log } from '@/utils/logs/log.funciton.ts';
+import { AppUser, useAuth } from '@/context/AuthContext.tsx';
+import { sendEmail } from '@/integrations/email';
 
 interface SubmitFormProps {
   formData: FormData;
@@ -13,7 +15,7 @@ interface SubmitFormProps {
   setUploadProgress: (value: number) => void;
   onSuccess: () => void;
   onError: (message: string) => void;
-  user: AppUser | null
+  user: AppUser | null;
 }
 
 export const submitEmployeeForm = async ({
@@ -22,16 +24,19 @@ export const submitEmployeeForm = async ({
   setUploadProgress,
   onSuccess,
   onError,
-  user
+  user,
 }: SubmitFormProps) => {
   try {
     console.log('Submitting employee data:', formData);
-    
+
     let documentPath = '';
     if (formData.idDocument) {
       try {
         console.log('Uploading ID document:', formData.idDocument.name);
-        documentPath = await uploadDocumentToStorage(formData.idDocument, setUploadProgress);
+        documentPath = await uploadDocumentToStorage(
+          formData.idDocument,
+          setUploadProgress,
+        );
         console.log('Document uploaded successfully. Path:', documentPath);
       } catch (uploadError) {
         console.error('Document upload failed:', uploadError);
@@ -45,7 +50,7 @@ export const submitEmployeeForm = async ({
       setIsSubmitting(false);
       return;
     }
-    
+
     const employeeData = {
       full_name: formData.fullName,
       position: formData.position,
@@ -66,33 +71,43 @@ export const submitEmployeeForm = async ({
       email: formData.employeeEmail || null,
       address: formData.address || null,
       comments: formData.comments || null,
-      id_document: documentPath || null
+      id_document: documentPath || null,
     };
-    
+
     console.log('Sending employee data to Supabase:', employeeData);
-    
+
     const { data, error } = await employeesTable()
       .insert(employeeData)
       .select();
-      
+
     if (error) {
       console.error('Supabase insertion error:', error);
       throw error;
     }
-    
+
     console.log('Employee added successfully:', data);
 
-    const { data: settingsData , error: settingsError } = await notificationSettingsTable()
+    const { data: settingsData, error: settingsError } =
+      await notificationSettingsTable()
         .select('email')
         .eq('category', 'hr_payroll')
         .maybeSingle();
 
-    if(settingsError){
-      throw new Error(`Get notification settings error: ${error}`)
+    if (settingsError) {
+      throw new Error(`Get notification settings error: ${error}`);
     }
 
-    log({ action: "New employee", description: `${user.name} added new employee`, user: user.email, level: 'info', category: "employee"})
-    sendEmail((settingsData as any).email, `New Employee Registered: ${formData.fullName}`, `
+    log({
+      action: 'New employee',
+      description: `${user.name} added new employee`,
+      user: user.email,
+      level: 'info',
+      category: 'employee',
+    });
+    sendEmail(
+      (settingsData as any).email,
+      `New Employee Registered: ${formData.fullName}`,
+      `
 A new employee has been registered by a client.
 
 👤 Full Name: ${formData.fullName}
@@ -108,27 +123,32 @@ A new employee has been registered by a client.
 📧 Employee Email: ${formData.employeeEmail}
 🏠 Address: ${formData.address}
 📝 Additional Comments: ${formData.comments || 'None'}
-`)
-    
+`,
+    );
+
     // Send notification to admin
-    const notificationResult = await supabase.functions.invoke('notify-admin-new-employee', {
-      body: JSON.stringify({
-        ...formData,
-        startDate: formData.startDate?.toISOString().split('T')[0],
-        idDocument: documentPath
-      })
-    });
+    const notificationResult = await supabase.functions.invoke(
+      'notify-admin-new-employee',
+      {
+        body: JSON.stringify({
+          ...formData,
+          startDate: formData.startDate?.toISOString().split('T')[0],
+          idDocument: documentPath,
+        }),
+      },
+    );
 
     if (notificationResult.error) {
       console.error('Admin notification failed:', notificationResult.error);
       // Non-critical error, so we continue with the success flow
     }
-    
+
     onSuccess();
-    
   } catch (error) {
     console.error('Error adding employee:', error);
-    onError('There was a problem adding the employee. Please check console for details.');
+    onError(
+      'There was a problem adding the employee. Please check console for details.',
+    );
   } finally {
     setIsSubmitting(false);
     setUploadProgress(0);

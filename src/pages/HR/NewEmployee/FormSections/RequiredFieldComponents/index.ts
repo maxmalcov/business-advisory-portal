@@ -1,4 +1,3 @@
-
 import CompanyField from './CompanyField';
 import NameField from './NameField';
 import DniField from './DniField';
@@ -16,5 +15,5 @@ export {
   StartDateField,
   ScheduleField,
   PositionField,
-  SocialSecurityField
+  SocialSecurityField,
 };

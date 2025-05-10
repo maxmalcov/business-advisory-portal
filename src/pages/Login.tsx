@@ -1,11 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
@@ -30,7 +36,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast({
         variant: 'destructive',
@@ -41,7 +47,7 @@ const Login: React.FC = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
       console.log('Attempting to login with:', email);
       await login(email, password);
@@ -64,7 +70,9 @@ const Login: React.FC = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{t('app.login')}</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardDescription>
+            Enter your credentials to access your account
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -82,7 +90,10 @@ const Login: React.FC = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">{t('auth.password')}</Label>
-                <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs text-primary hover:underline"
+                >
                   {t('auth.forgot_password')}
                 </Link>
               </div>
@@ -95,11 +106,11 @@ const Login: React.FC = () => {
               />
             </div>
           </CardContent>
-          
+
           <CardFooter className="flex-col space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full" 
+            <Button
+              type="submit"
+              className="w-full"
               disabled={isLoading || authLoading}
             >
               {isLoading || authLoading ? (
@@ -111,7 +122,7 @@ const Login: React.FC = () => {
                 t('app.login')
               )}
             </Button>
-            
+
             <div className="text-center text-sm">
               Don't have an account?{' '}
               <Link to="/register" className="text-primary hover:underline">

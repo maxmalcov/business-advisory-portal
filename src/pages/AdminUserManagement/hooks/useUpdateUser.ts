@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,23 +9,23 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
 
   // Handle user edit
   const handleEditUser = (user: User) => {
-    console.log("Setting user to edit:", user);
-    setEditingUser({...user});
+    console.log('Setting user to edit:', user);
+    setEditingUser({ ...user });
   };
 
   // Handle user update
   const handleUpdateUser = (updatedUser: User) => {
-    console.log("Updating user in local state:", updatedUser);
+    console.log('Updating user in local state:', updatedUser);
     setEditingUser(updatedUser);
   };
 
   // Save edited user without refreshing the entire list
   const handleSaveUser = async () => {
     if (!editingUser) return;
-    
+
     try {
-      console.log("Updating user in Supabase:", editingUser);
-      
+      console.log('Updating user in Supabase:', editingUser);
+
       // Update the user in Supabase - ensure column names match the database
       const { error } = await supabase
         .from('profiles')
@@ -37,7 +36,7 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
           companyname: editingUser.companyName, // Match database column name (lowercase)
           phone: editingUser.phone,
           accounttype: editingUser.accountType,
-          incominginvoiceemail: editingUser.incomingInvoiceEmail, 
+          incominginvoiceemail: editingUser.incomingInvoiceEmail,
           outgoinginvoiceemail: editingUser.outgoingInvoiceEmail,
           address: editingUser.address,
           postalcode: editingUser.postalCode,
@@ -45,7 +44,7 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
           province: editingUser.province,
           country: editingUser.country,
           nif: editingUser.nif,
-          iframeurls: editingUser.iframeUrls // Add the iframeUrls array to be saved
+          iframeurls: editingUser.iframeUrls, // Add the iframeUrls array to be saved
         })
         .eq('id', editingUser.id);
 
@@ -53,12 +52,12 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
         console.error('Error updating user:', error);
         throw error;
       }
-      
+
       // Don't refresh the entire user list, which would reset sorting and scroll position
       // Instead, we'll update the user in the local state in the useUserManagement hook
-      
+
       toast({
-        title: "User Updated",
+        title: 'User Updated',
         description: `User ${editingUser.name} was successfully updated.`,
       });
     } catch (error) {
@@ -83,6 +82,6 @@ export const useUpdateUser = (refreshUsers: () => Promise<void>) => {
     handleEditUser,
     handleUpdateUser,
     handleSaveUser,
-    handleCancelEdit
+    handleCancelEdit,
   };
 };

@@ -1,47 +1,57 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { User, UserType, AccountType } from '../../hooks/types';
 import LanguageSelector from '@/components/LanguageSelector';
 import { User as UserIcon, Briefcase, FileType } from 'lucide-react';
 
 interface BasicInfoSectionProps {
-  newUser: Omit<User, "id">;
-  onUserChange: (user: Omit<User, "id">) => void;
+  newUser: Omit<User, 'id'>;
+  onUserChange: (user: Omit<User, 'id'>) => void;
 }
 
-const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ newUser, onUserChange }) => {
+const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
+  newUser,
+  onUserChange,
+}) => {
   // Handle changing user type
   const handleChangeUserType = (value: string) => {
     onUserChange({
       ...newUser,
-      userType: value as UserType
+      userType: value as UserType,
     });
   };
 
   const handleChangeAccountType = (value: string) => {
     onUserChange({
       ...newUser,
-      accountType: value as AccountType
+      accountType: value as AccountType,
     });
   };
-  
-  const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(newUser.accountType || '');
-  
+
+  const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(
+    newUser.accountType || '',
+  );
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="language">Preferred Language</Label>
-          <LanguageSelector />
-        </div>
-        
+        {/*<div className="space-y-2">*/}
+        {/*  <Label htmlFor="language">Preferred Language</Label>*/}
+        {/*  <LanguageSelector />*/}
+        {/*</div>*/}
+
         <div className="space-y-2">
           <Label htmlFor="accountType">Account Type *</Label>
-          <Select 
-            value={newUser.accountType || 'freelancer'} 
+          <Select
+            value={newUser.accountType || 'freelancer'}
             onValueChange={(value) => handleChangeAccountType(value)}
           >
             <SelectTrigger id="accountType">
@@ -56,64 +66,70 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ newUser, onUserChan
           </Select>
         </div>
       </div>
-      
-      {isBusinessAccount ? (
+
+      {isBusinessAccount && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <UserIcon className="h-4 w-4 text-gray-500" />
-              <Label htmlFor="adminName">Administrator Name</Label>
-            </div>
-            <Input 
-              id="adminName"
-              value={newUser.adminName || ''}
-              onChange={(e) => onUserChange({...newUser, adminName: e.target.value})}
-            />
-          </div>
+          {/*<div className="space-y-2">*/}
+          {/*  <div className="flex items-center gap-2">*/}
+          {/*    <UserIcon className="h-4 w-4 text-gray-500" />*/}
+          {/*    <Label htmlFor="adminName">Administrator Name</Label>*/}
+          {/*  </div>*/}
+          {/*  <Input*/}
+          {/*    id="adminName"*/}
+          {/*    value={newUser.adminName || ''}*/}
+          {/*    onChange={(e) =>*/}
+          {/*      onUserChange({*/}
+          {/*        ...newUser,*/}
+          {/*        adminName: e.target.value,*/}
+          {/*      })*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Briefcase className="h-4 w-4 text-gray-500" />
               <Label htmlFor="company">Company Name *</Label>
             </div>
-            <Input 
+            <Input
               id="company"
               value={newUser.companyName || ''}
-              onChange={(e) => onUserChange({...newUser, companyName: e.target.value})}
+              onChange={(e) =>
+                onUserChange({
+                  ...newUser,
+                  companyName: e.target.value,
+                })
+              }
             />
           </div>
         </div>
-      ) : (
+      ) }
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <UserIcon className="h-4 w-4 text-gray-500" />
             <Label htmlFor="name">Full Name *</Label>
           </div>
-          <Input 
+          <Input
             id="name"
             value={newUser.name}
-            onChange={(e) => onUserChange({...newUser, name: e.target.value})}
+            onChange={(e) => onUserChange({ ...newUser, name: e.target.value })}
           />
         </div>
-      )}
-      
+
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <FileType className="h-4 w-4 text-gray-500" />
           <Label htmlFor="nif">NIF (Tax ID) *</Label>
         </div>
-        <Input 
+        <Input
           id="nif"
           value={newUser.nif || ''}
-          onChange={(e) => onUserChange({...newUser, nif: e.target.value})}
+          onChange={(e) => onUserChange({ ...newUser, nif: e.target.value })}
         />
       </div>
-      
+
       <div className="space-y-2">
         <Label htmlFor="role">User Role *</Label>
-        <Select 
-          value={newUser.userType} 
-          onValueChange={handleChangeUserType}
-        >
+        <Select value={newUser.userType} onValueChange={handleChangeUserType}>
           <SelectTrigger id="role">
             <SelectValue placeholder="Select a role" />
           </SelectTrigger>

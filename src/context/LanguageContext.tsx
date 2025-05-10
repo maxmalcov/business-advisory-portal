@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 
 // Languages
 export type Language = 'es' | 'en';
@@ -44,11 +50,11 @@ const translations: Record<Language, Record<string, string>> = {
     'app.info': 'Information',
 
     // Regular
-    'pending': 'Pending',
-    'active': 'Active',
-    'inactive': 'Inactive',
-    'rejected': 'Rejected',
-    'close': 'Close',
+    pending: 'Pending',
+    active: 'Active',
+    inactive: 'Inactive',
+    rejected: 'Rejected',
+    close: 'Close',
 
     // Navigation
     'nav.dashboard': 'Dashboard',
@@ -77,13 +83,13 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.login_success': 'Logged in successfully',
     'auth.logout_success': 'Logged out successfully',
     'auth.register_success': 'Registered successfully',
-    
+
     // Dashboard
     'dashboard.welcome': 'Welcome to your dashboard',
     'dashboard.recent_activity': 'Recent Activity',
     'dashboard.stats': 'Statistics',
     'dashboard.quick_actions': 'Quick Actions',
-    
+
     // Invoices
     'invoices.title': 'Sale Invoices',
     'invoices.upload': 'Upload',
@@ -96,11 +102,12 @@ const translations: Record<Language, Record<string, string>> = {
     'invoices.max_size': 'Maximum file size per upload: 25MB',
     'invoices.max_files': 'Upload up to 15 files at once',
     'invoices.allowed_types': 'Allowed file types: PDF or JPG',
-    
+
     // Supplier Invoices
     'supplier_invoices.title': 'Supplier Invoices',
-    
+
     // HR & Payroll
+    'hr.employee': 'Employee',
     'hr.new_employee.title': 'Hiring New Employee',
     'hr.new_employee.company': 'Company Name',
     'hr.new_employee.dni': 'Employee DNI or TIE',
@@ -114,13 +121,13 @@ const translations: Record<Language, Record<string, string>> = {
     'hr.new_employee.address': 'Full Address',
     'hr.new_employee.email': 'Employee Email',
     'hr.new_employee.comments': 'Additional Comments',
-    
+
     'hr.termination.title': 'Employee Termination',
     'hr.termination.employee': 'Employee Name',
     'hr.termination.date': 'Termination Date',
     'hr.termination.vacation': 'Vacation Days Used',
     'hr.termination.reason': 'Reason for Termination',
-    
+
     'hr.work_hours.title': 'Monthly Work Hours',
     'hr.work_hours.salary': 'Monthly Bruto Salary',
     'hr.work_hours.notes': 'Notes',
@@ -129,11 +136,13 @@ const translations: Record<Language, Record<string, string>> = {
 
     'hr.index.title': 'HR & Payroll',
     'hr.index.description': 'Manage employees, work hours, and terminations',
-    'hr.index.new-employee.description': 'Start the onboarding process for new employees',
+    'hr.index.new-employee.description':
+      'Start the onboarding process for new employees',
     'hr.index.new-employee.button': 'Go to New Employee',
     'hr.index.termination.description': 'Manage employee termination processes',
     'hr.index.termination.button': 'Go to Termination',
-    'hr.index.work-hours.description': 'Track and manage employee working hours',
+    'hr.index.work-hours.description':
+      'Track and manage employee working hours',
     'hr.index.work-hours.button': 'Go to Work Hours',
     'hr.index.list.title': 'Employee List',
     'hr.index.search.placeholder': 'Search by name, position, or company...',
@@ -155,7 +164,8 @@ const translations: Record<Language, Record<string, string>> = {
     'hr.index.employee.edit.button': 'Edit',
     'hr.index.employee.error-loading': 'Error Loading Data',
     'hr.index.employee.no-employee.title': 'No Data Available',
-    'hr.index.employee.no-employee.description': 'Employee information could not be loaded.',
+    'hr.index.employee.no-employee.description':
+      'Employee information could not be loaded.',
     'hr.index.employee.details.basic-info.title': 'Basic Information',
     'hr.index.employee.details.basic-info.company': 'Company Name',
     'hr.index.employee.details.basic-info.status': 'Status',
@@ -173,11 +183,13 @@ const translations: Record<Language, Record<string, string>> = {
     'hr.index.employee.details.financial.salary.gross': '(Gross)',
     'hr.index.employee.details.financial.salary.net': '(Net)',
     'hr.index.employee.details.financial.salary.iban': 'IBAN',
-    'hr.index.employee.details.financial.salary.social-number': 'Social Security Number',
+    'hr.index.employee.details.financial.salary.social-number':
+      'Social Security Number',
     'hr.index.employee.details.contact': 'Contact Information',
     'hr.index.employee.details.contact.address': 'Address',
     'hr.index.employee.details.contact.email': 'Email',
-    'hr.index.employee.details.contact.not-found': 'No contact information available',
+    'hr.index.employee.details.contact.not-found':
+      'No contact information available',
     'hr.index.employee.schedule': 'Schedule',
     'hr.index.employee.schedule.weekly': 'Weekly Working Schedule',
     'hr.index.employee.schedule.not-found': 'No schedule information available',
@@ -198,11 +210,15 @@ const translations: Record<Language, Record<string, string>> = {
     'hr.index.employee.detail-from.date.end': 'End Date',
     'hr.index.employee.detail-from.schedule': 'Schedule',
     'hr.index.employee.detail-from.weekly': 'Weekly Working Schedule',
-    'hr.index.employee.detail-from.weekly.span': 'Please enter the full weekly schedule',
-    'hr.index.employee.detail-from.schedule.placeholder': 'E.g., Monday-Friday: 9:00-17:00, Saturday: 9:00-13:00',
+    'hr.index.employee.detail-from.weekly.span':
+      'Please enter the full weekly schedule',
+    'hr.index.employee.detail-from.schedule.placeholder':
+      'E.g., Monday-Friday: 9:00-17:00, Saturday: 9:00-13:00',
     'hr.index.employee.detail-from.schedule.examples': 'Examples:',
-    'hr.index.employee.detail-from.schedule.examples.1': 'Monday-Friday: 9:00-17:00',
-    'hr.index.employee.detail-from.schedule.examples.2': 'Mon, Wed, Fri: 8:00-15:00 / Tue, Thu: 12:00-20:00',
+    'hr.index.employee.detail-from.schedule.examples.1':
+      'Monday-Friday: 9:00-17:00',
+    'hr.index.employee.detail-from.schedule.examples.2':
+      'Mon, Wed, Fri: 8:00-15:00 / Tue, Thu: 12:00-20:00',
     'hr.index.employee.detail-from.schedule.examples.3': '',
     'hr.index.employee.detail-from.button.cancel': 'Cancel',
     'hr.index.employee.detail-from.button.saving': 'Saving...',
@@ -227,7 +243,7 @@ const translations: Record<Language, Record<string, string>> = {
     'registration.country': 'Country',
     'registration.email': 'Email',
     'registration.phone': 'Phone',
-    
+
     // Admin
     'admin.dashboard': 'Admin Dashboard',
     'admin.logs': 'Log History',
@@ -245,59 +261,67 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Useful Links
     'useful-links.search.placeholder': 'Search for resources...',
-    'useful-links.error-loading': 'Error loading resources. Please try again later.',
+    'useful-links.error-loading':
+      'Error loading resources. Please try again later.',
     'useful-links.table.all': 'All',
     'useful-links.table.social-security': 'Social Security',
     'useful-links.table.no-resources': 'No resources match your search.',
     'useful-links.table.no-available-resources': 'No resources available yet.',
     'useful-links.table.open-link': 'Open link',
     'useful-links.title': 'Useful Links',
-    'useful-links.description': 'Manage and organize useful links for platform users',
-    'useful-links.user.description': 'Access important websites and resources you might need for your business operations.',
+    'useful-links.description':
+      'Manage and organize useful links for platform users',
+    'useful-links.user.description':
+      'Access important websites and resources you might need for your business operations.',
     'useful-links.add-link': 'Add New Link',
-    'useful-links.no-links-available': 'No links available. Click "Add New Link" to create your first resource.',
+    'useful-links.no-links-available':
+      'No links available. Click "Add New Link" to create your first resource.',
     'useful-links.table.title': 'Title',
     'useful-links.table.category': 'Category',
     'useful-links.table.icon': 'Icon',
     'useful-links.table.order': 'Display Order',
     'useful-links.table.actions': 'Actions',
-    'useful-links.dialog.description': 'Add a useful link that will be displayed on the Useful Links page.',
+    'useful-links.dialog.description':
+      'Add a useful link that will be displayed on the Useful Links page.',
     'useful-links.dialog.add-new.title': 'Add New Link',
     'useful-links.dialog.update.title': 'Update Link',
     'useful-links.dialog.add.title': 'Add Link',
     'useful-links.dialog.form.title': 'Title',
     'useful-links.dialog.form.description': 'Description',
-    'useful-links.dialog.form.description.brief': 'A brief description of what this link provides.',
+    'useful-links.dialog.form.description.brief':
+      'A brief description of what this link provides.',
     'useful-links.dialog.form.category': 'Category',
     'useful-links.dialog.form.category.placeholder': 'Select a category',
     'useful-links.dialog.form.icon': 'Icon',
     'useful-links.dialog.form.icon.placeholder': 'Select an icon',
-    'useful-links.dialog.form.icon.description': 'Choose an icon that best represents this resource.',
+    'useful-links.dialog.form.icon.description':
+      'Choose an icon that best represents this resource.',
     'useful-links.dialog.form.display-order': 'Display Order',
-    'useful-links.dialog.form.display-order.description': 'Lower numbers will appear first in the list.',
-    'Taxes':'Taxes',
-    'Legal':'Legal',
-    'Social Security':'Social Security',
-    'Employment':'Employment',
-    'Business':'Business',
-    'Banking':'Banking',
-    'Health':'Health',
-    'Education':'Education',
-    'General':'General',
-    'Building':'Building',
-    'Shield':'Shield',
-    'Briefcase':'Briefcase',
-    'Users':'Users',
-    'Document':'Document',
-    'Website':'Website',
-    'Phone':'Phone',
-    'Email':'Email',
-    'Calendar':'Calendar',
-    'Payment':'Payment',
-    'Book':'Book',
-    'Location':'Location',
-    'Government':'Government',
-    'Help':'Help',
+    'useful-links.dialog.form.display-order.description':
+      'Lower numbers will appear first in the list.',
+    Taxes: 'Taxes',
+    Legal: 'Legal',
+    'Social Security': 'Social Security',
+    Employment: 'Employment',
+    Business: 'Business',
+    Banking: 'Banking',
+    Health: 'Health',
+    Education: 'Education',
+    General: 'General',
+    Building: 'Building',
+    Shield: 'Shield',
+    Briefcase: 'Briefcase',
+    Users: 'Users',
+    Document: 'Document',
+    Website: 'Website',
+    Phone: 'Phone',
+    Email: 'Email',
+    Calendar: 'Calendar',
+    Payment: 'Payment',
+    Book: 'Book',
+    Location: 'Location',
+    Government: 'Government',
+    Help: 'Help',
     // P.S. thanks fucking AI:)
 
     // Services
@@ -315,7 +339,8 @@ const translations: Record<Language, Record<string, string>> = {
     'services.created': 'Created',
     'services.actions': 'Actions',
     'services.additional_services': 'Additional Services',
-    'services.additional_services.desc': 'Explore our premium services designed to help your business thrive',
+    'services.additional_services.desc':
+      'Explore our premium services designed to help your business thrive',
     'services.search.placeholder': 'Search services...',
     'services.no-available': 'No services available at the moment',
     'services.details': 'Service Details',
@@ -357,12 +382,14 @@ const translations: Record<Language, Record<string, string>> = {
     'service.deleted': 'Service deleted',
     'service.description': 'The service has been successfully removed',
     'service.alert.title': 'Are you sure?',
-    'service.alert.description': 'This action cannot be undone. This will permanently delete the service from the system.',
+    'service.alert.description':
+      'This action cannot be undone. This will permanently delete the service from the system.',
     'service.alert.cancel': 'Cancel',
     'service.alert.delete': 'Delete',
     'service.edit': 'Edit',
     'service.detail.title': 'Service Request Details',
-    'service.detail.description': 'View and manage the details of this service request',
+    'service.detail.description':
+      'View and manage the details of this service request',
     'service.detail.client': 'Client:',
     'service.detail.service': 'Service:',
     'service.detail.date': 'Request Date:',
@@ -370,7 +397,8 @@ const translations: Record<Language, Record<string, string>> = {
     'service.detail.last-update': 'Last Updated:',
     'service.detail.req-id': 'Request ID:',
     'service.detail.admin-notes': 'Admin Notes:',
-    'service.detail.add-note.placeholder': 'Add internal notes about this request...',
+    'service.detail.add-note.placeholder':
+      'Add internal notes about this request...',
     'service.detail.cancel': 'Cancel',
     'service.detail.save-notes': 'Save Notes',
     'service.requests.title': 'Service Requests',
@@ -393,15 +421,19 @@ const translations: Record<Language, Record<string, string>> = {
     'service.table.reject': 'Reject',
     'service.table.reset': 'Reset',
     'service.notes.toast.title': 'Notes saved',
-    'service.notes.toast.description': 'Admin notes have been successfully saved.',
+    'service.notes.toast.description':
+      'Admin notes have been successfully saved.',
     'service.request.toast.title': 'Status updated',
     'service.request.toast.description': 'Request status has been updated',
     'service.request.auth-require.title': 'Authentication Required',
-    'service.request.auth-require.description': 'Please login to request services.',
+    'service.request.auth-require.description':
+      'Please login to request services.',
     'service.request.auth-failed.title': 'Request Failed',
-    'service.request.auth-failed.description': 'There was a problem submitting your service request. Please try again.',
+    'service.request.auth-failed.description':
+      'There was a problem submitting your service request. Please try again.',
     'service.request.success.title': 'Service Requested',
-    'service.request.success.description': 'Your request has been submitted. The admin has been notified.',
+    'service.request.success.description':
+      'Your request has been submitted. The admin has been notified.',
     'service.request.not-found': 'No service requests found.',
     'service.request.loading': 'Loading requests...',
 
@@ -414,18 +446,22 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Email settings
     'settings.title': 'Email Settings',
-    'settings.description': 'Configure notification settings for different services',
+    'settings.description':
+      'Configure notification settings for different services',
     'settings.loading': 'Loading settings...',
     'settings.hr_payroll': 'HR & Payroll Notification Email',
     'settings.subscriptions': 'Subscriptions Notification Email',
     'settings.services': 'Additional Services Notification Email',
     'settings.save': 'Save',
     'settings.toast.success.title': 'Settings Updated',
-    'settings.toast.success.description': 'Email notification settings have been saved successfully.',
+    'settings.toast.success.description':
+      'Email notification settings have been saved successfully.',
     'settings.toast.failed.title': 'Update Failed',
-    'settings.toast.failed.description': 'There was a problem updating the notification settings.',
+    'settings.toast.failed.description':
+      'There was a problem updating the notification settings.',
 
     // Subscriptions
+    subscription: 'Subscription',
     'subscriptions.title': 'Available Subscriptions',
     'subscriptions.request': 'Request Service',
     'subscriptions.demo': 'Watch Demo',
@@ -437,10 +473,13 @@ const translations: Record<Language, Record<string, string>> = {
     'subscriptions.admin.add-new': 'Add New Subscription Type',
     'subscriptions.admin.title': 'Subscription Catalog',
     'subscriptions.admin.description': 'Manage available subscription types',
-    'subscriptions.admin.no-subscriptions': 'No subscription types found. Add your first subscription type!',
+    'subscriptions.admin.no-subscriptions':
+      'No subscription types found. Add your first subscription type!',
     'subscriptions.admin.toast.error': 'Error',
-    'subscriptions.admin.toast.error.description': 'Failed to create subscription type.',
-    'subscriptions.admin.toast.error-edit.description': 'Failed to edit subscription type.',
+    'subscriptions.admin.toast.error.description':
+      'Failed to create subscription type.',
+    'subscriptions.admin.toast.error-edit.description':
+      'Failed to edit subscription type.',
     'subscriptions.admin.edit-type': 'Edit Subscription Type',
     'subscriptions.admin.edit-button': 'Edit Subscription Type',
     'subscriptions.admin.add-new-type': 'Add New Subscription Type',
@@ -455,21 +494,29 @@ const translations: Record<Language, Record<string, string>> = {
     'subscriptions.admin.table.actions': 'Actions',
     'subscriptions.admin.table.edit': 'Edit',
     'subscriptions.admin.created': 'Subscription Type Created',
-    'subscriptions.admin.created.description': 'Successfully created subscription type.',
+    'subscriptions.admin.created.description':
+      'Successfully created subscription type.',
     'subscriptions.admin.created-edit': 'Subscription Type Edited',
-    'subscriptions.admin.created.description-edit': 'Successfully edited subscription type.',
+    'subscriptions.admin.created.description-edit':
+      'Successfully edited subscription type.',
     'subscriptions.admin.delete.toast.title': 'Subscription type deleted',
-    'subscriptions.admin.delete.toast.description': 'The subscription type has been successfully removed',
+    'subscriptions.admin.delete.toast.description':
+      'The subscription type has been successfully removed',
     'subscriptions.admin.form.name': 'Name',
     'subscriptions.admin.form.name.placeholder': 'Time Tracking',
-    'subscriptions.admin.form.name.help': 'Display name for this subscription type',
+    'subscriptions.admin.form.name.help':
+      'Display name for this subscription type',
     'subscriptions.admin.form.description': 'Description',
-    'subscriptions.admin.form.description.placeholder': 'Track and manage your work hours',
-    'subscriptions.admin.form.description.help': 'A brief description of what this subscription provides',
+    'subscriptions.admin.form.description.placeholder':
+      'Track and manage your work hours',
+    'subscriptions.admin.form.description.help':
+      'A brief description of what this subscription provides',
     'subscriptions.admin.form.type': 'Type (Slug)',
     'subscriptions.admin.form.type.placeholder': 'timetracking',
-    'subscriptions.admin.form.type.help': 'Internal identifier (lowercase letters, numbers, and hyphens only)',
-    'subscriptions.admin.form.icon.description': 'Choose an icon to represent this subscription type',
+    'subscriptions.admin.form.type.help':
+      'Internal identifier (lowercase letters, numbers, and hyphens only)',
+    'subscriptions.admin.form.icon.description':
+      'Choose an icon to represent this subscription type',
     'subscriptions.admin.form.icon.label.web-app': 'Web App',
     'subscriptions.admin.form.icon.label.calendar': 'Calendar',
     'subscriptions.admin.form.icon.label.crm': 'CRM',
@@ -477,34 +524,47 @@ const translations: Record<Language, Record<string, string>> = {
     'subscriptions.admin.remove.button.cancel': 'Cancel',
     'subscriptions.admin.remove.button.delete': 'Delete',
     'subscriptions.admin.remove.areyousure': 'Are you sure?',
-    'subscriptions.admin.remove.warning': 'This action cannot be undone. This will permanently delete this subscription type\n' +
-        'and may affect users who have active subscriptions of this type.',
+    'subscriptions.admin.remove.warning':
+      'This action cannot be undone. This will permanently delete this subscription type\n' +
+      'and may affect users who have active subscriptions of this type.',
     'subscriptions.requests.not-found': 'No subscription requests found.',
     'subscriptions.requests.card.title': 'Subscription Requests',
     'subscriptions.requests.title': 'Subscription Requests',
     'subscriptions.requests.subtitle': 'Manage user subscription requests',
-    'subscriptions.requests.description': 'Manage access requests and active client subscriptions',
+    'subscriptions.requests.description':
+      'Manage access requests and active client subscriptions',
     'subscriptions.requests.toast.success.title': 'Access Requested',
-    'subscriptions.requests.toast.success.description': 'Your request has been sent to the administrator.',
+    'subscriptions.requests.toast.success.description':
+      'Your request has been sent to the administrator.',
     'subscriptions.requests.toast.failed.title': 'Request Failed',
-    'subscriptions.requests.toast.failed.description': 'There was a problem submitting your request. Please try again.',
+    'subscriptions.requests.toast.failed.description':
+      'There was a problem submitting your request. Please try again.',
     'subscriptions.dialog.confirm-submit.title': 'Request Access to ',
-    'subscriptions.dialog.confirm-submit.description': 'This will send a notification to the administrator to review your request.\n' +
-        '            You will be notified once your request has been processed.',
+    'subscriptions.dialog.confirm-submit.description':
+      'This will send a notification to the administrator to review your request.\n' +
+      '            You will be notified once your request has been processed.',
     'subscriptions.dialog.confirm-submit.button': 'Submit Request',
     'subscriptions.dialog.confirm-submit.cancel': 'Cancel',
     'subscription.iframe.required.title': 'Subscription Required',
-    'subscription.iframe.required.pending': 'Your access request is pending approval.',
-    'subscription.iframe.required.rejected': 'Your access request has been rejected. Please contact support for more information.',
-    'subscription.iframe.required.inactive': 'You need to subscribe to access this tool.',
+    'subscription.iframe.required.pending':
+      'Your access request is pending approval.',
+    'subscription.iframe.required.rejected':
+      'Your access request has been rejected. Please contact support for more information.',
+    'subscription.iframe.required.inactive':
+      'You need to subscribe to access this tool.',
     'subscription.iframe.request-access.button': 'Request Access',
-    'subscription.admin.message.description.active': 'Subscription activated successfully',
-    'subscription.admin.message.description.inactive': 'Subscription stopped successfully',
-    'subscription.admin.message.description.reject': 'Subscription rejected successfully',
-    'subscription.admin.message.description.pending': 'Subscription status updated to pending',
+    'subscription.admin.message.description.active':
+      'Subscription activated successfully',
+    'subscription.admin.message.description.inactive':
+      'Subscription stopped successfully',
+    'subscription.admin.message.description.reject':
+      'Subscription rejected successfully',
+    'subscription.admin.message.description.pending':
+      'Subscription status updated to pending',
     'subscription.admin.message.title': 'Status Updated',
     'subscription.admin.error': 'Error',
-    'subscription.admin.error.description': 'Failed to update subscription status. Please try again.',
+    'subscription.admin.error.description':
+      'Failed to update subscription status. Please try again.',
     'subscription.admin.form.date': 'Pick a date',
     'subscription.admin.form.date-start': 'Start Date',
     'subscription.admin.form.date-end': 'End Date (Optional)',
@@ -512,17 +572,22 @@ const translations: Record<Language, Record<string, string>> = {
     'subscription.admin.assign-new': 'Assign a New Subscription',
     'subscription.admin.assign-new.button': 'Assign Subscription',
     'subscription.admin.toast.success.title': 'Success',
-    'subscription.admin.toast.success.description': 'Subscription has been assigned successfully',
+    'subscription.admin.toast.success.description':
+      'Subscription has been assigned successfully',
     'subscription.admin.toast.failed.title': 'Error',
-    'subscription.admin.toast.failed.description': 'Failed to assign subscription. Please try again.',
+    'subscription.admin.toast.failed.description':
+      'Failed to assign subscription. Please try again.',
     'subscription.admin.buttons.stop': 'Stop',
-    'subscription.admin.buttons.stop.prompt': 'Stop this subscription and disable access',
+    'subscription.admin.buttons.stop.prompt':
+      'Stop this subscription and disable access',
     'subscription.admin.buttons.edit': 'Edit',
     'subscription.admin.buttons.edit.prompt': 'Edit subscription details',
     'subscription.admin.buttons.approve': 'Approve',
-    'subscription.admin.buttons.approve.prompt': 'Approve this subscription request',
+    'subscription.admin.buttons.approve.prompt':
+      'Approve this subscription request',
     'subscription.admin.buttons.reject': 'Reject',
-    'subscription.admin.buttons.reject.prompt': 'Reject this subscription request',
+    'subscription.admin.buttons.reject.prompt':
+      'Reject this subscription request',
     'subscription.admin.table.name': 'Name',
     'subscription.admin.table.type': 'Type',
     'subscription.admin.table.user': 'User',
@@ -531,20 +596,22 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Common pages
     'page.under_construction': 'This page is under construction',
-    
+
     // Contracts & Documents
     'contracts.title': 'Contracts Management',
     'contracts.description': 'View and manage your business contracts',
     'documents.title': 'Document Management',
     'documents.description': 'Access and manage your important documents',
-    
+
     // Reports
     'reports.title': 'Reports & Analytics',
-    'reports.description': 'View detailed reports about your business activities',
+    'reports.description':
+      'View detailed reports about your business activities',
 
     // Logs
     'logs.history.title': 'System Log History',
-    'logs.history.description': 'Track and monitor all system activities and events',
+    'logs.history.description':
+      'Track and monitor all system activities and events',
 
     'logs.type': 'Type',
     'logs.action': 'Action',
@@ -561,11 +628,14 @@ const translations: Record<Language, Record<string, string>> = {
     'logs.invoice': 'Invoice',
 
     'invoices.toast.no-files.title': 'No files processed',
-    'invoices.toast.no-files.description': 'Please wait for files to finish uploading.',
+    'invoices.toast.no-files.description':
+      'Please wait for files to finish uploading.',
     'invoices.toast.email-error.title': 'Email Failed',
-    'invoices.toast.email-error.description': 'An error occurred while sending the email.',
+    'invoices.toast.email-error.description':
+      'An error occurred while sending the email.',
     'invoices.toast.file-limit.title': 'File limit reached',
-    'invoices.toast.file-limit.description': 'You can upload a maximum of 15 files.',
+    'invoices.toast.file-limit.description':
+      'You can upload a maximum of 15 files.',
     'invoices.sale.title': 'Upload and manage your sales invoices',
     'invoices.type.sale': 'sale',
     'invoices.type.supplier': 'supplier',
@@ -573,7 +643,8 @@ const translations: Record<Language, Record<string, string>> = {
     'invoices.guidelines.maxfiles': 'Maximum | files at once',
     'invoices.guidelines.accepted-formats': 'Accepted formats: |',
     'invoices.guidelines.email-to': 'Email notifications will be sent to: |',
-    'invoices.guidelines.email-warning': 'Warning: No | invoice email configured in your profile',
+    'invoices.guidelines.email-warning':
+      'Warning: No | invoice email configured in your profile',
     'invoices.drop-area.title': 'Drop your files here',
     'invoices.drop-area.click': 'or click to browse from your computer',
     'invoices.drop-area.select-files': 'Select Files',
@@ -592,14 +663,18 @@ const translations: Record<Language, Record<string, string>> = {
     'invoices.search.table.mobile.type': 'Type:',
     'invoices.search.table.mobile.download': 'Download',
     'invoices.search.table.mobile.view': 'View',
+
+    'toast.admin.new-user.title': 'Conflict',
+    'toast.admin.new-user.description': 'User already exists',
   },
-  
-  es: {
-  }
+
+  es: {},
 };
 
 // Provider component
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [language, setLanguageState] = useState<Language>('en');
 
   // Load language preference from localStorage on mount

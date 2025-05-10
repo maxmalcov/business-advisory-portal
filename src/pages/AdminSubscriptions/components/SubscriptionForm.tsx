@@ -1,9 +1,12 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
-import { SubscriptionFormProps, formSchema, FormValues } from './types/FormTypes';
+import {
+  SubscriptionFormProps,
+  formSchema,
+  FormValues,
+} from './types/FormTypes';
 import { Subscription } from '../types';
 import NameField from './form-fields/NameField';
 import TypeField from './form-fields/TypeField';
@@ -12,28 +15,30 @@ import StatusField from './form-fields/StatusField';
 import UrlFields from './form-fields/UrlFields';
 import FormActions from './form-fields/FormActions';
 
-const SubscriptionForm: React.FC<SubscriptionFormProps> = ({ 
-  subscription, 
-  onSubmit, 
-  onCancel 
+const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
+  subscription,
+  onSubmit,
+  onCancel,
 }) => {
-  const defaultValues: FormValues = subscription ? {
-    name: subscription.name,
-    type: subscription.type,
-    userName: subscription.userName,
-    userId: subscription.userId,
-    status: subscription.status,
-    url: subscription.url,
-    demoVideoUrl: subscription.demoVideoUrl || '',
-  } : {
-    name: '',
-    type: 'iframe',
-    userName: '',
-    userId: '',
-    status: 'pending',
-    url: '',
-    demoVideoUrl: '',
-  };
+  const defaultValues: FormValues = subscription
+    ? {
+        name: subscription.name,
+        type: subscription.type,
+        userName: subscription.userName,
+        userId: subscription.userId,
+        status: subscription.status,
+        url: subscription.url,
+        demoVideoUrl: subscription.demoVideoUrl || '',
+      }
+    : {
+        name: '',
+        type: 'iframe',
+        userName: '',
+        userId: '',
+        status: 'pending',
+        url: '',
+        demoVideoUrl: '',
+      };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -56,7 +61,7 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
       clientCanRequestAgain: subscription?.clientCanRequestAgain || false,
       lastRequestDate: subscription?.lastRequestDate || undefined,
     };
-    
+
     onSubmit(subscriptionData);
   };
 
@@ -70,9 +75,9 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
         <UserInfoFields form={form} />
         <StatusField form={form} />
         <UrlFields form={form} />
-        <FormActions 
-          subscription={subscription} 
-          onCancel={onCancel} 
+        <FormActions
+          subscription={subscription}
+          onCancel={onCancel}
           isSubmitting={isSubmitting}
         />
       </form>

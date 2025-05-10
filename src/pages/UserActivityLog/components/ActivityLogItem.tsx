@@ -1,9 +1,20 @@
-
 import React from 'react';
-import { ActivityEvent, formatTimestamp, getActivityIcon } from '@/utils/activity';
+import {
+  ActivityEvent,
+  formatTimestamp,
+  getActivityIcon,
+} from '@/utils/activity';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, FileText, Bell, CheckCircle, Package, UserPlus, UserMinus } from 'lucide-react';
-import { 
+import {
+  Users,
+  FileText,
+  Bell,
+  CheckCircle,
+  Package,
+  UserPlus,
+  UserMinus,
+} from 'lucide-react';
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -22,13 +33,14 @@ const iconComponents = {
   CheckCircle,
   Package,
   UserPlus,
-  UserMinus
+  UserMinus,
 };
 
 const ActivityIcon: React.FC<{ type: string }> = ({ type }) => {
   const iconName = getActivityIcon(type as any);
-  const IconComponent = iconComponents[iconName as keyof typeof iconComponents] || Bell;
-  
+  const IconComponent =
+    iconComponents[iconName as keyof typeof iconComponents] || Bell;
+
   return (
     <div className="bg-muted p-2 rounded-full">
       <IconComponent className="h-5 w-5" />
@@ -41,14 +53,14 @@ const ActivityLogItem: React.FC<ActivityLogItemProps> = ({ activity }) => {
   const formatDescription = (description: string) => {
     // Check if the description contains quotes (likely indicating a file name)
     const fileNameMatch = description.match(/"([^"]+)"/);
-    
+
     if (fileNameMatch && fileNameMatch[1]) {
       const fileName = fileNameMatch[1];
-      
+
       if (needsTruncation(fileName)) {
         const truncatedName = truncateFileName(fileName);
         const parts = description.split(`"${fileName}"`);
-        
+
         return (
           <>
             {parts[0]}
@@ -67,7 +79,7 @@ const ActivityLogItem: React.FC<ActivityLogItemProps> = ({ activity }) => {
         );
       }
     }
-    
+
     return description;
   };
 

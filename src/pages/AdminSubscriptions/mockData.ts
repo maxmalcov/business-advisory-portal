@@ -1,4 +1,3 @@
-
 import { Subscription } from './types';
 
 export const initialSubscriptions: Subscription[] = [
@@ -57,5 +56,5 @@ export const initialSubscriptions: Subscription[] = [
     stoppedByAdmin: true,
     clientCanRequestAgain: true,
     lastRequestDate: '2023-02-20T14:05:00Z',
-  }
+  },
 ];

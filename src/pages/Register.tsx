@@ -1,16 +1,29 @@
-import React, {useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import {AccountType, useAuth} from '@/context/AuthContext';
-import {useLanguage} from '@/context/LanguageContext';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {Label} from '@/components/ui/label';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
-import {useToast} from '@/hooks/use-toast';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AccountType, useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import LanguageSelector from '@/components/LanguageSelector';
-import {log} from "@/utils/logs/log.funciton.ts";
-import {LogCategory} from "@/pages/AdminLogs/types.ts";
+import { log } from '@/utils/logs/log.funciton.ts';
+import { LogCategory } from '@/pages/AdminLogs/types.ts';
 
 const Register: React.FC = () => {
   const { register } = useAuth();
@@ -40,18 +53,18 @@ const Register: React.FC = () => {
   // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle select changes
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!formData.email || !formData.password) {
       toast({
@@ -61,7 +74,7 @@ const Register: React.FC = () => {
       });
       return;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast({
         variant: 'destructive',
@@ -72,13 +85,19 @@ const Register: React.FC = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
       await register({
         ...formData,
         userType: 'client',
       });
-      log({ action: "User registration", description: `New user registered: ${formData.email}`, category: LogCategory.USER, user: formData.email, level: 'info'})
+      log({
+        action: 'User registration',
+        description: `New user registered: ${formData.email}`,
+        category: LogCategory.USER,
+        user: formData.email,
+        level: 'info',
+      });
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
@@ -89,14 +108,18 @@ const Register: React.FC = () => {
   };
 
   // Check if we're dealing with a business account type
-  const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(formData.accountType);
+  const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(
+    formData.accountType,
+  );
 
   return (
     <div className="flex items-center justify-center py-10">
       <Card className="w-full max-w-2xl">
         <CardHeader>
           <CardTitle>{t('registration.title')}</CardTitle>
-          <CardDescription>Create a new Business Advisory account</CardDescription>
+          <CardDescription>
+            Create a new Business Advisory account
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
@@ -108,18 +131,28 @@ const Register: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="accountType">{t('registration.type')}</Label>
-                <Select 
-                  value={formData.accountType} 
-                  onValueChange={(value) => handleSelectChange('accountType', value)}
+                <Select
+                  value={formData.accountType}
+                  onValueChange={(value) =>
+                    handleSelectChange('accountType', value)
+                  }
                 >
                   <SelectTrigger id="accountType">
                     <SelectValue placeholder={t('registration.type')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="freelancer">{t('registration.type.freelancer')}</SelectItem>
-                    <SelectItem value="sl">{t('registration.type.sl')}</SelectItem>
-                    <SelectItem value="sa">{t('registration.type.sa')}</SelectItem>
-                    <SelectItem value="individual">{t('registration.type.individual')}</SelectItem>
+                    <SelectItem value="freelancer">
+                      {t('registration.type.freelancer')}
+                    </SelectItem>
+                    <SelectItem value="sl">
+                      {t('registration.type.sl')}
+                    </SelectItem>
+                    <SelectItem value="sa">
+                      {t('registration.type.sa')}
+                    </SelectItem>
+                    <SelectItem value="individual">
+                      {t('registration.type.individual')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -129,7 +162,12 @@ const Register: React.FC = () => {
             {isBusinessAccount ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="adminName">{t('registration.admin_name')} <span className="text-sm text-muted-foreground">(Optional)</span></Label>
+                  <Label htmlFor="adminName">
+                    {t('registration.admin_name')}{' '}
+                    <span className="text-sm text-muted-foreground">
+                      (Optional)
+                    </span>
+                  </Label>
                   <Input
                     id="adminName"
                     name="adminName"
@@ -138,7 +176,9 @@ const Register: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="companyName">{t('registration.company')} *</Label>
+                  <Label htmlFor="companyName">
+                    {t('registration.company')} *
+                  </Label>
                   <Input
                     id="companyName"
                     name="companyName"
@@ -268,7 +308,9 @@ const Register: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm {t('auth.password')} *</Label>
+                <Label htmlFor="confirmPassword">
+                  Confirm {t('auth.password')} *
+                </Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -280,12 +322,12 @@ const Register: React.FC = () => {
               </div>
             </div>
           </CardContent>
-          
+
           <CardFooter className="flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? t('app.loading') : t('app.register')}
             </Button>
-            
+
             <div className="text-center text-sm">
               Already have an account?{' '}
               <Link to="/login" className="text-primary hover:underline">

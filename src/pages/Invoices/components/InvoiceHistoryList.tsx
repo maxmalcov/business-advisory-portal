@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useInvoiceHistory } from '../hooks/useInvoiceHistory';
@@ -21,8 +20,8 @@ interface InvoiceHistoryListProps {
   defaultType?: 'all' | 'sale' | 'supplier';
 }
 
-const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({ 
-  defaultType = 'all' 
+const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({
+  defaultType = 'all',
 }) => {
   const { user } = useAuth();
   const {
@@ -33,7 +32,7 @@ const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({
     filterType,
     setFilterType,
     handleViewInvoice,
-    handleDownloadInvoice
+    handleDownloadInvoice,
   } = useInvoiceHistory(defaultType);
 
   if (!user) return null;
@@ -46,7 +45,7 @@ const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({
         filterType={filterType}
         setFilterType={setFilterType}
       />
-      
+
       {invoices.length > 0 ? (
         <InvoiceHistoryTable
           isLoading={isLoading}
@@ -55,7 +54,7 @@ const InvoiceHistoryList: React.FC<InvoiceHistoryListProps> = ({
           onDownloadInvoice={handleDownloadInvoice}
         />
       ) : (
-        <InvoiceHistoryEmptyState 
+        <InvoiceHistoryEmptyState
           searchQuery={searchQuery}
           filterType={filterType}
         />

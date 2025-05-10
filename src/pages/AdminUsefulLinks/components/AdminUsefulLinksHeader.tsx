@@ -1,15 +1,16 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Link2 } from 'lucide-react';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface AdminUsefulLinksHeaderProps {
   onAddNew: () => void;
 }
 
-const AdminUsefulLinksHeader: React.FC<AdminUsefulLinksHeaderProps> = ({ onAddNew }) => {
-  const {t} = useLanguage()
+const AdminUsefulLinksHeader: React.FC<AdminUsefulLinksHeaderProps> = ({
+  onAddNew,
+}) => {
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-6">
@@ -19,7 +20,9 @@ const AdminUsefulLinksHeader: React.FC<AdminUsefulLinksHeaderProps> = ({ onAddNe
             <Link2 className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">{t('useful-links.title')}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              {t('useful-links.title')}
+            </h1>
             <p className="text-muted-foreground mt-1">
               {t('useful-links.description')}
             </p>

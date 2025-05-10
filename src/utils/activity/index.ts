@@ -1,4 +1,3 @@
-
 export * from './types';
 export * from './iconUtils';
 export * from './mockActivity';

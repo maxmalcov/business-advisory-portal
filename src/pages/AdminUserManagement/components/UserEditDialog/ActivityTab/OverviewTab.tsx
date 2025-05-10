@@ -1,11 +1,17 @@
-
 import React from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Package, FileText, Calendar, Clock, RefreshCw } from 'lucide-react';
+import {
+  User,
+  Package,
+  FileText,
+  Calendar,
+  Clock,
+  RefreshCw,
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { UserActivityData } from '../../../hooks/useUserActivity';
-import SubscriptionOverview from './SubscriptionOverview';
+// import SubscriptionOverview from './SubscriptionOverview';
 
 export interface OverviewTabProps {
   data: UserActivityData;
@@ -31,12 +37,16 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
             <div className="flex items-center text-sm">
               <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
               <span className="text-muted-foreground">Registration Date:</span>
-              <span className="ml-2 font-medium">{formatDate(data.registrationInfo.registrationDate)}</span>
+              <span className="ml-2 font-medium">
+                {formatDate(data.registrationInfo.registrationDate)}
+              </span>
             </div>
             <div className="flex items-center text-sm">
               <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
               <span className="text-muted-foreground">Registration Time:</span>
-              <span className="ml-2 font-medium">{format(data.registrationInfo.registrationDate, 'p')}</span>
+              <span className="ml-2 font-medium">
+                {format(data.registrationInfo.registrationDate, 'p')}
+              </span>
             </div>
           </div>
         </CardContent>
@@ -53,20 +63,30 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
         <CardContent>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Total Services:</span>
+              <span className="text-sm text-muted-foreground">
+                Total Services:
+              </span>
               <span className="font-medium">{data.services.length}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Completed:</span>
-              <span className="font-medium">{data.services.filter(s => s.status === 'completed').length}</span>
+              <span className="font-medium">
+                {data.services.filter((s) => s.status === 'completed').length}
+              </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">In Progress:</span>
-              <span className="font-medium">{data.services.filter(s => s.status === 'in-progress').length}</span>
+              <span className="text-sm text-muted-foreground">
+                Pending:
+              </span>
+              <span className="font-medium">
+                {data.services.filter((s) => s.status === 'pending').length}
+              </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Cancelled:</span>
-              <span className="font-medium">{data.services.filter(s => s.status === 'cancelled').length}</span>
+              <span className="text-sm text-muted-foreground">Rejected:</span>
+              <span className="font-medium">
+                {data.services.filter((s) => s.status === 'rejected').length}
+              </span>
             </div>
           </div>
         </CardContent>
@@ -77,11 +97,34 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
         <CardHeader className="pb-2">
           <CardTitle className="text-lg flex items-center">
             <RefreshCw className="h-5 w-5 mr-2 text-primary" />
-            Active Subscriptions
+            Active Subscriptions:
           </CardTitle>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-muted-foreground">Total:</span>
+            <span className="font-medium">
+                {data.subscriptions.total}
+              </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-muted-foreground">Active:</span>
+            <span className="font-medium">
+                {data.subscriptions.active}
+              </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-muted-foreground">Pending:</span>
+            <span className="font-medium">
+                {data.subscriptions.pending}
+              </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-muted-foreground">Rejected:</span>
+            <span className="font-medium">
+                {data.subscriptions.rejected}
+              </span>
+          </div>
         </CardHeader>
         <CardContent>
-          <SubscriptionOverview subscriptions={data.subscriptions.active} />
         </CardContent>
       </Card>
 
@@ -96,16 +139,24 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
         <CardContent>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Total Invoices:</span>
+              <span className="text-sm text-muted-foreground">
+                Total Invoices:
+              </span>
               <span className="font-medium">{data.invoices.totalCount}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Sale Invoices:</span>
+              <span className="text-sm text-muted-foreground">
+                Sale Invoices:
+              </span>
               <span className="font-medium">{data.invoices.saleInvoices}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Supplier Invoices:</span>
-              <span className="font-medium">{data.invoices.supplierInvoices}</span>
+              <span className="text-sm text-muted-foreground">
+                Supplier Invoices:
+              </span>
+              <span className="font-medium">
+                {data.invoices.supplierInvoices}
+              </span>
             </div>
           </div>
         </CardContent>
@@ -115,4 +166,3 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
 };
 
 export default OverviewTab;
-

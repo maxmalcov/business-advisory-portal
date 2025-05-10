@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -21,7 +20,7 @@ export function useFetchInvoices() {
         .from('invoice_files')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) {
         console.error('Error fetching invoice history:', error);
         toast({
@@ -31,7 +30,7 @@ export function useFetchInvoices() {
         });
         return;
       }
-      
+
       // Cast the data to the correct type
       const typedData = data as unknown as InvoiceUpload[];
       setInvoices(typedData || []);
@@ -45,6 +44,6 @@ export function useFetchInvoices() {
   return {
     invoices,
     isLoading,
-    refreshInvoices: fetchInvoiceHistory
+    refreshInvoices: fetchInvoiceHistory,
   };
 }

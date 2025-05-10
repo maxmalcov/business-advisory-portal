@@ -1,4 +1,3 @@
-
 export { default as EmployeeDetailView } from './EmployeeDetailView';
 export { default as BasicInfoSection } from './BasicInfoSection';
 export { default as IdentificationSection } from './IdentificationSection';

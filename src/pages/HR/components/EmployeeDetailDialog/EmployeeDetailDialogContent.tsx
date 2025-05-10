@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Employee } from '../../types/employee';
@@ -6,7 +5,7 @@ import EmployeeDetailForm from '../EmployeeDetailForm/EmployeeDetailForm';
 import { EmployeeDetailView } from '../EmployeeDetail';
 import EmployeeDetailSkeleton from '../EmployeeDetail/EmployeeDetailSkeleton';
 import { AlertCircle } from 'lucide-react';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface EmployeeDetailDialogContentProps {
   employee: Employee | null;
@@ -20,7 +19,9 @@ interface EmployeeDetailDialogContentProps {
   onClose: () => void;
 }
 
-const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = ({
+const EmployeeDetailDialogContent: React.FC<
+  EmployeeDetailDialogContentProps
+> = ({
   employee,
   isLoading,
   isSubmitting,
@@ -29,20 +30,20 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
   onEdit,
   onSave,
   onCancel,
-  onClose
+  onClose,
 }) => {
-  console.log("EmployeeDetailDialogContent rendering with:", {
+  console.log('EmployeeDetailDialogContent rendering with:', {
     employee,
     isLoading,
     error,
-    isEditing
+    isEditing,
   });
-  
+
   if (isLoading) {
     return <EmployeeDetailSkeleton />;
   }
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   if (error) {
     return (
@@ -50,32 +51,30 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
         <div className="mx-auto w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center mb-4">
           <AlertCircle className="h-6 w-6 text-destructive" />
         </div>
-        <h3 className="text-lg font-medium text-foreground mb-2">{t('hr.index.employee.error-loading')}</h3>
+        <h3 className="text-lg font-medium text-foreground mb-2">
+          {t('hr.index.employee.error-loading')}
+        </h3>
         <p className="text-muted-foreground mb-6">{error}</p>
-        <Button 
-          variant="outline" 
-          onClick={onClose} 
-          className="mx-auto"
-        >
+        <Button variant="outline" onClick={onClose} className="mx-auto">
           Close
         </Button>
       </div>
     );
   }
-  
+
   if (!employee) {
     return (
       <div className="py-8 text-center">
         <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
           <AlertCircle className="h-6 w-6 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium text-foreground mb-2">{t('hr.index.employee.no-employee.title')}</h3>
-        <p className="text-muted-foreground mb-6">{t('hr.index.employee.no-employee.description')}</p>
-        <Button 
-          variant="outline" 
-          onClick={onClose} 
-          className="mx-auto"
-        >
+        <h3 className="text-lg font-medium text-foreground mb-2">
+          {t('hr.index.employee.no-employee.title')}
+        </h3>
+        <p className="text-muted-foreground mb-6">
+          {t('hr.index.employee.no-employee.description')}
+        </p>
+        <Button variant="outline" onClick={onClose} className="mx-auto">
           Close
         </Button>
       </div>
@@ -85,7 +84,7 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
   if (isEditing) {
     return (
       <div className="pb-4">
-        <EmployeeDetailForm 
+        <EmployeeDetailForm
           employee={employee}
           onSave={onSave}
           onCancel={onCancel}
@@ -94,7 +93,7 @@ const EmployeeDetailDialogContent: React.FC<EmployeeDetailDialogContentProps> = 
       </div>
     );
   }
-  
+
   return (
     <div className="pb-4">
       <EmployeeDetailView employee={employee} />

@@ -1,10 +1,12 @@
-
 import React from 'react';
 import { User } from 'lucide-react';
 import { CommandItem } from '@/components/ui/command';
 import { EmployeeListItemProps } from './types';
 
-const EmployeeListItem: React.FC<EmployeeListItemProps> = ({ employee, onSelect }) => {
+const EmployeeListItem: React.FC<EmployeeListItemProps> = ({
+  employee,
+  onSelect,
+}) => {
   return (
     <CommandItem
       key={employee.id}

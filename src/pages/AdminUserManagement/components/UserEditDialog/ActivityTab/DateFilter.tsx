@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
@@ -48,7 +47,10 @@ export const DateFilter: React.FC<DateFilterProps> = ({
       {filterOption === 'custom' && (
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="justify-start text-left font-normal">
+            <Button
+              variant="outline"
+              className="justify-start text-left font-normal"
+            >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {customDateRange.from ? (
                 customDateRange.to ? (
@@ -73,11 +75,11 @@ export const DateFilter: React.FC<DateFilterProps> = ({
                 from: customDateRange.from,
                 to: customDateRange.to,
               }}
-              onSelect={(range) => 
+              onSelect={(range) =>
                 // Convert the react-day-picker DateRange to our DateRange type
                 onCustomDateChange({
                   from: range?.from,
-                  to: range?.to
+                  to: range?.to,
                 })
               }
               numberOfMonths={2}

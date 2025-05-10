@@ -30,11 +30,11 @@ interface UserTableProps {
   onToggleStatus: (user: User) => void;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ 
-  users, 
-  onEditUser, 
-  onDeleteUser, 
-  onToggleStatus 
+const UserTable: React.FC<UserTableProps> = ({
+  users,
+  onEditUser,
+  onDeleteUser,
+  onToggleStatus,
 }) => {
   return (
     <Table>
@@ -51,7 +51,10 @@ const UserTable: React.FC<UserTableProps> = ({
       <TableBody>
         {users.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+            <TableCell
+              colSpan={6}
+              className="text-center py-8 text-muted-foreground"
+            >
               No data to display
             </TableCell>
           </TableRow>
@@ -65,11 +68,11 @@ const UserTable: React.FC<UserTableProps> = ({
                 <span className="capitalize">{user.userType}</span>
               </TableCell>
               <TableCell>
-                <Badge 
-                  variant={user.isActive ? "secondary" : "destructive"}
-                  className={user.isActive ? "bg-green-500 text-white" : ""}
+                <Badge
+                  variant={user.isActive ? 'secondary' : 'destructive'}
+                  className={user.isActive ? 'bg-green-500 text-white' : ''}
                 >
-                  {user.isActive ? "Active" : "Inactive"}
+                  {user.isActive ? 'Active' : 'Inactive'}
                 </Badge>
               </TableCell>
               <TableCell>

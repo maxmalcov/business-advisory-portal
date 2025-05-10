@@ -1,19 +1,18 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface ServiceEditorHeaderProps {
   isEditMode: boolean;
   onCancel: () => void;
 }
 
-export const ServiceEditorHeader: React.FC<ServiceEditorHeaderProps> = ({ 
-  isEditMode, 
-  onCancel 
+export const ServiceEditorHeader: React.FC<ServiceEditorHeaderProps> = ({
+  isEditMode,
+  onCancel,
 }) => {
-    const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="flex items-center gap-4">

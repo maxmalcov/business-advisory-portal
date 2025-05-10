@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -7,7 +6,12 @@ import { Menu, X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerOverlay, DrawerTrigger } from '@/components/ui/drawer';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerOverlay,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 const Layout: React.FC = () => {
@@ -25,30 +29,35 @@ const Layout: React.FC = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  
+
   // Function to render sidebar based on device type
   const renderSidebar = () => {
     if (!isAuthenticated) return null;
-    
+
     if (isMobile) {
       return (
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent side="left" className="p-0 w-[85%] max-w-[280px] border-r">
+          <SheetContent
+            side="left"
+            className="p-0 w-[85%] max-w-[280px] border-r"
+          >
             <Sidebar isOpen={true} onClose={() => setSidebarOpen(false)} />
           </SheetContent>
         </Sheet>
       );
     }
-    
-    return <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />;
+
+    return (
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    );
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       {isAuthenticated && renderSidebar()}
-      
+
       {isAuthenticated && isMobile && (
         <Button
           variant="outline"
@@ -60,13 +69,13 @@ const Layout: React.FC = () => {
           {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </Button>
       )}
-      
-      <main 
+
+      <main
         className={`pt-4 transition-all duration-300 ${
-          isAuthenticated 
-            ? (isMobile 
-                ? 'px-4 pb-20' // Add padding bottom for mobile to account for potential bottom navigation
-                : 'pl-[17rem] pr-4') 
+          isAuthenticated
+            ? isMobile
+              ? 'px-4 pb-20' // Add padding bottom for mobile to account for potential bottom navigation
+              : 'pl-[17rem] pr-4'
             : 'px-4'
         }`}
       >

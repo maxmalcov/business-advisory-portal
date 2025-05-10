@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState } from 'react';
 import { WorkHoursData } from '../../hooks/useEmployeeWorkHours';
 
@@ -12,12 +11,16 @@ interface MonthlySubmissionsContextType {
   handleAddEmployee: () => void;
 }
 
-const MonthlySubmissionsContext = createContext<MonthlySubmissionsContextType | undefined>(undefined);
+const MonthlySubmissionsContext = createContext<
+  MonthlySubmissionsContextType | undefined
+>(undefined);
 
 export const useMonthlySubmissions = () => {
   const context = useContext(MonthlySubmissionsContext);
   if (!context) {
-    throw new Error('useMonthlySubmissions must be used within a MonthlySubmissionsProvider');
+    throw new Error(
+      'useMonthlySubmissions must be used within a MonthlySubmissionsProvider',
+    );
   }
   return context;
 };
@@ -28,12 +31,12 @@ interface MonthlySubmissionsProviderProps {
   setIsAddingNew: (isAdding: boolean) => void;
 }
 
-export const MonthlySubmissionsProvider: React.FC<MonthlySubmissionsProviderProps> = ({
-  children,
-  isAddingNew,
-  setIsAddingNew,
-}) => {
-  const [editingEmployee, setEditingEmployee] = useState<WorkHoursData | null>(null);
+export const MonthlySubmissionsProvider: React.FC<
+  MonthlySubmissionsProviderProps
+> = ({ children, isAddingNew, setIsAddingNew }) => {
+  const [editingEmployee, setEditingEmployee] = useState<WorkHoursData | null>(
+    null,
+  );
 
   const handleEditEmployee = (employee: WorkHoursData) => {
     setEditingEmployee(employee);
@@ -47,7 +50,7 @@ export const MonthlySubmissionsProvider: React.FC<MonthlySubmissionsProviderProp
   const handleAddEmployee = () => {
     const today = new Date();
     const selectedMonth = new Date(); // This would come from props in a real implementation
-    
+
     setEditingEmployee({
       employeeName: '',
       grossSalary: 0,

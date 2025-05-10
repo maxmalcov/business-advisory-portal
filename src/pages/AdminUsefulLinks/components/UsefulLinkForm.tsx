@@ -1,13 +1,26 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useLanguage } from '@/context/LanguageContext';
 import { UsefulLink } from '@/pages/UsefulLinks/types';
 
@@ -60,13 +73,13 @@ interface UsefulLinkFormProps {
   submitButtonText: string;
 }
 
-const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({ 
-  initialData, 
+const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
+  initialData,
   onSubmit,
-  submitButtonText
+  submitButtonText,
 }) => {
   const { t } = useLanguage();
-  
+
   const form = useForm<UsefulLinkFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,7 +91,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
       display_order: initialData?.display_order || 0,
     },
   });
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -95,7 +108,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="description"
@@ -106,13 +119,13 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
                 <Textarea {...field} value={field.value || ''} />
               </FormControl>
               <FormDescription>
-                  {t('useful-links.dialog.form.description.brief')}
+                {t('useful-links.dialog.form.description.brief')}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="url"
@@ -126,7 +139,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="category"
@@ -139,7 +152,11 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={t('useful-links.dialog.form.category.placeholder')} />
+                    <SelectValue
+                      placeholder={t(
+                        'useful-links.dialog.form.category.placeholder',
+                      )}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {categoryOptions.map((category) => (
@@ -154,7 +171,7 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="icon"
@@ -167,7 +184,11 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
                   defaultValue={field.value || undefined}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={t('useful-links.dialog.form.icon.placeholder')} />
+                    <SelectValue
+                      placeholder={t(
+                        'useful-links.dialog.form.icon.placeholder',
+                      )}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {iconOptions.map((icon) => (
@@ -179,30 +200,32 @@ const UsefulLinkForm: React.FC<UsefulLinkFormProps> = ({
                 </Select>
               </FormControl>
               <FormDescription>
-                  {t('useful-links.dialog.form.icon.description')}
+                {t('useful-links.dialog.form.icon.description')}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="display_order"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('useful-links.dialog.form.display-order')}</FormLabel>
+              <FormLabel>
+                {t('useful-links.dialog.form.display-order')}
+              </FormLabel>
               <FormControl>
                 <Input type="number" {...field} value={field.value || 0} />
               </FormControl>
               <FormDescription>
-                  {t('useful-links.dialog.form.display-order.description')}
+                {t('useful-links.dialog.form.display-order.description')}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <div className="flex justify-end">
           <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
             {submitButtonText}

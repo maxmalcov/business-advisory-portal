@@ -1,20 +1,19 @@
-
 import React from 'react';
 import { ServiceRequest } from '../hooks/useServiceRequests';
 import { format } from 'date-fns';
-import { 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 type ServiceStatus = 'available' | 'pending' | 'completed' | 'rejected';
 
@@ -33,12 +32,12 @@ const RequestDetailsDialog: React.FC<RequestDetailsDialogProps> = ({
   selectedRequest,
   adminNotes,
   setAdminNotes,
-  handleSaveNotes
+  handleSaveNotes,
 }) => {
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   const getStatusBadge = (status: ServiceStatus) => {
-    switch(status) {
+    switch (status) {
       case 'pending':
         return <Badge className="bg-yellow-500">{t('status.pending')}</Badge>;
       case 'completed':
@@ -70,7 +69,7 @@ const RequestDetailsDialog: React.FC<RequestDetailsDialogProps> = ({
             {t('service.detail.description')}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -83,24 +82,32 @@ const RequestDetailsDialog: React.FC<RequestDetailsDialogProps> = ({
             </div>
             <div>
               <Label>{t('service.detail.date')}</Label>
-              <div className="font-medium">{formatDate(selectedRequest.request_date)}</div>
+              <div className="font-medium">
+                {formatDate(selectedRequest.request_date)}
+              </div>
             </div>
             <div>
               <Label>{t('service.detail.status')}</Label>
-              <div className="font-medium">{getStatusBadge(selectedRequest.status as ServiceStatus)}</div>
+              <div className="font-medium">
+                {getStatusBadge(selectedRequest.status as ServiceStatus)}
+              </div>
             </div>
             <div>
               <Label>{t('service.detail.last-update')}</Label>
-              <div className="font-medium">{formatDate(selectedRequest.updated_at)}</div>
+              <div className="font-medium">
+                {formatDate(selectedRequest.updated_at)}
+              </div>
             </div>
             <div>
               <Label>{t('service.detail.req-id')}</Label>
               <div className="font-medium text-xs">{selectedRequest.id}</div>
             </div>
           </div>
-          
+
           <div className="space-y-2">
-            <Label htmlFor="admin-notes">{t('service.detail.admin-notes')}</Label>
+            <Label htmlFor="admin-notes">
+              {t('service.detail.admin-notes')}
+            </Label>
             <Textarea
               id="admin-notes"
               placeholder={t('service.detail.add-note.placeholder')}
@@ -110,10 +117,14 @@ const RequestDetailsDialog: React.FC<RequestDetailsDialogProps> = ({
             />
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button variant="outline" onClick={() => setIsDialogOpen(false)}>{t('service.detail.cancel')}</Button>
-          <Button onClick={handleSaveNotes}>{t('service.detail.save-notes')}</Button>
+          <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            {t('service.detail.cancel')}
+          </Button>
+          <Button onClick={handleSaveNotes}>
+            {t('service.detail.save-notes')}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

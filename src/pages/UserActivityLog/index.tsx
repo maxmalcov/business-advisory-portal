@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search } from 'lucide-react';
@@ -16,12 +15,8 @@ const UserActivityLog: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
-  const { 
-    activities, 
-    loading, 
-    totalActivities,
-    filterActivities
-  } = useActivityLogs({ itemsPerPage, currentPage, searchQuery });
+  const { activities, loading, totalActivities, filterActivities } =
+    useActivityLogs({ itemsPerPage, currentPage, searchQuery });
 
   const totalPages = Math.ceil(totalActivities / itemsPerPage);
 
@@ -41,14 +36,16 @@ const UserActivityLog: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             onClick={() => navigate('/dashboard')}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold tracking-tight">{t('activity.all_activity')}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t('activity.all_activity')}
+          </h1>
         </div>
       </div>
 
@@ -68,10 +65,7 @@ const UserActivityLog: React.FC = () => {
       </form>
 
       {/* Activity Log Table */}
-      <ActivityLogTable 
-        activities={activities} 
-        loading={loading} 
-      />
+      <ActivityLogTable activities={activities} loading={loading} />
 
       {/* Pagination */}
       {totalPages > 1 && (

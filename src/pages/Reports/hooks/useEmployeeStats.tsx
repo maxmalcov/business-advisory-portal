@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,25 +22,25 @@ export const useEmployeeStats = () => {
         const { data: users, error: userError } = await supabase
           .from('employees')
           .select('*');
-        
+
         if (userError) throw userError;
-        
+
         if (users) {
           // Determine active users (those with non-null usertype)
-          const active = users.filter(user => user.status != 'terminated');
-          
+          const active = users.filter((user) => user.status != 'terminated');
+
           // Users registered in the last 30 days
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          
-          const recentlyAdded = users.filter(user => {
+
+          const recentlyAdded = users.filter((user) => {
             const userDate = new Date(user.created_at);
             return userDate >= thirtyDaysAgo;
           });
 
           // Generate registration trends data (last 90 days)
           const registrationTrends = generateRegistrationTrends(users, 90);
-          
+
           setEmployeeStats({
             total: users.length,
             active: active.length,
@@ -61,8 +60,12 @@ export const useEmployeeStats = () => {
         }
       } catch (err) {
         console.error('Error fetching user stats:', err);
-        setError(err instanceof Error ? err : new Error('Unknown error fetching user stats'));
-        
+        setError(
+          err instanceof Error
+            ? err
+            : new Error('Unknown error fetching user stats'),
+        );
+
         // Use mock data as fallback
         setEmployeeStats({
           total: 45,
@@ -71,17 +74,18 @@ export const useEmployeeStats = () => {
           recentlyAdded: 8,
           registrationTrends: generateMockRegistrationTrends(90),
         });
-        
+
         toast({
-          variant: "destructive",
-          title: "Error loading user data",
-          description: "There was a problem loading your user data. Using mock data instead.",
+          variant: 'destructive',
+          title: 'Error loading user data',
+          description:
+            'There was a problem loading your user data. Using mock data instead.',
         });
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchEmployeeStats();
   }, [toast]);
 
@@ -104,7 +108,7 @@ export const useEmployeeStats = () => {
     }
 
     // Count registrations per day
-    users.forEach(user => {
+    users.forEach((user) => {
       const registrationDate = new Date(user.created_at);
       if (registrationDate >= startDate && registrationDate <= today) {
         const dateStr = formatDate(registrationDate);
@@ -119,7 +123,9 @@ export const useEmployeeStats = () => {
     });
 
     // Sort by date
-    trends.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    trends.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
 
     return trends;
   };
@@ -151,6 +157,6 @@ export const useEmployeeStats = () => {
   return {
     employeeStats,
     loading,
-    error
+    error,
   };
 };

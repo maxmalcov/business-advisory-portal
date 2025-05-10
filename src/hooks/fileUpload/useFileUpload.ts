@@ -1,31 +1,42 @@
-
 import { useCallback } from 'react';
 import { useFileSelection } from './useFileSelection';
 import { useFileUploader } from './useFileUploader';
 import { FileUploadOptions, UploadConfig, FileUploadReturn } from './types';
 
 export const useFileUpload = (
-  options: FileUploadOptions = {}, 
-  uploadConfig: UploadConfig
+  options: FileUploadOptions = {},
+  uploadConfig: UploadConfig,
 ): FileUploadReturn => {
   const fileSelection = useFileSelection(options);
   const fileUploader = useFileUploader(uploadConfig);
 
-  const handleFilesUploaded = useCallback((files: File[]) => {
-    fileUploader.uploadFilesToSupabase(files);
-  }, [fileUploader.uploadFilesToSupabase]);
+  const handleFilesUploaded = useCallback(
+    (files: File[]) => {
+      fileUploader.uploadFilesToSupabase(files);
+    },
+    [fileUploader.uploadFilesToSupabase],
+  );
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, append: boolean = false) => {
-    fileSelection.handleFileChange(e, handleFilesUploaded, append);
-  }, [fileSelection.handleFileChange, handleFilesUploaded]);
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, append: boolean = false) => {
+      fileSelection.handleFileChange(e, handleFilesUploaded, append);
+    },
+    [fileSelection.handleFileChange, handleFilesUploaded],
+  );
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, append: boolean = false) => {
-    fileSelection.handleDrop(e, handleFilesUploaded, append);
-  }, [fileSelection.handleDrop, handleFilesUploaded]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>, append: boolean = false) => {
+      fileSelection.handleDrop(e, handleFilesUploaded, append);
+    },
+    [fileSelection.handleDrop, handleFilesUploaded],
+  );
 
-  const uploadFilesToSupabase = useCallback((filesToUpload: File[] = fileSelection.selectedFiles) => {
-    return fileUploader.uploadFilesToSupabase(filesToUpload);
-  }, [fileSelection.selectedFiles, fileUploader.uploadFilesToSupabase]);
+  const uploadFilesToSupabase = useCallback(
+    (filesToUpload: File[] = fileSelection.selectedFiles) => {
+      return fileUploader.uploadFilesToSupabase(filesToUpload);
+    },
+    [fileSelection.selectedFiles, fileUploader.uploadFilesToSupabase],
+  );
 
   const resetFiles = useCallback(() => {
     fileSelection.resetFiles();
@@ -49,7 +60,7 @@ export const useFileUpload = (
     // State from selection hook
     selectedFiles: fileSelection.selectedFiles,
     isDragging: fileSelection.isDragging,
-    
+
     // State from uploader hook
     uploadedFiles: fileUploader.uploadedFiles,
     isLoading: fileUploader.isLoading,
@@ -57,14 +68,14 @@ export const useFileUpload = (
     uploadComplete: fileUploader.uploadComplete,
     uploadSuccess: fileUploader.uploadSuccess,
     uploadError: fileUploader.uploadError,
-    
+
     // Actions from uploader hook
     setIsLoading: fileUploader.setIsLoading,
     setUploadProgress: fileUploader.setUploadProgress,
     setUploadComplete: fileUploader.setUploadComplete,
     setUploadSuccess: fileUploader.setUploadSuccess,
     setUploadError: fileUploader.setUploadError,
-    
+
     // Combined actions
     handleFileChange,
     handleDragOver: fileSelection.handleDragOver,
@@ -75,7 +86,7 @@ export const useFileUpload = (
     resetFiles,
     handleAddMoreFiles,
     handleSupplierAddMoreFiles,
-    
+
     // File limit helpers
     getRemainingFilesCount: fileSelection.getRemainingFilesCount,
     hasReachedFileLimit: fileSelection.hasReachedFileLimit,

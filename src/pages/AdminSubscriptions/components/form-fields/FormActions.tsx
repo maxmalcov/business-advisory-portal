@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
@@ -14,29 +13,28 @@ interface FormActionsProps {
 const FormActions: React.FC<FormActionsProps> = ({
   subscription,
   onCancel,
-  isSubmitting = false
+  isSubmitting = false,
 }) => {
   return (
     <DialogFooter>
-      <Button 
-        type="button" 
-        variant="outline" 
+      <Button
+        type="button"
+        variant="outline"
         onClick={onCancel}
         disabled={isSubmitting}
       >
         Cancel
       </Button>
-      <Button 
-        type="submit" 
-        disabled={isSubmitting}
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             {subscription ? 'Saving...' : 'Adding...'}
           </>
+        ) : subscription ? (
+          'Save Changes'
         ) : (
-          subscription ? 'Save Changes' : 'Add Subscription'
+          'Add Subscription'
         )}
       </Button>
     </DialogFooter>

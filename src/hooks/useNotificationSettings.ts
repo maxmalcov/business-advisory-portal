@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface NotificationSetting {
   id: string;
@@ -32,10 +31,16 @@ export const useNotificationSettings = () => {
     },
   });
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   const updateMutation = useMutation({
-    mutationFn: async ({ category, email }: { category: string; email: string }) => {
+    mutationFn: async ({
+      category,
+      email,
+    }: {
+      category: string;
+      email: string;
+    }) => {
       setIsUpdating(true);
       const { error } = await supabase
         .from('notification_settings')
@@ -45,7 +50,9 @@ export const useNotificationSettings = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notification-settings'] });
+      queryClient.invalidateQueries({
+        queryKey: ['notification-settings'],
+      });
       toast({
         title: t('settings.toast.success.title'),
         description: t('settings.toast.success.description'),
@@ -56,7 +63,7 @@ export const useNotificationSettings = () => {
       toast({
         title: t('settings.toast.failed.title'),
         description: t('settings.toast.failed.description'),
-        variant: "destructive",
+        variant: 'destructive',
       });
     },
     onSettled: () => {

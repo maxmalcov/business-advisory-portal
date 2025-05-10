@@ -1,10 +1,9 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from './types';
 
-export const useDeleteUser = (refreshUsers: () => Promise<void>) => {
+export const useDeleteUser = (refreshUsers: () => Promise<void>, handleCancelEdit: (open: boolean) => void) => {
   const { toast } = useToast();
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
@@ -18,26 +17,26 @@ export const useDeleteUser = (refreshUsers: () => Promise<void>) => {
   // Confirm user deletion
   const confirmDeleteUser = async () => {
     if (!userToDelete) return;
-    
+
     try {
-      console.log("Attempting to delete user profile:", userToDelete.id);
-      
+      console.log('Attempting to delete user profile:', userToDelete.id);
+
       // Delete the profile from profiles table
       const { error } = await supabase
         .from('profiles')
         .delete()
         .eq('id', userToDelete.id);
-      
+
       if (error) {
         console.error('Error deleting profile:', error);
         throw error;
       }
-      
+
       // Refresh the users list
       await refreshUsers();
-      
+
       toast({
-        title: "User Deleted",
+        title: 'User Deleted',
         description: `User ${userToDelete.name} was successfully deleted.`,
       });
     } catch (error) {
@@ -50,6 +49,7 @@ export const useDeleteUser = (refreshUsers: () => Promise<void>) => {
     } finally {
       setUserToDelete(null);
       setShowConfirmDelete(false);
+      handleCancelEdit(false)
     }
   };
 
@@ -58,6 +58,6 @@ export const useDeleteUser = (refreshUsers: () => Promise<void>) => {
     userToDelete,
     handleDeleteUser,
     confirmDeleteUser,
-    setShowConfirmDelete
+    setShowConfirmDelete,
   };
 };

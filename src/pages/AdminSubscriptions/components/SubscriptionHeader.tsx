@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -9,12 +8,17 @@ type SubscriptionHeaderProps = {
   onAddNewType: () => void;
 };
 
-const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAddNewType }) => {
+const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
+  onAddNew,
+  onAddNewType,
+}) => {
   const { t } = useLanguage();
-  
+
   return (
     <div className="flex justify-between items-center">
-      <h1 className="text-2xl font-bold tracking-tight">Subscriptions Management</h1>
+      <h1 className="text-2xl font-bold tracking-tight">
+        Subscriptions Management
+      </h1>
       <div className="flex space-x-2">
         <Button variant="outline" onClick={onAddNewType}>
           <Plus className="h-4 w-4 mr-1" />
@@ -30,4 +34,3 @@ const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({ onAddNew, onAdd
 };
 
 export default SubscriptionHeader;
-

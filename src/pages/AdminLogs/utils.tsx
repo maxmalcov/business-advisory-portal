@@ -1,17 +1,20 @@
-
 import React from 'react';
 import {
-  Users,
   FileText,
   Mail,
   AlertTriangle,
   Settings,
+  UsersRound,
+  User,
+  TvMinimalPlay,
 } from 'lucide-react';
 
 export const getLogIcon = (category: string) => {
   switch (category) {
     case 'user':
-      return <Users className="h-4 w-4" />;
+      return <User className="h-4 w-4" />;
+    case 'employee':
+      return <UsersRound className="h-4 w-4" />;
     case 'file':
       return <FileText className="h-4 w-4" />;
     case 'email':
@@ -24,6 +27,8 @@ export const getLogIcon = (category: string) => {
       return <FileText className="h-4 w-4" />;
     case 'system':
       return <Settings className="h-4 w-4" />;
+    case 'subscription':
+      return <TvMinimalPlay className="h-4 w-4" />;
     default:
       return <FileText className="h-4 w-4" />;
   }

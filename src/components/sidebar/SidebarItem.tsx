@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -17,13 +16,13 @@ type SidebarItemProps = {
   onClose?: () => void;
 };
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ 
-  item, 
-  isParentActive, 
-  isItemActive, 
+const SidebarItem: React.FC<SidebarItemProps> = ({
+  item,
+  isParentActive,
+  isItemActive,
   isExpanded,
   onClick,
-  onClose 
+  onClose,
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const isActive = isItemActive(item);
@@ -45,20 +44,24 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <Link
           to={item.path}
           className={cn(
-            "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors",
-            isActive 
-              ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
-              : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
-            item.highlight && "text-sidebar-accent-foreground font-medium hover:text-sidebar-accent-foreground"
+            'flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors',
+            isActive
+              ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+              : 'hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground',
+            item.highlight &&
+              'text-sidebar-accent-foreground font-medium hover:text-sidebar-accent-foreground',
           )}
           onClick={handleChildClick}
         >
           <div className="flex items-center">
-            {item.highlight ? 
-              <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" /> : 
+            {item.highlight ? (
+              <item.icon className="h-4 w-4 mr-2 text-sidebar-accent-foreground animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite] scale-110" />
+            ) : (
               <item.icon className="h-4 w-4 mr-2" />
-            }
-            <span className={cn(item.highlight && "animate-pulse")}>{item.name}</span>
+            )}
+            <span className={cn(item.highlight && 'animate-pulse')}>
+              {item.name}
+            </span>
           </div>
           {item.badge && (
             <NotificationBadge count={item.badge} className="ml-2" />
@@ -68,10 +71,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <div className="mb-2">
           <div
             className={cn(
-              "flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer relative",
-              (isActive)
-                ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+              'flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors cursor-pointer relative',
+              isActive
+                ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+                : 'hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground',
             )}
             onClick={handleParentClick}
           >
@@ -81,23 +84,23 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             </div>
             {item.badge ? (
               <NotificationBadge count={item.badge} className="mx-2" />
-            ) : item.hasPendingChildren && (
-              <NotificationDot />
+            ) : (
+              item.hasPendingChildren && <NotificationDot />
             )}
             <span className="ml-1">
-              <ChevronDown 
+              <ChevronDown
                 className={cn(
-                  "h-4 w-4 transition-transform duration-200",
-                  isExpanded ? "rotate-0" : "-rotate-90"
-                )} 
+                  'h-4 w-4 transition-transform duration-200',
+                  isExpanded ? 'rotate-0' : '-rotate-90',
+                )}
               />
             </span>
           </div>
-          
+
           <div
             className={cn(
-              "overflow-hidden transition-all duration-200 ease-in-out",
-              isExpanded ? "max-h-96" : "max-h-0"
+              'overflow-hidden transition-all duration-200 ease-in-out',
+              isExpanded ? 'max-h-96' : 'max-h-0',
             )}
           >
             <ul className="pl-6 mt-1 space-y-1">
@@ -106,10 +109,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   <Link
                     to={child.path}
                     className={cn(
-                      "relative flex items-center px-3 py-2 rounded-md text-sm transition-colors",
+                      'relative flex items-center px-3 py-2 rounded-md text-sm transition-colors',
                       location.pathname === child.path
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                        : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+                        ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+                        : 'hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground',
                     )}
                     onClick={handleChildClick}
                   >

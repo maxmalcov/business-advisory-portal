@@ -1,11 +1,10 @@
-
 import React from 'react';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -15,16 +14,13 @@ interface YearSelectorProps {
   yearsToShow?: number;
 }
 
-const YearSelector: React.FC<YearSelectorProps> = ({ 
-  selectedYear, 
-  onYearChange, 
-  yearsToShow = 5 
+const YearSelector: React.FC<YearSelectorProps> = ({
+  selectedYear,
+  onYearChange,
+  yearsToShow = 5,
 }) => {
   const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: yearsToShow }, 
-    (_, i) => currentYear - i
-  );
+  const years = Array.from({ length: yearsToShow }, (_, i) => currentYear - i);
 
   return (
     <div className="mb-4">

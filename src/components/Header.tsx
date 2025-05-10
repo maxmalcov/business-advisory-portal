@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -8,11 +7,11 @@ import { Button } from '@/components/ui/button';
 import { LogOut, User, Loader2, Menu, X } from 'lucide-react';
 import { ThemeToggleButton } from '@/components/ThemeToggle';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetTrigger, 
-  SheetClose 
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
 } from '@/components/ui/sheet';
 
 const Header: React.FC = () => {
@@ -38,25 +37,25 @@ const Header: React.FC = () => {
   // Content for the authenticated user menu
   const authUserContent = (
     <>
-      <Link 
-        to="/profile" 
+      <Link
+        to="/profile"
         className="text-sm text-foreground hover:text-foreground/90 flex items-center"
         onClick={() => setMenuOpen(false)}
       >
         <User size={18} className="mr-1" />
         {user?.name || user?.email || 'User'}
       </Link>
-      
-      <Button 
-        variant="ghost" 
-        size="sm" 
+
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={handleLogout}
         className="text-foreground hover:text-foreground/90"
       >
         <LogOut size={18} className="mr-1" />
         {t('app.logout')}
       </Button>
-      
+
       <ThemeToggleButton />
     </>
   );
@@ -65,8 +64,8 @@ const Header: React.FC = () => {
     <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div 
-            onClick={handleLogoClick} 
+          <div
+            onClick={handleLogoClick}
             className="font-bold text-xl md:text-2xl text-ba-blue cursor-pointer"
           >
             Business Advisory
@@ -92,7 +91,7 @@ const Header: React.FC = () => {
         ) : (
           <div className="flex items-center space-x-4">
             <LanguageSelector />
-            
+
             {isLoading ? (
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Loader2 size={18} className="animate-spin" />
@@ -121,4 +120,3 @@ const Header: React.FC = () => {
 };
 
 export default Header;
-

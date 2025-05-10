@@ -10,8 +10,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from '@/components/ui/use-toast';
-import { servicesTable } from "@/integrations/supabase/client.ts";
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { servicesTable } from '@/integrations/supabase/client.ts';
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 // Types
 export interface Service {
@@ -38,7 +38,7 @@ export const useServiceData = () => {
         if (error) {
           return;
         }
-        setServices((data as unknown) as Service[]);
+        setServices(data as unknown as Service[]);
       } catch (error) {
         console.error('Database error', error);
       } finally {
@@ -54,19 +54,17 @@ export const useServiceData = () => {
     setIsDeleteDialogOpen(true);
   }, []);
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
-  const confirmDelete = useCallback( async () => {
+  const confirmDelete = useCallback(async () => {
     if (deleteId) {
       setLoading(true);
 
-      await servicesTable()
-          .delete()
-          .eq('id', deleteId);
+      await servicesTable().delete().eq('id', deleteId);
 
       setTimeout(() => {
         setServices((prevServices) =>
-            prevServices.filter((service) => service.id !== deleteId)
+          prevServices.filter((service) => service.id !== deleteId),
         );
 
         toast({
@@ -87,28 +85,33 @@ export const useServiceData = () => {
   }, []);
 
   const DeleteConfirmationDialog = () => (
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('service.alert.title')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('service.alert.description')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={cancelDelete}>{t('service.alert.cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              {t('service.alert.delete')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+    <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t('service.alert.title')}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t('service.alert.description')}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={cancelDelete}>
+            {t('service.alert.cancel')}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={confirmDelete}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {t('service.alert.delete')}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 
   return {
     services,
     loading,
     handleDelete,
-    DeleteConfirmationDialog
+    DeleteConfirmationDialog,
   };
 };

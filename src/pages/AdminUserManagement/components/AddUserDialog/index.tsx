@@ -1,6 +1,11 @@
-
 import React from 'react';
-import { DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,6 +16,8 @@ import CredentialsSection from './CredentialsSection';
 import IframeUrlsSection from './IframeUrlsSection';
 import LocationInfoSection from './LocationInfoSection';
 import { useState, useEffect } from 'react';
+import {isEmail} from "validator";
+import {toast} from "@/components/ui/use-toast.ts";
 
 interface AddUserDialogProps {
   onSave: (userData: Omit<User, 'id'>) => void;
@@ -27,10 +34,10 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
     companyName: '',
     password: '',
   });
-  
+
   const [isFormValid, setIsFormValid] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
-  
+
   const handleUserChange = (updatedUser: Omit<User, 'id'>) => {
     setNewUser(updatedUser);
     validateForm(updatedUser);
@@ -38,8 +45,10 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
 
   // Validate the form
   const validateForm = (user: Omit<User, 'id'>) => {
-    const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(user.accountType || '');
-    
+    const isBusinessAccount = ['sl', 'sa', 'freelancer'].includes(
+      user.accountType || '',
+    );
+
     // Required fields for all users
     const requiredFields = [
       user.email,
@@ -51,22 +60,23 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
       user.postalCode,
       user.city,
       user.province,
-      user.country
+      user.country,
+      user.name
     ];
-    
+
     // Add conditional required fields based on account type
     if (isBusinessAccount) {
       requiredFields.push(user.companyName);
-    } else {
-      requiredFields.push(user.name);
     }
-    
+
     // Check if all required fields are filled
-    const allFieldsFilled = requiredFields.every(field => field && field.trim().length > 0);
-    
+    const allFieldsFilled = requiredFields.every(
+      (field) => field && field.trim().length > 0,
+    );
+
     // Check if passwords match (assuming confirmPassword is tracked in state)
     const passwordsMatch = user.password === confirmPassword;
-    
+
     setIsFormValid(allFieldsFilled && passwordsMatch);
   };
 
@@ -76,6 +86,23 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
   }, [newUser, confirmPassword]);
 
   const handleSaveClick = () => {
+    if(!isEmail(newUser.email) || !isEmail(newUser.outgoingInvoiceEmail) || !isEmail(newUser.incomingInvoiceEmail)){
+      toast({
+        title: 'Invalid email',
+        description: 'Please put valid email',
+        variant: 'destructive'
+      })
+      return
+    }
+    if(newUser.password.length < 6){
+      toast({
+        title: 'Invalid password',
+        description: 'Password should be at least 6 characters',
+        variant: 'destructive'
+      })
+      return
+    }
+
     if (isFormValid) {
       onSave(newUser);
     }
@@ -89,41 +116,57 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onSave, onCancel }) => {
           Create a new user account with all required information
         </DialogDescription>
       </DialogHeader>
-      
+
       <ScrollArea className="flex-1 px-6 pb-4">
         <div className="space-y-8">
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Basic Information</h3>
-            <BasicInfoSection newUser={newUser} onUserChange={handleUserChange} />
+            <BasicInfoSection
+              newUser={newUser}
+              onUserChange={handleUserChange}
+            />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Contact Information</h3>
-            <ContactInfoSection newUser={newUser} onUserChange={handleUserChange} />
+            <ContactInfoSection
+              newUser={newUser}
+              onUserChange={handleUserChange}
+            />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Location Details</h3>
-            <LocationInfoSection newUser={newUser} onUserChange={handleUserChange} />
+            <LocationInfoSection
+              newUser={newUser}
+              onUserChange={handleUserChange}
+            />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Security Credentials</h3>
-            <CredentialsSection newUser={newUser} onUserChange={handleUserChange} />
+            <CredentialsSection
+              newUser={newUser}
+              onUserChange={handleUserChange}
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
+            />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4">Additional Settings</h3>
-            <IframeUrlsSection 
-              newUser={newUser} 
-              onUserChange={handleUserChange} 
+            <IframeUrlsSection
+              newUser={newUser}
+              onUserChange={handleUserChange}
             />
           </div>
         </div>
       </ScrollArea>
-      
+
       <DialogFooter className="px-6 py-4 border-t bg-muted/20">
-        <Button variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
         <Button onClick={handleSaveClick} disabled={!isFormValid}>
           <Save className="mr-2 h-4 w-4" />
           Create User

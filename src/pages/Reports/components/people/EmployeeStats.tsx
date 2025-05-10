@@ -1,11 +1,5 @@
-
 import React from 'react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { UsersRound } from 'lucide-react';
 
 interface EmployeeStatsProps {
@@ -31,7 +25,7 @@ const EmployeeStats: React.FC<EmployeeStatsProps> = ({ employeeStats }) => {
           <div className="text-2xl font-bold">{employeeStats.total}</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium text-green-600">
@@ -43,7 +37,7 @@ const EmployeeStats: React.FC<EmployeeStatsProps> = ({ employeeStats }) => {
           <div className="text-2xl font-bold">{employeeStats.active}</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium text-blue-600">
@@ -52,7 +46,9 @@ const EmployeeStats: React.FC<EmployeeStatsProps> = ({ employeeStats }) => {
           <UsersRound className="h-4 w-4 text-blue-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{employeeStats.recentlyAdded}</div>
+          <div className="text-2xl font-bold">
+            {employeeStats.recentlyAdded}
+          </div>
         </CardContent>
       </Card>
     </div>

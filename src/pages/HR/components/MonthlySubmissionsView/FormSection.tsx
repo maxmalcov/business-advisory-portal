@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { WorkHoursData } from '../../hooks/useEmployeeWorkHours';
 import WorkHoursForm from '../WorkHoursForm';
@@ -8,14 +7,14 @@ interface FormSectionProps {
   isSubmitted: boolean;
   workHours: WorkHoursData[];
   onSubmitForm: (values: WorkHoursData) => Promise<void>;
-  selectedMonth: Date,
+  selectedMonth: Date;
 }
 
 const FormSection: React.FC<FormSectionProps> = ({
   isSubmitted,
   workHours,
   onSubmitForm,
-  selectedMonth
+  selectedMonth,
 }) => {
   const { editingEmployee, handleCancelEdit } = useMonthlySubmissions();
 

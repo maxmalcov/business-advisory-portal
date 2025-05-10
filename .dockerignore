@@ -5,5 +5,4 @@ supabase
 .gitignore
 Dockerfile
 docker-compose.yml
-eslint.config.js
 README.md

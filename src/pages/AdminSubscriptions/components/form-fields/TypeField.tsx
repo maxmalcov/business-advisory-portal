@@ -1,7 +1,18 @@
-
 import React from 'react';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { UseFormReturn } from 'react-hook-form';
 import { FormValues } from '../types/FormTypes';
 

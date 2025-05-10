@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Loader2, FileUp, FileX, Check, AlertCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -37,32 +36,37 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
   uploadSuccess = false,
   uploadError = null,
   remainingFilesCount = 0,
-  hasReachedFileLimit = false
+  hasReachedFileLimit = false,
 }) => {
   if (files.length === 0) return null;
 
-  const canSendEmail = uploadComplete && uploadSuccess && uploadedFiles.length > 0;
+  const canSendEmail =
+    uploadComplete && uploadSuccess && uploadedFiles.length > 0;
   const maxFiles = 15; // Same as default in useFileValidation
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="font-medium">Selected Files ({files.length})</h3>
-        <span className={`text-sm ${hasReachedFileLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+        <span
+          className={`text-sm ${hasReachedFileLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}
+        >
           {files.length}/{maxFiles} files
         </span>
       </div>
-      
+
       <div className="max-h-60 overflow-y-auto space-y-2">
         {files.map((file, index) => (
-          <div 
-            key={`${file.name}-${index}`} 
+          <div
+            key={`${file.name}-${index}`}
             className="flex items-center justify-between p-2 border rounded-md"
           >
             <div className="flex items-center">
               <FileUp className="h-5 w-5 mr-2 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium truncate max-w-xs">{file.name}</p>
+                <p className="text-sm font-medium truncate max-w-xs">
+                  {file.name}
+                </p>
                 <p className="text-xs text-muted-foreground">
                   {(file.size / (1024 * 1024)).toFixed(2)} MB
                 </p>
@@ -79,7 +83,7 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
           </div>
         ))}
       </div>
-      
+
       {isLoading && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -93,10 +97,10 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             )}
             <p className="text-sm text-muted-foreground">
-              {uploadComplete 
-                ? (uploadSuccess 
-                  ? 'Upload complete' 
-                  : 'Upload failed')
+              {uploadComplete
+                ? uploadSuccess
+                  ? 'Upload complete'
+                  : 'Upload failed'
                 : 'Uploading files...'}
             </p>
           </div>
@@ -109,11 +113,11 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
           <AlertDescription>{uploadError}</AlertDescription>
         </Alert>
       )}
-      
+
       <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
         {uploadComplete && uploadSuccess ? (
-          <Button 
-            className="w-full sm:w-auto" 
+          <Button
+            className="w-full sm:w-auto"
             variant="outline"
             onClick={onAddMoreFiles}
             disabled={isSending || hasReachedFileLimit}
@@ -121,8 +125,8 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
             {hasReachedFileLimit ? 'File Limit Reached' : 'Upload More Files'}
           </Button>
         ) : (
-          <Button 
-            className="w-full sm:w-auto" 
+          <Button
+            className="w-full sm:w-auto"
             variant="outline"
             onClick={onResetUpload}
             disabled={isSending}
@@ -130,20 +134,20 @@ const SupplierFileList: React.FC<SupplierFileListProps> = ({
             Cancel
           </Button>
         )}
-        
-        <Button 
-          className="w-full sm:w-auto flex-1" 
+
+        <Button
+          className="w-full sm:w-auto flex-1"
           onClick={onSendEmail}
           disabled={!canSendEmail || isSending}
         >
           {isSending ? (
             <span className="flex items-center">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending...
             </span>
           ) : (
             <span className="flex items-center">
-              <Send className="mr-2 h-4 w-4" /> 
+              <Send className="mr-2 h-4 w-4" />
               Send Invoice{files.length > 1 ? 's' : ''} by Email
             </span>
           )}

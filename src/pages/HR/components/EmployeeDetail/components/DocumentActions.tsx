@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Eye, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,9 +9,12 @@ interface DocumentActionsProps {
   filename: string;
 }
 
-const DocumentActions: React.FC<DocumentActionsProps> = ({ documentPath, filename }) => {
+const DocumentActions: React.FC<DocumentActionsProps> = ({
+  documentPath,
+  filename,
+}) => {
   const { toast } = useToast();
-  
+
   const handleViewDocument = async () => {
     try {
       console.log('Attempting to view document:', documentPath);
@@ -24,17 +26,17 @@ const DocumentActions: React.FC<DocumentActionsProps> = ({ documentPath, filenam
       toast({
         title: 'Error',
         description: 'Could not retrieve the document. Please try again.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
-  
+
   const handleDownloadDocument = async () => {
     try {
       console.log('Attempting to download document:', documentPath);
       const signedUrl = await getDocumentUrl(documentPath);
       console.log('Successfully generated signed URL for download:', signedUrl);
-      
+
       // Create an anchor element and trigger download
       const link = document.createElement('a');
       link.href = signedUrl;
@@ -47,18 +49,28 @@ const DocumentActions: React.FC<DocumentActionsProps> = ({ documentPath, filenam
       toast({
         title: 'Error',
         description: 'Could not download the document. Please try again.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
-  
+
   return (
     <div className="flex space-x-1 ml-2">
-      <Button variant="ghost" size="sm" className="h-6 p-1" onClick={handleViewDocument}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-6 p-1"
+        onClick={handleViewDocument}
+      >
         <Eye className="h-3.5 w-3.5" />
         <span className="sr-only">View document</span>
       </Button>
-      <Button variant="ghost" size="sm" className="h-6 p-1" onClick={handleDownloadDocument}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-6 p-1"
+        onClick={handleDownloadDocument}
+      >
         <Download className="h-3.5 w-3.5" />
         <span className="sr-only">Download document</span>
       </Button>

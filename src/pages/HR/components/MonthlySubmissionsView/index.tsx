@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -13,6 +12,20 @@ import MonthlySubmissionsContent from './MonthlySubmissionsContent';
 interface MonthlySubmissionsViewProps {
   isAddingNew: boolean;
   setIsAddingNew: (isAdding: boolean) => void;
+  months;
+  selectedMonth;
+  setSelectedMonth;
+  selectedYear;
+  onYearChange;
+  onNavigateMonth;
+  isSubmitted;
+  submissionsLoading;
+  submitMonth;
+}
+
+const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
+  isAddingNew,
+  setIsAddingNew,
   months,
   selectedMonth,
   setSelectedMonth,
@@ -21,25 +34,11 @@ interface MonthlySubmissionsViewProps {
   onNavigateMonth,
   isSubmitted,
   submissionsLoading,
-  submitMonth
-}
-
-const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
-  isAddingNew,
-  setIsAddingNew,
-   months,
-   selectedMonth,
-   setSelectedMonth,
-   selectedYear,
-   onYearChange,
-   onNavigateMonth,
-   isSubmitted,
-   submissionsLoading,
-   submitMonth
+  submitMonth,
 }) => {
   const { toast } = useToast();
   const { user } = useAuth();
-  
+
   const {
     workHours,
     loading: workHoursLoading,
@@ -51,13 +50,13 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     const today = new Date();
     if (isAfter(startOfMonth(month), startOfMonth(today))) {
       toast({
-        title: "Future month not allowed",
-        description: "You can only view and edit current or past months.",
-        variant: "destructive"
+        title: 'Future month not allowed',
+        description: 'You can only view and edit current or past months.',
+        variant: 'destructive',
       });
       return;
     }
-    
+
     setSelectedMonth(month);
   };
 
@@ -65,13 +64,13 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
     const today = new Date();
     if (isAfter(startOfMonth(selectedMonth), startOfMonth(today))) {
       toast({
-        title: "Future month not allowed",
-        description: "You cannot save data for future months.",
-        variant: "destructive"
+        title: 'Future month not allowed',
+        description: 'You cannot save data for future months.',
+        variant: 'destructive',
       });
       return;
     }
-    
+
     const success = await saveEmployee(values);
     if (success) {
       toast({
@@ -90,7 +89,7 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
 
   const handleDeleteEmployee = async (id: string) => {
     if (!id) return;
-    
+
     const success = await deleteEmployee(id);
     if (success) {
       toast({
@@ -108,7 +107,7 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
 
   const handleSubmitMonth = async () => {
     const hrEmail = user?.outgoingInvoiceEmail || '';
-    
+
     const success = await submitMonth(hrEmail);
     if (success) {
       toast({
@@ -117,7 +116,7 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
       });
     }
   };
-  
+
   const loading = submissionsLoading || workHoursLoading;
 
   return (
@@ -131,8 +130,11 @@ const MonthlySubmissionsView: React.FC<MonthlySubmissionsViewProps> = ({
         selectedYear={selectedYear}
         onNavigateMonth={onNavigateMonth}
       />
-      
-      <MonthlySubmissionsProvider isAddingNew={isAddingNew} setIsAddingNew={setIsAddingNew}>
+
+      <MonthlySubmissionsProvider
+        isAddingNew={isAddingNew}
+        setIsAddingNew={setIsAddingNew}
+      >
         <MonthlySubmissionsContent
           selectedMonth={selectedMonth}
           isSubmitted={isSubmitted}

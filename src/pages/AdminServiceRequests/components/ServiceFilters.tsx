@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,9 +8,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import { ServiceStatus } from '../hooks/useServiceRequests';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface ServiceFiltersProps {
   searchQuery: string;
@@ -24,9 +23,9 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   searchQuery,
   setSearchQuery,
   statusFilter,
-  setStatusFilter
+  setStatusFilter,
 }) => {
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <Card>
@@ -41,7 +40,7 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="status-filter">{t('service.status')}</Label>
             <Select
@@ -52,10 +51,18 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
                 <SelectValue placeholder={t('service.status.filter')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t('service.status.all-status')}</SelectItem>
-                <SelectItem value="pending">{t('service.status.pending')}</SelectItem>
-                <SelectItem value="completed">{t('service.status.completed')}</SelectItem>
-                <SelectItem value="rejected">{t('service.status.rejected')}</SelectItem>
+                <SelectItem value="all">
+                  {t('service.status.all-status')}
+                </SelectItem>
+                <SelectItem value="pending">
+                  {t('service.status.pending')}
+                </SelectItem>
+                <SelectItem value="completed">
+                  {t('service.status.completed')}
+                </SelectItem>
+                <SelectItem value="rejected">
+                  {t('service.status.rejected')}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -24,26 +23,29 @@ interface MonthlyInvoiceChartProps {
   monthlyData: MonthlyData[];
 }
 
-const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }) => {
+const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({
+  monthlyData,
+}) => {
   const isMobile = useIsMobile();
 
   // Create default data if no data is provided or if it's empty
-  const displayData = monthlyData && monthlyData.length > 0 
-    ? monthlyData 
-    : [
-        { name: 'Jan', sales: 4, supplier: 2 },
-        { name: 'Feb', sales: 3, supplier: 1 },
-        { name: 'Mar', sales: 5, supplier: 3 },
-        { name: 'Apr', sales: 2, supplier: 4 },
-        { name: 'May', sales: 6, supplier: 2 },
-        { name: 'Jun', sales: 3, supplier: 1 },
-      ];
+  const displayData =
+    monthlyData && monthlyData.length > 0
+      ? monthlyData
+      : [
+          { name: 'Jan', sales: 4, supplier: 2 },
+          { name: 'Feb', sales: 3, supplier: 1 },
+          { name: 'Mar', sales: 5, supplier: 3 },
+          { name: 'Apr', sales: 2, supplier: 4 },
+          { name: 'May', sales: 6, supplier: 2 },
+          { name: 'Jun', sales: 3, supplier: 1 },
+        ];
 
   // Use abbreviated month names on mobile
-  const formattedData = isMobile 
-    ? displayData.map(item => ({
+  const formattedData = isMobile
+    ? displayData.map((item) => ({
         ...item,
-        name: item.name.substring(0, 3) // Use 3-letter abbreviation
+        name: item.name.substring(0, 3), // Use 3-letter abbreviation
       }))
     : displayData;
 
@@ -56,8 +58,13 @@ const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }
         </CardDescription>
       </CardHeader>
       <CardContent className={`pl-2 ${isMobile ? 'pr-0' : ''}`}>
-        <div className={isMobile ? "overflow-x-auto -mx-2 px-2" : ""}>
-          <div style={{ width: isMobile ? '500px' : '100%', height: '300px' }}>
+        <div className={isMobile ? 'overflow-x-auto -mx-2 px-2' : ''}>
+          <div
+            style={{
+              width: isMobile ? '500px' : '100%',
+              height: '300px',
+            }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={formattedData}
@@ -74,7 +81,11 @@ const MonthlyInvoiceChart: React.FC<MonthlyInvoiceChartProps> = ({ monthlyData }
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="sales" name="Sales Invoices" fill="#8884d8" />
-                <Bar dataKey="supplier" name="Supplier Invoices" fill="#82ca9d" />
+                <Bar
+                  dataKey="supplier"
+                  name="Supplier Invoices"
+                  fill="#82ca9d"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

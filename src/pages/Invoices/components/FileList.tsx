@@ -34,68 +34,123 @@ const FileList: React.FC<FileListProps> = ({
   uploadSuccess = false,
   uploadError = null,
   remainingFilesCount = 0,
-  hasReachedFileLimit = false
+  hasReachedFileLimit = false,
 }) => {
   if (files.length === 0) return null;
-  const canSendEmail = uploadComplete && uploadSuccess && uploadedFiles.length > 0;
+  const canSendEmail =
+    uploadComplete && uploadSuccess && uploadedFiles.length > 0;
   const maxFiles = 15; // Same as default in useFileValidation
 
-  return <div className="space-y-4 px-[10px] py-[10px]">
+  return (
+    <div className="space-y-4 px-[10px] py-[10px]">
       <div className="flex justify-between items-center">
         <h3 className="font-medium">Selected Files ({files.length})</h3>
-        <span className={`text-sm ${hasReachedFileLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+        <span
+          className={`text-sm ${hasReachedFileLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}
+        >
           {files.length}/{maxFiles} files
         </span>
       </div>
-      
+
       <div className="max-h-60 overflow-y-auto space-y-2">
-        {files.map((file, index) => <div key={`${file.name}-${index}`} className="flex items-center justify-between p-2 border rounded-md">
+        {files.map((file, index) => (
+          <div
+            key={`${file.name}-${index}`}
+            className="flex items-center justify-between p-2 border rounded-md"
+          >
             <div className="flex items-center">
               <FileUp className="h-5 w-5 mr-2 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium truncate max-w-xs">{file.name}</p>
+                <p className="text-sm font-medium truncate max-w-xs">
+                  {file.name}
+                </p>
                 <p className="text-xs text-muted-foreground">
                   {(file.size / (1024 * 1024)).toFixed(2)} MB
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => onRemoveFile(index)} disabled={isLoading || isSending}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onRemoveFile(index)}
+              disabled={isLoading || isSending}
+            >
               <FileX className="h-5 w-5 text-muted-foreground" />
             </Button>
-          </div>)}
+          </div>
+        ))}
       </div>
-      
-      {isLoading && <div className="space-y-2">
+
+      {isLoading && (
+        <div className="space-y-2">
           <div className="flex items-center gap-2">
-            {uploadComplete ? uploadSuccess ? <Check className="h-4 w-4 text-green-500" /> : <AlertCircle className="h-4 w-4 text-destructive" /> : <Loader2 className="h-4 w-4 animate-spin text-primary" />}
+            {uploadComplete ? (
+              uploadSuccess ? (
+                <Check className="h-4 w-4 text-green-500" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-destructive" />
+              )
+            ) : (
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            )}
             <p className="text-sm text-muted-foreground">
-              {uploadComplete ? uploadSuccess ? 'Upload complete' : 'Upload failed' : 'Uploading files...'}
+              {uploadComplete
+                ? uploadSuccess
+                  ? 'Upload complete'
+                  : 'Upload failed'
+                : 'Uploading files...'}
             </p>
           </div>
           <Progress value={uploadProgress} className="h-2" />
-        </div>}
+        </div>
+      )}
 
-      {uploadError && <Alert variant="destructive" className="mt-2">
+      {uploadError && (
+        <Alert variant="destructive" className="mt-2">
           <AlertDescription>{uploadError}</AlertDescription>
-        </Alert>}
-      
+        </Alert>
+      )}
+
       <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-        {uploadComplete && uploadSuccess ? <Button className="w-full sm:w-auto" variant="outline" onClick={onAddMoreFiles} disabled={isSending || hasReachedFileLimit}>
+        {uploadComplete && uploadSuccess ? (
+          <Button
+            className="w-full sm:w-auto"
+            variant="outline"
+            onClick={onAddMoreFiles}
+            disabled={isSending || hasReachedFileLimit}
+          >
             {hasReachedFileLimit ? 'File Limit Reached' : 'Upload More Files'}
-          </Button> : <Button className="w-full sm:w-auto" variant="outline" onClick={onResetUpload} disabled={isSending}>
+          </Button>
+        ) : (
+          <Button
+            className="w-full sm:w-auto"
+            variant="outline"
+            onClick={onResetUpload}
+            disabled={isSending}
+          >
             Cancel
-          </Button>}
-        
-        <Button className="w-full sm:w-auto flex-1" onClick={onSendEmail} disabled={!canSendEmail || isSending}>
-          {isSending ? <span className="flex items-center">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+          </Button>
+        )}
+
+        <Button
+          className="w-full sm:w-auto flex-1"
+          onClick={onSendEmail}
+          disabled={!canSendEmail || isSending}
+        >
+          {isSending ? (
+            <span className="flex items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending...
-            </span> : <span className="flex items-center">
-              <Send className="mr-2 h-4 w-4" /> 
+            </span>
+          ) : (
+            <span className="flex items-center">
+              <Send className="mr-2 h-4 w-4" />
               Send Invoice{files.length > 1 ? 's' : ''} by Email
-            </span>}
+            </span>
+          )}
         </Button>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default FileList;

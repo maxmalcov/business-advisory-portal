@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -7,13 +6,7 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface DistributionChartsProps {
   invoicePieData: { name: string; value: number }[];
@@ -33,9 +26,7 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
       <Card>
         <CardHeader>
           <CardTitle>Invoice Distribution</CardTitle>
-          <CardDescription>
-            Sales vs. Supplier Invoices
-          </CardDescription>
+          <CardDescription>Sales vs. Supplier Invoices</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
           <ResponsiveContainer width="100%" height={200}>
@@ -48,10 +39,13 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                // label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
                 {invoicePieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={colors[index % colors.length]}
+                  />
                 ))}
               </Pie>
               <Tooltip />
@@ -59,13 +53,11 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
           </ResponsiveContainer>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Employee Status</CardTitle>
-          <CardDescription>
-            Active vs. Terminated Employees
-          </CardDescription>
+          <CardDescription>Active vs. Terminated Employees</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
           <ResponsiveContainer width="100%" height={200}>
@@ -78,10 +70,13 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                // label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
                 {employeePieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={colors[index % colors.length]}
+                  />
                 ))}
               </Pie>
               <Tooltip />
@@ -89,13 +84,11 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
           </ResponsiveContainer>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Service Requests</CardTitle>
-          <CardDescription>
-            Service request status
-          </CardDescription>
+          <CardDescription>Service request status</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
           <ResponsiveContainer width="100%" height={200}>
@@ -108,10 +101,13 @@ const DistributionCharts: React.FC<DistributionChartsProps> = ({
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                // label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
                 {servicesPieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={colors[index % colors.length]}
+                  />
                 ))}
               </Pie>
               <Tooltip />

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/context/LanguageContext';
@@ -17,7 +16,9 @@ const NewEmployee: React.FC = () => {
           <UserPlus className="h-6 w-6 text-primary" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('hr.new_employee.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t('hr.new_employee.title')}
+          </h1>
           <p className="text-muted-foreground mt-1">
             Fill in the form below to register a new employee
           </p>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,9 +19,16 @@ export const useInvoiceEmail = () => {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const sendInvoiceByEmail = async ({ invoiceType, files, message }: SendEmailOptions) => {
-    const emailField = invoiceType === 'outgoing' ? user?.outgoingInvoiceEmail : user?.incomingInvoiceEmail;
-    
+  const sendInvoiceByEmail = async ({
+    invoiceType,
+    files,
+    message,
+  }: SendEmailOptions) => {
+    const emailField =
+      invoiceType === 'outgoing'
+        ? user?.outgoingInvoiceEmail
+        : user?.incomingInvoiceEmail;
+
     if (!emailField) {
       toast({
         variant: 'destructive',
@@ -45,22 +51,25 @@ export const useInvoiceEmail = () => {
 
     try {
       console.log(`Sending ${invoiceType} invoice with files:`, files);
-      
-      // Call the Supabase Edge Function to send email with attachments
-      const { error, data } = await supabase.functions.invoke('send-invoice-email', {
-        body: {
-          recipientEmail: emailField,
-          fileIds: files.map(file => file.id),
-          fileNames: files.map(file => file.name),
-          userName: user?.name || 'User',
-          companyName: user?.companyName,
-          invoiceType,
-          message,
-          userId: user?.id
-        }
-      });
 
-      console.log("Edge function response:", data);
+      // Call the Supabase Edge Function to send email with attachments
+      const { error, data } = await supabase.functions.invoke(
+        'send-invoice-email',
+        {
+          body: {
+            recipientEmail: emailField,
+            fileIds: files.map((file) => file.id),
+            fileNames: files.map((file) => file.name),
+            userName: user?.name || 'User',
+            companyName: user?.companyName,
+            invoiceType,
+            message,
+            userId: user?.id,
+          },
+        },
+      );
+
+      console.log('Edge function response:', data);
 
       if (error) {
         console.error('Error sending email:', error);
@@ -94,7 +103,6 @@ export const useInvoiceEmail = () => {
 
   return {
     sendInvoiceByEmail,
-    isSending
+    isSending,
   };
 };
-

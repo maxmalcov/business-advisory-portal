@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +25,11 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ employee }) => {
         </div>
         <div>
           <p className="text-sm font-medium">Status</p>
-          <Badge className={employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'}>
+          <Badge
+            className={
+              employee.status === 'active' ? 'bg-green-500' : 'bg-red-500'
+            }
+          >
             {employee.status === 'active' ? 'Active' : 'Terminated'}
           </Badge>
         </div>

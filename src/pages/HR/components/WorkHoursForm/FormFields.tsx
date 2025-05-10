@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
@@ -69,13 +68,15 @@ const FormFields: React.FC<FormFieldsProps> = ({ form }) => {
           <FormItem>
             <FormLabel>Gross Salary*</FormLabel>
             <FormControl>
-              <Input 
-                type="number" 
-                placeholder="0.00" 
-                min="0" 
-                step="0.01" 
+              <Input
+                type="number"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
                 {...field}
-                onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  field.onChange(parseFloat(e.target.value) || 0)
+                }
               />
             </FormControl>
             <FormMessage />
@@ -91,12 +92,12 @@ const FormFields: React.FC<FormFieldsProps> = ({ form }) => {
           <FormItem>
             <FormLabel>Absence Days</FormLabel>
             <FormControl>
-              <Input 
-                type="number" 
-                placeholder="0" 
-                min="0" 
+              <Input
+                type="number"
+                placeholder="0"
+                min="0"
                 {...field}
-                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
               />
             </FormControl>
             <FormMessage />
@@ -115,14 +116,14 @@ const FormFields: React.FC<FormFieldsProps> = ({ form }) => {
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
-                    variant={"outline"}
+                    variant={'outline'}
                     className={cn(
-                      "w-full pl-3 text-left font-normal",
-                      !field.value && "text-muted-foreground"
+                      'w-full pl-3 text-left font-normal',
+                      !field.value && 'text-muted-foreground',
                     )}
                   >
                     {field.value ? (
-                      format(new Date(field.value), "PPP")
+                      format(new Date(field.value), 'PPP')
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -136,7 +137,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ form }) => {
                   selected={field.value ? new Date(field.value) : undefined}
                   onSelect={field.onChange}
                   initialFocus
-                  className={cn("p-3 pointer-events-auto")}
+                  className={cn('p-3 pointer-events-auto')}
                 />
               </PopoverContent>
             </Popover>
@@ -153,8 +154,8 @@ const FormFields: React.FC<FormFieldsProps> = ({ form }) => {
           <FormItem className="md:col-span-2">
             <FormLabel>Notes</FormLabel>
             <FormControl>
-              <Textarea 
-                placeholder="Add any additional notes here..." 
+              <Textarea
+                placeholder="Add any additional notes here..."
                 className="resize-none h-20"
                 {...field}
               />

@@ -6,16 +6,12 @@ import { useSupplierFileUpload } from '../hooks/useSupplierFileUpload';
 import { useSupplierInvoiceEmail } from '../hooks/useSupplierInvoiceEmail';
 import UploadGuidelines from './UploadGuidelines';
 import SupplierFileUploadSection from './SupplierFileUploadSection';
-import {sendEmail} from "@/integrations/email";
-import {log} from "@/utils/logs/log.funciton.ts";
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { sendEmail } from '@/integrations/email';
+import { log } from '@/utils/logs/log.funciton.ts';
+import { useLanguage } from '@/context/LanguageContext.tsx';
 const SupplierInvoiceUpload: React.FC = () => {
-  const {
-    toast
-  } = useToast();
-  const {
-    user
-  } = useAuth();
+  const { toast } = useToast();
+  const { user } = useAuth();
   const {
     selectedFiles,
     uploadedFiles,
@@ -32,33 +28,40 @@ const SupplierInvoiceUpload: React.FC = () => {
     handleRemoveFile,
     resetFiles,
     getRemainingFilesCount,
-    hasReachedFileLimit
+    hasReachedFileLimit,
   } = useSupplierFileUpload();
-  const {
-    sendInvoiceByEmail,
-    isSending
-  } = useSupplierInvoiceEmail();
-  const { t } = useLanguage()
+  const { sendInvoiceByEmail, isSending } = useSupplierInvoiceEmail();
+  const { t } = useLanguage();
   const [emailSent, setEmailSent] = useState(false);
   const handleSendEmail = async () => {
     if (uploadedFiles.length === 0) {
       toast({
         variant: 'destructive',
         title: t('invoices.toast.no-files.title'),
-        description: t('invoices.toast.no-files.description')
+        description: t('invoices.toast.no-files.description'),
       });
       return;
     }
     try {
-      sendEmail(user.incomingInvoiceEmail, 'New invoice', `New supplier invoice was uploaded by ${user.name}`)
+      sendEmail(
+        user.incomingInvoiceEmail,
+        'New invoice',
+        `New supplier invoice was uploaded by ${user.name}`,
+      );
 
-      log({ action: 'Invoice uploaded', description: `Supplier invoice uploaded by ${user.name}`, user: user.email, level: 'info', category: 'invoice'})
-      } catch (error) {
+      log({
+        action: 'Invoice uploaded',
+        description: `Supplier invoice uploaded by ${user.name}`,
+        user: user.email,
+        level: 'info',
+        category: 'invoice',
+      });
+    } catch (error) {
       console.error('Error during email process:', error);
       toast({
         variant: 'destructive',
         title: t('invoices.toast.email-error.title'),
-        description: t('invoices.toast.email-error.description')
+        description: t('invoices.toast.email-error.description'),
       });
     }
   };
@@ -69,7 +72,7 @@ const SupplierInvoiceUpload: React.FC = () => {
       toast({
         variant: 'destructive',
         title: t('invoices.toast.file-limit.title'),
-        description: t('invoices.toast.file-limit.description')
+        description: t('invoices.toast.file-limit.description'),
       });
     }
   };
@@ -83,7 +86,7 @@ const SupplierInvoiceUpload: React.FC = () => {
       toast({
         variant: 'destructive',
         title: t('invoices.toast.file-limit.title'),
-        description: t('invoices.toast.file-limit.description')
+        description: t('invoices.toast.file-limit.description'),
       });
     }
   };
@@ -114,15 +117,41 @@ const SupplierInvoiceUpload: React.FC = () => {
   };
   const remainingFilesCount = getRemainingFilesCount?.() || 0;
   const fileLimit = hasReachedFileLimit?.() || false;
-  return <Card className="transition-all duration-200 hover:shadow-md border-primary/10">
+  return (
+    <Card className="transition-all duration-200 hover:shadow-md border-primary/10">
       <CardHeader className="space-y-1 py-[10px]" />
       <CardContent className="space-y-8">
         <div className="bg-muted/50 rounded-lg p-6">
-          <UploadGuidelines emailAddress={user?.incomingInvoiceEmail} emailType="incoming" />
+          <UploadGuidelines
+            emailAddress={user?.incomingInvoiceEmail}
+            emailType="incoming"
+          />
         </div>
-        
-        <SupplierFileUploadSection selectedFiles={selectedFiles} uploadedFiles={uploadedFiles} isDragging={isDragging} isLoading={isLoading} isSending={isSending} uploadProgress={uploadProgress} uploadComplete={uploadComplete} uploadSuccess={uploadSuccess} uploadError={uploadError} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} onFileSelect={handleFileSelect} onRemoveFile={handleRemoveFile} onSendEmail={handleSendEmail} onResetUpload={handleResetUpload} onAddMoreFiles={handleAddMoreFiles} onFileChange={handleFileChange} remainingFilesCount={remainingFilesCount} hasReachedFileLimit={fileLimit} />
+
+        <SupplierFileUploadSection
+          selectedFiles={selectedFiles}
+          uploadedFiles={uploadedFiles}
+          isDragging={isDragging}
+          isLoading={isLoading}
+          isSending={isSending}
+          uploadProgress={uploadProgress}
+          uploadComplete={uploadComplete}
+          uploadSuccess={uploadSuccess}
+          uploadError={uploadError}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onFileSelect={handleFileSelect}
+          onRemoveFile={handleRemoveFile}
+          onSendEmail={handleSendEmail}
+          onResetUpload={handleResetUpload}
+          onAddMoreFiles={handleAddMoreFiles}
+          onFileChange={handleFileChange}
+          remainingFilesCount={remainingFilesCount}
+          hasReachedFileLimit={fileLimit}
+        />
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
 export default SupplierInvoiceUpload;

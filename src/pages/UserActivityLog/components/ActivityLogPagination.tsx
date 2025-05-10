@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Pagination,
@@ -22,11 +21,11 @@ const ActivityLogPagination: React.FC<ActivityLogPaginationProps> = ({
   onPageChange,
 }) => {
   const isMobile = useIsMobile();
-  
+
   // Calculate which page numbers to show
   const getPageNumbers = () => {
     const pageNumbers = [];
-    
+
     // For mobile or small number of pages, show fewer page links
     if (isMobile || totalPages <= 5) {
       for (let i = 1; i <= totalPages; i++) {
@@ -34,31 +33,31 @@ const ActivityLogPagination: React.FC<ActivityLogPaginationProps> = ({
       }
       return pageNumbers;
     }
-    
+
     // Always include first and last page
     pageNumbers.push(1);
-    
+
     // Add ellipsis and pages around current page
     if (currentPage > 3) {
       pageNumbers.push(null); // ellipsis
     }
-    
+
     // Pages around current page
     const startPage = Math.max(2, currentPage - 1);
     const endPage = Math.min(totalPages - 1, currentPage + 1);
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i);
     }
-    
+
     if (currentPage < totalPages - 2) {
       pageNumbers.push(null); // ellipsis
     }
-    
+
     if (totalPages > 1) {
       pageNumbers.push(totalPages);
     }
-    
+
     return pageNumbers;
   };
 
@@ -68,14 +67,20 @@ const ActivityLogPagination: React.FC<ActivityLogPaginationProps> = ({
         <PaginationItem>
           <PaginationPrevious
             onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-            className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            className={
+              currentPage === 1
+                ? 'pointer-events-none opacity-50'
+                : 'cursor-pointer'
+            }
           />
         </PaginationItem>
-        
-        {getPageNumbers().map((page, index) => 
+
+        {getPageNumbers().map((page, index) =>
           page === null ? (
             <PaginationItem key={`ellipsis-${index}`}>
-              <span className="h-9 w-9 flex items-center justify-center">...</span>
+              <span className="h-9 w-9 flex items-center justify-center">
+                ...
+              </span>
             </PaginationItem>
           ) : (
             <PaginationItem key={page}>
@@ -87,13 +92,19 @@ const ActivityLogPagination: React.FC<ActivityLogPaginationProps> = ({
                 {page}
               </PaginationLink>
             </PaginationItem>
-          )
+          ),
         )}
-        
+
         <PaginationItem>
           <PaginationNext
-            onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
-            className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            onClick={() =>
+              currentPage < totalPages && onPageChange(currentPage + 1)
+            }
+            className={
+              currentPage === totalPages
+                ? 'pointer-events-none opacity-50'
+                : 'cursor-pointer'
+            }
           />
         </PaginationItem>
       </PaginationContent>

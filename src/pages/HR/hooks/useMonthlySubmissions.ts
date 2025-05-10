@@ -1,4 +1,3 @@
-
 import { useSubmissionsFetcher } from './useSubmissionsFetcher';
 import { useMonthsProcessor } from './useMonthsProcessor';
 import { useSubmissionStatus } from './useSubmissionStatus';
@@ -27,22 +26,25 @@ export type WorkHoursSubmission = {
 export const useMonthlySubmissions = (monthCount: number = 3) => {
   // Fetch all submissions
   const { submissions, loading, refreshSubmissions } = useSubmissionsFetcher();
-  
+
   // Process months based on submissions
-  const { 
-    months, 
-    selectedMonth, 
+  const {
+    months,
+    selectedMonth,
     setSelectedMonth,
     selectedYear,
     handleYearChange,
-    handleNavigateMonth 
+    handleNavigateMonth,
   } = useMonthsProcessor(submissions, monthCount);
-  
+
   // Check if current month is submitted
   const { isSubmitted } = useSubmissionStatus(selectedMonth, submissions);
-  
+
   // Operations for submitting months
-  const { submitMonth } = useSubmissionOperations(selectedMonth, refreshSubmissions);
+  const { submitMonth } = useSubmissionOperations(
+    selectedMonth,
+    refreshSubmissions,
+  );
 
   return {
     months,

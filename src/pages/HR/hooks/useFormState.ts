@@ -1,11 +1,12 @@
-
 import { useState } from 'react';
 import { FormValues } from '../components/WorkHoursForm';
 
 export const useFormState = () => {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>(undefined);
-  const [currentFormValues, setCurrentFormValues] = useState<FormValues | null>(null);
+  const [currentFormValues, setCurrentFormValues] = useState<FormValues | null>(
+    null,
+  );
 
   const startEdit = (employee: FormValues) => {
     setIsAddingNew(false);
@@ -25,6 +26,6 @@ export const useFormState = () => {
     editingId,
     currentFormValues,
     startEdit,
-    cancelForm
+    cancelForm,
   };
 };

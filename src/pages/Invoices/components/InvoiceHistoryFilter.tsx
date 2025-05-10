@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -17,19 +16,19 @@ const InvoiceHistoryFilter: React.FC<InvoiceHistoryFilterProps> = ({
   searchQuery,
   setSearchQuery,
   filterType,
-  setFilterType
+  setFilterType,
 }) => {
   const { t } = useLanguage();
-  
+
   const getLabels = () => {
     return {
       placeholder: t('invoices.search.placeholder'),
       all: t('invoices.search.all'),
       sales: t('invoices.search.sales'),
-      supplier: t('invoices.search.supplier')
+      supplier: t('invoices.search.supplier'),
     };
   };
-  
+
   const labels = getLabels();
 
   return (
@@ -44,7 +43,11 @@ const InvoiceHistoryFilter: React.FC<InvoiceHistoryFilterProps> = ({
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Tabs value={filterType} onValueChange={(v) => setFilterType(v as any)} className="sm:w-auto">
+        <Tabs
+          value={filterType}
+          onValueChange={(v) => setFilterType(v as any)}
+          className="sm:w-auto"
+        >
           <TabsList className="grid w-full sm:w-auto grid-cols-3">
             <TabsTrigger value="all">{labels.all}</TabsTrigger>
             <TabsTrigger value="sale">{labels.sales}</TabsTrigger>

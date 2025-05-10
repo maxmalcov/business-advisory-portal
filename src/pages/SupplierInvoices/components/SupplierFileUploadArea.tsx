@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { FileUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface SupplierFileUploadAreaProps {
   isDragging: boolean;
@@ -21,16 +20,17 @@ const SupplierFileUploadArea: React.FC<SupplierFileUploadAreaProps> = ({
   onFileSelect,
   isLoading = false,
 }) => {
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
-    <div 
+    <div
       className={`
         border-2 border-dashed rounded-xl p-10 text-center
         transition-all duration-300 ease-in-out
-        ${isDragging 
-          ? 'border-primary bg-primary/5' 
-          : 'border-muted-foreground/20 hover:border-primary/50 hover:bg-muted/50'
+        ${
+          isDragging
+            ? 'border-primary bg-primary/5'
+            : 'border-muted-foreground/20 hover:border-primary/50 hover:bg-muted/50'
         }
         transition-transform duration-300 transform hover:scale-[1.01]
       `}

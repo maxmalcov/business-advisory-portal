@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +17,7 @@ const EmployeeDetailSkeleton: React.FC = () => {
         </div>
         <Skeleton className="h-6 w-24 rounded-full" />
       </div>
-      
+
       {/* Basic Information Card Skeleton */}
       <Card className="overflow-hidden border-0 shadow-md">
         <div className="bg-gray-50 px-6 py-3 border-b">
@@ -40,7 +39,7 @@ const EmployeeDetailSkeleton: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Employment Dates Card Skeleton */}
       <Card className="overflow-hidden border-0 shadow-md">
         <div className="bg-gray-50 px-6 py-3 border-b">
@@ -62,7 +61,7 @@ const EmployeeDetailSkeleton: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Identification Card Skeleton */}
       <Card className="overflow-hidden border-0 shadow-md">
         <div className="bg-gray-50 px-6 py-3 border-b">
@@ -87,7 +86,7 @@ const EmployeeDetailSkeleton: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Schedule Card Skeleton */}
       <Card className="overflow-hidden border-0 shadow-md">
         <div className="bg-gray-50 px-6 py-3 border-b">
@@ -98,7 +97,9 @@ const EmployeeDetailSkeleton: React.FC = () => {
         </div>
         <CardContent className="pt-4">
           <div>
-            <p className="text-sm font-medium text-gray-500">Weekly Working Schedule</p>
+            <p className="text-sm font-medium text-gray-500">
+              Weekly Working Schedule
+            </p>
             <Skeleton className="h-5 w-full mt-1" />
             <Skeleton className="h-5 w-3/4 mt-1" />
             <Skeleton className="h-5 w-1/2 mt-1" />

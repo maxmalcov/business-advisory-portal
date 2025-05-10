@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,27 +15,31 @@ export const useFetchUsers = () => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      console.log("Fetching users from profiles table as", currentUser?.userType);
-      
+      console.log(
+        'Fetching users from profiles table as',
+        currentUser?.userType,
+      );
+
       // With our RLS policies, admins can see all profiles
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*');
-      
+
       if (profilesError) {
         console.error('Error fetching profiles:', profilesError);
         throw profilesError;
       }
-      
+
       if (profilesData) {
-        console.log("Fetched profiles:", profilesData);
-        
+        console.log('Fetched profiles:', profilesData);
+
         // Transform the profiles data to match our User interface
-        const transformedUsers: User[] = profilesData.map(profile => {
+        const transformedUsers: User[] = profilesData.map((profile) => {
           // Check if user is inactive by looking for -inactive suffix
           const isUserActive = !profile.usertype?.includes('-inactive');
-          const cleanUserType = profile.usertype?.replace('-inactive', '') || 'client';
-          
+          const cleanUserType =
+            profile.usertype?.replace('-inactive', '') || 'client';
+
           return {
             id: profile.id,
             name: profile.name || '',
@@ -45,7 +48,7 @@ export const useFetchUsers = () => {
             userType: cleanUserType as UserType,
             incomingInvoiceEmail: profile.incominginvoiceemail || '',
             outgoingInvoiceEmail: profile.outgoinginvoiceemail || '',
-            iframeUrls: profile.iframeurls || [], 
+            iframeUrls: profile.iframeurls || [],
             isActive: isUserActive,
             phone: profile.phone || '',
             address: profile.address || '',
@@ -54,14 +57,14 @@ export const useFetchUsers = () => {
             province: profile.province || '',
             country: profile.country || '',
             nif: profile.nif || '',
-            accountType: (profile.accounttype || '') as AccountType
+            accountType: (profile.accounttype || '') as AccountType,
           };
         });
-        
-        console.log("Transformed users:", transformedUsers);
+
+        console.log('Transformed users:', transformedUsers);
         setUsers(transformedUsers);
       } else {
-        console.log("No profiles data returned from Supabase");
+        console.log('No profiles data returned from Supabase');
         setUsers([]);
       }
     } catch (error) {
@@ -69,7 +72,7 @@ export const useFetchUsers = () => {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to load users'
+        description: 'Failed to load users',
       });
     } finally {
       setIsLoading(false);
@@ -81,10 +84,11 @@ export const useFetchUsers = () => {
   }, []);
 
   // Filter users based on search query
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.companyName?.toLowerCase().includes(searchQuery.toLowerCase() || '')
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.companyName?.toLowerCase().includes(searchQuery.toLowerCase() || ''),
   );
 
   return {
@@ -93,7 +97,6 @@ export const useFetchUsers = () => {
     isLoading,
     searchQuery,
     setSearchQuery,
-    refreshUsers: fetchUsers
+    refreshUsers: fetchUsers,
   };
 };
-

@@ -1,8 +1,7 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { InvoiceUpload } from '../components/InvoiceHistoryList';
-import {sendEmail} from "@/integrations/email";
+import { sendEmail } from '@/integrations/email';
 
 export function useInvoiceFileOperations() {
   const { toast } = useToast();
@@ -12,7 +11,7 @@ export function useInvoiceFileOperations() {
       const { data, error } = await supabase.storage
         .from('invoices')
         .createSignedUrl(invoice.storage_path, 60);
-        
+
       if (error) {
         console.error('Error creating signed URL:', error);
         toast({
@@ -22,7 +21,7 @@ export function useInvoiceFileOperations() {
         });
         return;
       }
-      
+
       // Open the URL in a new tab
       window.open(data.signedUrl, '_blank');
     } catch (error) {
@@ -30,11 +29,17 @@ export function useInvoiceFileOperations() {
     }
   };
 
-  const handleDownloadInvoice = async (invoice: InvoiceUpload) => {
+  const handleDownloadInvoice = async (
+    invoice: InvoiceUpload | string,
+    invoice_name: string = 'unknown_invoice',
+  ) => {
     try {
-      const { data, error } = await supabase.storage
-        .from('invoices')
-        .download(invoice.storage_path);
+      const { data, error } =
+        typeof invoice == 'string'
+          ? await supabase.storage.from('invoices').download(invoice)
+          : await supabase.storage
+              .from('invoices')
+              .download(invoice.storage_path);
 
       if (error) {
         console.error('Error downloading file:', error);
@@ -45,19 +50,21 @@ export function useInvoiceFileOperations() {
         });
         return;
       }
-      
+
       // Create a download link
       const url = URL.createObjectURL(data);
       const a = document.createElement('a');
-      console.log(url)
+      console.log(url);
       a.href = url;
-      a.download = invoice.file_name || 'download';
+      a.download =
+        invoice_name || typeof invoice == 'string'
+          ? invoice_name
+          : invoice.file_name || 'download';
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
       URL.revokeObjectURL(url);
       document.body.removeChild(a);
-
     } catch (error) {
       console.error('Error downloading invoice:', error);
     }
@@ -65,6 +72,6 @@ export function useInvoiceFileOperations() {
 
   return {
     handleViewInvoice,
-    handleDownloadInvoice
+    handleDownloadInvoice,
   };
 }

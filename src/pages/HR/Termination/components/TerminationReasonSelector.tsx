@@ -1,8 +1,13 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface TerminationReasonSelectorProps {
   terminationReason: string;
@@ -14,27 +19,24 @@ export const reasonOptions = [
   { id: 'performance', name: 'Performance Issues' },
   { id: 'redundancy', name: 'Redundancy' },
   { id: 'contract_end', name: 'End of Contract' },
-  { id: 'other', name: 'Other' }
+  { id: 'other', name: 'Other' },
 ];
 
 const TerminationReasonSelector = ({
   terminationReason,
-  setTerminationReason
+  setTerminationReason,
 }: TerminationReasonSelectorProps) => {
   const { t } = useLanguage();
-  
+
   return (
     <div className="grid gap-2">
       <Label htmlFor="reason">{t('hr.termination.reason')}</Label>
-      <Select 
-        value={terminationReason}
-        onValueChange={setTerminationReason}
-      >
+      <Select value={terminationReason} onValueChange={setTerminationReason}>
         <SelectTrigger id="reason">
           <SelectValue placeholder="Select a reason" />
         </SelectTrigger>
         <SelectContent>
-          {reasonOptions.map(reason => (
+          {reasonOptions.map((reason) => (
             <SelectItem key={reason.id} value={reason.id}>
               {reason.name}
             </SelectItem>

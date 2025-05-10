@@ -1,4 +1,3 @@
-
 export type EmployeeStatus = 'active' | 'terminated';
 export type SalaryType = 'gross' | 'net';
 
@@ -13,7 +12,7 @@ export interface Employee {
   dniTie?: string;
   idDocument?: string;
   weeklySchedule?: string;
-  
+
   // Additional fields now available in the database
   socialSecurityNumber?: string;
   salary?: string;

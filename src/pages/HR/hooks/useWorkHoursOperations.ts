@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/context/AuthContext';
 import { employeeWorkHoursTable } from '@/integrations/supabase/client';
 import { getMonthYearForStorage } from '@/utils/dates';
@@ -6,14 +5,17 @@ import { isAfter, startOfMonth } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import type { WorkHoursData } from './useEmployeeWorkHours';
 
-export const useWorkHoursOperations = (selectedMonth: Date, refreshData: () => Promise<void>) => {
+export const useWorkHoursOperations = (
+  selectedMonth: Date,
+  refreshData: () => Promise<void>,
+) => {
   const { user } = useAuth();
   const { toast } = useToast();
 
   // Save a single employee record
   const saveEmployee = async (employee: WorkHoursData): Promise<boolean> => {
     if (!user?.id) return false;
-    
+
     try {
       // Prevent saving data for future months
       const today = new Date();
@@ -25,9 +27,9 @@ export const useWorkHoursOperations = (selectedMonth: Date, refreshData: () => P
         });
         return false;
       }
-      
+
       const formattedMonth = getMonthYearForStorage(selectedMonth);
-      
+
       if (employee.id) {
         // Update existing record
         await employeeWorkHoursTable()
@@ -55,7 +57,7 @@ export const useWorkHoursOperations = (selectedMonth: Date, refreshData: () => P
           notes: employee.notes,
         });
       }
-      
+
       await refreshData(); // Refresh data
       return true;
     } catch (error) {
@@ -72,7 +74,7 @@ export const useWorkHoursOperations = (selectedMonth: Date, refreshData: () => P
   // Delete an employee record
   const deleteEmployee = async (id: string): Promise<boolean> => {
     if (!user?.id) return false;
-    
+
     try {
       // Prevent deleting data for future months
       const today = new Date();
@@ -84,7 +86,7 @@ export const useWorkHoursOperations = (selectedMonth: Date, refreshData: () => P
         });
         return false;
       }
-      
+
       await employeeWorkHoursTable().delete().eq('id', id);
       await refreshData(); // Refresh data
       return true;

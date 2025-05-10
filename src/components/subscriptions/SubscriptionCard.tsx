@@ -1,16 +1,18 @@
-
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { SubscriptionTool } from '@/types/subscriptions';
-import SubscriptionTypeIcon from "@/pages/AdminSubscriptions/components/SubscriptionTypeIcon.tsx";
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import SubscriptionTypeIcon from '@/pages/AdminSubscriptions/components/SubscriptionTypeIcon.tsx';
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface SubscriptionCardProps {
   tool: SubscriptionTool;
   onClick: (tool: SubscriptionTool) => void;
 }
 
-const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ tool, onClick }) => {
+const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
+  tool,
+  onClick,
+}) => {
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'active':
@@ -24,10 +26,10 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ tool, onClick }) =>
     }
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
-    <Card 
+    <Card
       className="cursor-pointer hover:shadow-md transition-all"
       onClick={() => onClick(tool)}
     >
@@ -36,7 +38,9 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ tool, onClick }) =>
           <div className="flex items-center gap-2">
             <SubscriptionTypeIcon type={tool.icon as any} />
           </div>
-          <div className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(tool.status)}`}>
+          <div
+            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(tool.status)}`}
+          >
             {t(tool.status)}
           </div>
         </div>

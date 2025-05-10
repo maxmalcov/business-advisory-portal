@@ -1,9 +1,5 @@
-
 import React from 'react';
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -22,7 +18,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface LogsTableProps {
   logs: LogEntry[];
@@ -30,16 +26,16 @@ interface LogsTableProps {
 
 const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
   const formatDate = (dateString: string | Date) => {
-    console.log(dateString)
-    if(dateString instanceof Date){
-      return dateString.toLocaleString()
+    console.log(dateString);
+    if (dateString instanceof Date) {
+      return dateString.toLocaleString();
     }
     const date = new Date(dateString + 'Z');
     return date.toLocaleString();
   };
 
-  const {t} = useLanguage()
-  
+  const { t } = useLanguage();
+
   return (
     <Card>
       <CardContent className="p-0">
@@ -86,7 +82,10 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                 <TableCell>{log.user}</TableCell>
                 <TableCell>{formatDate(log.timestamp)}</TableCell>
                 <TableCell>
-                  <Badge variant="outline" className={getLogBadgeStyle(log.level)}>
+                  <Badge
+                    variant="outline"
+                    className={getLogBadgeStyle(log.level)}
+                  >
                     {log.level}
                   </Badge>
                 </TableCell>

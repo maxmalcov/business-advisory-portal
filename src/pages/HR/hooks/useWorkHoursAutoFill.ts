@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { employeeWorkHoursTable } from '@/integrations/supabase/client';
@@ -12,7 +11,7 @@ export const useWorkHoursAutoFill = (
   lastMonthData: WorkHoursData[],
   isSubmitted: boolean,
   loading: boolean,
-  refreshData: () => Promise<void>
+  refreshData: () => Promise<void>,
 ) => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -22,9 +21,9 @@ export const useWorkHoursAutoFill = (
     if (workHours.length === 0 && lastMonthData.length > 0 && !isSubmitted) {
       try {
         const formattedMonth = getMonthYearForStorage(selectedMonth);
-        
+
         // Prepare data for insertion
-        const dataToInsert = lastMonthData.map(item => ({
+        const dataToInsert = lastMonthData.map((item) => ({
           client_id: user?.id,
           month_year: formattedMonth,
           employee_id: item.employeeId,
@@ -35,14 +34,15 @@ export const useWorkHoursAutoFill = (
           medical_leave_date: null, // Reset for new month
           notes: item.notes,
         }));
-        
+
         if (dataToInsert.length > 0) {
           await employeeWorkHoursTable().insert(dataToInsert);
           await refreshData(); // Refresh data
-          
+
           toast({
             title: 'Data pre-filled',
-            description: 'Employee data has been pre-filled from the previous month.',
+            description:
+              'Employee data has been pre-filled from the previous month.',
           });
         }
       } catch (error) {
@@ -58,7 +58,12 @@ export const useWorkHoursAutoFill = (
 
   // Effect to auto-fill data from previous month if needed
   useEffect(() => {
-    if (workHours.length === 0 && lastMonthData.length > 0 && !loading && !isSubmitted) {
+    if (
+      workHours.length === 0 &&
+      lastMonthData.length > 0 &&
+      !loading &&
+      !isSubmitted
+    ) {
       autoFillFromPreviousMonth();
     }
   }, [workHours, lastMonthData, loading, isSubmitted]);

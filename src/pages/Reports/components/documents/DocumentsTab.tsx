@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -29,7 +28,7 @@ const DocumentsTab: React.FC = () => {
     exportToCSV,
     currentPage,
     totalPages,
-    setCurrentPage
+    setCurrentPage,
   } = useInvoiceData();
 
   return (
@@ -54,12 +53,9 @@ const DocumentsTab: React.FC = () => {
           onExport={exportToCSV}
           totalItems={allInvoices.length}
         />
-        
-        <InvoiceTable 
-          invoices={invoices}
-          loading={loading}
-        />
-        
+
+        <InvoiceTable invoices={invoices} loading={loading} />
+
         <InvoicePagination
           currentPage={currentPage}
           totalPages={totalPages}

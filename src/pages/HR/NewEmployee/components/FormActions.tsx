@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -8,16 +7,15 @@ interface FormActionsProps {
   onCancel: () => void;
 }
 
-const FormActions: React.FC<FormActionsProps> = ({ isSubmitting, onCancel }) => {
+const FormActions: React.FC<FormActionsProps> = ({
+  isSubmitting,
+  onCancel,
+}) => {
   const { t } = useLanguage();
-  
+
   return (
     <div className="flex justify-between">
-      <Button 
-        type="button" 
-        variant="outline" 
-        onClick={onCancel}
-      >
+      <Button type="button" variant="outline" onClick={onCancel}>
         {t('app.cancel')}
       </Button>
       <Button type="submit" disabled={isSubmitting}>

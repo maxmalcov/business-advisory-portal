@@ -1,9 +1,12 @@
-
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -37,8 +40,8 @@ const SubscriptionPeriodEditor: React.FC<SubscriptionPeriodEditorProps> = ({
             <Label htmlFor="startDate">Start Date</Label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full justify-start text-left font-normal"
                 >
                   <Calendar className="mr-2 h-4 w-4" />
@@ -55,22 +58,22 @@ const SubscriptionPeriodEditor: React.FC<SubscriptionPeriodEditorProps> = ({
               </PopoverContent>
             </Popover>
           </div>
-          
+
           <div className="w-1/2">
             <div className="flex justify-between items-center mb-2">
               <Label htmlFor="isLifetime">Lifetime Subscription</Label>
-              <Switch 
-                id="isLifetime" 
+              <Switch
+                id="isLifetime"
                 checked={isLifetime}
                 onCheckedChange={onLifetimeChange}
               />
             </div>
-            
+
             {!isLifetime && (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full justify-start text-left font-normal"
                   >
                     <Calendar className="mr-2 h-4 w-4" />
@@ -90,7 +93,7 @@ const SubscriptionPeriodEditor: React.FC<SubscriptionPeriodEditorProps> = ({
             )}
           </div>
         </div>
-        
+
         <div className="flex justify-end space-x-2">
           <Button variant="outline" size="sm" onClick={onCancel}>
             Cancel

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Subscription } from '../types';
 import {
@@ -7,7 +6,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import SubscriptionForm from './SubscriptionForm';
 
 type SubscriptionDialogProps = {
@@ -23,23 +22,25 @@ const SubscriptionDialog: React.FC<SubscriptionDialogProps> = ({
   isEditMode,
   selectedSubscription,
   onOpenChange,
-  onSubmit
+  onSubmit,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>{isEditMode ? 'Edit Subscription' : 'Add New Subscription'}</DialogTitle>
+          <DialogTitle>
+            {isEditMode ? 'Edit Subscription' : 'Add New Subscription'}
+          </DialogTitle>
           <DialogDescription>
-            {isEditMode 
-              ? 'Modify the subscription details below.' 
+            {isEditMode
+              ? 'Modify the subscription details below.'
               : 'Fill in the details to add a new subscription.'}
           </DialogDescription>
         </DialogHeader>
-        <SubscriptionForm 
-          subscription={selectedSubscription} 
-          onSubmit={onSubmit} 
-          onCancel={() => onOpenChange(false)} 
+        <SubscriptionForm
+          subscription={selectedSubscription}
+          onSubmit={onSubmit}
+          onCancel={() => onOpenChange(false)}
         />
       </DialogContent>
     </Dialog>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
@@ -15,10 +14,10 @@ export const FilterInput: React.FC<FilterInputProps> = ({
   value,
   onChange,
   placeholder = 'Search...',
-  className
+  className,
 }) => {
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn('relative', className)}>
       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         type="text"

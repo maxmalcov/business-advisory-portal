@@ -1,12 +1,11 @@
-
 import React from 'react';
-import { 
-  CircleDollarSign, 
-  FileText, 
-  Users, 
-  Package, 
-  PackagePlus, 
-  Boxes 
+import {
+  CircleDollarSign,
+  FileText,
+  Users,
+  Package,
+  PackagePlus,
+  Boxes,
 } from 'lucide-react';
 
 export const getIconComponent = (iconName: string) => {

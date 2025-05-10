@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,18 +10,21 @@ interface IframeUrlsSectionProps {
   onUserChange: (user: Omit<User, 'id'>) => void;
 }
 
-const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ newUser, onUserChange }) => {
+const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({
+  newUser,
+  onUserChange,
+}) => {
   const [newIframeUrl, setNewIframeUrl] = useState('');
 
   // Handle adding a new iframe URL
   const handleAddIframeUrl = () => {
     if (!newIframeUrl) return;
-    
+
     onUserChange({
       ...newUser,
-      iframeUrls: [...(newUser.iframeUrls || []), newIframeUrl]
+      iframeUrls: [...(newUser.iframeUrls || []), newIframeUrl],
     });
-    
+
     setNewIframeUrl('');
   };
 
@@ -30,10 +32,10 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ newUser, onUserCh
   const handleRemoveIframeUrl = (index: number) => {
     const newUrls = [...(newUser.iframeUrls || [])];
     newUrls.splice(index, 1);
-    
+
     onUserChange({
       ...newUser,
-      iframeUrls: newUrls
+      iframeUrls: newUrls,
     });
   };
 
@@ -44,17 +46,20 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ newUser, onUserCh
         {newUser.iframeUrls?.map((url: string, index: number) => (
           <div key={index} className="flex items-center">
             <LinkIcon className="mr-2 h-4 w-4" />
-            <Input 
+            <Input
               value={url}
               onChange={(e) => {
                 const newUrls = [...(newUser.iframeUrls || [])];
                 newUrls[index] = e.target.value;
-                onUserChange({...newUser, iframeUrls: newUrls});
+                onUserChange({
+                  ...newUser,
+                  iframeUrls: newUrls,
+                });
               }}
               className="flex-grow"
             />
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               onClick={() => handleRemoveIframeUrl(index)}
             >
@@ -62,17 +67,17 @@ const IframeUrlsSection: React.FC<IframeUrlsSectionProps> = ({ newUser, onUserCh
             </Button>
           </div>
         ))}
-        
+
         <div className="flex items-center mt-2">
           <LinkIcon className="mr-2 h-4 w-4" />
-          <Input 
+          <Input
             placeholder="Add new URL"
             value={newIframeUrl}
             onChange={(e) => setNewIframeUrl(e.target.value)}
             className="flex-grow"
           />
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={handleAddIframeUrl}
             className="ml-2"

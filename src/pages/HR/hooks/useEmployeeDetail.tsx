@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
@@ -20,82 +19,87 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const fetchEmployeeData = useCallback(async (employeeId: string) => {
-    if (!employeeId) return;
-    
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      console.log('Fetching employee data for ID:', employeeId);
-      
-      const { data, error } = await employeesTable()
-        .select('*')  // Select all fields available
-        .eq('id', employeeId)
-        .single();
-        
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
+  const fetchEmployeeData = useCallback(
+    async (employeeId: string) => {
+      if (!employeeId) return;
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        console.log('Fetching employee data for ID:', employeeId);
+
+        const { data, error } = await employeesTable()
+          .select('*') // Select all fields available
+          .eq('id', employeeId)
+          .single();
+
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
+
+        if (!data) {
+          console.error('No employee data found for ID:', employeeId);
+          throw new Error('Employee not found');
+        }
+
+        console.log('Raw employee data from Supabase:', data);
+
+        // Type assertion to handle the returned data
+        const rowData = data as any;
+
+        const employeeData: Employee = {
+          id: String(rowData.id || ''),
+          fullName: String(rowData.full_name || ''),
+          position: String(rowData.position || ''),
+          status: (rowData.status as 'active' | 'terminated') || 'active',
+          startDate: String(rowData.start_date || ''),
+          // Fix: Properly handle endDate as undefined or string
+          endDate: rowData.end_date ? String(rowData.end_date) : undefined,
+          companyName: String(rowData.company_name || ''),
+          dniTie: String(rowData.dni_tie || ''),
+          idDocument: String(rowData.id_document || ''),
+          weeklySchedule: String(rowData.weekly_schedule || ''),
+
+          // Map the additional fields we've added to the database
+          socialSecurityNumber: rowData.social_security_number
+            ? String(rowData.social_security_number)
+            : undefined,
+          salary: rowData.salary ? String(rowData.salary) : undefined,
+          salaryType: rowData.salary_type as 'gross' | 'net' | undefined,
+          iban: rowData.iban ? String(rowData.iban) : undefined,
+          email: rowData.email ? String(rowData.email) : undefined,
+          address: rowData.address ? String(rowData.address) : undefined,
+          comments: rowData.comments ? String(rowData.comments) : undefined,
+        };
+
+        console.log('Employee data fetched successfully:', employeeData);
+        setEmployee(employeeData);
+      } catch (error) {
+        console.error('Error fetching employee details:', error);
+        setError('Failed to load employee information. Please try again.');
+        toast({
+          title: 'Error Loading Data',
+          description: 'There was a problem loading the employee information.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
       }
-      
-      if (!data) {
-        console.error('No employee data found for ID:', employeeId);
-        throw new Error('Employee not found');
-      }
-      
-      console.log('Raw employee data from Supabase:', data);
-      
-      // Type assertion to handle the returned data
-      const rowData = data as any;
-      
-      const employeeData: Employee = {
-        id: String(rowData.id || ''),
-        fullName: String(rowData.full_name || ''),
-        position: String(rowData.position || ''),
-        status: (rowData.status as 'active' | 'terminated') || 'active',
-        startDate: String(rowData.start_date || ''),
-        // Fix: Properly handle endDate as undefined or string
-        endDate: rowData.end_date ? String(rowData.end_date) : undefined,
-        companyName: String(rowData.company_name || ''),
-        dniTie: String(rowData.dni_tie || ''),
-        idDocument: String(rowData.id_document || ''),
-        weeklySchedule: String(rowData.weekly_schedule || ''),
-        
-        // Map the additional fields we've added to the database
-        socialSecurityNumber: rowData.social_security_number ? String(rowData.social_security_number) : undefined,
-        salary: rowData.salary ? String(rowData.salary) : undefined,
-        salaryType: rowData.salary_type as 'gross' | 'net' | undefined,
-        iban: rowData.iban ? String(rowData.iban) : undefined,
-        email: rowData.email ? String(rowData.email) : undefined,
-        address: rowData.address ? String(rowData.address) : undefined,
-        comments: rowData.comments ? String(rowData.comments) : undefined
-      };
-      
-      console.log('Employee data fetched successfully:', employeeData);
-      setEmployee(employeeData);
-    } catch (error) {
-      console.error('Error fetching employee details:', error);
-      setError('Failed to load employee information. Please try again.');
-      toast({
-        title: 'Error Loading Data',
-        description: 'There was a problem loading the employee information.',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [toast]);
+    },
+    [toast],
+  );
 
   const handleSave = async (updatedEmployee: Employee) => {
     if (!employee) return;
-    
+
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       console.log('Saving employee update:', updatedEmployee);
-      
+
       // Create an update object with snake_case keys for Supabase
       const updateData = {
         full_name: updatedEmployee.fullName,
@@ -113,22 +117,22 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
         iban: updatedEmployee.iban || null,
         email: updatedEmployee.email || null,
         address: updatedEmployee.address || null,
-        comments: updatedEmployee.comments || null
+        comments: updatedEmployee.comments || null,
       };
-      
+
       const { error } = await employeesTable()
         .update(updateData)
         .eq('id', employee.id);
-        
+
       if (error) throw error;
-      
+
       toast({
         title: 'Employee Updated',
         description: 'Employee information has been successfully updated.',
       });
-      
+
       setEmployee(updatedEmployee);
-      
+
       window.location.reload();
     } catch (error) {
       console.error('Error updating employee:', error);
@@ -136,7 +140,7 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
       toast({
         title: 'Error',
         description: 'There was a problem updating the employee information.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -149,6 +153,6 @@ export function useEmployeeDetail(): UseEmployeeDetailReturn {
     isSubmitting,
     error,
     fetchEmployeeData,
-    handleSave
+    handleSave,
   };
 }

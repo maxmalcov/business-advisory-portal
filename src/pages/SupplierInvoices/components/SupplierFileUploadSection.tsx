@@ -1,4 +1,3 @@
-
 import React from 'react';
 import SupplierFileUploadArea from './SupplierFileUploadArea';
 import SupplierFileList from './SupplierFileList';
@@ -47,13 +46,13 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
   onAddMoreFiles,
   onFileChange,
   remainingFilesCount,
-  hasReachedFileLimit
+  hasReachedFileLimit,
 }) => {
   return (
     <>
       {/* Only show file upload area if not currently uploading and file limit not reached */}
       {!isLoading && !uploadComplete && !hasReachedFileLimit && (
-        <SupplierFileUploadArea 
+        <SupplierFileUploadArea
           isDragging={isDragging}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
@@ -62,7 +61,7 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
           isLoading={isLoading || isSending}
         />
       )}
-      
+
       {/* Hidden file input */}
       <input
         type="file"
@@ -73,10 +72,10 @@ const SupplierFileUploadSection: React.FC<SupplierFileUploadSectionProps> = ({
         onChange={(e) => onFileChange(e)}
         disabled={hasReachedFileLimit}
       />
-      
+
       {/* Selected files list with progress */}
       {selectedFiles.length > 0 && (
-        <SupplierFileList 
+        <SupplierFileList
           files={selectedFiles}
           uploadedFiles={uploadedFiles}
           onRemoveFile={onRemoveFile}

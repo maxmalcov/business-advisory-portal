@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { employeesTable } from '@/integrations/supabase/client';
@@ -15,9 +14,9 @@ export const useEmployeeData = () => {
         const { data, error } = await employeesTable()
           .select('id, full_name, position, start_date')
           .eq('status', 'active');
-          
+
         if (error) throw error;
-        
+
         if (data && Array.isArray(data)) {
           const transformedData: EmployeeData[] = data.map((emp: any) => ({
             id: emp.id,
@@ -25,9 +24,9 @@ export const useEmployeeData = () => {
             position: emp.position,
             startDate: new Date(emp.start_date),
             vacationDaysTotal: 23,
-            vacationDaysUsed: Math.floor(Math.random() * 20)
+            vacationDaysUsed: Math.floor(Math.random() * 20),
           }));
-          
+
           setEmployees(transformedData);
         } else {
           setEmployees([]);
@@ -38,18 +37,18 @@ export const useEmployeeData = () => {
         toast({
           title: 'Error',
           description: 'Failed to load employee data',
-          variant: 'destructive'
+          variant: 'destructive',
         });
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     fetchEmployees();
   }, [toast]);
 
   return {
     employees,
-    isLoading
+    isLoading,
   };
 };

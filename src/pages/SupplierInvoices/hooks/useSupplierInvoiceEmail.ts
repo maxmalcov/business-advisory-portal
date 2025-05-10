@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -42,22 +41,25 @@ export const useSupplierInvoiceEmail = () => {
 
     try {
       console.log(`Sending supplier invoice with files:`, files);
-      
-      // Call the Supabase Edge Function to send email with attachments
-      const { error, data } = await supabase.functions.invoke('send-invoice-email', {
-        body: {
-          recipientEmail: user.incomingInvoiceEmail,
-          fileIds: files.map(file => file.id),
-          fileNames: files.map(file => file.name),
-          userName: user?.name || 'User',
-          companyName: user?.companyName,
-          invoiceType: 'incoming',
-          message,
-          userId: user?.id
-        }
-      });
 
-      console.log("Edge function response:", data);
+      // Call the Supabase Edge Function to send email with attachments
+      const { error, data } = await supabase.functions.invoke(
+        'send-invoice-email',
+        {
+          body: {
+            recipientEmail: user.incomingInvoiceEmail,
+            fileIds: files.map((file) => file.id),
+            fileNames: files.map((file) => file.name),
+            userName: user?.name || 'User',
+            companyName: user?.companyName,
+            invoiceType: 'incoming',
+            message,
+            userId: user?.id,
+          },
+        },
+      );
+
+      console.log('Edge function response:', data);
 
       if (error) {
         console.error('Error sending email:', error);
@@ -91,7 +93,6 @@ export const useSupplierInvoiceEmail = () => {
 
   return {
     sendInvoiceByEmail,
-    isSending
+    isSending,
   };
 };
-

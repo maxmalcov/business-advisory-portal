@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
@@ -7,9 +6,9 @@ import { Toggle } from '@/components/ui/toggle';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
-  
+
   return (
-    <Toggle 
+    <Toggle
       aria-label="Toggle theme"
       pressed={theme === 'dark'}
       onPressedChange={toggleTheme}
@@ -27,7 +26,7 @@ export function ThemeToggle() {
 
 export function ThemeToggleButton() {
   const { theme, toggleTheme } = useTheme();
-  
+
   return (
     <Button
       variant="outline"

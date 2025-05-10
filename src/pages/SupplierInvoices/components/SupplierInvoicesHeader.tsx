@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { FileText } from 'lucide-react';
@@ -12,9 +11,11 @@ const SupplierInvoicesHeader: React.FC = () => {
         <FileText className="h-6 w-6 text-primary" />
       </div>
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t('nav.supplier_invoices')}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {t('nav.supplier_invoices')}
+        </h1>
         <p className="text-muted-foreground mt-1">
-            {t('invoices.supplier.title')}
+          {t('invoices.supplier.title')}
         </p>
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
 import {
@@ -9,11 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { 
-  ActivityEvent, 
-  formatTimestamp 
-} from '@/utils/activity';
-import ActivityIcon from './ActivityIcon';
+import { ActivityEvent, formatTimestamp } from '@/utils/activity';
 import {
   Tooltip,
   TooltipContent,
@@ -21,6 +16,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
+import { getLogIcon } from '@/pages/AdminLogs/utils.tsx';
 
 interface ActivityTableProps {
   activityData: ActivityEvent[];
@@ -40,19 +36,19 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
   if (activityData.length === 0) {
     return <EmptyState />;
   }
-  
+
   // Function to add tooltips to file names in description text
   const formatDescription = (description: string) => {
     // Check if the description contains quotes (likely indicating a file name)
     const fileNameMatch = description.match(/"([^"]+)"/);
-    
+
     if (fileNameMatch && fileNameMatch[1]) {
       const fileName = fileNameMatch[1];
-      
+
       if (needsTruncation(fileName)) {
         const truncatedName = truncateFileName(fileName);
         const parts = description.split(`"${fileName}"`);
-        
+
         return (
           <>
             {parts[0]}
@@ -71,10 +67,10 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
         );
       }
     }
-    
+
     return description;
   };
-  
+
   return (
     <Table>
       <TableHeader>
@@ -90,13 +86,13 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ activityData }) => {
             <TableCell>
               <div className="flex items-center">
                 <div className="mr-2 bg-muted p-2 rounded-full">
-                  <ActivityIcon type={activity.type} />
+                  {getLogIcon(activity.type)}
                 </div>
                 {activity.title}
               </div>
             </TableCell>
             <TableCell>{formatDescription(activity.description)}</TableCell>
-            <TableCell>{formatTimestamp(activity.timestamp)}</TableCell>
+            <TableCell>{`${String(activity.timestamp.getDate()).padStart(2, '0')}-${String(activity.timestamp.getMonth() + 1).padStart(2, '0')}-${activity.timestamp.getFullYear()}`}</TableCell>
           </TableRow>
         ))}
       </TableBody>

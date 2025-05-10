@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 import { FileUp, FileDown } from 'lucide-react';
@@ -12,14 +11,14 @@ import { InvoiceHistoryTableProps } from './types';
 import { needsTruncation, truncateFileName } from '@/utils/fileUtils';
 import { InvoiceTypeTag } from './InvoiceTypeTag';
 import { InvoiceActions } from './InvoiceActions';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 export const InvoiceHistoryMobile: React.FC<InvoiceHistoryTableProps> = ({
   invoices,
   onViewInvoice,
   onDownloadInvoice,
 }) => {
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-4">
@@ -48,23 +47,27 @@ export const InvoiceHistoryMobile: React.FC<InvoiceHistoryTableProps> = ({
               )}
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-2 text-sm mb-3">
             <div>
-              <span className="text-muted-foreground">{t('invoices.search.table.mobile.type')}</span>
+              <span className="text-muted-foreground">
+                {t('invoices.search.table.mobile.type')}
+              </span>
               <span className="ml-2">
                 <InvoiceTypeTag type={invoice.invoice_type} />
               </span>
             </div>
-            
+
             <div>
-              <span className="text-muted-foreground">{t('invoices.search.table.mobile.date')}</span>
+              <span className="text-muted-foreground">
+                {t('invoices.search.table.mobile.date')}
+              </span>
               <span className="ml-2" title={invoice.created_at}>
                 {format(new Date(invoice.created_at), 'MMM d, yyyy')}
               </span>
             </div>
           </div>
-          
+
           <div className="flex justify-end space-x-2 border-t pt-3 mt-3">
             <InvoiceActions
               invoice={invoice}
@@ -77,4 +80,3 @@ export const InvoiceHistoryMobile: React.FC<InvoiceHistoryTableProps> = ({
     </div>
   );
 };
-

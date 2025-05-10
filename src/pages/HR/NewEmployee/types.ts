@@ -1,4 +1,3 @@
-
 export interface FormData {
   companyName: string;
   fullName: string; // Added new field for employee's full name

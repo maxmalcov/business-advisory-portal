@@ -1,4 +1,3 @@
-
 // Mock users for demonstration
 export const mockUsers = [
   {
@@ -9,7 +8,7 @@ export const mockUsers = [
     userType: 'client',
     incomingInvoiceEmail: 'invoices-in@example.com',
     outgoingInvoiceEmail: 'invoices-out@example.com',
-    iframeUrls: ['https://example.com/iframe1', 'https://example.com/iframe2']
+    iframeUrls: ['https://example.com/iframe1', 'https://example.com/iframe2'],
   },
   {
     id: '2',
@@ -19,7 +18,7 @@ export const mockUsers = [
     userType: 'client',
     incomingInvoiceEmail: 'invoices@smith.com',
     outgoingInvoiceEmail: 'sales@smith.com',
-    iframeUrls: ['https://smith.com/dashboard']
+    iframeUrls: ['https://smith.com/dashboard'],
   },
   {
     id: '3',
@@ -29,6 +28,6 @@ export const mockUsers = [
     userType: 'client',
     incomingInvoiceEmail: 'accounts@johnson.com',
     outgoingInvoiceEmail: 'billing@johnson.com',
-    iframeUrls: []
-  }
+    iframeUrls: [],
+  },
 ];

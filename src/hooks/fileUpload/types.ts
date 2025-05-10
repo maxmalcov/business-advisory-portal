@@ -1,4 +1,3 @@
-
 export interface FileUploadOptions {
   maxFiles?: number;
   maxSizeInMB?: number;
@@ -35,7 +34,10 @@ export interface FileUploadActions {
   setUploadComplete: (complete: boolean) => void;
   setUploadSuccess: (success: boolean) => void;
   setUploadError: (error: string | null) => void;
-  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>, append?: boolean) => void;
+  handleFileChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    append?: boolean,
+  ) => void;
   handleDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
   handleDragLeave: () => void;
   handleDrop: (e: React.DragEvent<HTMLDivElement>, append?: boolean) => void;

@@ -1,16 +1,21 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
 import { FormData, FormErrors } from '../../types';
 
 interface DniFieldProps {
   formData: FormData;
   errors: FormErrors;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
 }
 
 const DniField: React.FC<DniFieldProps> = ({
@@ -24,7 +29,8 @@ const DniField: React.FC<DniFieldProps> = ({
     <div className="space-y-2">
       <div className="flex items-center">
         <Label htmlFor="employeeDni" className="flex items-center">
-          {t('hr.new_employee.dni')} <span className="text-red-500 ml-1">*</span>
+          {t('hr.new_employee.dni')}{' '}
+          <span className="text-red-500 ml-1">*</span>
         </Label>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -40,7 +46,7 @@ const DniField: React.FC<DniFieldProps> = ({
         name="employeeDni"
         value={formData.employeeDni}
         onChange={handleInputChange}
-        className={errors.employeeDni ? "border-red-500" : ""}
+        className={errors.employeeDni ? 'border-red-500' : ''}
       />
       {errors.employeeDni && (
         <p className="text-sm text-red-500">{errors.employeeDni}</p>

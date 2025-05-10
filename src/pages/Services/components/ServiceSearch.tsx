@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface ServiceSearchProps {
   value: string;
@@ -10,7 +9,7 @@ interface ServiceSearchProps {
 }
 
 const ServiceSearch: React.FC<ServiceSearchProps> = ({ value, onChange }) => {
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="relative">

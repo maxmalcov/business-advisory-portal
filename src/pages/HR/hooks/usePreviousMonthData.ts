@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { employeeWorkHoursTable } from '@/integrations/supabase/client';
@@ -13,26 +12,26 @@ export const usePreviousMonthData = (selectedMonth: Date) => {
   // Fetch previous month's work hours for prefilling
   const fetchPreviousMonthData = async () => {
     if (!user?.id) return;
-    
+
     try {
       // Getting previous month by subtracting 1 month from the selected month
       const previousMonth = new Date(selectedMonth);
       previousMonth.setMonth(previousMonth.getMonth() - 1);
       const formattedPrevMonth = getMonthYearForStorage(previousMonth);
-      
+
       const { data, error } = await employeeWorkHoursTable()
         .select('*')
         .eq('client_id', user.id)
         .eq('month_year', formattedPrevMonth)
         .order('employee_name', { ascending: true });
-      
+
       if (error) throw error;
-      
+
       // Explicitly cast data to any first to avoid TypeScript errors
-      const recordsArray = data as any[] || [];
-      
+      const recordsArray = (data as any[]) || [];
+
       // Map database records to frontend format
-      const mappedData: WorkHoursData[] = recordsArray.map(record => ({
+      const mappedData: WorkHoursData[] = recordsArray.map((record) => ({
         employeeId: record.employee_id,
         employeeName: record.employee_name,
         companyName: record.company_name,
@@ -41,7 +40,7 @@ export const usePreviousMonthData = (selectedMonth: Date) => {
         medicalLeaveDate: null, // Reset medical leave for new month
         notes: record.notes,
       }));
-      
+
       setLastMonthData(mappedData);
       setLoading(false);
     } catch (error) {

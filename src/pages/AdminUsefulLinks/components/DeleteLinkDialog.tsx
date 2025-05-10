@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import {
@@ -45,12 +44,16 @@ const DeleteLinkDialog: React.FC<DeleteLinkDialogProps> = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Confirmation</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete the link "{linkTitle}"? This action cannot be undone.
+            Are you sure you want to delete the link "{linkTitle}"? This action
+            cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+          <AlertDialogAction
+            onClick={handleDelete}
+            className="bg-destructive text-destructive-foreground"
+          >
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

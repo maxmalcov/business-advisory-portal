@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import MonthlySubmissionsHeader from './MonthlySubmissionsHeader';
@@ -35,15 +34,15 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
         selectedMonth={selectedMonth}
         isSubmitted={isSubmitted}
       />
-      
+
       <CardContent>
-        <WorkHoursTable 
-          employeeData={workHours} 
+        <WorkHoursTable
+          employeeData={workHours}
           onEdit={!isSubmitted ? handleEditEmployee : undefined}
           onDelete={!isSubmitted ? onDeleteEmployee : undefined}
           loading={loading}
         />
-        
+
         <ActionSection
           isSubmitted={isSubmitted}
           workHours={workHours}
@@ -51,7 +50,7 @@ const MonthlySubmissionsContent: React.FC<MonthlySubmissionsContentProps> = ({
           loading={loading}
           onSubmitMonth={onSubmitMonth}
         />
-        
+
         <FormSection
           isSubmitted={isSubmitted}
           workHours={workHours}

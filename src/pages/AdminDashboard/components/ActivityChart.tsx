@@ -1,12 +1,11 @@
-
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardHeader,
   CardTitle,
-  CardDescription 
+  CardDescription,
 } from '@/components/ui/card';
 import { BarChart3 } from 'lucide-react';
 
@@ -19,13 +18,17 @@ const ActivityChart: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle>Activity Overview</CardTitle>
-          <CardDescription>Client activity for the past 30 days</CardDescription>
+          <CardDescription>
+            Client activity for the past 30 days
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[200px] bg-muted rounded-md flex items-center justify-center">
             <div className="flex items-center">
               <BarChart3 className="h-8 w-8 mr-2 text-muted-foreground" />
-              <span className="text-muted-foreground">Chart visualization would appear here</span>
+              <span className="text-muted-foreground">
+                Chart visualization would appear here
+              </span>
             </div>
           </div>
         </CardContent>

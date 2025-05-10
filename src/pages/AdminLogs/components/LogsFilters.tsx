@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,13 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Search,
-  Filter,
-  Download,
-} from 'lucide-react';
-import {useLanguage} from "@/context/LanguageContext.tsx";
-import {exportToCSV} from "@/pages/AdminLogs/exportToCSV.funciton.ts";
+import { Search, Filter, Download } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext.tsx';
+import { exportToCSV } from '@/pages/AdminLogs/exportToCSV.funciton.ts';
 
 interface LogsFiltersProps {
   searchQuery: string;
@@ -38,7 +33,7 @@ const LogsFilters: React.FC<LogsFiltersProps> = ({
     onSearchChange(e.target.value);
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -51,7 +46,7 @@ const LogsFilters: React.FC<LogsFiltersProps> = ({
           onChange={handleSearch}
         />
       </div>
-      
+
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         <div className="flex items-center">
           <Select value={categoryFilter} onValueChange={onCategoryChange}>
@@ -62,13 +57,14 @@ const LogsFilters: React.FC<LogsFiltersProps> = ({
             <SelectContent>
               <SelectItem value="all">{t('logs.categories')}</SelectItem>
               <SelectItem value="user">{t('logs.user')}</SelectItem>
-              <SelectItem value="email">{t('logs.email')}</SelectItem>
               <SelectItem value="service">{t('logs.service')}</SelectItem>
               <SelectItem value="invoice">{t('logs.invoice')}</SelectItem>
+              <SelectItem value="employee">{t('hr.employee')}</SelectItem>
+              <SelectItem value="subscription">{t('subscription')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        
+
         {/*<div className="flex items-center">*/}
         {/*  <Select value={levelFilter} onValueChange={onLevelChange}>*/}
         {/*    <SelectTrigger className="w-[140px]">*/}
@@ -83,7 +79,7 @@ const LogsFilters: React.FC<LogsFiltersProps> = ({
         {/*    </SelectContent>*/}
         {/*  </Select>*/}
         {/*</div>*/}
-        
+
         <Button variant="outline" onClick={exportToCSV}>
           <Download className="mr-2 h-4 w-4" />
           {t('logs.export')}

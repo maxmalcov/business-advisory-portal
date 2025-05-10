@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useFileValidation } from './useFileValidation';
 import { FileUploadOptions } from './types';
@@ -11,11 +10,15 @@ export const useFileSelection = (options: FileUploadOptions = {}) => {
   const { toast } = useToast();
   const { maxFiles = 15 } = options;
 
-  const handleFiles = (fileList: FileList | null, onValidFilesSelected: (files: File[]) => void, append: boolean = false) => {
+  const handleFiles = (
+    fileList: FileList | null,
+    onValidFilesSelected: (files: File[]) => void,
+    append: boolean = false,
+  ) => {
     if (!fileList) return;
-    
+
     const files = Array.from(fileList);
-    
+
     // Check if adding these files would exceed the maximum
     if (append && selectedFiles.length + files.length > maxFiles) {
       toast({
@@ -25,22 +28,22 @@ export const useFileSelection = (options: FileUploadOptions = {}) => {
       });
       return;
     }
-    
+
     const validFiles = validateFiles(files);
-    
+
     if (validFiles.length > 0) {
       // Either append to existing files or replace them
       if (append) {
         // Check for duplicates by file name and size (simple deduplication)
         const existingFileKeys = new Set(
-          selectedFiles.map(file => `${file.name}-${file.size}`)
+          selectedFiles.map((file) => `${file.name}-${file.size}`),
         );
-        
+
         // Filter out duplicates
         const uniqueNewFiles = validFiles.filter(
-          file => !existingFileKeys.has(`${file.name}-${file.size}`)
+          (file) => !existingFileKeys.has(`${file.name}-${file.size}`),
         );
-        
+
         const updatedFiles = [...selectedFiles, ...uniqueNewFiles];
         setSelectedFiles(updatedFiles);
         onValidFilesSelected(uniqueNewFiles); // Only upload the new files
@@ -52,9 +55,9 @@ export const useFileSelection = (options: FileUploadOptions = {}) => {
   };
 
   const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>, 
+    e: React.ChangeEvent<HTMLInputElement>,
     onValidFilesSelected: (files: File[]) => void,
-    append: boolean = false
+    append: boolean = false,
   ) => {
     handleFiles(e.target.files, onValidFilesSelected, append);
     // Reset the file input to allow selecting the same file again
@@ -73,7 +76,7 @@ export const useFileSelection = (options: FileUploadOptions = {}) => {
   const handleDrop = (
     e: React.DragEvent<HTMLDivElement>,
     onValidFilesSelected: (files: File[]) => void,
-    append: boolean = false
+    append: boolean = false,
   ) => {
     e.preventDefault();
     setIsDragging(false);
@@ -81,7 +84,7 @@ export const useFileSelection = (options: FileUploadOptions = {}) => {
   };
 
   const handleRemoveFile = (index: number) => {
-    setSelectedFiles(prev => {
+    setSelectedFiles((prev) => {
       const newFiles = prev.filter((_, i) => i !== index);
       return newFiles;
     });

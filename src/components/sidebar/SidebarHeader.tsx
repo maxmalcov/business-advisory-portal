@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -17,10 +16,10 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ onClose }) => {
     <div className="px-4 py-8 mb-10">
       <div className="flex items-center justify-between">
         {isMobile && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={onClose} 
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
             className={`${isDark ? 'text-white hover:bg-white/10' : 'text-sidebar-foreground'}`}
           >
             &times;

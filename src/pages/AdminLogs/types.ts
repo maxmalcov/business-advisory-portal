@@ -2,7 +2,7 @@ export enum LogCategory {
   USER = 'user',
   EMAIL = 'email',
   SERVICE = 'service',
-  INVOICE = 'invoice'
+  INVOICE = 'invoice',
 }
 
 export interface LogEntry {
@@ -10,7 +10,7 @@ export interface LogEntry {
   action: string;
   description: string;
   timestamp: string | Date;
-  user: string ;
+  user: string;
   level: string;
   category: string | LogCategory;
 }

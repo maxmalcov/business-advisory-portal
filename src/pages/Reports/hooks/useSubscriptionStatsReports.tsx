@@ -1,28 +1,29 @@
-
 import { useState, useEffect, useMemo } from 'react';
 import { format, parseISO, subMonths } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  SubscriptionStats, 
-  SubscriptionData, 
+import {
+  SubscriptionStats,
+  SubscriptionData,
   SubscriptionChartData,
-  SubscriptionFilters 
+  SubscriptionFilters,
 } from './types/subscriptionTypes';
+import { useAuth } from '@/context/AuthContext.tsx';
 
 const defaultFilters: SubscriptionFilters = {
   dateRange: {
     from: subMonths(new Date(), 1),
-    to: new Date()
+    to: new Date(),
   },
   dateFilterOption: 'last30days',
   status: 'all',
   planType: 'all',
-  search: ''
+  search: '',
 };
 
 export const useSubscriptionStatsReports = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [subscriptions, setSubscriptions] = useState<SubscriptionData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -32,34 +33,50 @@ export const useSubscriptionStatsReports = () => {
     const fetchSubscriptions = async () => {
       try {
         setLoading(true);
-        
-        const { data: subscriptionsData, error: subscriptionsError } = await supabase
-          .from('user_tool_subscriptions')
-          .select(`
+
+        const { data: subscriptionsData, error: subscriptionsError } =
+          user.userType == 'admin'
+            ? await supabase.from('user_tool_subscriptions').select(`
             *
-          `);
+          `)
+            : await supabase
+                .from('user_tool_subscriptions')
+                .select(
+                  `
+*
+          `,
+                )
+                .eq('user_id', user.id);
 
         if (subscriptionsError) throw subscriptionsError;
 
-        const formattedData: SubscriptionData[] = subscriptionsData.map((sub: any) => ({
-          id: sub.id,
-          clientName: sub.profiles?.name || 'Unknown',
-          planName: sub.tool_name || 'Unknown Plan',
-          status: sub.status as SubscriptionData['status'],
-          activationDate: sub.activated_at || sub.requested_at,
-          expirationDate: sub.expires_at || '',
-          type: 'monthly' // Default to monthly, update as needed
-        }));
+        const formattedData: SubscriptionData[] = subscriptionsData.map(
+          (sub: any) => {
+            return {
+              id: sub.id,
+              clientName: sub.profiles?.name || 'Unknown',
+              planName: sub.tool_name || 'Unknown Plan',
+              status: sub.status as SubscriptionData['status'],
+              activationDate: sub.activated_at || sub.requested_at,
+              expirationDate: sub.expires_at || '',
+              type: 'monthly', // Default to monthly, update as needed
+            };
+          },
+        );
 
         setSubscriptions(formattedData);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching subscriptions:', err);
-        setError(err instanceof Error ? err : new Error('Failed to fetch subscriptions'));
+        setError(
+          err instanceof Error
+            ? err
+            : new Error('Failed to fetch subscriptions'),
+        );
         toast({
-          variant: "destructive",
-          title: "Error loading subscription data",
-          description: "There was a problem loading the subscription data.",
+          variant: 'destructive',
+          title: 'Error loading subscription data',
+          description: 'There was a problem loading the subscription data.',
         });
         setLoading(false);
       }
@@ -69,96 +86,123 @@ export const useSubscriptionStatsReports = () => {
   }, [toast]);
 
   const filteredSubscriptions = useMemo(() => {
-    return subscriptions.filter(sub => {
+    return subscriptions.filter((sub) => {
       // Filter by status
-      if (filters.status !== 'all' && sub.status !== filters.status) return false;
-      
+      if (filters.status !== 'all' && sub.status !== filters.status)
+        return false;
+
       // Filter by search
-      if (filters.search && 
-          !sub.clientName.toLowerCase().includes(filters.search.toLowerCase())) {
+      if (
+        filters.search &&
+        !sub.clientName.toLowerCase().includes(filters.search.toLowerCase())
+      ) {
         return false;
       }
-      
+
       return true;
     });
   }, [subscriptions, filters]);
 
-  const subscriptionStats = useMemo<SubscriptionStats>(() => ({
-    totalSubscriptions: filteredSubscriptions.length,
-    activeSubscriptions: filteredSubscriptions.filter(s => s.status === 'active').length,
-    expiredSubscriptions: filteredSubscriptions.filter(s => s.status === 'expired').length,
-    cancelledSubscriptions: filteredSubscriptions.filter(s => s.status === 'cancelled').length
-  }), [filteredSubscriptions]);
+  const subscriptionStats = useMemo<SubscriptionStats>(
+    () => ({
+      totalSubscriptions: filteredSubscriptions.length,
+      activeSubscriptions: filteredSubscriptions.filter(
+        (s) => s.status === 'active',
+      ).length,
+      expiredSubscriptions: filteredSubscriptions.filter(
+        (s) => s.status === 'pending',
+      ).length,
+      cancelledSubscriptions: filteredSubscriptions.filter(
+        (s) => s.status === 'rejected',
+      ).length,
+    }),
+    [filteredSubscriptions],
+  );
 
   const chartData = useMemo<SubscriptionChartData[]>(() => {
     const months = new Map<string, number>();
-    
+
     for (let i = 5; i >= 0; i--) {
       const date = subMonths(new Date(), i);
       const monthKey = format(date, 'MMM yyyy');
       months.set(monthKey, 0);
     }
-    
-    filteredSubscriptions.forEach(sub => {
+
+    filteredSubscriptions.forEach((sub) => {
       const activationDate = parseISO(sub.activationDate);
       const monthKey = format(activationDate, 'MMM yyyy');
-      
+
       if (months.has(monthKey)) {
         months.set(monthKey, months.get(monthKey)! + 1);
       }
     });
-    
+
     return Array.from(months).map(([month, count]) => ({
       month,
-      count
+      count,
     }));
   }, [filteredSubscriptions]);
 
   const exportToCSV = () => {
     if (filteredSubscriptions.length === 0) {
       toast({
-        title: "No data to export",
-        description: "There is no data matching your current filters to export.",
+        title: 'No data to export',
+        description:
+          'There is no data matching your current filters to export.',
       });
       return;
     }
-    
+
     try {
-      const headers = ["Client Name", "Plan", "Status", "Activation Date", "Expiration Date", "Type"];
-      const rows = filteredSubscriptions.map(sub => [
+      const headers = [
+        'Client Name',
+        'Plan',
+        'Status',
+        'Activation Date',
+        'Expiration Date',
+        'Type',
+      ];
+      const rows = filteredSubscriptions.map((sub) => [
         sub.clientName,
         sub.planName,
         sub.status,
         format(new Date(sub.activationDate), 'yyyy-MM-dd'),
-        sub.expirationDate ? format(new Date(sub.expirationDate), 'yyyy-MM-dd') : 'N/A',
-        sub.type
+        sub.expirationDate
+          ? format(new Date(sub.expirationDate), 'yyyy-MM-dd')
+          : 'N/A',
+        sub.type,
       ]);
-      
+
       const csvContent = [
         headers.join(','),
-        ...rows.map(row => row.join(','))
+        ...rows.map((row) => row.join(',')),
       ].join('\n');
-      
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+      const blob = new Blob([csvContent], {
+        type: 'text/csv;charset=utf-8;',
+      });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      
+
       link.href = url;
-      link.setAttribute('download', `subscription-data-${format(new Date(), 'yyyyMMdd')}.csv`);
+      link.setAttribute(
+        'download',
+        `subscription-data-${format(new Date(), 'yyyyMMdd')}.csv`,
+      );
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       toast({
-        title: "Export successful",
-        description: "Subscription data has been exported to CSV.",
+        title: 'Export successful',
+        description: 'Subscription data has been exported to CSV.',
       });
     } catch (err) {
       console.error('Error exporting to CSV:', err);
       toast({
-        variant: "destructive",
-        title: "Export failed",
-        description: "There was an error exporting the data to CSV.",
+        variant: 'destructive',
+        title: 'Export failed',
+        description: 'There was an error exporting the data to CSV.',
       });
     }
   };
@@ -171,8 +215,8 @@ export const useSubscriptionStatsReports = () => {
     error,
     filters,
     setFilters: (partialFilters: Partial<SubscriptionFilters>) => {
-      setFilters(prev => ({ ...prev, ...partialFilters }));
+      setFilters((prev) => ({ ...prev, ...partialFilters }));
     },
-    exportToCSV
+    exportToCSV,
   };
 };

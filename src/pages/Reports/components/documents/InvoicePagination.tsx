@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Pagination,
@@ -26,7 +25,7 @@ const InvoicePagination: React.FC<InvoicePaginationProps> = ({
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       // Show all pages if there are less than maxVisiblePages
       for (let i = 1; i <= totalPages; i++) {
@@ -35,10 +34,10 @@ const InvoicePagination: React.FC<InvoicePaginationProps> = ({
     } else {
       // Always include the first page
       pageNumbers.push(1);
-      
+
       let startPage = Math.max(2, currentPage - 1);
       let endPage = Math.min(totalPages - 1, currentPage + 1);
-      
+
       // Adjust to show maxVisiblePages - 2 pages (excluding first and last)
       if (endPage - startPage < maxVisiblePages - 3) {
         if (currentPage < totalPages / 2) {
@@ -47,26 +46,26 @@ const InvoicePagination: React.FC<InvoicePaginationProps> = ({
           startPage = Math.max(endPage - (maxVisiblePages - 3), 2);
         }
       }
-      
+
       // Add ellipsis after first page if necessary
       if (startPage > 2) {
         pageNumbers.push('...');
       }
-      
+
       // Add middle pages
       for (let i = startPage; i <= endPage; i++) {
         pageNumbers.push(i);
       }
-      
+
       // Add ellipsis before last page if necessary
       if (endPage < totalPages - 1) {
         pageNumbers.push('...');
       }
-      
+
       // Always include the last page
       pageNumbers.push(totalPages);
     }
-    
+
     return pageNumbers;
   };
 
@@ -76,10 +75,14 @@ const InvoicePagination: React.FC<InvoicePaginationProps> = ({
         <PaginationItem>
           <PaginationPrevious
             onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-            className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+            className={
+              currentPage === 1
+                ? 'pointer-events-none opacity-50'
+                : 'cursor-pointer'
+            }
           />
         </PaginationItem>
-        
+
         {getPageNumbers().map((page, index) => (
           <PaginationItem key={index}>
             {page === '...' ? (
@@ -95,11 +98,15 @@ const InvoicePagination: React.FC<InvoicePaginationProps> = ({
             )}
           </PaginationItem>
         ))}
-        
+
         <PaginationItem>
           <PaginationNext
             onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+            className={
+              currentPage === totalPages
+                ? 'pointer-events-none opacity-50'
+                : 'cursor-pointer'
+            }
           />
         </PaginationItem>
       </PaginationContent>

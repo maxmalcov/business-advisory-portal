@@ -1,10 +1,13 @@
-
 import React, { useState } from 'react';
 import { Employee } from '../../../types/employee';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -48,19 +51,23 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !formData.startDate && "text-muted-foreground",
-                  errors.startDate && "border-red-500"
+                  'w-full justify-start text-left font-normal',
+                  !formData.startDate && 'text-muted-foreground',
+                  errors.startDate && 'border-red-500',
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {formData.startDate ? format(new Date(formData.startDate), 'PPP') : "Select date"}
+                {formData.startDate
+                  ? format(new Date(formData.startDate), 'PPP')
+                  : 'Select date'}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={formData.startDate ? new Date(formData.startDate) : undefined}
+                selected={
+                  formData.startDate ? new Date(formData.startDate) : undefined
+                }
                 onSelect={handleStartDateSelect}
                 initialFocus
                 className="p-3 pointer-events-auto"
@@ -71,7 +78,7 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
             <p className="text-xs text-red-500">{errors.startDate}</p>
           )}
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="endDate">End Date</Label>
           <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
@@ -79,19 +86,23 @@ const EmploymentDatesFormSection: React.FC<EmploymentDatesFormSectionProps> = ({
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !formData.endDate && "text-muted-foreground",
-                  errors.endDate && "border-red-500"
+                  'w-full justify-start text-left font-normal',
+                  !formData.endDate && 'text-muted-foreground',
+                  errors.endDate && 'border-red-500',
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {formData.endDate ? format(new Date(formData.endDate), 'PPP') : "Select date"}
+                {formData.endDate
+                  ? format(new Date(formData.endDate), 'PPP')
+                  : 'Select date'}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={formData.endDate ? new Date(formData.endDate) : undefined}
+                selected={
+                  formData.endDate ? new Date(formData.endDate) : undefined
+                }
                 onSelect={handleEndDateSelect}
                 initialFocus
                 className="p-3 pointer-events-auto"

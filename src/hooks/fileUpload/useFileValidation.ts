@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { FileUploadOptions } from './types';
@@ -9,7 +8,7 @@ export const useFileValidation = (options: FileUploadOptions = {}) => {
     maxSizeInMB = 25,
     allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg'],
   } = options;
-  
+
   const { toast } = useToast();
 
   const validateFiles = (files: File[]): File[] => {
@@ -21,11 +20,11 @@ export const useFileValidation = (options: FileUploadOptions = {}) => {
       });
       return [];
     }
-    
-    return files.filter(file => {
+
+    return files.filter((file) => {
       const isValidType = allowedTypes.includes(file.type);
       const isValidSize = file.size <= maxSizeInMB * 1024 * 1024;
-      
+
       if (!isValidType) {
         toast({
           variant: 'destructive',
@@ -33,7 +32,7 @@ export const useFileValidation = (options: FileUploadOptions = {}) => {
           description: `${file.name} is not a supported file type.`,
         });
       }
-      
+
       if (!isValidSize) {
         toast({
           variant: 'destructive',
@@ -41,7 +40,7 @@ export const useFileValidation = (options: FileUploadOptions = {}) => {
           description: `${file.name} exceeds the ${maxSizeInMB}MB limit.`,
         });
       }
-      
+
       return isValidType && isValidSize;
     });
   };

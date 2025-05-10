@@ -1,10 +1,9 @@
-
 import { useFileUpload as useBaseFileUploadHook } from './fileUpload';
-export type { 
-  FileUploadOptions, 
-  UploadConfig, 
+export type {
+  FileUploadOptions,
+  UploadConfig,
   UploadedFile,
-  FileUploadReturn
+  FileUploadReturn,
 } from './fileUpload';
 
 export const useBaseFileUpload = useBaseFileUploadHook;

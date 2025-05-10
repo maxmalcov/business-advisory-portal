@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -7,13 +6,16 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import {
-  Users,
-  Upload,
-  Mail,
-  AlertTriangle,
-} from 'lucide-react';
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from 'recharts';
+import { Users, Upload, Mail, AlertTriangle } from 'lucide-react';
 import { ChartDataItem, WeeklyDataItem } from '../types';
 
 interface LogsStatisticsProps {
@@ -21,7 +23,10 @@ interface LogsStatisticsProps {
   weeklyData: WeeklyDataItem[];
 }
 
-const LogsStatistics: React.FC<LogsStatisticsProps> = ({ chartData, weeklyData }) => {
+const LogsStatistics: React.FC<LogsStatisticsProps> = ({
+  chartData,
+  weeklyData,
+}) => {
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -44,11 +49,13 @@ const LogsStatistics: React.FC<LogsStatisticsProps> = ({ chartData, weeklyData }
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Weekly Activity</CardTitle>
-            <CardDescription>Events distribution over the past week</CardDescription>
+            <CardDescription>
+              Events distribution over the past week
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
@@ -61,18 +68,24 @@ const LogsStatistics: React.FC<LogsStatisticsProps> = ({ chartData, weeklyData }
                   <Bar dataKey="users" name="User Events" fill="#8884d8" />
                   <Bar dataKey="files" name="File Events" fill="#82ca9d" />
                   <Bar dataKey="emails" name="Email Events" fill="#ffc658" />
-                  <Bar dataKey="security" name="Security Events" fill="#ff8042" />
+                  <Bar
+                    dataKey="security"
+                    name="Security Events"
+                    fill="#ff8042"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>System Activity Summary</CardTitle>
-          <CardDescription>Key statistics about system activity</CardDescription>
+          <CardDescription>
+            Key statistics about system activity
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -81,19 +94,19 @@ const LogsStatistics: React.FC<LogsStatisticsProps> = ({ chartData, weeklyData }
               <div className="text-2xl font-bold text-blue-700">42</div>
               <div className="text-sm text-blue-600">User Events</div>
             </div>
-            
+
             <div className="bg-green-50 p-4 rounded-lg text-center">
               <Upload className="mx-auto mb-2 h-8 w-8 text-green-600" />
               <div className="text-2xl font-bold text-green-700">65</div>
               <div className="text-sm text-green-600">File Uploads</div>
             </div>
-            
+
             <div className="bg-amber-50 p-4 rounded-lg text-center">
               <Mail className="mx-auto mb-2 h-8 w-8 text-amber-600" />
               <div className="text-2xl font-bold text-amber-700">120</div>
               <div className="text-sm text-amber-600">Emails Sent</div>
             </div>
-            
+
             <div className="bg-red-50 p-4 rounded-lg text-center">
               <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-red-600" />
               <div className="text-2xl font-bold text-red-700">15</div>

@@ -1,4 +1,3 @@
-
 import { InvoiceUpload } from '../InvoiceHistoryList';
 
 export interface InvoiceHistoryTableProps {

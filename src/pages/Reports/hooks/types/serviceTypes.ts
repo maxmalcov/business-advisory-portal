@@ -1,4 +1,3 @@
-
 import { DateRange } from '@/pages/AdminUserManagement/hooks/types';
 
 export interface ServiceRequest {
@@ -7,7 +6,7 @@ export interface ServiceRequest {
   userName: string;
   userEmail: string;
   serviceName: string;
-  status: 'requested' | 'in_progress' | 'completed' | 'cancelled';
+  status: 'pending' | 'inactive' | 'completed' | 'rejected';
   requestDate: string;
   completionDate: string | null;
 }
@@ -27,7 +26,12 @@ export interface ServiceChartData {
 
 export interface ServiceFilters {
   dateRange: DateRange;
-  dateFilterOption: 'thisMonth' | 'last3Months' | 'last6Months' | 'custom' | 'allTime';
+  dateFilterOption:
+    | 'thisMonth'
+    | 'last3Months'
+    | 'last6Months'
+    | 'custom'
+    | 'allTime';
   serviceType: string;
   status: string;
 }

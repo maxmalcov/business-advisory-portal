@@ -1,54 +1,69 @@
 import React from 'react';
 import { Mail } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useNotificationSettings } from '@/hooks/useNotificationSettings';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Loader2 } from 'lucide-react';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 interface NotificationSettingsForm {
   hr_payroll: string;
   subscriptions: string;
   services: string;
 }
 const NotificationSettings = () => {
-  const {
-    settings,
-    isLoading,
-    isUpdating,
-    updateSetting
-  } = useNotificationSettings();
+  const { settings, isLoading, isUpdating, updateSetting } =
+    useNotificationSettings();
   const form = useForm<NotificationSettingsForm>();
   React.useEffect(() => {
     if (settings) {
-      const formValues = settings.reduce((acc, setting) => ({
-        ...acc,
-        [setting.category]: setting.email
-      }), {});
+      const formValues = settings.reduce(
+        (acc, setting) => ({
+          ...acc,
+          [setting.category]: setting.email,
+        }),
+        {},
+      );
       form.reset(formValues);
     }
   }, [settings, form]);
   const onSubmit = async (category: string, email: string) => {
     updateSetting({
       category,
-      email
+      email,
     });
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   if (isLoading) {
-    return <div className="space-y-6">
+    return (
+      <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="bg-primary/10 p-3 rounded-full">
               <Mail className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
+              <h1 className="text-3xl font-bold tracking-tight">
+                {t('settings.title')}
+              </h1>
               <p className="text-muted-foreground mt-1">
                 {t('settings.description')}
               </p>
@@ -63,16 +78,20 @@ const NotificationSettings = () => {
             </div>
           </CardContent>
         </Card>
-      </div>;
+      </div>
+    );
   }
-  return <div className="space-y-6">
+  return (
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="bg-primary/10 p-3 rounded-full">
             <Mail className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              {t('settings.title')}
+            </h1>
             <p className="text-muted-foreground mt-1">
               {t('settings.description')}
             </p>
@@ -81,23 +100,55 @@ const NotificationSettings = () => {
       </div>
       <Card className="w-full max-w-2xl mx-auto">
         <CardContent className="space-y-6 rounded py-[15px]">
-          {settings?.map(setting => <div key={setting.id} className="flex flex-col space-y-2">
+          {settings?.map((setting) => (
+            <div key={setting.id} className="flex flex-col space-y-2">
               <Label htmlFor={setting.category}>
                 {setting.category === 'hr_payroll' && t('settings.hr_payroll')}
-                {setting.category === 'subscriptions' && t('settings.subscriptions')}
+                {setting.category === 'subscriptions' &&
+                  t('settings.subscriptions')}
                 {setting.category === 'services' && t('settings.services')}
               </Label>
               <div className="flex gap-2">
-                <Input id={setting.category} type="email" value={form.watch(setting.category as keyof NotificationSettingsForm) || ''} onChange={e => {
-              form.setValue(setting.category as keyof NotificationSettingsForm, e.target.value);
-            }} placeholder={`e.g., ${setting.category}@yourcompany.com`} className="flex-grow rounded" />
-                <Button onClick={() => onSubmit(setting.category, form.watch(setting.category as keyof NotificationSettingsForm))} disabled={isUpdating}>
-                  {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : t('settings.save')}
+                <Input
+                  id={setting.category}
+                  type="email"
+                  value={
+                    form.watch(
+                      setting.category as keyof NotificationSettingsForm,
+                    ) || ''
+                  }
+                  onChange={(e) => {
+                    form.setValue(
+                      setting.category as keyof NotificationSettingsForm,
+                      e.target.value,
+                    );
+                  }}
+                  placeholder={`e.g., ${setting.category}@yourcompany.com`}
+                  className="flex-grow rounded"
+                />
+                <Button
+                  onClick={() =>
+                    onSubmit(
+                      setting.category,
+                      form.watch(
+                        setting.category as keyof NotificationSettingsForm,
+                      ),
+                    )
+                  }
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    t('settings.save')
+                  )}
                 </Button>
               </div>
-            </div>)}
+            </div>
+          ))}
         </CardContent>
       </Card>
-    </div>;
+    </div>
+  );
 };
 export default NotificationSettings;

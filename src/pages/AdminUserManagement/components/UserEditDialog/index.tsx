@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { X } from 'lucide-react';
@@ -17,25 +16,25 @@ interface UserEditDialogProps {
   onToggleStatus: (user: User) => void;
 }
 
-const UserEditDialog: React.FC<UserEditDialogProps> = ({ 
-  user, 
-  onUserChange, 
-  onSave, 
+const UserEditDialog: React.FC<UserEditDialogProps> = ({
+  user,
+  onUserChange,
+  onSave,
   onCancel,
   onDelete,
-  onToggleStatus
+  onToggleStatus,
 }) => {
   const { t } = useLanguage();
   const [isEditMode, setIsEditMode] = useState(false);
-  const [activeTab, setActiveTab] = useState("details");
+  const [activeTab, setActiveTab] = useState('details');
 
   // Log the user data to verify we're receiving correct information
   useEffect(() => {
-    console.log("UserEditDialog received user data:", user);
+    console.log('UserEditDialog received user data:', user);
   }, [user]);
 
   const handleToggleEditMode = () => {
-    setIsEditMode(prev => !prev);
+    setIsEditMode((prev) => !prev);
   };
 
   const handleSave = () => {
@@ -54,13 +53,10 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         >
           <X className="h-4 w-4" />
         </Button>
-        
-        <UserEditHeader 
-          user={user}
-          isEditMode={isEditMode}
-        />
+
+        <UserEditHeader user={user} isEditMode={isEditMode} />
       </div>
-      
+
       <div className="flex-1 overflow-hidden">
         <UserEditTabs
           user={user}
@@ -71,7 +67,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
           setActiveTab={setActiveTab}
         />
       </div>
-      
+
       <UserEditFooter
         user={user}
         isEditMode={isEditMode}

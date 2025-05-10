@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { useFetchInvoices } from './useFetchInvoices';
@@ -11,60 +10,71 @@ export type { InvoiceItem };
 
 export const useInvoiceData = () => {
   const [userFilter, setUserFilter] = useState<string>('');
-  const [typeFilter, setTypeFilter] = useState<'all' | 'sales' | 'supplier'>('all');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'sales' | 'supplier'>(
+    'all',
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
-  
+
   const {
     filterOption,
     setFilterOption,
     customDateRange,
     setCustomDateRange,
-    currentDateRange
+    currentDateRange,
   } = useDateFilter('30days');
 
   const { invoices, users, loading, fetchInvoices } = useFetchInvoices();
-  
+
   const filteredInvoices = useInvoiceFilters(
     invoices,
     userFilter,
     typeFilter,
-    currentDateRange
+    currentDateRange,
   );
-  
+
   // Calculate pagination
   useEffect(() => {
     setTotalPages(Math.ceil(filteredInvoices.length / itemsPerPage));
     setCurrentPage(1);
   }, [filteredInvoices.length]);
-  
+
   const paginatedInvoices = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredInvoices.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredInvoices, currentPage]);
-  
+
   // Export to CSV functionality
   const exportToCSV = () => {
-    const headers = ['User', 'Email', 'File Name', 'Type', 'Upload Date', 'File Size'];
+    const headers = [
+      'User',
+      'Email',
+      'File Name',
+      'Type',
+      'Upload Date',
+      'File Size',
+    ];
     const rows = [headers];
-    
-    filteredInvoices.forEach(invoice => {
+
+    filteredInvoices.forEach((invoice) => {
       rows.push([
         invoice.userName,
         invoice.userEmail,
         invoice.fileName,
         invoice.type,
         format(invoice.date, 'yyyy-MM-dd HH:mm:ss'),
-        `${Math.round(invoice.size / 1024)} KB`
+        `${Math.round(invoice.size / 1024)} KB`,
       ]);
     });
-    
-    const csvContent = rows.map(row => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    const csvContent = rows.map((row) => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], {
+      type: 'text/csv;charset=utf-8;',
+    });
     const link = document.createElement('a');
     const date = format(new Date(), 'yyyy-MM-dd');
-    
+
     link.href = URL.createObjectURL(blob);
     link.download = `invoices-report-${date}.csv`;
     document.body.appendChild(link);
@@ -93,6 +103,6 @@ export const useInvoiceData = () => {
     exportToCSV,
     currentPage,
     totalPages,
-    setCurrentPage
+    setCurrentPage,
   };
 };

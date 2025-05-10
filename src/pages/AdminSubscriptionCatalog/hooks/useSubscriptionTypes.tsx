@@ -1,6 +1,5 @@
-
-import {useState, useCallback, useEffect} from 'react';
-import { 
+import { useState, useCallback, useEffect } from 'react';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -12,8 +11,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from '@/components/ui/use-toast';
 import { useSubscriptionTypes as useAdminSubscriptionTypes } from '../../AdminSubscriptions/hooks/useSubscriptionTypes';
-import {subscriptionTypeTable} from "@/integrations/supabase/client.ts";
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { subscriptionTypeTable } from '@/integrations/supabase/client.ts';
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 // Types
 export interface SubscriptionType {
@@ -28,10 +27,15 @@ export interface SubscriptionType {
 }
 
 export const useSubscriptionTypes = () => {
-  const { createSubscriptionType: adminCreateSubscriptionType, loading: adminLoading } = useAdminSubscriptionTypes();
+  const {
+    createSubscriptionType: adminCreateSubscriptionType,
+    loading: adminLoading,
+  } = useAdminSubscriptionTypes();
   const [loading, setLoading] = useState<boolean>(false);
-  const [subscriptionTypes, setSubscriptionTypes] = useState<SubscriptionType[]>([]);
-  const {t} = useLanguage()
+  const [subscriptionTypes, setSubscriptionTypes] = useState<
+    SubscriptionType[]
+  >([]);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +44,7 @@ export const useSubscriptionTypes = () => {
       if (error) {
         console.error('Error fetching subscription types:', error);
         toast({
-          title: "Internal Error",
+          title: 'Internal Error',
           description: '',
         });
       } else {
@@ -51,7 +55,6 @@ export const useSubscriptionTypes = () => {
 
     fetchData();
   }, []);
-
 
   // For delete confirmation dialog
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -65,12 +68,12 @@ export const useSubscriptionTypes = () => {
   const confirmDelete = useCallback(async () => {
     if (deleteId) {
       setLoading(true);
-      
+
       // Simulate API call delay
-      await subscriptionTypeTable().delete().eq('id', deleteId)
+      await subscriptionTypeTable().delete().eq('id', deleteId);
 
       setSubscriptionTypes((prevTypes) =>
-        prevTypes.filter((type) => type.id !== deleteId)
+        prevTypes.filter((type) => type.id !== deleteId),
       );
 
       toast({
@@ -88,14 +91,14 @@ export const useSubscriptionTypes = () => {
     setIsDeleteDialogOpen(false);
     setDeleteId(null);
   }, []);
-  
+
   // Function to create a subscription type
   const createSubscriptionType = async (data: any) => {
     try {
       setLoading(true);
       // Call the admin createSubscriptionType function
       await adminCreateSubscriptionType(data);
-      
+
       // const newType: SubscriptionType = {
       //   id: Math.random().toString(36).substring(2, 9),
       //   name: data.name,
@@ -108,7 +111,7 @@ export const useSubscriptionTypes = () => {
       // };
       //
       // setSubscriptionTypes(prev => [newType, ...prev]);
-      
+
       return true;
     } catch (error) {
       console.error('Error creating subscription type:', error);
@@ -122,14 +125,21 @@ export const useSubscriptionTypes = () => {
     <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('subscriptions.admin.remove.areyousure')}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t('subscriptions.admin.remove.areyousure')}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {t('subscriptions.admin.remove.warning')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={cancelDelete}>{t('subscriptions.admin.remove.button.cancel')}</AlertDialogCancel>
-          <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+          <AlertDialogCancel onClick={cancelDelete}>
+            {t('subscriptions.admin.remove.button.cancel')}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={confirmDelete}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
             {t('subscriptions.admin.remove.button.delete')}
           </AlertDialogAction>
         </AlertDialogFooter>

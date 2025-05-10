@@ -1,11 +1,5 @@
-
 import React from 'react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { UsersRound, UserPlus, UserCheck } from 'lucide-react';
 
 interface UserStatsProps {
@@ -30,7 +24,7 @@ const UserStats: React.FC<UserStatsProps> = ({ userStats }) => {
           <div className="text-2xl font-bold">{userStats.total}</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium text-green-600">
@@ -42,7 +36,7 @@ const UserStats: React.FC<UserStatsProps> = ({ userStats }) => {
           <div className="text-2xl font-bold">{userStats.active}</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium text-blue-600">

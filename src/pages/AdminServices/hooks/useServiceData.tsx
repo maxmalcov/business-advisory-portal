@@ -1,8 +1,16 @@
-
 import { useState, useEffect } from 'react';
 import { Service, servicesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export const useServiceData = () => {
   const [services, setServices] = useState<Service[]>([]);
@@ -51,17 +59,15 @@ export const useServiceData = () => {
   };
 
   const confirmDelete = () => {
-    console.log('delete')
+    console.log('delete');
     if (!confirmDeleteId) return;
 
     try {
       setLoading(true);
 
-      servicesTable()
-        .delete()
-        .eq('id', confirmDeleteId);
+      servicesTable().delete().eq('id', confirmDeleteId);
 
-      setServices(services.filter(service => service.id !== confirmDeleteId));
+      setServices(services.filter((service) => service.id !== confirmDeleteId));
 
       toast({
         title: 'Service deleted',
@@ -86,7 +92,10 @@ export const useServiceData = () => {
 
   // Deletion confirmation dialog
   const DeleteConfirmationDialog = () => (
-    <AlertDialog open={!!confirmDeleteId} onOpenChange={(open) => !open && cancelDelete()}>
+    <AlertDialog
+      open={!!confirmDeleteId}
+      onOpenChange={(open) => !open && cancelDelete()}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -97,7 +106,10 @@ export const useServiceData = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+          <AlertDialogAction
+            onClick={confirmDelete}
+            className="bg-red-600 hover:bg-red-700"
+          >
             undo
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -111,6 +123,6 @@ export const useServiceData = () => {
     loading,
     setLoading,
     handleDelete,
-    DeleteConfirmationDialog
+    DeleteConfirmationDialog,
   };
 };

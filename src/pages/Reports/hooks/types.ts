@@ -1,4 +1,3 @@
-
 import { ActivityEvent } from '@/utils/activity';
 
 export interface InvoiceStats {

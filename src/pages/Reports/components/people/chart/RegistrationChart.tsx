@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   LineChart,
@@ -9,7 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   BarChart,
-  Bar
+  Bar,
 } from 'recharts';
 import { CHART_COLORS } from '../utils/chartUtils';
 import ChartTooltip from './ChartTooltip';
@@ -19,37 +18,44 @@ interface RegistrationChartProps {
   data: Array<{ date: string; displayDate: string; count: number }>;
 }
 
-const RegistrationChart: React.FC<RegistrationChartProps> = ({ chartType, data }) => {
+const RegistrationChart: React.FC<RegistrationChartProps> = ({
+  chartType,
+  data,
+}) => {
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         {chartType === 'line' ? (
-          <LineChart 
-            data={data} 
+          <LineChart
+            data={data}
             margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.muted} vertical={false} />
-            <XAxis 
-              dataKey="displayDate" 
+            <CartesianGrid
+              strokeDasharray="3 3"
               stroke={CHART_COLORS.muted}
-              tick={{ 
-                fontSize: 12, 
-                fill: CHART_COLORS.text, 
-                fontWeight: 600 
+              vertical={false}
+            />
+            <XAxis
+              dataKey="displayDate"
+              stroke={CHART_COLORS.muted}
+              tick={{
+                fontSize: 12,
+                fill: CHART_COLORS.text,
+                fontWeight: 600,
               }}
               tickLine={false}
               minTickGap={15}
               padding={{ left: 10, right: 10 }}
             />
-            <YAxis 
+            <YAxis
               stroke={CHART_COLORS.muted}
               allowDecimals={false}
               tickLine={false}
               axisLine={false}
-              tick={{ 
-                fontSize: 12, 
-                fill: CHART_COLORS.text, 
-                fontWeight: 600 
+              tick={{
+                fontSize: 12,
+                fill: CHART_COLORS.text,
+                fontWeight: 600,
               }}
               width={30}
             />
@@ -66,32 +72,36 @@ const RegistrationChart: React.FC<RegistrationChartProps> = ({ chartType, data }
             />
           </LineChart>
         ) : (
-          <BarChart 
-            data={data} 
+          <BarChart
+            data={data}
             margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.muted} vertical={false} />
-            <XAxis 
-              dataKey="displayDate" 
+            <CartesianGrid
+              strokeDasharray="3 3"
               stroke={CHART_COLORS.muted}
-              tick={{ 
-                fontSize: 12, 
-                fill: CHART_COLORS.text, 
-                fontWeight: 600 
+              vertical={false}
+            />
+            <XAxis
+              dataKey="displayDate"
+              stroke={CHART_COLORS.muted}
+              tick={{
+                fontSize: 12,
+                fill: CHART_COLORS.text,
+                fontWeight: 600,
               }}
               tickLine={false}
               minTickGap={15}
               padding={{ left: 10, right: 10 }}
             />
-            <YAxis 
+            <YAxis
               stroke={CHART_COLORS.muted}
               allowDecimals={false}
               tickLine={false}
               axisLine={false}
-              tick={{ 
-                fontSize: 12, 
-                fill: CHART_COLORS.text, 
-                fontWeight: 600 
+              tick={{
+                fontSize: 12,
+                fill: CHART_COLORS.text,
+                fontWeight: 600,
               }}
               width={30}
             />

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, FileUp, Check, AlertCircle, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -33,13 +32,13 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Filter invoices based on search query
-  const filteredInvoices = invoices.filter(invoice => 
-    invoice.fileName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredInvoices = invoices.filter((invoice) =>
+    invoice.fileName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Status icon mapping
   const getStatusIcon = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'processed':
         return <Check className="h-5 w-5 text-green-500" />;
       case 'pending':
@@ -70,7 +69,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        
+
         {/* Invoices list */}
         <div className="rounded-md border">
           <div className="bg-muted py-2 px-4 grid grid-cols-5 text-sm font-medium">
@@ -82,8 +81,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices }) => {
           <div className="divide-y">
             {filteredInvoices.length > 0 ? (
               filteredInvoices.map((invoice) => (
-                <div 
-                  key={invoice.id} 
+                <div
+                  key={invoice.id}
                   className="grid grid-cols-5 py-3 px-4 items-center text-sm"
                 >
                   <div className="col-span-2 flex items-center">

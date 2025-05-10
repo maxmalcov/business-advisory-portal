@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { employeesTable } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -20,20 +19,22 @@ export function useActiveEmployees() {
   useEffect(() => {
     const fetchActiveEmployees = async () => {
       setIsLoading(true);
-      
+
       try {
         const { data, error } = await employeesTable()
           .select('id, full_name, position, company_name')
           .eq('status', 'active')
           .order('full_name');
-          
+
         if (error) {
           throw error;
         }
-        
+
         // Make sure data is always an array (even if undefined or null)
-        const employeeData = Array.isArray(data) ? (data as unknown as EmployeeData[]) : [];
-          
+        const employeeData = Array.isArray(data)
+          ? (data as unknown as EmployeeData[])
+          : [];
+
         const transformedData: Employee[] = employeeData.map((emp) => ({
           id: emp.id,
           fullName: emp.full_name,
@@ -42,26 +43,26 @@ export function useActiveEmployees() {
           startDate: '', // These fields are not needed for the dropdown
           companyName: emp.company_name || '',
         }));
-          
+
         setActiveEmployees(transformedData);
       } catch (error) {
         console.error('Error fetching active employees:', error);
         toast({
           title: 'Error fetching employees',
           description: 'Could not load the employee list.',
-          variant: 'destructive'
+          variant: 'destructive',
         });
         setActiveEmployees([]); // Always set as empty array on error
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     fetchActiveEmployees();
   }, [toast]);
 
   return {
     activeEmployees,
-    isLoading
+    isLoading,
   };
 }

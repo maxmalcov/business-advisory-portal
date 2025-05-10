@@ -1,4 +1,3 @@
-
 export interface SupplierInvoice {
   id: string;
   fileName: string;

@@ -1,7 +1,6 @@
-
 import { formatDistanceToNow } from 'date-fns';
 
-export type ActivityEventType = 
+export type ActivityEventType =
   | 'employee-added'
   | 'employee-terminated'
   | 'invoice-uploaded'

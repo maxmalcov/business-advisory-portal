@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FileUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,25 +21,26 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
   isLoading = false,
 }) => {
   const { t } = useLanguage();
-  
+
   const getTexts = () => {
     return {
       dropHere: t('invoices.drop-area.title'),
-      orClickTo: t("invoices.drop-area.click"),
-      selectFiles: t('invoices.drop-area.select-files')
+      orClickTo: t('invoices.drop-area.click'),
+      selectFiles: t('invoices.drop-area.select-files'),
     };
   };
-  
+
   const texts = getTexts();
 
   return (
-    <div 
+    <div
       className={`
         border-2 border-dashed rounded-xl p-10 text-center
         transition-all duration-300 ease-in-out
-        ${isDragging 
-          ? 'border-primary bg-primary/5' 
-          : 'border-muted-foreground/20 hover:border-primary/50 hover:bg-muted/50'
+        ${
+          isDragging
+            ? 'border-primary bg-primary/5'
+            : 'border-muted-foreground/20 hover:border-primary/50 hover:bg-muted/50'
         }
       `}
       onDragOver={onDragOver}
@@ -52,12 +52,8 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
           <FileUp className="h-8 w-8 text-primary" />
         </div>
         <div>
-          <p className="text-xl font-medium mb-2">
-            {texts.dropHere}
-          </p>
-          <p className="text-muted-foreground">
-            {texts.orClickTo}
-          </p>
+          <p className="text-xl font-medium mb-2">{texts.dropHere}</p>
+          <p className="text-muted-foreground">{texts.orClickTo}</p>
         </div>
         <Button
           variant="outline"

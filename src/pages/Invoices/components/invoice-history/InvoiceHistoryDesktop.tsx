@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 import { FileUp, FileDown } from 'lucide-react';
@@ -20,14 +19,14 @@ import { InvoiceHistoryTableProps } from './types';
 import { needsTruncation, truncateFileName } from '@/utils/fileUtils';
 import { InvoiceTypeTag } from './InvoiceTypeTag';
 import { InvoiceActions } from './InvoiceActions';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 export const InvoiceHistoryDesktop: React.FC<InvoiceHistoryTableProps> = ({
   invoices,
   onViewInvoice,
   onDownloadInvoice,
 }) => {
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="rounded-md border overflow-x-auto">
@@ -35,9 +34,15 @@ export const InvoiceHistoryDesktop: React.FC<InvoiceHistoryTableProps> = ({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[50%]">{t('')}</TableHead>
-            <TableHead className="w-[15%]">{t('invoices.search.table.type')}</TableHead>
-            <TableHead className="w-[20%]">{t('invoices.search.table.upload-date')}</TableHead>
-            <TableHead className="w-[15%] text-right">{t('invoices.search.table.actions')}</TableHead>
+            <TableHead className="w-[15%]">
+              {t('invoices.search.table.type')}
+            </TableHead>
+            <TableHead className="w-[20%]">
+              {t('invoices.search.table.upload-date')}
+            </TableHead>
+            <TableHead className="w-[15%] text-right">
+              {t('invoices.search.table.actions')}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,4 +95,3 @@ export const InvoiceHistoryDesktop: React.FC<InvoiceHistoryTableProps> = ({
     </div>
   );
 };
-

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -18,14 +17,14 @@ const ActivityTabContent: React.FC<ActivityTabContentProps> = ({ userId }) => {
   const { users } = useUserManagement();
   const { activityData, isLoading, error } = useUserActivity(userId);
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   // Find the user in the users array
-  const user = users.find(u => u.id === userId);
-  
+  const user = users.find((u) => u.id === userId);
+
   if (isLoading) {
     return <ActivitySkeleton />;
   }
-  
+
   if (error || !activityData) {
     return (
       <div className="p-6 text-center">
@@ -44,25 +43,27 @@ const ActivityTabContent: React.FC<ActivityTabContentProps> = ({ userId }) => {
           <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="overview" className="space-y-4">
           <OverviewTab data={activityData} />
         </TabsContent>
-        
+
         <TabsContent value="services" className="space-y-4">
           <ServicesTab services={activityData.services} />
         </TabsContent>
-        
+
         <TabsContent value="subscriptions" className="space-y-4">
           {user ? (
             <SubscriptionsTab user={user} />
           ) : (
-            <p className="text-muted-foreground text-center py-8">User data not available.</p>
+            <p className="text-muted-foreground text-center py-8">
+              User data not available.
+            </p>
           )}
         </TabsContent>
-        
+
         <TabsContent value="invoices" className="space-y-4">
-          <InvoicesTab invoices={activityData.invoices} />
+          <InvoicesTab userId={userId}/>
         </TabsContent>
       </Tabs>
     </ScrollArea>

@@ -1,7 +1,12 @@
-
 import React, { useMemo } from 'react';
 import { DateFilter } from '@/pages/AdminUserManagement/components/UserEditDialog/ActivityTab/DateFilter';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Download, FileBarChart } from 'lucide-react';
 import { ServiceFilters as ServiceFiltersType } from '../../hooks/types/serviceTypes';
@@ -21,22 +26,27 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   onExport,
   totalItems,
   availableServices,
-  loading
+  loading,
 }) => {
   // Map our filter option to DateFilter component's format
   const dateFilterOption = useMemo(() => {
     switch (filters.dateFilterOption) {
-      case 'thisMonth': return '30days';
-      case 'last3Months': return '30days'; // closest match
-      case 'last6Months': return 'custom'; // we'll handle it specially
-      case 'custom': return 'custom';
-      default: return 'all';
+      case 'thisMonth':
+        return '30days';
+      case 'last3Months':
+        return '30days'; // closest match
+      case 'last6Months':
+        return 'custom'; // we'll handle it specially
+      case 'custom':
+        return 'custom';
+      default:
+        return 'all';
     }
   }, [filters.dateFilterOption]);
 
   const handleDateFilterChange = (option: string) => {
     let newFilter: Partial<ServiceFiltersType> = {};
-    
+
     if (option === '7days') {
       newFilter = { dateFilterOption: 'thisMonth' };
     } else if (option === '30days') {
@@ -46,7 +56,7 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
     } else {
       newFilter = { dateFilterOption: 'allTime' };
     }
-    
+
     setFilters(newFilter);
   };
 
@@ -57,9 +67,9 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           <FileBarChart className="h-5 w-5 text-[#7E69AB]" />
           <h3 className="text-lg font-medium">Service Requests Analysis</h3>
         </div>
-        <Button 
-          onClick={onExport} 
-          variant="outline" 
+        <Button
+          onClick={onExport}
+          variant="outline"
           className="flex items-center gap-2 border-[#7E69AB] text-[#7E69AB] hover:bg-[#7E69AB]/10"
           disabled={totalItems === 0 || loading}
         >
@@ -67,7 +77,7 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           Export CSV
         </Button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <DateFilter
           filterOption={dateFilterOption}
@@ -75,9 +85,9 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           customDateRange={filters.dateRange}
           onCustomDateChange={(range) => setFilters({ dateRange: range })}
         />
-        
-        <Select 
-          value={filters.serviceType} 
+
+        <Select
+          value={filters.serviceType}
           onValueChange={(value) => setFilters({ serviceType: value })}
           disabled={loading}
         >
@@ -86,14 +96,16 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Services</SelectItem>
-            {availableServices.map(service => (
-              <SelectItem key={service} value={service}>{service}</SelectItem>
+            {availableServices.map((service) => (
+              <SelectItem key={service} value={service}>
+                {service}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        
-        <Select 
-          value={filters.status} 
+
+        <Select
+          value={filters.status}
           onValueChange={(value) => setFilters({ status: value })}
           disabled={loading}
         >
@@ -109,13 +121,11 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           </SelectContent>
         </Select>
       </div>
-      
+
       <div className="text-sm text-muted-foreground">
-        {loading ? (
-          'Loading service requests...'
-        ) : (
-          `Showing ${totalItems} ${totalItems === 1 ? 'request' : 'requests'}`
-        )}
+        {loading
+          ? 'Loading service requests...'
+          : `Showing ${totalItems} ${totalItems === 1 ? 'request' : 'requests'}`}
       </div>
     </div>
   );

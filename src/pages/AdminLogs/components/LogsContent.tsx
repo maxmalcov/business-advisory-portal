@@ -1,10 +1,6 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { 
-  Tabs, 
-  TabsContent 
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import LogsTable from './LogsTable';
 import LogsFilters from './LogsFilters';
 import { LogEntry, ChartDataItem, WeeklyDataItem } from '../types';
@@ -15,26 +11,32 @@ interface LogsContentProps {
   weeklyData: WeeklyDataItem[];
 }
 
-const LogsContent: React.FC<LogsContentProps> = ({ 
+const LogsContent: React.FC<LogsContentProps> = ({
   logs,
   chartData,
-  weeklyData 
+  weeklyData,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
 
-  const filteredLogs = logs.filter(log => {
-    const matchesSearch =
-      log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.user.toLowerCase().includes(searchQuery.toLowerCase());
-      
-    const matchesCategory = categoryFilter === 'all' || log.category === categoryFilter;
-    const matchesLevel = levelFilter === 'all' || log.level === levelFilter;
-    
-    return matchesSearch && matchesCategory && matchesLevel;
-  }).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  const filteredLogs = logs
+    .filter((log) => {
+      const matchesSearch =
+        log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.user.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesCategory =
+        categoryFilter === 'all' || log.category === categoryFilter;
+      const matchesLevel = levelFilter === 'all' || log.level === levelFilter;
+
+      return matchesSearch && matchesCategory && matchesLevel;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
 
   return (
     <Tabs defaultValue="logs">
@@ -47,7 +49,7 @@ const LogsContent: React.FC<LogsContentProps> = ({
           levelFilter={levelFilter}
           onLevelChange={setLevelFilter}
         />
-        
+
         <LogsTable logs={filteredLogs} />
       </TabsContent>
     </Tabs>

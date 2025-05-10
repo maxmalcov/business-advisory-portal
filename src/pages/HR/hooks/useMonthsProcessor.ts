@@ -1,48 +1,69 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getMonthYearForStorage, getCurrentMonthYear, getLastMonths, getMonthsInYear } from '@/utils/dates';
-import { MonthSubmission, WorkHoursSubmission, SubmissionStatus } from './useMonthlySubmissions';
-import { addMonths, subMonths, isAfter, startOfMonth, isSameMonth} from 'date-fns';
+import {
+  getMonthYearForStorage,
+  getCurrentMonthYear,
+  getLastMonths,
+  getMonthsInYear,
+} from '@/utils/dates';
+import {
+  MonthSubmission,
+  WorkHoursSubmission,
+  SubmissionStatus,
+} from './useMonthlySubmissions';
+import {
+  addMonths,
+  subMonths,
+  isAfter,
+  startOfMonth,
+  isSameMonth,
+} from 'date-fns';
 
 export const useMonthsProcessor = (
   submissions: WorkHoursSubmission[],
-  monthCount: number = 6
+  monthCount: number = 6,
 ) => {
   const { user } = useAuth();
   const [months, setMonths] = useState<MonthSubmission[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<Date>(getCurrentMonthYear());
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
-  
+  const [selectedMonth, setSelectedMonth] = useState<Date>(
+    getCurrentMonthYear(),
+  );
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear(),
+  );
+
   // Process the submissions data to create a month list for multiple years
   useEffect(() => {
     if (!user?.id) return;
 
     const lastFiveYears = Array.from(
       { length: 5 },
-      (_, i) => new Date().getFullYear() - i
+      (_, i) => new Date().getFullYear() - i,
     );
-    
+
     const allMonths: MonthSubmission[] = [];
     const currentMonth = getCurrentMonthYear();
     const today = new Date();
-    
+
     // Get months for all years we want to show
-    lastFiveYears.forEach(year => {
+    lastFiveYears.forEach((year) => {
       const monthsInYear = getMonthsInYear(year);
-      
-      const monthsWithStatus = monthsInYear.map(date => {
+
+      const monthsWithStatus = monthsInYear.map((date) => {
         const monthStr = getMonthYearForStorage(date);
-        const submission = submissions.find(s => s.month_year.startsWith(monthStr));
-        const isCurrentMonthDate = date.getMonth() === currentMonth.getMonth() && 
-                                  date.getFullYear() === currentMonth.getFullYear();
-        
+        const submission = submissions.find((s) =>
+          s.month_year.startsWith(monthStr),
+        );
+        const isCurrentMonthDate =
+          date.getMonth() === currentMonth.getMonth() &&
+          date.getFullYear() === currentMonth.getFullYear();
+
         // Check if this is a future month
         const isFutureMonth = isAfter(startOfMonth(date), startOfMonth(today));
-        
+
         // Explicitly type the status as SubmissionStatus
         const status: SubmissionStatus = submission ? 'submitted' : 'pending';
-        
+
         return {
           date,
           status,
@@ -51,26 +72,30 @@ export const useMonthsProcessor = (
           submission,
         };
       });
-      
+
       allMonths.push(...monthsWithStatus);
     });
-    
+
     setMonths(allMonths);
   }, [submissions, user?.id, monthCount]);
 
   // Handle selecting a default non-future month
   useEffect(() => {
     if (months.length > 0) {
-      const currentMonthEntry = months.find(month => month.isCurrentMonth);
-      
+      const currentMonthEntry = months.find((month) => month.isCurrentMonth);
+
       // If current month is submitted or we're on a future month, find the most recent available month
-      const isFutureSelected = selectedMonth && isAfter(startOfMonth(selectedMonth), startOfMonth(new Date()));
-      const isSelectedUnusable = isFutureSelected || !months.some(m => isSameMonth(m.date, selectedMonth));
+      const isFutureSelected =
+        selectedMonth &&
+        isAfter(startOfMonth(selectedMonth), startOfMonth(new Date()));
+      const isSelectedUnusable =
+        isFutureSelected ||
+        !months.some((m) => isSameMonth(m.date, selectedMonth));
 
       if (isSelectedUnusable) {
         const availableMonths = months
-            .filter(month => !month.isFutureMonth)
-            .sort((a, b) => b.date.getTime() - a.date.getTime());
+          .filter((month) => !month.isFutureMonth)
+          .sort((a, b) => b.date.getTime() - a.date.getTime());
 
         if (availableMonths.length > 0) {
           setSelectedMonth(availableMonths[0].date);
@@ -83,22 +108,21 @@ export const useMonthsProcessor = (
   // Handle year selection
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
-    
+
     // Find a month in the selected year that matches the current month if possible
     // Make sure it's not a future month
     const today = new Date();
     const currentMonthInYear = new Date(year, today.getMonth(), 1);
-    
+
     // If the month would be in the future, use the current month instead
     if (isAfter(currentMonthInYear, today)) {
       // Find the latest non-future month in this year
       const availableMonths = months
-        .filter(month => 
-          month.date.getFullYear() === year && 
-          !month.isFutureMonth
+        .filter(
+          (month) => month.date.getFullYear() === year && !month.isFutureMonth,
         )
         .sort((a, b) => b.date.getTime() - a.date.getTime());
-      
+
       if (availableMonths.length > 0) {
         setSelectedMonth(availableMonths[0].date);
       } else if (year === today.getFullYear()) {
@@ -116,15 +140,16 @@ export const useMonthsProcessor = (
 
   // Navigate between months with arrow buttons
   const handleNavigateMonth = (direction: 'prev' | 'next') => {
-    const newDate = direction === 'prev' 
-      ? subMonths(selectedMonth, 1) 
-      : addMonths(selectedMonth, 1);
-    
+    const newDate =
+      direction === 'prev'
+        ? subMonths(selectedMonth, 1)
+        : addMonths(selectedMonth, 1);
+
     // Don't allow navigating to future months
     if (isAfter(startOfMonth(newDate), startOfMonth(new Date()))) {
       return;
     }
-    
+
     setSelectedMonth(newDate);
     setSelectedYear(newDate.getFullYear());
   };
@@ -136,6 +161,6 @@ export const useMonthsProcessor = (
     selectedYear,
     setSelectedYear,
     handleYearChange,
-    handleNavigateMonth
+    handleNavigateMonth,
   };
 };

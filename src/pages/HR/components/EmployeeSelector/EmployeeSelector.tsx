@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronsUpDown } from 'lucide-react';
 import {
@@ -6,13 +5,13 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
 import { useActiveEmployees } from '../../hooks/useActiveEmployees';
 import { useToast } from '@/hooks/use-toast';
 import { Employee } from '../../types/employee';
@@ -31,32 +30,41 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
   const { toast } = useToast();
 
   // Ensure existingEmployees and activeEmployees are always arrays
-  const safeExistingEmployees = Array.isArray(existingEmployees) ? existingEmployees : [];
-  const safeActiveEmployees = Array.isArray(activeEmployees) ? activeEmployees : [];
+  const safeExistingEmployees = Array.isArray(existingEmployees)
+    ? existingEmployees
+    : [];
+  const safeActiveEmployees = Array.isArray(activeEmployees)
+    ? activeEmployees
+    : [];
 
   // Filter out employees that have already been added
-  const availableEmployees = safeActiveEmployees.filter(emp => 
-    !safeExistingEmployees.some(existing => 
-      existing.employeeId === emp.id || 
-      existing.employeeName === emp.fullName
-    )
+  const availableEmployees = safeActiveEmployees.filter(
+    (emp) =>
+      !safeExistingEmployees.some(
+        (existing) =>
+          existing.employeeId === emp.id ||
+          existing.employeeName === emp.fullName,
+      ),
   );
 
   const handleSelectEmployee = (employee: Employee) => {
     // Check if this employee has already been added
-    console.log(safeExistingEmployees)
-    if (safeExistingEmployees.some(existing =>
-      existing.employeeId === employee.id ||
-      existing.employeeName === employee.fullName
-    )) {
+    console.log(safeExistingEmployees);
+    if (
+      safeExistingEmployees.some(
+        (existing) =>
+          existing.employeeId === employee.id ||
+          existing.employeeName === employee.fullName,
+      )
+    ) {
       toast({
-        title: "Employee already added",
+        title: 'Employee already added',
         description: `${employee.fullName} is already on the list for this month.`,
-        variant: "destructive"
+        variant: 'destructive',
       });
       return;
     }
-    console.log('LOG!!!!!')
+    console.log('LOG!!!!!');
 
     onSelectEmployee(employee);
     setOpen(false);
@@ -68,7 +76,7 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
   };
 
   return (
-      <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -77,16 +85,16 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
           className="w-full justify-between"
           disabled={isLoading}
         >
-          {isLoading ? "Loading employees..." : "Select an employee"}
+          {isLoading ? 'Loading employees...' : 'Select an employee'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">
         <Command>
           <CommandInput
-              placeholder="Search employees..."
-              value={search ?? ''}
-              onValueChange={(value) => setSearch(value ?? '')}
+            placeholder="Search employees..."
+            value={search ?? ''}
+            onValueChange={(value) => setSearch(value ?? '')}
           />
 
           {isLoading ? (
@@ -96,15 +104,15 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
               <CommandEmpty>No employee found.</CommandEmpty>
               <CommandGroup heading="Active Employees">
                 {(availableEmployees ?? []).length > 0 ? (
-                    availableEmployees.map((employee) => (
-                        <EmployeeListItem
-                            key={employee.id}
-                            employee={employee}
-                            onSelect={handleSelectEmployee}
-                        />
-                    ))
+                  availableEmployees.map((employee) => (
+                    <EmployeeListItem
+                      key={employee.id}
+                      employee={employee}
+                      onSelect={handleSelectEmployee}
+                    />
+                  ))
                 ) : (
-                    <EmptyState isLoading={false} />
+                  <EmptyState isLoading={false} />
                 )}
               </CommandGroup>
 

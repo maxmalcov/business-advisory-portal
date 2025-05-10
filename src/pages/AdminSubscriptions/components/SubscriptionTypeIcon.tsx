@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PackageOpen, Calendar, Users, Clock } from 'lucide-react';
 
@@ -6,8 +5,10 @@ type SubscriptionTypeIconProps = {
   type: string;
 };
 
-const SubscriptionTypeIcon: React.FC<SubscriptionTypeIconProps> = ({ type }) => {
-  switch(type) {
+const SubscriptionTypeIcon: React.FC<SubscriptionTypeIconProps> = ({
+  type,
+}) => {
+  switch (type) {
     case 'iframe':
       return <PackageOpen className="h-5 w-5 text-primary" />;
     case 'calendar':

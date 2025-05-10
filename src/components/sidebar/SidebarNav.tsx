@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarItem from './SidebarItem';
@@ -13,11 +12,11 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  
+
   const isItemActive = (item: SidebarItemType): boolean => {
     if (location.pathname === item.path) return true;
     if (item.children) {
-      return item.children.some(child => location.pathname === child.path);
+      return item.children.some((child) => location.pathname === child.path);
     }
     return false;
   };
@@ -28,9 +27,13 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
 
   useEffect(() => {
     const initialExpanded = menuItems
-      .filter(item => item.children && item.children.some(child => location.pathname === child.path))
-      .map(item => item.path);
-    
+      .filter(
+        (item) =>
+          item.children &&
+          item.children.some((child) => location.pathname === child.path),
+      )
+      .map((item) => item.path);
+
     if (initialExpanded.length > 0) {
       setExpandedItems(initialExpanded);
     }
@@ -42,9 +45,9 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
       return;
     }
 
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       if (prev.includes(path)) {
-        return prev.filter(item => item !== path);
+        return prev.filter((item) => item !== path);
       } else {
         return [path];
       }
@@ -54,10 +57,10 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
   const handleItemClick = (path: string, hasChildren: boolean) => {
     // Navigate to the path
     navigate(path);
-    
+
     // Toggle submenu
     toggleExpanded(path, hasChildren);
-    
+
     // Close sidebar on mobile if it's not a parent item
     if (!hasChildren) {
       onClose();
@@ -68,7 +71,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ menuItems, onClose }) => {
     <nav className="px-4 pb-4">
       <ul className="space-y-1">
         {menuItems.map((item) => (
-          <SidebarItem 
+          <SidebarItem
             key={item.path}
             item={item}
             isParentActive={isParentActive}

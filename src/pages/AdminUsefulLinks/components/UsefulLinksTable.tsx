@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { UsefulLink } from '@/pages/UsefulLinks/types';
 import { Button } from '@/components/ui/button';
@@ -14,16 +13,18 @@ interface UsefulLinksTableProps {
   refetch: () => Promise<any>;
 }
 
-const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({ 
-  links, 
-  isLoading, 
+const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
+  links,
+  isLoading,
   error,
-  refetch
+  refetch,
 }) => {
   const { t } = useLanguage();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedLink, setSelectedLink] = useState<UsefulLink | undefined>(undefined);
+  const [selectedLink, setSelectedLink] = useState<UsefulLink | undefined>(
+    undefined,
+  );
 
   const handleEditClick = (link: UsefulLink) => {
     setSelectedLink(link);
@@ -67,30 +68,50 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
         <table className="w-full">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="p-3 text-left font-medium">{t('useful-links.table.title')}</th>
-              <th className="p-3 text-left font-medium">{t('useful-links.table.category')}</th>
-              <th className="p-3 text-left font-medium">{t('useful-links.table.icon')}</th>
-              <th className="p-3 text-left font-medium">{t('useful-links.table.order')}</th>
-              <th className="p-3 text-center font-medium">{t('useful-links.table.actions')}</th>
+              <th className="p-3 text-left font-medium">
+                {t('useful-links.table.title')}
+              </th>
+              <th className="p-3 text-left font-medium">
+                {t('useful-links.table.category')}
+              </th>
+              <th className="p-3 text-left font-medium">
+                {t('useful-links.table.icon')}
+              </th>
+              <th className="p-3 text-left font-medium">
+                {t('useful-links.table.order')}
+              </th>
+              <th className="p-3 text-center font-medium">
+                {t('useful-links.table.actions')}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {links.map(link => (
+            {links.map((link) => (
               <tr key={link.id} className="border-b hover:bg-muted/50">
                 <td className="p-3">
                   <div className="font-medium">{link.title}</div>
-                  <div className="text-sm text-muted-foreground truncate max-w-[200px]">{link.url}</div>
+                  <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                    {link.url}
+                  </div>
                 </td>
                 <td className="p-3">{t(link.category)}</td>
                 <td className="p-3">{t(link.icon) || '—'}</td>
                 <td className="p-3">{link.display_order || 0}</td>
                 <td className="p-3 text-center">
                   <div className="flex justify-center space-x-2">
-                    <Button size="sm" variant="ghost" onClick={() => handleEditClick(link)}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleEditClick(link)}
+                    >
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">Edit</span>
                     </Button>
-                    <Button size="sm" variant="ghost" onClick={() => handleDeleteClick(link)}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleDeleteClick(link)}
+                    >
                       <Trash className="h-4 w-4" />
                       <span className="sr-only">Delete</span>
                     </Button>
@@ -111,7 +132,7 @@ const UsefulLinksTable: React.FC<UsefulLinksTableProps> = ({
             initialData={selectedLink}
             onSuccess={refetch}
           />
-          
+
           <DeleteLinkDialog
             open={deleteDialogOpen}
             onOpenChange={setDeleteDialogOpen}

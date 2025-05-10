@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { ServicesHeader } from './Services/components/ServicesHeader';
@@ -11,7 +10,11 @@ const Services: React.FC = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const { services, setServices, loading } = useServices();
-  const { handleRequestService } = useServiceRequests(user, services, setServices);
+  const { handleRequestService } = useServiceRequests(
+    user,
+    services,
+    setServices,
+  );
 
   return (
     <div className="space-y-6">
@@ -31,7 +34,7 @@ const Services: React.FC = () => {
           ))}
         </div>
       ) : (
-        <ServicesList 
+        <ServicesList
           services={services}
           onRequestService={handleRequestService}
           searchQuery={searchQuery}

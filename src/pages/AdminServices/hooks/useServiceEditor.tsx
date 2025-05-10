@@ -1,8 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Service, servicesTable } from '@/integrations/supabase/client';
 
-export const useServiceEditor = (serviceId: string | undefined, resetForm: () => void) => {
+export const useServiceEditor = (
+  serviceId: string | undefined,
+  resetForm: () => void,
+) => {
   const [loading, setLoading] = useState(true);
   const [service, setService] = useState<Service | null>(null);
 
@@ -46,7 +48,9 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
   }, [serviceId, resetForm]);
 
   // Save or update a service
-  const saveService = async (formData: Omit<Service, 'id' | 'created_at' | 'updated_at'>) => {
+  const saveService = async (
+    formData: Omit<Service, 'id' | 'created_at' | 'updated_at'>,
+  ) => {
     console.log('Saving service:', formData, 'serviceId:', serviceId);
     try {
       if (serviceId) {
@@ -60,7 +64,7 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
             badges: formData.badges,
             popular: formData.popular,
             category: formData.category,
-            status: formData.status
+            status: formData.status,
           })
           .eq('id', serviceId);
 
@@ -75,7 +79,7 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
           badges: formData.badges,
           popular: formData.popular,
           category: formData.category,
-          status: formData.status
+          status: formData.status,
         });
 
         if (error) throw error;
@@ -89,6 +93,6 @@ export const useServiceEditor = (serviceId: string | undefined, resetForm: () =>
   return {
     loading,
     service,
-    saveService
+    saveService,
   };
 };

@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Employee } from '../../types/employee';
 import { CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface HeaderSectionProps {
   employee: Employee;
@@ -14,13 +13,13 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ employee }) => {
   const getInitials = (name: string) => {
     return name
       .split(' ')
-      .map(part => part[0])
+      .map((part) => part[0])
       .join('')
       .toUpperCase()
       .substring(0, 2);
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="flex items-center justify-between">
@@ -31,7 +30,9 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ employee }) => {
           </AvatarFallback>
         </Avatar>
         <div>
-          <h2 className="text-xl font-bold text-foreground">{employee.fullName}</h2>
+          <h2 className="text-xl font-bold text-foreground">
+            {employee.fullName}
+          </h2>
           <p className="text-muted-foreground">{employee.position}</p>
         </div>
       </div>

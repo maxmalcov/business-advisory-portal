@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardFooter 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileCheck } from 'lucide-react';
-import { 
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -18,36 +18,37 @@ import {
 import { ServiceCardProps, ServiceStatus } from '../types';
 import { useLanguage } from '@/context/LanguageContext';
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ 
+const ServiceCard: React.FC<ServiceCardProps> = ({
   id,
-  title, 
-  description, 
-  icon, 
+  title,
+  description,
+  icon,
   price,
   badges = [],
   status = 'available',
-  onRequestService
+  onRequestService,
 }) => {
   const { t } = useLanguage();
   const [isHovering, setIsHovering] = useState(false);
 
   const getButtonProps = (status: ServiceStatus) => {
-    switch(status) {
+    switch (status) {
       case 'completed':
         return {
           variant: 'outline' as const,
           className: `${isHovering ? 'bg-green-100 hover:bg-green-200' : 'bg-green-50'} text-green-600`,
           disabled: false,
           label: isHovering ? t('services.request') : t('status.completed'),
-          tooltip: 'Request this service again'
+          tooltip: 'Request this service again',
         };
       case 'pending':
         return {
           variant: 'outline' as const,
-          className: 'bg-yellow-50 hover:bg-yellow-50 text-yellow-600 cursor-not-allowed',
+          className:
+            'bg-yellow-50 hover:bg-yellow-50 text-yellow-600 cursor-not-allowed',
           disabled: true,
           label: t('status.pending'),
-          tooltip: 'Your request is being processed'
+          tooltip: 'Your request is being processed',
         };
       case 'rejected':
         return {
@@ -55,7 +56,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           className: `${isHovering ? 'bg-red-100 hover:bg-red-200' : 'bg-red-50'} text-red-600`,
           disabled: false,
           label: isHovering ? t('services.request') : t('status.rejected'),
-          tooltip: 'Request this service again'
+          tooltip: 'Request this service again',
         };
       default:
         return {
@@ -63,7 +64,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           className: '',
           disabled: false,
           label: t('services.request'),
-          tooltip: ''
+          tooltip: '',
         };
     }
   };
@@ -72,7 +73,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
 
   const ActionButton = () => {
     const button = (
-      <Button 
+      <Button
         variant={buttonProps.variant}
         className={buttonProps.className}
         disabled={buttonProps.disabled}
@@ -88,9 +89,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       return (
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
-              {button}
-            </TooltipTrigger>
+            <TooltipTrigger asChild>{button}</TooltipTrigger>
             <TooltipContent>
               <p>{buttonProps.tooltip}</p>
             </TooltipContent>
@@ -106,9 +105,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     <Card className="h-full flex flex-col">
       <CardHeader>
         <div className="flex items-center space-x-2">
-          <div className="p-2 bg-muted rounded-lg">
-            {icon}
-          </div>
+          <div className="p-2 bg-muted rounded-lg">{icon}</div>
           <CardTitle>{title}</CardTitle>
         </div>
         <CardDescription>{description}</CardDescription>
@@ -126,7 +123,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <CardFooter className="flex flex-col space-y-4 pt-2 border-t">
         <div className="w-full flex justify-between items-center">
           <div>
-            <span className="font-semibold">${parseFloat(price).toFixed(2)}</span>
+            <span className="font-semibold">
+              ${parseFloat(price).toFixed(2)}
+            </span>
           </div>
           <ActionButton />
         </div>

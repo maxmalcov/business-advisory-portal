@@ -1,29 +1,29 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
-import { 
-  Card, 
-  CardContent, 
+import {
+  Card,
+  CardContent,
   CardFooter,
-  CardHeader, 
-  CardTitle 
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  Users, 
-  FileText, 
-  Bell, 
-  CheckCircle, 
+import {
+  Users,
+  FileText,
+  Bell,
+  CheckCircle,
   Package,
   UserPlus,
   UserMinus,
-  Loader2
+  Loader2,
 } from 'lucide-react';
 import {
   ActivityEvent,
   formatTimestamp,
-  getActivityIcon, getRecentActivity,
+  getActivityIcon,
+  getRecentActivity,
 } from '@/utils/activity';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -34,7 +34,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { truncateFileName, needsTruncation } from '@/utils/fileUtils';
-import {logsTable} from "@/integrations/supabase/client.ts";
+import { logsTable } from '@/integrations/supabase/client.ts';
 
 const iconComponents = {
   Users,
@@ -43,13 +43,14 @@ const iconComponents = {
   CheckCircle,
   Package,
   UserPlus,
-  UserMinus
+  UserMinus,
 };
 
 const ActivityIcon: React.FC<{ type: string }> = ({ type }) => {
   const iconName = getActivityIcon(type as any);
-  const IconComponent = iconComponents[iconName as keyof typeof iconComponents] || Bell;
-  
+  const IconComponent =
+    iconComponents[iconName as keyof typeof iconComponents] || Bell;
+
   return (
     <div className="bg-muted p-2 rounded-full">
       <IconComponent className="h-5 w-5" />
@@ -82,9 +83,10 @@ const RecentActivity: React.FC = () => {
       } catch (error) {
         console.error('Error fetching activities:', error);
         toast({
-          variant: "destructive",
-          title: "Error loading activities",
-          description: "There was a problem loading your recent activities. Please try again later.",
+          variant: 'destructive',
+          title: 'Error loading activities',
+          description:
+            'There was a problem loading your recent activities. Please try again later.',
         });
         setActivities(await getRecentActivity());
       } finally {
@@ -99,14 +101,14 @@ const RecentActivity: React.FC = () => {
   const formatDescription = (description: string) => {
     // Check if the description contains quotes (likely indicating a file name)
     const fileNameMatch = description.match(/"([^"]+)"/);
-    
+
     if (fileNameMatch && fileNameMatch[1]) {
       const fileName = fileNameMatch[1];
-      
+
       if (needsTruncation(fileName)) {
         const truncatedName = truncateFileName(fileName);
         const parts = description.split(`"${fileName}"`);
-        
+
         return (
           <>
             {parts[0]}
@@ -125,19 +127,23 @@ const RecentActivity: React.FC = () => {
         );
       }
     }
-    
+
     return description;
   };
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">{t('dashboard.recent_activity')}</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        {t('dashboard.recent_activity')}
+      </h2>
       <Card>
         <CardContent className="p-6">
           {loading ? (
             <div className="py-8 text-center">
               <Loader2 className="animate-spin h-8 w-8 mx-auto text-muted-foreground" />
-              <p className="mt-2 text-muted-foreground">Loading activities...</p>
+              <p className="mt-2 text-muted-foreground">
+                Loading activities...
+              </p>
             </div>
           ) : activities.length === 0 ? (
             <EmptyState />
@@ -148,7 +154,9 @@ const RecentActivity: React.FC = () => {
                   <ActivityIcon type={activity.type} />
                   <div>
                     <p className="font-medium">{activity.title}</p>
-                    <p className="text-sm text-muted-foreground">{formatDescription(activity.description)}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatDescription(activity.description)}
+                    </p>
                     {/*<p className="text-xs text-muted-foreground">{formatTimestamp(activity.timestamp)}</p>*/}
                   </div>
                 </div>
@@ -156,9 +164,12 @@ const RecentActivity: React.FC = () => {
             </div>
           )}
         </CardContent>
-        <CardFooter className={isMobile ? "flex justify-center" : ""}>
+        <CardFooter className={isMobile ? 'flex justify-center' : ''}>
           <Link to="/user/activity-log">
-            <Button variant="outline" className={isMobile ? "w-auto" : "w-full"}>
+            <Button
+              variant="outline"
+              className={isMobile ? 'w-auto' : 'w-full'}
+            >
               View All Activity
             </Button>
           </Link>

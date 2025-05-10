@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Employee, EmployeeStatus } from '../../../types/employee';
 import { Input } from '@/components/ui/input';
@@ -29,13 +28,13 @@ const BasicInfoFormSection: React.FC<BasicInfoFormSectionProps> = ({
             name="fullName"
             value={formData.fullName}
             onChange={handleInputChange}
-            className={errors.fullName ? "border-red-500" : ""}
+            className={errors.fullName ? 'border-red-500' : ''}
           />
           {errors.fullName && (
             <p className="text-xs text-red-500">{errors.fullName}</p>
           )}
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="position">Position/Role</Label>
           <Input
@@ -43,7 +42,7 @@ const BasicInfoFormSection: React.FC<BasicInfoFormSectionProps> = ({
             name="position"
             value={formData.position}
             onChange={handleInputChange}
-            className={errors.position ? "border-red-500" : ""}
+            className={errors.position ? 'border-red-500' : ''}
           />
           {errors.position && (
             <p className="text-xs text-red-500">{errors.position}</p>
@@ -59,21 +58,27 @@ const BasicInfoFormSection: React.FC<BasicInfoFormSectionProps> = ({
             onChange={handleInputChange}
           />
         </div>
-        
+
         <div className="space-y-2">
           <Label>Status</Label>
-          <RadioGroup 
-            value={formData.status} 
-            onValueChange={(value) => handleStatusChange(value as EmployeeStatus)}
+          <RadioGroup
+            value={formData.status}
+            onValueChange={(value) =>
+              handleStatusChange(value as EmployeeStatus)
+            }
             className="flex space-x-4"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="active" id="active" />
-              <Label htmlFor="active" className="cursor-pointer">Active</Label>
+              <Label htmlFor="active" className="cursor-pointer">
+                Active
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="terminated" id="terminated" />
-              <Label htmlFor="terminated" className="cursor-pointer">Terminated</Label>
+              <Label htmlFor="terminated" className="cursor-pointer">
+                Terminated
+              </Label>
             </div>
           </RadioGroup>
         </div>

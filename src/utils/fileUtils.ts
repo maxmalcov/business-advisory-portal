@@ -1,4 +1,3 @@
-
 /**
  * Formats a file size in bytes to a human-readable string
  * @param bytes File size in bytes
@@ -6,11 +5,11 @@
  */
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
@@ -30,9 +29,9 @@ export const isImageFile = (fileType: string): boolean => {
  * @returns Public URL for the file
  */
 export const getFilePublicUrl = (
-  bucket: string, 
+  bucket: string,
   path: string,
-  projectId = 'grpzctxumndpwdwzgzqt'
+  projectId = 'grpzctxumndpwdwzgzqt',
 ): string => {
   return `https://${projectId}.supabase.co/storage/v1/object/public/${bucket}/${path}`;
 };
@@ -52,8 +51,13 @@ export const getFileExtension = (filename: string): string => {
  * @param maxLength Maximum length before truncation (default: 50)
  * @returns Truncated file name with ellipsis
  */
-export const truncateFileName = (fileName: string, maxLength: number = 50): string => {
-  return fileName.length > maxLength ? `${fileName.substring(0, maxLength - 3)}...` : fileName;
+export const truncateFileName = (
+  fileName: string,
+  maxLength: number = 50,
+): string => {
+  return fileName.length > maxLength
+    ? `${fileName.substring(0, maxLength - 3)}...`
+    : fileName;
 };
 
 /**
@@ -62,6 +66,9 @@ export const truncateFileName = (fileName: string, maxLength: number = 50): stri
  * @param maxLength Maximum length before truncation (default: 50)
  * @returns Boolean indicating if truncation is needed
  */
-export const needsTruncation = (fileName: string, maxLength: number = 50): boolean => {
+export const needsTruncation = (
+  fileName: string,
+  maxLength: number = 50,
+): boolean => {
   return fileName.length > maxLength;
 };

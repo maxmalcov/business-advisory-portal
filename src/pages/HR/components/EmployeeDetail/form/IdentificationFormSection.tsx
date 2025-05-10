@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Employee } from '../../../types/employee';
 import { Input } from '@/components/ui/input';
@@ -16,10 +15,14 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-muted-foreground">Identification</h3>
+      <h3 className="text-sm font-medium text-muted-foreground">
+        Identification
+      </h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="dniTie" className="text-foreground">DNI/TIE</Label>
+          <Label htmlFor="dniTie" className="text-foreground">
+            DNI/TIE
+          </Label>
           <Input
             id="dniTie"
             name="dniTie"
@@ -30,7 +33,9 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="idDocument" className="text-foreground">ID Document</Label>
+          <Label htmlFor="idDocument" className="text-foreground">
+            ID Document
+          </Label>
           <div className="flex">
             <Input
               id="idDocument"
@@ -44,7 +49,9 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
               Upload
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">Document upload is not available in edit mode</p>
+          <p className="text-xs text-muted-foreground">
+            Document upload is not available in edit mode
+          </p>
         </div>
       </div>
     </div>

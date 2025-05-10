@@ -1,10 +1,19 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Phone, CreditCard, UserCircle } from 'lucide-react';
-import type { User, AccountType, UserType as UserRoleType } from '../../hooks/types';
+import type {
+  User,
+  AccountType,
+  UserType as UserRoleType,
+} from '../../hooks/types';
 
 interface AccountInfoSectionProps {
   user: User;
@@ -12,12 +21,16 @@ interface AccountInfoSectionProps {
   isReadOnly?: boolean;
 }
 
-const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserChange, isReadOnly = false }) => {
+const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({
+  user,
+  onUserChange,
+  isReadOnly = false,
+}) => {
   // Handle changing user type
   const handleChangeUserType = (value: string) => {
     onUserChange({
       ...user,
-      userType: value as UserRoleType
+      userType: value as UserRoleType,
     });
   };
 
@@ -27,26 +40,35 @@ const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserCha
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Phone className="h-4 w-4 text-gray-500 flex-shrink-0" />
-            <Label htmlFor="phone" className="text-xs font-medium">Phone Number</Label>
+            <Label htmlFor="phone" className="text-xs font-medium">
+              Phone Number
+            </Label>
           </div>
-          <Input 
+          <Input
             id="phone"
             value={user.phone || ''}
-            onChange={(e) => onUserChange({...user, phone: e.target.value})}
+            onChange={(e) => onUserChange({ ...user, phone: e.target.value })}
             className="w-full h-9"
             readOnly={isReadOnly}
             disabled={isReadOnly}
           />
         </div>
-        
+
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <CreditCard className="h-4 w-4 text-gray-500 flex-shrink-0" />
-            <Label htmlFor="account-type" className="text-xs font-medium">Account Type</Label>
+            <Label htmlFor="account-type" className="text-xs font-medium">
+              Account Type
+            </Label>
           </div>
-          <Select 
-            value={user.accountType || ''} 
-            onValueChange={(value) => onUserChange({...user, accountType: value as AccountType})}
+          <Select
+            value={user.accountType || ''}
+            onValueChange={(value) =>
+              onUserChange({
+                ...user,
+                accountType: value as AccountType,
+              })
+            }
             disabled={isReadOnly}
           >
             <SelectTrigger id="account-type" className="w-full h-9">
@@ -66,10 +88,12 @@ const AccountInfoSection: React.FC<AccountInfoSectionProps> = ({ user, onUserCha
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <UserCircle className="h-4 w-4 text-gray-500 flex-shrink-0" />
-            <Label htmlFor="role" className="text-xs font-medium">Role</Label>
+            <Label htmlFor="role" className="text-xs font-medium">
+              Role
+            </Label>
           </div>
-          <Select 
-            value={user.userType} 
+          <Select
+            value={user.userType}
             onValueChange={handleChangeUserType}
             disabled={isReadOnly}
           >

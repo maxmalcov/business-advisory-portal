@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Employee } from '../../types/employee';
 import { Input } from '@/components/ui/input';
@@ -8,7 +7,7 @@ import { Eye, Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface IdentificationFormSectionProps {
   formData: Employee;
@@ -19,7 +18,7 @@ interface IdentificationFormSectionProps {
 const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
   formData,
   handleInputChange,
-  updateDocument
+  updateDocument,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -27,76 +26,80 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    
+
     const file = e.target.files[0];
-    const isValidType = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'].includes(file.type);
-    
+    const isValidType = [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+    ].includes(file.type);
+
     if (!isValidType) {
       toast({
         title: 'Invalid File Type',
         description: 'Only PDF, JPG and PNG files are accepted.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
-    
+
     if (file.size > 25 * 1024 * 1024) {
       toast({
         title: 'File Too Large',
         description: 'File size must be less than 25MB.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
-    
+
     setIsUploading(true);
     setUploadProgress(0);
-    
+
     try {
       // Create a unique file path with timestamp
       const timestamp = new Date().getTime();
       const fileExt = file.name.split('.').pop();
       const filePath = `${timestamp}_${file.name}`;
-      
+
       // Set initial progress for better UX
       setUploadProgress(10);
-      
+
       // Upload file to Supabase storage
       const { data, error } = await supabase.storage
         .from('employee_documents')
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false
+          upsert: false,
         });
-      
+
       // Simulate progress since onUploadProgress is not available
       setUploadProgress(50);
-      
+
       // Add a small delay to simulate progress
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300));
       setUploadProgress(80);
-      
-      await new Promise(resolve => setTimeout(resolve, 200));
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
       setUploadProgress(100);
-      
+
       if (error) throw error;
-      
+
       toast({
         title: 'Document Uploaded',
         description: 'The document has been successfully uploaded.',
       });
-      
+
       // Update the document path in the form data
       if (updateDocument) {
         updateDocument(filePath);
       }
-      
     } catch (error) {
       console.error('Error uploading document:', error);
       toast({
         title: 'Upload Failed',
         description: 'Could not upload the document. Please try again.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setIsUploading(false);
@@ -109,19 +112,19 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
       toast({
         title: 'No Document',
         description: 'There is no document available to view.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
-    
+
     try {
       // Get a temporary URL for the document
       const { data, error } = await supabase.storage
         .from('employee_documents')
         .createSignedUrl(formData.idDocument, 60); // URL valid for 60 seconds
-      
+
       if (error) throw error;
-      
+
       if (data && data.signedUrl) {
         // Open the document in a new tab
         window.open(data.signedUrl, '_blank');
@@ -133,19 +136,23 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
       toast({
         title: 'Error',
         description: 'Could not retrieve the document. Please try again.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-500">{t('hr.index.employee.detail-from.id')}</h3>
+      <h3 className="text-sm font-medium text-gray-500">
+        {t('hr.index.employee.detail-from.id')}
+      </h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="dniTie">{t('hr.index.employee.detail-from.id.dni')}</Label>
+          <Label htmlFor="dniTie">
+            {t('hr.index.employee.detail-from.id.dni')}
+          </Label>
           <Input
             id="dniTie"
             name="dniTie"
@@ -155,17 +162,24 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="idDocument">{t('hr.index.employee.detail-from.id.title')}</Label>
+          <Label htmlFor="idDocument">
+            {t('hr.index.employee.detail-from.id.title')}
+          </Label>
           <div className="flex flex-col gap-2">
             <div className="flex">
               <Input
-                value={formData.idDocument ? formData.idDocument.split('/').pop() || formData.idDocument : ''}
+                value={
+                  formData.idDocument
+                    ? formData.idDocument.split('/').pop() ||
+                      formData.idDocument
+                    : ''
+                }
                 disabled
                 className="flex-1"
               />
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 className="ml-2"
                 onClick={handleViewDocument}
                 disabled={!formData.idDocument}
@@ -173,7 +187,7 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
                 <Eye className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <div className="flex items-center">
               <Input
                 id="idDocumentUpload"
@@ -184,21 +198,25 @@ const IdentificationFormSection: React.FC<IdentificationFormSectionProps> = ({
                 className="flex-1"
                 disabled={isUploading}
               />
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 className="ml-2"
                 disabled={isUploading}
-                onClick={() => document.getElementById('idDocumentUpload')?.click()}
+                onClick={() =>
+                  document.getElementById('idDocumentUpload')?.click()
+                }
               >
                 <Upload className="h-4 w-4" />
               </Button>
             </div>
-            
+
             {isUploading && (
               <div className="space-y-1">
                 <Progress value={uploadProgress} className="h-2" />
-                <p className="text-xs text-muted-foreground">Uploading: {Math.round(uploadProgress)}%</p>
+                <p className="text-xs text-muted-foreground">
+                  Uploading: {Math.round(uploadProgress)}%
+                </p>
               </div>
             )}
           </div>

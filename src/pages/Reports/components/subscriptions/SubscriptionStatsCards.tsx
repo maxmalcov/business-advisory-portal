@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SubscriptionStats } from '../../hooks/types/subscriptionTypes';
@@ -10,29 +9,23 @@ interface SubscriptionStatsCardsProps {
   loading: boolean;
 }
 
-const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({ stats, loading }) => {
+const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({
+  stats,
+  loading,
+}) => {
   const { language } = useLanguage();
-  
+
   const getTexts = () => {
-    if (language === 'es') {
-      return {
-        totalSubscriptions: "Total de Suscripciones",
-        active: "Activas",
-        expired: "Expiradas",
-        cancelled: "Canceladas"
-      };
-    } else {
-      return {
-        totalSubscriptions: "Total Subscriptions",
-        active: "Active",
-        expired: "Expired",
-        cancelled: "Cancelled"
-      };
-    }
+    return {
+      totalSubscriptions: 'Total Subscriptions',
+      active: 'Active',
+      expired: 'Pending',
+      cancelled: 'Rejected',
+    };
   };
-  
+
   const texts = getTexts();
-  
+
   if (loading) {
     return (
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -54,37 +47,45 @@ const SubscriptionStatsCards: React.FC<SubscriptionStatsCardsProps> = ({ stats, 
     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.totalSubscriptions}</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {texts.totalSubscriptions}
+          </CardTitle>
           <Users className="h-4 w-4 text-blue-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">
           <p className="text-2xl font-bold">{stats.totalSubscriptions}</p>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.active}</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {texts.active}
+          </CardTitle>
           <CheckCircle className="h-4 w-4 text-green-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">
           <p className="text-2xl font-bold">{stats.activeSubscriptions}</p>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.expired}</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {texts.expired}
+          </CardTitle>
           <Clock className="h-4 w-4 text-yellow-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">
           <p className="text-2xl font-bold">{stats.expiredSubscriptions}</p>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">{texts.cancelled}</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {texts.cancelled}
+          </CardTitle>
           <XCircle className="h-4 w-4 text-red-500" />
         </CardHeader>
         <CardContent className="p-4 pt-0">

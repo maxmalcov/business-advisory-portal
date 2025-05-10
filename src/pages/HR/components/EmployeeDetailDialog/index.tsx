@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Pencil, X } from 'lucide-react';
@@ -13,7 +12,7 @@ import { useEmployeeDetail } from '../../hooks/useEmployeeDetail';
 import EmployeeDetailDialogContent from './EmployeeDetailDialogContent';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
-import {useLanguage} from "@/context/LanguageContext.tsx";
+import { useLanguage } from '@/context/LanguageContext.tsx';
 
 interface EmployeeDetailDialogProps {
   employeeId: string | null;
@@ -24,7 +23,7 @@ interface EmployeeDetailDialogProps {
 const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
   employeeId,
   open,
-  onOpenChange
+  onOpenChange,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const isMobile = useIsMobile();
@@ -36,13 +35,13 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
     fetchEmployeeData,
     handleSave,
   } = useEmployeeDetail();
-  
+
   useEffect(() => {
     if (open && employeeId) {
-      console.log("Dialog opened with employeeId:", employeeId);
+      console.log('Dialog opened with employeeId:', employeeId);
       fetchEmployeeData(employeeId);
     }
-    
+
     // Reset editing state when dialog opens/closes
     if (!open) {
       setIsEditing(false);
@@ -51,26 +50,30 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
 
   // Add debugging logs
   useEffect(() => {
-    console.log("Employee data in dialog:", employee);
-    console.log("Loading state:", isLoading);
-    console.log("Error state:", error);
+    console.log('Employee data in dialog:', employee);
+    console.log('Loading state:', isLoading);
+    console.log('Error state:', error);
   }, [employee, isLoading, error]);
 
   const handleSaveWrapper = (updatedEmployee: Employee) => {
-    console.log("Saving employee:", updatedEmployee);
+    console.log('Saving employee:', updatedEmployee);
     handleSave(updatedEmployee);
     setIsEditing(false);
   };
 
-  const {t} = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`p-0 overflow-hidden ${isMobile ? 'w-[95vw] max-w-none' : 'sm:max-w-[650px] md:max-w-[700px]'} max-h-[90vh] bg-background`}>
+      <DialogContent
+        className={`p-0 overflow-hidden ${isMobile ? 'w-[95vw] max-w-none' : 'sm:max-w-[650px] md:max-w-[700px]'} max-h-[90vh] bg-background`}
+      >
         <div className="flex flex-col h-full">
           <DialogHeader className="px-6 py-4 border-b border-border bg-muted/40 sticky top-0 z-10 flex flex-row items-center justify-between">
             <DialogTitle className="text-xl font-bold text-foreground">
-              {isEditing ? t('hr.index.employee.edit.title') : t('hr.index.employee.details.title')}
+              {isEditing
+                ? t('hr.index.employee.edit.title')
+                : t('hr.index.employee.details.title')}
             </DialogTitle>
             <div className="flex items-center gap-2">
               {!isEditing && employee && !isLoading && (
@@ -94,8 +97,11 @@ const EmployeeDetailDialog: React.FC<EmployeeDetailDialogProps> = ({
               </Button>
             </div>
           </DialogHeader>
-          
-          <ScrollArea className="flex-1 p-6 bg-background" style={{ maxHeight: 'calc(90vh - 70px)' }}>
+
+          <ScrollArea
+            className="flex-1 p-6 bg-background"
+            style={{ maxHeight: 'calc(90vh - 70px)' }}
+          >
             <EmployeeDetailDialogContent
               employee={employee}
               isLoading={isLoading}
