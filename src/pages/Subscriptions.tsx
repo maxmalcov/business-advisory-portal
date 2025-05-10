@@ -35,7 +35,7 @@ const Subscriptions: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
 
-  const demoVideoUrl = 'https://www.youtube.com/embed/2e_z7y3_m00';
+  const demoVideoUrl = import.meta.env.VITE_DEMO_VIDO;
 
   const iframeUrls = user?.iframeUrls || [];
 
@@ -71,37 +71,64 @@ const Subscriptions: React.FC = () => {
     }
   }
 
-  const subscriptionTools: SubscriptionTool[] = [];
-
-  if (subscriptionRequests.length != 0) {
-    for (let i = 0; i < subscriptionTypes.length; i++) {
-      const newSubscription: any = {
-        demoVideoUrl,
-        id: subscriptionTypes[i].id,
-        name: subscriptionTypes[i].name,
-        description: subscriptionTypes[i].description,
-        icon: subscriptionTypes[i].icon_type,
-      };
-
-      const request = subscriptionRequests.find(
-        (item) => item.tool_id == subscriptionTypes[i].id,
-      );
-
-      if (request) {
-        if (request.status == 'active') {
-          newSubscription.iframeUrl = request.iframe_url;
-          newSubscription.status = 'active';
-        } else {
-          newSubscription.iframeUrl = '';
-          newSubscription.status = request.status;
-        }
-      } else {
-        newSubscription.iframeUrl = '';
-        newSubscription.status = 'inactive';
-      }
-      subscriptionTools.push(newSubscription);
+  const subscriptionTools: SubscriptionTool[] = subscriptionTypes.map(type => {
+    let newType: any = {
+      demoVideoUrl,
+      id: type.id,
+      name: type.name,
+      description: type.description,
+      icon: type.icon_type,
     }
-  }
+
+    const request = subscriptionRequests.find(
+        (item) => item.tool_id == type.id,
+    );
+
+    if (request) {
+      if (request.status == 'active') {
+        newType.iframeUrl = request.iframe_url;
+        newType.status = 'active';
+      } else {
+        newType.iframeUrl = '';
+        newType.status = request.status;
+      }
+    } else {
+      newType.iframeUrl = '';
+      newType.status = 'inactive';
+    }
+
+    return newType
+  });
+
+  // if (subscriptionRequests.length != 0) {
+  //   for (let i = 0; i < subscriptionTypes.length; i++) {
+  //     const newSubscription: any = {
+  //       demoVideoUrl,
+  //       id: subscriptionTypes[i].id,
+  //       name: subscriptionTypes[i].name,
+  //       description: subscriptionTypes[i].description,
+  //       icon: subscriptionTypes[i].icon_type,
+  //     };
+  //
+  //     const request = subscriptionRequests.find(
+  //       (item) => item.tool_id == subscriptionTypes[i].id,
+  //     );
+  //
+  //     if (request) {
+  //       if (request.status == 'active') {
+  //         newSubscription.iframeUrl = request.iframe_url;
+  //         newSubscription.status = 'active';
+  //       } else {
+  //         newSubscription.iframeUrl = '';
+  //         newSubscription.status = request.status;
+  //       }
+  //     } else {
+  //       newSubscription.iframeUrl = '';
+  //       newSubscription.status = 'inactive';
+  //     }
+  //     subscriptionTools.push(newSubscription);
+  //   }
+  // }
 
   const handleToolClick = (tool: SubscriptionTool) => {
     setSelectedTool(tool);
